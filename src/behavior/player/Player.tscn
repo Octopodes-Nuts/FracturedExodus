@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="CapsuleMesh" id=2]
+radius = 0.5
+mid_height = 2.0
+
+[sub_resource type="CapsuleShape" id=1]
+radius = 0.5
+height = 2.0
+
+[node name="player_body" type="KinematicBody"]
+
+[node name="player_mesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+mesh = SubResource( 2 )
+
+[node name="player_main_collider" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+shape = SubResource( 1 )
+
+[node name="camera_head" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12189, 0 )
+
+[node name="ground_check" type="RayCast" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.108759, 0 )
+cast_to = Vector3( 0, 1.5, 0 )
