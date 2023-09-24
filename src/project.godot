@@ -13,6 +13,10 @@ config_version=4
 config/name="FracturedExodus"
 config/icon="res://icon.png"
 
+[autoload]
+
+Global="*res://behavior/global.gd"
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
