@@ -34,6 +34,7 @@ func _detect():
 		
 		if rotation_degrees.y > (angle - 5)\
 			and rotation_degrees.y < (angle + 5):
-			
 			return true
+		else:
+			return false
 
