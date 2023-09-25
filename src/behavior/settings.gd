@@ -3,7 +3,7 @@ extends Node
 
 # setup
 func _ready():
-    # Register all actions
+    # Register Inputs
     _set_actions()
     _load_bindings()
 
@@ -15,6 +15,8 @@ var actions = [
     "move_backward",
     "move_left",
     "move_right",
+    "interact",
+    "fire",
     "jump",
     "exit"
 ]
@@ -30,15 +32,14 @@ func _load_bindings():
     InputMap.action_add_event("move_backward", InputEvent.KEY_S)
     InputMap.action_add_event("move_left", InputEvent.KEY_A)
     InputMap.action_add_event("move_right", InputEvent.KEY_D)
+    InputMap.action_add_event("interact", InputEvent.KEY_E)
+    InputMap.action_add_event("fire", InputEventMouseButton.BUTTON_LEFT)
     InputMap.action_add_event("jump", InputEvent.KEY_SPACE)
     InputMap.action_add_event("exit", InputEvent.KEY_ESCAPE)
 
 # For now, all events are set to defaults
 
 # Graphical Settings
-enum AntiAliasing {
-	
-}
 
 # Load graphical settings from .json
 
