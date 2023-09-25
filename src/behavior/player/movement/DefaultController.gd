@@ -1,3 +1,4 @@
+#TODO: Implement Crouch
 extends KinematicBody
 
 
@@ -16,7 +17,7 @@ export var jump: float = 10.0
 export var FULL_HEALTH: float = 100.0
 
 var full_contact = false
-var health =FULL_HEALTH
+var health = FULL_HEALTH
 
 var direction = Vector3()
 var horizantal_velocity = Vector3()
@@ -37,7 +38,7 @@ func _input(event):
 		head.rotation.x = clamp(head.rotation.x, deg2rad(-89), deg2rad(89))
 
 func _physics_process(delta):
-	var speed = 0
+	var speed = 0.0
 	var accel = DEACCEL
 	var forward = false
 

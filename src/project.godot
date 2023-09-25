@@ -16,6 +16,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Global="*res://behavior/global.gd"
+Settings="*res://behavior/settings.gd"
 
 [gui]
 
