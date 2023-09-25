@@ -20,7 +20,10 @@ var actions = [
 	"jump",
 	"sprint",
 	"crouch",
-	"exit"
+	"exit",
+	"ads",
+	"use_scanner",
+	"heal"
 ]
 
 # Key Bindings
@@ -40,6 +43,9 @@ func _load_bindings():
 	InputMap.action_add_event("sprint", InputEvent.KEY_SHIFT)
 	InputMap.action_add_event("crouch", InputEvent.KEY_CONTROL)
 	InputMap.action_add_event("exit", InputEvent.KEY_ESCAPE)
+	InputMap.action_add_event("ads", InputEventMouseButton.BUTTON_RIGHT)
+	InputMap.action_add_event("use_scanner", InputEvent.KEY_Q)
+	InputMap.action_add_event("heal", InputEvent.KEY_4)
 
 # For now, all events are set to defaults
 

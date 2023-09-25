@@ -1,21 +1,26 @@
 extends RayCast
 
+class_name Bullet
+
 # Add a "damage class" that describes how bullets behave
 
 var _speed: float
-var _origin: Vector3
 var _damage: float
-var _angle: Vector3
+var _lifetime: float
 
 # Set bullet properties
 func set_properties(speed: float,
 		origin: Vector3,
 		damage: float,
-		angle: Vector3):
+		angle: Vector3,
+		lifetime: float):
 	_speed = speed
-	_origin = origin
+	transform.basis = origin
 	_damage = damage
-	_angle = angle
+	rotation = angle
+	_lifetime = lifetime
+
+	# set initial properties
 
 func _physics_process(_delta):
 	# move and stretch bullet path
