@@ -18,6 +18,8 @@ var actions = [
 	"interact",
 	"fire",
 	"jump",
+	"sprint",
+	"crouch",
 	"exit"
 ]
 
@@ -35,6 +37,8 @@ func _load_bindings():
 	InputMap.action_add_event("interact", InputEvent.KEY_E)
 	InputMap.action_add_event("fire", InputEventMouseButton.BUTTON_LEFT)
 	InputMap.action_add_event("jump", InputEvent.KEY_SPACE)
+	InputMap.action_add_event("sprint", InputEvent.KEY_SHIFT)
+	InputMap.action_add_event("crouch", InputEvent.KEY_CONTROL)
 	InputMap.action_add_event("exit", InputEvent.KEY_ESCAPE)
 
 # For now, all events are set to defaults

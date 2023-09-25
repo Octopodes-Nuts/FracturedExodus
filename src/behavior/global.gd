@@ -1,5 +1,7 @@
+extends Node
+
 # Script containing variables that are global to each match
-var chipsites = []
+var chipsites: Array = []
 
 # Deal with adding and removing chipsites from active list
 # Basically just dealing with addtl context that may become
