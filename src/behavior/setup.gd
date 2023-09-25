@@ -8,4 +8,4 @@ func _ready():
 ## Connect to account and load information
 
 func _get_account_info():
-	return Node()
+	return Node.new()

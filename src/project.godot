@@ -8,6 +8,40 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Node",
+"class": "Account",
+"language": "GDScript",
+"path": "res://behavior/account/account.gd"
+}, {
+"base": "Node",
+"class": "Character",
+"language": "GDScript",
+"path": "res://behavior/account/character.gd"
+}, {
+"base": "Node",
+"class": "Equipment",
+"language": "GDScript",
+"path": "res://behavior/player/Equipment.gd"
+}, {
+"base": "Node",
+"class": "Gun",
+"language": "GDScript",
+"path": "res://behavior/player/weapons/Gun.gd"
+}, {
+"base": "Node",
+"class": "Weapon",
+"language": "GDScript",
+"path": "res://behavior/player/weapons/Weapon.gd"
+} ]
+_global_script_class_icons={
+"Account": "",
+"Character": "",
+"Equipment": "",
+"Gun": "",
+"Weapon": ""
+}
+
 [application]
 
 config/name="FracturedExodus"
