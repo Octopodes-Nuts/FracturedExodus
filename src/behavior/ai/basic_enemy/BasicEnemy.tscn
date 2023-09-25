@@ -1,6 +1,9 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://debug/materials/debug_red.tres" type="Material" id=1]
 
 [sub_resource type="CapsuleMesh" id=1]
+material = ExtResource( 1 )
 radius = 0.5
 mid_height = 2.0
 

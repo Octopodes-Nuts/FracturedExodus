@@ -1,16 +1,39 @@
-extends Node
+extends Spatial
 
+onready var Global = get_node("/root/Global")
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+var chipsites: Array
+var detected: bool = false
 
+func _physics_process(_delta):
+	if _detect():
+		# display to scanner material
+		pass
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+func _detect():
+	if Global.chipsites.size() < 1:
+		return false
 
+	for site in Global.chipsites:
+		
+		var x = site.transform.origin.x - transform.origin.x
+		var z = site.transform.origin.z - transform.origin.z
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+		var angle = rad2deg(atan(x / z))
+
+		if x < 0:
+			if z < 0:
+				angle = -angle #correct
+			else:
+				angle = 180 - angle
+		else:
+			if z < 0:
+				angle = -angle
+			else:
+				angle = -180 - angle #correct
+		
+		if rotation_degrees.y > (angle - 5)\
+			and rotation_degrees.y < (angle + 5):
+			
+			return true
+
