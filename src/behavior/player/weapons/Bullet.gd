@@ -10,7 +10,8 @@ var _lifetime: float = 1.0 # set to non zero number so bullet is not immediately
 var normal_direction_ray: Vector3 = Vector3()
 
 # Set bullet properties
-func set_properties(speed: float,
+func set_properties(
+		speed: float,
 		origin: Vector3,
 		damage: float,
 		angle: Vector3,

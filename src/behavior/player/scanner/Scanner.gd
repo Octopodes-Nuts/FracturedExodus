@@ -1,18 +1,16 @@
 extends Spatial
 
 onready var Global = get_node("/root/Global")
+onready var notifier: ScannerLight = $notifier
 
-var chipsites: Array
 var detected: bool = false
 
 func _physics_process(_delta):
-	if _detect():
-		# display to scanner material
-		pass
+	notifier.notify(_detect())
 
 func _detect():
 	if Global.chipsites.size() < 1:
-		return false
+		return -1.0
 
 	for site in Global.chipsites:
 		
@@ -34,7 +32,7 @@ func _detect():
 		
 		if rotation_degrees.y > (angle - 5)\
 			and rotation_degrees.y < (angle + 5):
-			return true
+			return 1.0
 		else:
-			return false
+			return -1.0
 

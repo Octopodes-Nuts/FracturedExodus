@@ -21,6 +21,7 @@ export var bullet_speed: float
 export var bullet_lifetime: float
 
 var current_cycle: float = 0.0
+var active: bool = false # test if gun is active
 
 func _ready():
 	# set up envrionment
@@ -32,7 +33,8 @@ func _process(delta):
 		current_cycle -= delta
 	
 	if current_cycle <= 0 and\
-		Input.is_action_just_pressed('fire'):
+		Input.is_action_just_pressed('fire') and\
+		active:
 		_use()
 	
 

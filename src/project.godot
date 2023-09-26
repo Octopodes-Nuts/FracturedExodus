@@ -49,6 +49,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://behavior/player/weapons/Melee.gd"
 }, {
+"base": "Spatial",
+"class": "ScannerLight",
+"language": "GDScript",
+"path": "res://behavior/player/scanner/ScannerLight.gd"
+}, {
 "base": "Node",
 "class": "Weapon",
 "language": "GDScript",
@@ -63,6 +68,7 @@ _global_script_class_icons={
 "Gun": "",
 "Interactable": "",
 "Melee": "",
+"ScannerLight": "",
 "Weapon": ""
 }
 
