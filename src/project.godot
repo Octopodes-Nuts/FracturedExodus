@@ -29,7 +29,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://behavior/player/Equipment.gd"
 }, {
-"base": "Node",
+"base": "Weapon",
 "class": "Gun",
 "language": "GDScript",
 "path": "res://behavior/player/weapons/Gun.gd"

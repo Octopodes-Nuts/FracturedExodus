@@ -1,6 +1,8 @@
-extends Node
+extends Weapon
 
 class_name Gun
+
+onready var Global = get_node('/root/Global')
 
 export var model: Mesh
 export var ads_animation: String
@@ -16,26 +18,30 @@ export var bullet_damage: float
 export var bullet_speed: float
 export var bullet_lifetime: float
 
-
 var current_cycle: float = 0.0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# set up envrionment
-	pass
+	type = WeaponType.GUN
 
 func _process(delta):
 	if current_cycle > 0:
 		current_cycle -= delta
+	
+	if current_cycle <= 0 and\
+		Input.is_action_just_pressed('fire'):
+		_use()
+	
 
-func _fire():
+func _use():
 	player.play(fire_animation)
 	current_cycle = cycle_time
 
 	# spawn a bullet
 	var bullet = Bullet.new()
 	bullet.set_properties(
-		bullet_speed, muzzle_end.transform.basis,
-		bullet_damage, muzzle_end.rotation,
-		bullet_lifetime
-		)
+		bullet_speed, muzzle_end.global_transform.origin,
+		bullet_damage, muzzle_end.global_rotation,
+		bullet_lifetime )
 	# hand the bullet to the scene as a top level child
+	Global.map_root.add_child(bullet)

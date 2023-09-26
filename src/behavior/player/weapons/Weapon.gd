@@ -9,10 +9,8 @@ enum WeaponType {
 	MELEE
 }
 
-func _ready():
-	pass # Replace with function body.
+var type: int
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+# perform action specified by weapon
+func _use():
+	pass
