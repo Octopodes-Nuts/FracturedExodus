@@ -6,6 +6,9 @@ var chipsites: Array = []
 # Map Root is the top level of a map
 var map_root: Spatial
 
+# Local Variables are Mapped by player
+var player_huds: Dictionary
+
 # Deal with adding and removing chipsites from active list
 # Basically just dealing with addtl context that may become
 # clearer down the line
