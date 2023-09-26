@@ -1,4 +1,4 @@
-extends Node
+extends Spatial
 
 # Placeholder for camp behavior
 func _ready():

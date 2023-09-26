@@ -1,6 +1,7 @@
 #TODO: Implement Crouch
 extends KinematicBody
 
+class_name DefaultController
 
 export var MAX_SPEED: float = 6.0
 export var MAX_SPRINT: float = 12.0
@@ -13,6 +14,9 @@ export var DEACCEL: float = 10.0
 export var mouse_sensitivity: float = 0.03
 export var gravity: float = 20.0
 export var jump: float = 10.0
+
+export var step_sound: String
+export var step_volume: float
 
 export var FULL_HEALTH: float = 100.0
 

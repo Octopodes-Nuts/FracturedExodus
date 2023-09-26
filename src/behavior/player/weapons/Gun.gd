@@ -3,6 +3,7 @@ extends Weapon
 class_name Gun
 
 onready var Global = get_node('/root/Global')
+onready var Types = get_node('/root/Types')
 
 export var model: Mesh
 export var ads_animation: String
@@ -11,8 +12,9 @@ export var cock_animation: String
 export var reload_animation: String
 var player: AnimationPlayer
 export var cycle_time: float = 0.7
+var faction: int
 
-var muzzle_end: Spatial
+onready var muzzle_end: Spatial = $muzzle_end
 
 export var bullet_damage: float
 export var bullet_speed: float

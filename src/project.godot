@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "Node",
 "class": "Account",
 "language": "GDScript",
-"path": "res://behavior/account/account.gd"
+"path": "res://behavior/account/Account.gd"
 }, {
 "base": "RayCast",
 "class": "Bullet",
@@ -22,7 +22,12 @@ _global_script_classes=[ {
 "base": "Node",
 "class": "Character",
 "language": "GDScript",
-"path": "res://behavior/account/character.gd"
+"path": "res://behavior/account/Character.gd"
+}, {
+"base": "KinematicBody",
+"class": "DefaultController",
+"language": "GDScript",
+"path": "res://behavior/player/movement/DefaultController.gd"
 }, {
 "base": "Node",
 "class": "Equipment",
@@ -34,10 +39,15 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://behavior/player/weapons/Gun.gd"
 }, {
-"base": "Node",
-"class": "Local",
+"base": "Spatial",
+"class": "Interactable",
 "language": "GDScript",
-"path": "res://behavior/local.gd"
+"path": "res://behavior/environment/interactables/Interactable.gd"
+}, {
+"base": "Weapon",
+"class": "Melee",
+"language": "GDScript",
+"path": "res://behavior/player/weapons/Melee.gd"
 }, {
 "base": "Node",
 "class": "Weapon",
@@ -48,9 +58,11 @@ _global_script_class_icons={
 "Account": "",
 "Bullet": "",
 "Character": "",
+"DefaultController": "",
 "Equipment": "",
 "Gun": "",
-"Local": "",
+"Interactable": "",
+"Melee": "",
 "Weapon": ""
 }
 
@@ -64,6 +76,7 @@ config/icon="res://icon.png"
 Global="*res://behavior/global.gd"
 Settings="*res://behavior/settings.gd"
 Setup="*res://behavior/setup.gd"
+Types="*res://behavior/types.gd"
 
 [gui]
 
