@@ -19,10 +19,11 @@ export var bullet_speed: float
 export var bullet_lifetime: float
 
 var current_cycle: float = 0.0
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	# set up envrionment
 	type = WeaponType.GUN
+	
 
 func _process(delta):
 	if current_cycle > 0:

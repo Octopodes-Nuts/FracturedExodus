@@ -6,7 +6,7 @@ class_name Bullet
 
 var _speed: float
 var _damage: float
-var _lifetime: float
+var _lifetime: float = 1.0 # set to non zero number so bullet is not immediately killed
 var normal_direction_ray: Vector3 = Vector3()
 
 # Set bullet properties
@@ -22,7 +22,6 @@ func set_properties(speed: float,
 	_lifetime = lifetime
 	set_norm_ray()
 
-	# set initial properties
 
 func _physics_process(delta):
 	# move and stretch bullet path
@@ -38,6 +37,12 @@ func _physics_process(delta):
 			test.hit()
 		else: # test for wall penetration
 			pass
+	_lifetime -= delta
+
+	#kill bullet
+	if _lifetime <= 0.0:
+		queue_free()
+
 
 func set_norm_ray():
 
