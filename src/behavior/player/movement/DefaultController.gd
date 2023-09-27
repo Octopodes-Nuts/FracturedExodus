@@ -31,8 +31,18 @@ var gravity_vec = Vector3()
 onready var head = $camera_head
 onready var ground_check = $ground_check
 
+var character: Character
+
 #This should be changed to be more global
 func _ready():
+	# set up default character
+	character = Character.new()
+	character.primary_weapon = DefaultGun.new()
+	character.secondary_weapon = DefaultPistol.new()
+	# end default character
+
+	# load from character 
+
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _input(event):

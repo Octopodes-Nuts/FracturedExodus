@@ -29,6 +29,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://behavior/player/movement/DefaultController.gd"
 }, {
+"base": "Gun",
+"class": "DefaultGun",
+"language": "GDScript",
+"path": "res://behavior/player/weapons/guns/default_gun/DefaultGun.gd"
+}, {
+"base": "Gun",
+"class": "DefaultPistol",
+"language": "GDScript",
+"path": "res://behavior/player/weapons/guns/default_pistol/DefaultPistol.gd"
+}, {
 "base": "Node",
 "class": "Equipment",
 "language": "GDScript",
@@ -64,6 +74,8 @@ _global_script_class_icons={
 "Bullet": "",
 "Character": "",
 "DefaultController": "",
+"DefaultGun": "",
+"DefaultPistol": "",
 "Equipment": "",
 "Gun": "",
 "Interactable": "",

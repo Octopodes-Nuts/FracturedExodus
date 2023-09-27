@@ -1,4 +1,5 @@
 # Just contains all enum types for gameplay
+extends Node
 
 enum Factions {
 	FACTION_DEFAULT,

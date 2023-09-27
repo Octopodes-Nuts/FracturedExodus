@@ -12,7 +12,6 @@ export var cock_animation: String
 export var reload_animation: String
 var player: AnimationPlayer
 export var cycle_time: float = 0.7
-var faction: int
 
 onready var muzzle_end: Spatial = $muzzle_end
 
