@@ -30,6 +30,8 @@ var horizantal_velocity = Vector3()
 var movement = Vector3()
 var gravity_vec = Vector3()
 
+var active_weapon: Weapon
+
 onready var head = $camera_head
 onready var gun_location = $camera_head/gun_location
 onready var ground_check_0 = $ground_check_0
@@ -48,7 +50,11 @@ func _ready():
 	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instance()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instance()
 	# end default character
-
+	character.set_weapons_inactive()
+	character.primary_weapon.active = true
+	head.add_child(character.primary_weapon)
+	character.primary_weapon.transform.origin = gun_location.transform.origin
+	active_weapon = character.primary_weapon
 	# load from character 
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -65,13 +71,23 @@ func _process(_delta):
 	# set cycle time ? so that you can't just keep
 	# shifting weapons but maybe not
 	if Input.is_action_just_pressed("primary_weapon"):
-		character.set_weapons_inactive()
-		character.primary_weapon.active = true
+		if active_weapon != character.primary_weapon:
+			head.remove_child(active_weapon)
+			active_weapon = character.primary_weapon
+			character.set_weapons_inactive()
+			character.primary_weapon.active = true
+			head.add_child(character.primary_weapon)
+			character.primary_weapon.transform.origin = gun_location.transform.origin
+		# remove all other weapons
 		# play animation
 	elif Input.is_action_just_pressed("secondary_weapon"):
-		character.set_weapons_inactive()
-		character.secondary_weapon.active = true
-		character.primary_weapon.transform.origin = gun_location.transform.origin
+		if active_weapon != character.secondary_weapon:
+			head.remove_child(active_weapon)
+			active_weapon = character.secondary_weapon
+			character.set_weapons_inactive()
+			character.secondary_weapon.active = true
+			head.add_child(character.secondary_weapon)
+			character.secondary_weapon.transform.origin = gun_location.transform.origin
 		# play animtation
 	elif Input.is_action_just_pressed("tertiary_weapon"):
 		character.set_weapons_inactive()
