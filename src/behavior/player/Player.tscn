@@ -29,6 +29,9 @@ shape = SubResource( 1 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12189, 0 )
 environment = ExtResource( 2 )
 
+[node name="gun_location" type="Spatial" parent="camera_head"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.63007, -0.84987 )
+
 [node name="ground_check_0" type="RayCast" parent="."]
 enabled = true
 cast_to = Vector3( 0, -2, 0 )
@@ -52,6 +55,3 @@ cast_to = Vector3( 0, -2, 0 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, 0 )
 enabled = true
 cast_to = Vector3( 0, -2, 0 )
-
-[node name="gun_location" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49182, -0.84987 )

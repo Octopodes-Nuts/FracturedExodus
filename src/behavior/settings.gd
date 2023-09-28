@@ -8,7 +8,7 @@ func _ready():
 	_load_bindings()
 
 # Gameplay settings
-var FOV: int
+var FOV: int = 70
 
 var actions = [
 	"move_forward",

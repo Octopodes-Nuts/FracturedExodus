@@ -31,7 +31,7 @@ var movement = Vector3()
 var gravity_vec = Vector3()
 
 onready var head = $camera_head
-onready var gun_location = $gun_location
+onready var gun_location = $camera_head/gun_location
 onready var ground_check_0 = $ground_check_0
 onready var ground_check_1 = $ground_check_1
 onready var ground_check_2 = $ground_check_2
@@ -67,10 +67,6 @@ func _process(_delta):
 	if Input.is_action_just_pressed("primary_weapon"):
 		character.set_weapons_inactive()
 		character.primary_weapon.active = true
-		self.add_child(character.primary_weapon)
-		character.primary_weapon.transform.origin = gun_location.transform.origin
-		self.remove_child(character.primary_weapon)
-		head.add_child(character.primary_weapon)
 		# play animation
 	elif Input.is_action_just_pressed("secondary_weapon"):
 		character.set_weapons_inactive()
