@@ -29,7 +29,12 @@ var movement = Vector3()
 var gravity_vec = Vector3()
 
 onready var head = $camera_head
-onready var ground_check = $ground_check
+onready var ground_check_0 = $ground_check_0
+onready var ground_check_1 = $ground_check_1
+onready var ground_check_2 = $ground_check_2
+onready var ground_check_3 = $ground_check_3
+onready var ground_check_4 = $ground_check_4
+
 
 var character: Character
 
@@ -45,6 +50,15 @@ func _ready():
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+func ground_check():
+
+	return ground_check_0.is_colliding() or \
+		   ground_check_1.is_colliding() or \
+		   ground_check_2.is_colliding() or \
+		   ground_check_3.is_colliding() or \
+		   ground_check_4.is_colliding()
+
+
 func _input(event):
 	if event is InputEventMouseMotion:
 		rotate_y(deg2rad(-event.relative.x * mouse_sensitivity))
@@ -58,7 +72,7 @@ func _physics_process(delta):
 
 	direction = Vector3()
 
-	if ground_check.is_colliding():
+	if ground_check():
 		full_contact = true
 	else:
 		full_contact = false
