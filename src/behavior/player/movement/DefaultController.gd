@@ -3,6 +3,8 @@ extends KinematicBody
 
 class_name DefaultController
 
+onready var WeaponRegister = get_node('/root/WeaponRegister')
+
 export var MAX_SPEED: float = 6.0
 export var MAX_SPRINT: float = 12.0
 
@@ -29,6 +31,7 @@ var movement = Vector3()
 var gravity_vec = Vector3()
 
 onready var head = $camera_head
+onready var gun_location = $gun_location
 onready var ground_check_0 = $ground_check_0
 onready var ground_check_1 = $ground_check_1
 onready var ground_check_2 = $ground_check_2
@@ -42,8 +45,8 @@ var character: Character
 func _ready():
 	# set up default character
 	character = Character.new()
-	character.primary_weapon = DefaultGun.new()
-	character.secondary_weapon = DefaultPistol.new()
+	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instance()
+	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instance()
 	# end default character
 
 	# load from character 
@@ -57,6 +60,28 @@ func ground_check():
 		   ground_check_2.is_colliding() or \
 		   ground_check_3.is_colliding() or \
 		   ground_check_4.is_colliding()
+
+func _process(_delta):
+	# set cycle time ? so that you can't just keep
+	# shifting weapons but maybe not
+	if Input.is_action_just_pressed("primary_weapon"):
+		character.set_weapons_inactive()
+		character.primary_weapon.active = true
+		self.add_child(character.primary_weapon)
+		character.primary_weapon.transform.origin = gun_location.transform.origin
+		self.remove_child(character.primary_weapon)
+		head.add_child(character.primary_weapon)
+		# play animation
+	elif Input.is_action_just_pressed("secondary_weapon"):
+		character.set_weapons_inactive()
+		character.secondary_weapon.active = true
+		character.primary_weapon.transform.origin = gun_location.transform.origin
+		# play animtation
+	elif Input.is_action_just_pressed("tertiary_weapon"):
+		character.set_weapons_inactive()
+		# play animation
+		character.tertiary_weapon.active = true
+
 
 
 func _input(event):
@@ -101,7 +126,8 @@ func _physics_process(delta):
 
 	# This must be changed as well
 	if Input.is_action_just_pressed("exit"):
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		#Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		get_tree().quit()
 		#BRING UP ESCAPE MENU
 	
 	if direction != Vector3.ZERO:

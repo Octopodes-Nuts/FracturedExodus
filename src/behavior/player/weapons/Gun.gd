@@ -6,11 +6,11 @@ onready var Global = get_node('/root/Global')
 onready var Types = get_node('/root/Types')
 
 export var model: Mesh
-export var ads_animation: String
-export var fire_animation: String
-export var cock_animation: String
-export var reload_animation: String
-var player: AnimationPlayer
+export var ads_animation: String = "none"
+export var fire_animation: String = "none"
+export var cock_animation: String = "none"
+export var reload_animation: String = "none"
+var player: AnimationPlayer = AnimationPlayer.new()
 export var cycle_time: float = 0.7
 
 onready var muzzle_end: Spatial = $muzzle_end
@@ -20,7 +20,6 @@ export var bullet_speed: float
 export var bullet_lifetime: float
 
 var current_cycle: float = 0.0
-var active: bool = false # test if gun is active
 
 func _ready():
 	# set up envrionment

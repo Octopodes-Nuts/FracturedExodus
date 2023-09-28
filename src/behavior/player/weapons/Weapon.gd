@@ -11,6 +11,7 @@ enum WeaponType {
 
 var type: int = 0
 var faction: int = 0
+var active: bool = false
 
 # perform action specified by weapon
 func _use():

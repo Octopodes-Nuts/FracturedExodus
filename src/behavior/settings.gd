@@ -23,6 +23,9 @@ var actions = [
 	"exit",
 	"ads",
 	"use_scanner",
+	"primary_weapon",
+	"secondary_weapon",
+	"tertiary_weapon",
 	"heal"
 ]
 
@@ -55,6 +58,9 @@ func _load_bindings():
 	InputMap.action_add_event("exit", _link_key(KEY_ESCAPE))
 	InputMap.action_add_event("ads", _link_mb(BUTTON_RIGHT))
 	InputMap.action_add_event("use_scanner", _link_key(KEY_Q))
+	InputMap.action_add_event("primary_weapon", _link_key(KEY_1))
+	InputMap.action_add_event("secondary_weapon", _link_key(KEY_2))
+	InputMap.action_add_event("tertiary_weapon", _link_key(KEY_3))
 	InputMap.action_add_event("heal", _link_key(KEY_4))
 
 # For now, all events are set to defaults
