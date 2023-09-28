@@ -30,22 +30,32 @@ var actions = [
 func _set_actions():
 	for action in actions:
 		InputMap.add_action(action)
+		
+func _link_key(key: int):
+	var event = InputEventKey.new()
+	event.scancode = key
+	return event
+
+func _link_mb(mb: int):
+	var event = InputEventMouseButton.new()
+	event.button_index = mb
+	return event
 
 # Load Key Bindings from .json
 func _load_bindings():
-	InputMap.action_add_event("move_forward", InputEvent.KEY_W)
-	InputMap.action_add_event("move_backward", InputEvent.KEY_S)
-	InputMap.action_add_event("move_left", InputEvent.KEY_A)
-	InputMap.action_add_event("move_right", InputEvent.KEY_D)
-	InputMap.action_add_event("interact", InputEvent.KEY_E)
-	InputMap.action_add_event("fire", InputEventMouseButton.BUTTON_LEFT)
-	InputMap.action_add_event("jump", InputEvent.KEY_SPACE)
-	InputMap.action_add_event("sprint", InputEvent.KEY_SHIFT)
-	InputMap.action_add_event("crouch", InputEvent.KEY_CONTROL)
-	InputMap.action_add_event("exit", InputEvent.KEY_ESCAPE)
-	InputMap.action_add_event("ads", InputEventMouseButton.BUTTON_RIGHT)
-	InputMap.action_add_event("use_scanner", InputEvent.KEY_Q)
-	InputMap.action_add_event("heal", InputEvent.KEY_4)
+	InputMap.action_add_event("move_forward", _link_key(KEY_W))
+	InputMap.action_add_event("move_backward", _link_key(KEY_S))
+	InputMap.action_add_event("move_left", _link_key(KEY_A))
+	InputMap.action_add_event("move_right", _link_key(KEY_D))
+	InputMap.action_add_event("interact", _link_key(KEY_E))
+	InputMap.action_add_event("fire", _link_mb(BUTTON_LEFT))
+	InputMap.action_add_event("jump", _link_key(KEY_SPACE))
+	InputMap.action_add_event("sprint", _link_key(KEY_SHIFT))
+	InputMap.action_add_event("crouch", _link_key(KEY_CONTROL))
+	InputMap.action_add_event("exit", _link_key(KEY_ESCAPE))
+	InputMap.action_add_event("ads", _link_mb(BUTTON_RIGHT))
+	InputMap.action_add_event("use_scanner", _link_key(KEY_Q))
+	InputMap.action_add_event("heal", _link_key(KEY_4))
 
 # For now, all events are set to defaults
 

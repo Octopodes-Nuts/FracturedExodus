@@ -5,3 +5,6 @@
 [resource]
 background_mode = 2
 background_sky = SubResource( 1 )
+ambient_light_color = Color( 0.207843, 0.188235, 0.188235, 1 )
+fog_enabled = true
+fog_depth_enabled = false

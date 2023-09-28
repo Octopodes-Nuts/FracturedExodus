@@ -68,21 +68,21 @@ func _physics_process(delta):
 	elif is_on_floor() and full_contact:
 		gravity_vec = -get_floor_normal() * gravity
 	else:
-		gravity_vec = get_floor_normal()
+		gravity_vec = -get_floor_normal()
 
 	if Input.is_action_just_pressed("jump") and is_on_floor()\
 		and full_contact:
 		gravity_vec = Vector3.UP * jump
 
-	if Input.is_action_just_pressed("move_forward"):
+	if Input.is_action_pressed("move_forward"):
 		direction -= transform.basis.z
 		forward = true
-	if Input.is_action_just_pressed("move_backward"):
+	if Input.is_action_pressed("move_backward"):
 		forward = false
 		direction += transform.basis.z
-	if Input.is_action_just_pressed("move_left"):
+	if Input.is_action_pressed("move_left"):
 		direction -= transform.basis.x
-	if Input.is_action_just_pressed("move_right"):
+	if Input.is_action_pressed("move_right"):
 		direction += transform.basis.x
 
 	# This must be changed as well
@@ -91,7 +91,7 @@ func _physics_process(delta):
 		#BRING UP ESCAPE MENU
 	
 	if direction != Vector3.ZERO:
-		if Input.is_action_just_pressed("sprint") and forward:
+		if Input.is_action_pressed("sprint") and forward:
 			speed = MAX_SPRINT
 			accel = SPRINT_ACCEL
 		else:

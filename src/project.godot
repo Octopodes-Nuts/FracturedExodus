@@ -87,6 +87,7 @@ _global_script_class_icons={
 [application]
 
 config/name="FracturedExodus"
+run/main_scene="res://environment/maps/test_map/TestMap.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -95,6 +96,13 @@ Global="*res://behavior/global.gd"
 Settings="*res://behavior/settings.gd"
 Setup="*res://behavior/setup.gd"
 Types="*res://behavior/types.gd"
+
+[display]
+
+window/size/width=1920
+window/size/height=1080
+window/size/resizable=false
+window/size/fullscreen=true
 
 [gui]
 
@@ -106,4 +114,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+quality/shadows/filter_mode=2
 environment/default_environment="res://default_env.tres"

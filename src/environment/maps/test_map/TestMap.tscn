@@ -1,3 +1,36 @@
-[gd_scene format=2]
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://debug/materials/debug_tile_0.tres" type="Material" id=1]
+[ext_resource path="res://behavior/player/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://debug/debug_prefabs/box_obsticle_0.tscn" type="PackedScene" id=3]
+
+[sub_resource type="BoxShape" id=1]
+
+[sub_resource type="CubeMesh" id=2]
 
 [node name="Spatial" type="Spatial"]
+
+[node name="floor" type="StaticBody" parent="."]
+transform = Transform( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="floor"]
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="floor"]
+mesh = SubResource( 2 )
+material/0 = ExtResource( 1 )
+
+[node name="light" type="DirectionalLight" parent="."]
+transform = Transform( 0.362151, 0.641234, 0.67651, -0.702292, -0.289507, 0.650363, 0.612889, -0.710637, 0.345488, 0, 36.8459, 0 )
+light_energy = 1.032
+shadow_enabled = true
+shadow_bias = 0.05
+directional_shadow_max_distance = 2513.1
+
+[node name="player_body" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.02465, 3.54708, 0 )
+
+[node name="obsticles" type="Node" parent="."]
+
+[node name="yellow_box" parent="obsticles" instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9515, 9.1128 )

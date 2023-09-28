@@ -9,6 +9,9 @@ var _damage: float
 var _lifetime: float = 1.0 # set to non zero number so bullet is not immediately killed
 var normal_direction_ray: Vector3 = Vector3()
 
+func _ready():
+	enabled = true
+
 # Set bullet properties
 func set_properties(
 		speed: float,
