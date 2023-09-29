@@ -64,7 +64,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://behavior/player/scanner/ScannerLight.gd"
 }, {
-"base": "Node",
+"base": "Spatial",
 "class": "Weapon",
 "language": "GDScript",
 "path": "res://behavior/player/weapons/Weapon.gd"

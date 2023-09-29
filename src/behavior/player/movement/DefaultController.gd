@@ -30,7 +30,7 @@ var horizantal_velocity = Vector3()
 var movement = Vector3()
 var gravity_vec = Vector3()
 
-var active_weapon: Weapon
+var active_weapon: Weapon = Weapon.new()
 
 onready var head = $camera_head
 onready var gun_location = $camera_head/gun_location
@@ -50,14 +50,21 @@ func _ready():
 	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instance()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instance()
 	# end default character
-	character.set_weapons_inactive()
-	character.primary_weapon.active = true
-	head.add_child(character.primary_weapon)
-	character.primary_weapon.transform.origin = gun_location.transform.origin
-	active_weapon = character.primary_weapon
+	swap_weapon(character.primary_weapon)
 	# load from character 
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+func _ads():
+	active_weapon.transform.origin = active_weapon.transform.origin.\
+		linear_interpolate((active_weapon.ads_position - head.transform.origin),
+			active_weapon.ADS_LERP)
+
+func _undo_ads():
+	active_weapon.transform.origin = active_weapon.transform.origin.\
+		linear_interpolate((active_weapon.default_position - head.transform.origin),
+			active_weapon.ADS_LERP)
+
 
 func ground_check():
 
@@ -81,6 +88,11 @@ func _process(_delta):
 		# test to see if current class allows a tertiary weapon
 		swap_weapon(character.tertiary_weapon)
 
+	if Input.is_action_pressed("ads"):
+		_ads()
+	else:
+		_undo_ads()
+
 func swap_weapon(weapon: Weapon):
 	if active_weapon != weapon:
 		head.remove_child(active_weapon)
@@ -90,7 +102,8 @@ func swap_weapon(weapon: Weapon):
 		character.set_weapons_inactive()
 		weapon.active = true
 		head.add_child(weapon)
-		weapon.transform.origin = gun_location.transform.origin
+		weapon.transform.origin = \
+		weapon.default_position - head.transform.origin
 
 
 

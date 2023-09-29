@@ -1,4 +1,4 @@
-extends Node
+extends Spatial
 
 # Class used as general interface
 

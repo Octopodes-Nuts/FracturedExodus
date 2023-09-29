@@ -8,6 +8,9 @@
 
 [node name="default_pistol" type="StaticBody"]
 script = ExtResource( 1 )
+ADS_LERP = 0.04
+default_position = Vector3( 0.436, 0.589, -1.057 )
+ads_position = Vector3( 0, 1, -1.243 )
 cycle_time = 0.4
 bullet_damage = 55.0
 bullet_speed = 250.0

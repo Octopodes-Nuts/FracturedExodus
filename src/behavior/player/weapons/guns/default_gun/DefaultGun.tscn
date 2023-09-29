@@ -8,6 +8,9 @@
 
 [node name="default_gun" type="StaticBody"]
 script = ExtResource( 1 )
+ADS_LERP = 0.035
+default_position = Vector3( 0.522, 0.471, -1.167 )
+ads_position = Vector3( 0, 1, -1.344 )
 bullet_damage = 75.0
 bullet_speed = 400.0
 bullet_lifetime = 4.0
