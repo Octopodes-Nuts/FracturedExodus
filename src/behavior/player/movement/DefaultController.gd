@@ -4,6 +4,7 @@ extends KinematicBody
 class_name DefaultController
 
 onready var WeaponRegister = get_node('/root/WeaponRegister')
+onready var Settings = get_node('/root/Settings')
 
 export var MAX_SPEED: float = 6.0
 export var MAX_SPRINT: float = 12.0
@@ -55,15 +56,17 @@ func _ready():
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-func _ads():
+func _ads(delta):
 	active_weapon.transform.origin = active_weapon.transform.origin.\
 		linear_interpolate((active_weapon.ads_position - head.transform.origin),
-			active_weapon.ADS_LERP)
+			active_weapon.ADS_LERP * delta)
+	head.fov = lerp(head.fov, active_weapon.ads_fov, active_weapon.ADS_LERP * delta)
 
-func _undo_ads():
+func _undo_ads(delta):
 	active_weapon.transform.origin = active_weapon.transform.origin.\
 		linear_interpolate((active_weapon.default_position - head.transform.origin),
-			active_weapon.ADS_LERP)
+			active_weapon.ADS_LERP * delta)
+	head.fov = lerp(head.fov, Settings.FOV, active_weapon.ADS_LERP * delta)
 
 
 func ground_check():
@@ -74,7 +77,7 @@ func ground_check():
 		   ground_check_3.is_colliding() or \
 		   ground_check_4.is_colliding()
 
-func _process(_delta):
+func _process(delta):
 	# set cycle time ? so that you can't just keep
 	# shifting weapons but maybe not
 	if Input.is_action_just_pressed("primary_weapon"):
@@ -89,9 +92,9 @@ func _process(_delta):
 		swap_weapon(character.tertiary_weapon)
 
 	if Input.is_action_pressed("ads"):
-		_ads()
+		_ads(delta)
 	else:
-		_undo_ads()
+		_undo_ads(delta)
 
 func swap_weapon(weapon: Weapon):
 	if active_weapon != weapon:
