@@ -50,6 +50,7 @@ func _ready():
 	character = Character.new()
 	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instance()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instance()
+	character.set_bullet_origin(gun_location)
 	# end default character
 	swap_weapon(character.primary_weapon)
 	# load from character 

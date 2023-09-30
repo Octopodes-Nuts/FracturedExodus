@@ -97,6 +97,7 @@ Settings="*res://behavior/settings.gd"
 Setup="*res://behavior/setup.gd"
 Types="*res://behavior/types.gd"
 WeaponRegister="*res://behavior/weapon_register.gd"
+Local="*res://behavior/local.gd"
 
 [display]
 

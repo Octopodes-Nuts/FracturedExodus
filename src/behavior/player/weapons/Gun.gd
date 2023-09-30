@@ -13,7 +13,7 @@ export var reload_animation: String = "none"
 var player: AnimationPlayer = AnimationPlayer.new()
 export var cycle_time: float = 0.7
 
-onready var muzzle_end: Spatial = $muzzle_end
+onready var muzzle_end: Spatial = Spatial.new()
 
 export var bullet_damage: float
 export var bullet_speed: float

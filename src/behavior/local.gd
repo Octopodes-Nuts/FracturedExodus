@@ -4,6 +4,7 @@ extends Node
 
 # player ID, obtained from server
 var player_id: int
+var HUD: Control
 
 
 func _ready():
@@ -16,16 +17,3 @@ func _get_player_attributes():
 	# this should happen once accepted into a match
 	pass
 
-
-# for purpose of display and purchase, gun types should all be manually
-# registered here
-
-const GUN_REGISTER_PATH = 'res://behavior/player/weapons/guns/'
-
-var gun_paths = [
-	'default_gun/DefaultGun.tscn',
-	'default_pistol/DefualtPistol.tscn'
-]
-
-func _register_all_gun_types():
-	pass

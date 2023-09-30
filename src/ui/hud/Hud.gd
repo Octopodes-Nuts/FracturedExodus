@@ -1,15 +1,14 @@
-extends Node
+extends Control
 
 
+onready var Local = get_node('/root/Local')
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-
+	Local.HUD = self
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
