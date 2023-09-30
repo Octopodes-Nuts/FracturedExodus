@@ -4,10 +4,10 @@ extends Node
 # This just references preset scenes
 
 onready var gun_register = {
-    "DefaultGun": load("res://behavior/player/weapons/guns/default_gun/DefaultGun.tscn"),
-    "DefaultPistol": load("res://behavior/player/weapons/guns/default_pistol/DefaultPistol.tscn")
+	"DefaultGun": load("res://behavior/player/weapons/guns/default_gun/DefaultGun.tscn"),
+	"DefaultPistol": load("res://behavior/player/weapons/guns/default_pistol/DefaultPistol.tscn")
 }
 
 onready var melee_register = {
-    
+	
 }
