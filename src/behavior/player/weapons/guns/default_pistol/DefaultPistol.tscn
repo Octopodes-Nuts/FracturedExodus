@@ -10,7 +10,7 @@
 script = ExtResource( 1 )
 ADS_LERP = 8.0
 default_position = Vector3( 0.436, 0.589, -1.057 )
-ads_position = Vector3( 0, 1, -1.243 )
+ads_position = Vector3( 0, 1.045, -1.243 )
 ads_fov = 60.0
 cycle_time = 0.4
 bullet_damage = 55.0
