@@ -11,5 +11,5 @@ dest_files=[ "res://.import/BoltPullSound.mp3-cc8c1e498b8525eac08a9a9d126b46d8.m
 
 [params]
 
-loop=true
+loop=false
 loop_offset=0

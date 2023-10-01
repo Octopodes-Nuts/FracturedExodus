@@ -11,5 +11,5 @@ dest_files=[ "res://.import/HammerCock.mp3-8cae1c7c4b67e6b5bd09f481ac7b96eb.mp3s
 
 [params]
 
-loop=true
+loop=false
 loop_offset=0
