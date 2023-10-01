@@ -26,6 +26,7 @@ func set_properties(
 	_damage = damage
 	global_rotation = angle
 	_lifetime = lifetime
+	set_cast_to(Vector3.FORWARD * 10)
 	set_norm_ray()
 
 
