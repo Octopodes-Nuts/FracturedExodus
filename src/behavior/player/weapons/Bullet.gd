@@ -18,11 +18,13 @@ func set_properties(
 		origin: Vector3,
 		damage: float,
 		angle: Vector3,
-		lifetime: float):
+		lifetime: float,
+		parent: Spatial):
+	parent.add_child(self)
 	_speed = speed
-	transform.basis = origin
+	global_transform.origin = origin
 	_damage = damage
-	rotation = angle
+	global_rotation = angle
 	_lifetime = lifetime
 	set_norm_ray()
 

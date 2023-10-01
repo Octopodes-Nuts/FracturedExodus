@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/DefaultPistolShot.mp3-ec9dff3dc92056004fb3159b157cc57e.mp3str"
+
+[deps]
+
+source_file="res://behavior/player/weapons/guns/default_pistol/DefaultPistolShot.mp3"
+dest_files=[ "res://.import/DefaultPistolShot.mp3-ec9dff3dc92056004fb3159b157cc57e.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

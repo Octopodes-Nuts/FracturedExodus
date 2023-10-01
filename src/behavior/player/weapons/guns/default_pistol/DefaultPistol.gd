@@ -4,5 +4,8 @@ class_name DefaultPistol
 
 func _init():
 	faction = Factions.DEFAULT
-	pass
+
+func _ready():
+	fire_sound =\
+		load("res://behavior/player/weapons/guns/default_pistol/DefaultPistolShot.mp3")
 

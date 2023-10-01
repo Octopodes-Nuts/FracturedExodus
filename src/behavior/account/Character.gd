@@ -36,12 +36,9 @@ func set_weapons_inactive():
 	tertiary_weapon.active = false
 
 func set_bullet_origin(spatial: Spatial):
-	if primary_weapon.is_class("Gun"):
-		primary_weapon.muzzle_end = spatial
-	if secondary_weapon.is_class("Gun"):
-		secondary_weapon.muzzle_end = spatial
-	if tertiary_weapon.is_class("Gun"):
-		tertiary_weapon.muzzle_end = spatial
+	primary_weapon.muzzle_end = spatial
+	secondary_weapon.muzzle_end = spatial
+	tertiary_weapon.muzzle_end = spatial
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

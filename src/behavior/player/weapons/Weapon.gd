@@ -9,6 +9,8 @@ export var default_position : Vector3 = Vector3.ZERO
 export var ads_position : Vector3 = Vector3.ZERO
 export var ads_fov: float = 50.0
 
+var muzzle_end: Spatial
+
 enum WeaponType {
 	GUN,
 	MELEE
