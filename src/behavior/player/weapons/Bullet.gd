@@ -40,7 +40,8 @@ func _physics_process(delta):
 		var test = get_collider()
 
 		if test.has_method("hit"):
-			test.hit()
+			test.hit(_damage)
+			self.queue_free()
 		else: # test for wall penetration
 			pass
 	_lifetime -= delta
