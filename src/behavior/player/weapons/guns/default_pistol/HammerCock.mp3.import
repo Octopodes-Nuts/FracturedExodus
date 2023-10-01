@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/HammerCock.mp3-8cae1c7c4b67e6b5bd09f481ac7b96eb.mp3str"
+
+[deps]
+
+source_file="res://behavior/player/weapons/guns/default_pistol/HammerCock.mp3"
+dest_files=[ "res://.import/HammerCock.mp3-8cae1c7c4b67e6b5bd09f481ac7b96eb.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

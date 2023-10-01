@@ -3,12 +3,14 @@ extends Weapon
 class_name Gun
 
 var audio_player: AudioStreamPlayer = AudioStreamPlayer.new()
+var bolt_pull_stream: AudioStreamPlayer = AudioStreamPlayer.new()
 
 onready var Global = get_node('/root/Global')
 onready var Types = get_node('/root/Types')
 
 export var model: Mesh
 var fire_sound: AudioStreamMP3
+var bolt_pull_sound: AudioStreamMP3
 export var ads_animation: String = "none"
 export var fire_animation: String = "none"
 export var cock_animation: String = "none"
@@ -25,6 +27,7 @@ var current_cycle: float = 0.0
 func _ready():
 	# set up envrionment
 	self.add_child(audio_player)
+	self.add_child(bolt_pull_stream)
 	type = WeaponType.GUN
 	
 
@@ -43,7 +46,9 @@ func _use():
 	current_cycle = cycle_time
 
 	audio_player.stream = fire_sound
+	bolt_pull_stream.stream = bolt_pull_sound
 	audio_player.play()
+	bolt_pull_stream.play()
 
 	# spawn a bullet
 	var bullet = Bullet.new()
