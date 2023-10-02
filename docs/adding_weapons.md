@@ -31,9 +31,9 @@ After this script is created, drag your script onto the static body created in t
 ## 3. Registering your weapon
 
 Your weapon can be registered in the weapon_register.gd script. Simply add a new elecment to the dictionary for the type of weapon you have added in the following format:
-
+```
 "YourGunName": load("path/to/your/gun/scene.tscn")
-
+```
 Congratulations! Your gun has been registered.
 
 ## 4. Staging
