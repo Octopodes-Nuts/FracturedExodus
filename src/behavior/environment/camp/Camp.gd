@@ -22,7 +22,8 @@ export var max_radius: float
 # Placeholder for camp behavior
 func _ready():
 	# define random number of fractured
-	number_fractured = int(rand_range(1, max_fractured))
+	randomize()
+	number_fractured = int(rand_range(1, max_fractured + 1))
 	# mint random number of fractured
 	for ai in range(number_fractured):
 		fractured.append(ai_load_path.instance())
@@ -32,5 +33,3 @@ func _ready():
 		# future proof, make sure foot is on the ground in hilly areas
 		# fractured also cannot spawn inside eachother
 		fractured[ai].home = self
-		pass
-	pass # Replace with function body.
