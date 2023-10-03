@@ -1,11 +1,30 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://behavior/environment/camp/Camp.gd" type="Script" id=1]
+[ext_resource path="res://debug/materials/debug_red.tres" type="Material" id=2]
 
 [sub_resource type="SphereShape" id=1]
+
+[sub_resource type="PrismMesh" id=2]
+
+[sub_resource type="BoxShape" id=3]
 
 [node name="camp" type="Area"]
 script = ExtResource( 1 )
 
 [node name="collision_shape" type="CollisionShape" parent="."]
+transform = Transform( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )
 shape = SubResource( 1 )
+
+[node name="main_camp" type="StaticBody" parent="."]
+transform = Transform( 2, 0, 0, 0, 1.5, 0, 0, 0, 2, 0, 0, 0 )
+
+[node name="mesh" type="MeshInstance" parent="main_camp"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+mesh = SubResource( 2 )
+skeleton = NodePath("../..")
+material/0 = ExtResource( 2 )
+
+[node name="collision" type="CollisionShape" parent="main_camp"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+shape = SubResource( 3 )

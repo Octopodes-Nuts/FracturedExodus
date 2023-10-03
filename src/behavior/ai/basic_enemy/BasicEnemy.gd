@@ -7,6 +7,8 @@ export var gravity = 20.0
 var gravity_vec: Vector3
 var movement: Vector3 = Vector3()
 
+var home: Area
+
 func _ready():
 	pass # Replace with function body.
 
