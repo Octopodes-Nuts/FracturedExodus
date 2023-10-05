@@ -97,6 +97,11 @@ func _process(delta):
 	else:
 		_undo_ads(delta)
 
+	if Input.is_action_just_pressed("ads"):
+		active_weapon.ads = true
+	if Input.is_action_just_released("ads"):
+		active_weapon.ads = false
+
 func swap_weapon(weapon: Weapon):
 	if active_weapon != weapon:
 		head.remove_child(active_weapon)

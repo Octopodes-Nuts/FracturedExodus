@@ -16,6 +16,7 @@ cycle_time = 0.4
 bullet_damage = 55.0
 bullet_speed = 250.0
 bullet_lifetime = 4.0
+bullet_spread = 0.056
 
 [node name="collision" type="CollisionShape" parent="."]
 transform = Transform( 0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.3, 0, 0, 0 )

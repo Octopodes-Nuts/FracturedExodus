@@ -19,12 +19,21 @@ func set_properties(
 		damage: float,
 		angle: Vector3,
 		lifetime: float,
-		parent: Spatial):
+		parent: Spatial,
+		ads: bool = false,
+		spread: float = 0.0):
 	parent.add_child(self)
 	_speed = speed
 	global_transform.origin = origin
 	_damage = damage
 	global_rotation = angle
+	if not ads:
+		randomize()
+		global_rotation += Vector3(
+			rand_range(0, spread),
+			rand_range(0, spread),
+			rand_range(0, spread)
+		)
 	_lifetime = lifetime
 	set_cast_to(Vector3.FORWARD * 10)
 	set_norm_ray()

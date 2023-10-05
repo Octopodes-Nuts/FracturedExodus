@@ -21,6 +21,7 @@ export var cycle_time: float = 0.7
 export var bullet_damage: float
 export var bullet_speed: float
 export var bullet_lifetime: float
+export var bullet_spread: float # the hipfire spread for this gun
 
 var current_cycle: float = 0.0
 
@@ -58,6 +59,8 @@ func _use():
 		bullet_damage,
 		muzzle_end.global_rotation,
 		bullet_lifetime,
-		Global.map_root
+		Global.map_root,
+		ads,
+		bullet_spread
 	)
 	# hand the bullet to the scene as a top level child
