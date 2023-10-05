@@ -14,6 +14,7 @@ ads_position = Vector3( 0, 1.015, -1.344 )
 bullet_damage = 75.0
 bullet_speed = 400.0
 bullet_lifetime = 4.0
+bullet_spread = 0.04
 
 [node name="collision" type="CollisionShape" parent="."]
 transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.7, 0, 0, 0 )

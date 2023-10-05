@@ -33,6 +33,14 @@ directional_shadow_max_distance = 2513.1
 
 [node name="player_body" parent="." instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.02465, 3.54708, 0 )
+ACCEL = null
+SPRINT_ACCEL = null
+DEACCEL = null
+mouse_sensitivity = null
+gravity = null
+step_sound = null
+step_volume = null
+FULL_HEALTH = null
 
 [node name="hud" parent="player_body" instance=ExtResource( 5 )]
 
