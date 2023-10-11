@@ -8,7 +8,7 @@ onready var Settings = get_node('/root/Settings')
 onready var Local = get_node('/root/Local')
 
 onready var escape_menu = preload(
-	'res://ui/escape_menu/EscapeMenu.tscn').instance()
+	'res://debug/ui/debug_escape_menu/DebugEscapeMenu.tscn').instance()
 
 export var MAX_SPEED: float = 6.0
 export var MAX_SPRINT: float = 12.0
