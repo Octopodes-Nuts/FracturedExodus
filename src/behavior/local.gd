@@ -4,6 +4,7 @@ extends Node
 
 # player ID, obtained from server
 var player_id: int
+var player: KinematicBody
 var HUD: Control
 
 
