@@ -5,9 +5,10 @@ class_name DefaultController
 
 onready var WeaponRegister = get_node('/root/WeaponRegister')
 onready var Settings = get_node('/root/Settings')
+onready var Local = get_node('/root/Local')
 
 onready var escape_menu = preload(
-	'res://ui/escape_menu/EscapeMenu.tscn').instance()
+	'res://debug/ui/debug_escape_menu/DebugEscapeMenu.tscn').instance()
 
 export var MAX_SPEED: float = 6.0
 export var MAX_SPRINT: float = 12.0
@@ -58,6 +59,7 @@ func _ready():
 	# end default character
 	swap_weapon(character.primary_weapon)
 	# load from character 
+	Local.player = self
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
