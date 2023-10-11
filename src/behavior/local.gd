@@ -6,7 +6,7 @@ extends Node
 var player_id: int
 var player: KinematicBody
 var HUD: Control
-
+var input_active = true
 
 func _ready():
 	_get_player_attributes()

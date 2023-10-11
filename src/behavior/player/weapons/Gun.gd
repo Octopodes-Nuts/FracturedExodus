@@ -7,6 +7,7 @@ var bolt_pull_stream: AudioStreamPlayer = AudioStreamPlayer.new()
 
 onready var Global = get_node('/root/Global')
 onready var Types = get_node('/root/Types')
+onready var Local = get_node('/root/Local')
 
 export var model: Mesh
 var fire_sound: AudioStreamMP3
@@ -38,11 +39,12 @@ func _process(delta):
 	
 	if current_cycle <= 0 and\
 		Input.is_action_just_pressed('fire') and\
-		active:
+		active and Local.input_active:
 		_use()
 	
 
 func _use():
+	print('used')
 	player.play(fire_animation)
 	current_cycle = cycle_time
 

@@ -47,7 +47,6 @@ onready var ground_check_4 = $ground_check_4
 
 
 var character: Character
-var escape_menu_shown: bool = false
 
 #This should be changed to be more global
 func _ready():
@@ -87,36 +86,37 @@ func ground_check():
 func _process(delta):
 	# set cycle time ? so that you can't just keep
 	# shifting weapons but maybe not
-	if not escape_menu_shown:
-
-		if Input.is_action_just_pressed("primary_weapon"):
-			swap_weapon(character.primary_weapon)
-			# remove all other weapons
-			# play animation
-		elif Input.is_action_just_pressed("secondary_weapon"):
-			swap_weapon(character.secondary_weapon)
-			# play animtation
-		elif Input.is_action_just_pressed("tertiary_weapon"):
-			# test to see if current class allows a tertiary weapon
-			swap_weapon(character.tertiary_weapon)
-
-		if Input.is_action_pressed("ads"):
-			_ads(delta)
-		else:
-			_undo_ads(delta)
-
-		if Input.is_action_just_pressed("ads"):
-			active_weapon.ads = true
-		if Input.is_action_just_released("ads"):
-			active_weapon.ads = false
-
+	if Input.is_action_just_pressed("primary_weapon") and\
+			Local.input_active:
+		swap_weapon(character.primary_weapon)
+		# remove all other weapons
+		# play animation
+	elif Input.is_action_just_pressed("secondary_weapon") and\
+			Local.input_active:
+		swap_weapon(character.secondary_weapon)
+		# play animtation
+	elif Input.is_action_just_pressed("tertiary_weapon") and\
+			Local.input_active:
+		# test to see if current class allows a tertiary weapon
+		swap_weapon(character.tertiary_weapon)
+	if Input.is_action_pressed("ads") and\
+			Local.input_active:
+		_ads(delta)
+	else:
+		_undo_ads(delta)
+	if Input.is_action_just_pressed("ads") and\
+			Local.input_active:
+		active_weapon.ads = true
+	if Input.is_action_just_released("ads") and\
+			Local.input_active:
+		active_weapon.ads = false
 	if Input.is_action_just_pressed("exit"):
-		if not escape_menu_shown:
-			escape_menu_shown = true
+		if Local.input_active:
+			Local.input_active = false
 			self.add_child(escape_menu)
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		else:
-			escape_menu_shown = false
+			Local.input_active = true
 			self.remove_child(escape_menu)
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -136,62 +136,65 @@ func swap_weapon(weapon: Weapon):
 
 
 func _input(event):
-	if not escape_menu_shown:
+	if Local.input_active:
 		if event is InputEventMouseMotion:
 			rotate_y(deg2rad(-event.relative.x * mouse_sensitivity))
 			head.rotate_x(deg2rad((-event.relative.y * mouse_sensitivity)))
 			head.rotation.x = clamp(head.rotation.x, deg2rad(-89), deg2rad(89))
 
 func _physics_process(delta):
+	var speed = 0.0
+	var accel = DEACCEL
+	var forward = false
 
-	if not escape_menu_shown:
-		var speed = 0.0
-		var accel = DEACCEL
-		var forward = false
+	direction = Vector3()
 
-		direction = Vector3()
-
-		if ground_check():
-			full_contact = true
-		else:
-			full_contact = false
+	if ground_check():
+		full_contact = true
+	else:
+		full_contact = false
 		
-		if not is_on_floor():
-			gravity_vec += Vector3.DOWN * gravity * delta
-		elif is_on_floor() and full_contact:
-			gravity_vec = -get_floor_normal() * gravity
-		else:
-			gravity_vec = -get_floor_normal()
+	if not is_on_floor():
+		gravity_vec += Vector3.DOWN * gravity * delta
+	elif is_on_floor() and full_contact:
+		gravity_vec = -get_floor_normal() * gravity
+	else:
+		gravity_vec = -get_floor_normal()
 
-		if Input.is_action_just_pressed("jump") and is_on_floor()\
-			and full_contact:
-			gravity_vec = Vector3.UP * jump
+	if Input.is_action_just_pressed("jump") and is_on_floor()\
+		and full_contact and Local.input_active:
+		gravity_vec = Vector3.UP * jump
 
-		if Input.is_action_pressed("move_forward"):
-			direction -= transform.basis.z
-			forward = true
-		if Input.is_action_pressed("move_backward"):
-			forward = false
-			direction += transform.basis.z
-		if Input.is_action_pressed("move_left"):
-			direction -= transform.basis.x
-		if Input.is_action_pressed("move_right"):
-			direction += transform.basis.x
+	if Input.is_action_pressed("move_forward") and\
+			Local.input_active:
+		direction -= transform.basis.z
+		forward = true
+	if Input.is_action_pressed("move_backward") and\
+			Local.input_active:
+		forward = false
+		direction += transform.basis.z
+	if Input.is_action_pressed("move_left") and\
+			Local.input_active:
+		direction -= transform.basis.x
+	if Input.is_action_pressed("move_right") and\
+			Local.input_active:
+		direction += transform.basis.x
 		
-		if direction != Vector3.ZERO:
-			if Input.is_action_pressed("sprint") and forward:
-				speed = MAX_SPRINT
-				accel = SPRINT_ACCEL
-			else:
-				speed = MAX_SPEED
-				accel = ACCEL
+	if direction != Vector3.ZERO:
+		if Input.is_action_pressed("sprint") and forward and\
+				Local.input_active:
+			speed = MAX_SPRINT
+			accel = SPRINT_ACCEL
+		else:
+			speed = MAX_SPEED
+			accel = ACCEL
 
-		direction = direction.normalized()
-		horizantal_velocity = horizantal_velocity.linear_interpolate(
-			direction * speed, accel * delta)
-		movement.z = horizantal_velocity.z + gravity_vec.z
-		movement.x = horizantal_velocity.x + gravity_vec.x
-		movement.y = gravity_vec.y
+	direction = direction.normalized()
+	horizantal_velocity = horizantal_velocity.linear_interpolate(
+		direction * speed, accel * delta)
+	movement.z = horizantal_velocity.z + gravity_vec.z
+	movement.x = horizantal_velocity.x + gravity_vec.x
+	movement.y = gravity_vec.y
 	
-		#warning-ignore:return_value_discarded
-		move_and_slide(movement, Vector3.UP)
+	#warning-ignore:return_value_discarded
+	move_and_slide(movement, Vector3.UP)
