@@ -41,4 +41,5 @@ func load_script(class_scene):
 	Global.map_root.add_child(new_player)
 	new_player.transform.origin = Vector3(0, 2, 0)
 	Local.player = new_player
-	get_parent().remove_child(self)
+	queue_free()
+	get_parent().queue_free()
