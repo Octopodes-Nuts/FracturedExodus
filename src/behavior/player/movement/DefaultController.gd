@@ -134,9 +134,6 @@ func swap_weapon(weapon: Weapon):
 		weapon.transform.origin = \
 		weapon.default_position - head.transform.origin
 
-
-
-
 func _input(event):
 	if Local.input_active:
 		if event is InputEventMouseMotion:
