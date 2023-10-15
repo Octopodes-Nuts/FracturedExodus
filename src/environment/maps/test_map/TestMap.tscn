@@ -1,10 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://debug/materials/debug_tile_0.tres" type="Material" id=1]
 [ext_resource path="res://behavior/player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://behavior/environment/camp/Camp.tscn" type="PackedScene" id=3]
 [ext_resource path="res://behavior/environment/map/Map.gd" type="Script" id=4]
-[ext_resource path="res://ui/hud/Hud.tscn" type="PackedScene" id=5]
 [ext_resource path="res://behavior/ai/basic_enemy/BasicEnemy.tscn" type="PackedScene" id=6]
 [ext_resource path="res://debug/debug_scenes/target_0.tscn" type="PackedScene" id=7]
 
@@ -34,8 +33,6 @@ directional_shadow_max_distance = 2513.1
 
 [node name="player_body" parent="." instance=ExtResource( 2 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.02465, 3.54708, 0 )
-
-[node name="hud" parent="player_body" instance=ExtResource( 5 )]
 
 [node name="obsticles" type="Node" parent="."]
 

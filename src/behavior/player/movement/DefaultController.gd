@@ -6,6 +6,7 @@ class_name DefaultController
 onready var WeaponRegister = get_node('/root/WeaponRegister')
 onready var Settings = get_node('/root/Settings')
 onready var Local = get_node('/root/Local')
+onready var HUD = preload('res://ui/hud/Hud.tscn').instance()
 
 onready var escape_menu = preload(
 	'res://debug/ui/debug_escape_menu/DebugEscapeMenu.tscn').instance()
@@ -50,6 +51,7 @@ var character: Character
 
 #This should be changed to be more global
 func _ready():
+	add_child(HUD)
 	# set up default character
 	character = Character.new()
 	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instance()
