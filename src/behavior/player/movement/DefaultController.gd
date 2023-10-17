@@ -35,6 +35,7 @@ var direction = Vector3()
 var horizantal_velocity = Vector3()
 var movement = Vector3()
 var gravity_vec = Vector3()
+var current_interaction: Interactable
 
 var active_weapon: Weapon = Weapon.new()
 
@@ -197,3 +198,16 @@ func _physics_process(delta):
 	
 	#warning-ignore:return_value_discarded
 	move_and_slide(movement, Vector3.UP)
+
+func register_interaction(interactable: Interactable):
+	current_interaction = interactable
+	if interactable.auto_interact:
+		interactable._interact(self)
+	print(interactable.name)
+
+func remove_interaction(interactable: Interactable):
+	if current_interaction == interactable:
+		current_interaction = Interactable.new()
+
+func extract():
+	print('extract successful')
