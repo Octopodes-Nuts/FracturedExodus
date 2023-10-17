@@ -9,6 +9,10 @@ onready var Global = get_node('/root/Global')
 onready var Types = get_node('/root/Types')
 onready var Local = get_node('/root/Local')
 
+export var clip_size: int = 4
+var current_clip: int
+export var ammo_pool: int = 10
+
 export var model: Mesh
 var fire_sound: AudioStreamMP3
 var bolt_pull_sound: AudioStreamMP3
@@ -28,6 +32,7 @@ var current_cycle: float = 0.0
 
 func _ready():
 	# set up envrionment
+	current_clip = clip_size
 	self.add_child(audio_player)
 	self.add_child(bolt_pull_stream)
 	type = WeaponType.GUN
@@ -42,27 +47,42 @@ func _process(delta):
 		active and Local.input_active:
 		_use()
 	
+	if Input.is_action_just_pressed('reload') and\
+		active and Local.input_active:
+		_reload()
+	
 
 func _use():
-	print('used')
-	player.play(fire_animation)
-	current_cycle = cycle_time
+	if current_clip > 0:
 
-	audio_player.stream = fire_sound
-	bolt_pull_stream.stream = bolt_pull_sound
-	audio_player.play()
-	bolt_pull_stream.play()
+		player.play(fire_animation)
+		current_cycle = cycle_time
 
-	# spawn a bullet
-	var bullet = Bullet.new()
-	bullet.set_properties(
-		bullet_speed,
-		muzzle_end.global_transform.origin,
-		bullet_damage,
-		muzzle_end.global_rotation,
-		bullet_lifetime,
-		Global.map_root,
-		ads,
-		bullet_spread
-	)
-	# hand the bullet to the scene as a top level child
+		audio_player.stream = fire_sound
+		bolt_pull_stream.stream = bolt_pull_sound
+		audio_player.play()
+		bolt_pull_stream.play()
+
+		# spawn a bullet
+		var bullet = Bullet.new()
+		bullet.set_properties(
+			bullet_speed,
+			muzzle_end.global_transform.origin,
+			bullet_damage,
+			muzzle_end.global_rotation,
+			bullet_lifetime,
+			Global.map_root,
+			ads,
+			bullet_spread
+		)
+		current_clip -= 1
+
+	else:
+		# player play weapon click
+		pass
+
+func _reload():
+	player.play(reload_animation)
+	# increase weapon inside animation, but that is too 
+	# involved for this point
+	current_clip = clip_size

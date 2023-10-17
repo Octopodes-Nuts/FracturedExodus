@@ -26,7 +26,8 @@ var actions = [
 	"primary_weapon",
 	"secondary_weapon",
 	"tertiary_weapon",
-	"heal"
+	"heal",
+	"reload"
 ]
 
 # Key Bindings
@@ -62,6 +63,7 @@ func _load_bindings():
 	InputMap.action_add_event("secondary_weapon", _link_key(KEY_2))
 	InputMap.action_add_event("tertiary_weapon", _link_key(KEY_3))
 	InputMap.action_add_event("heal", _link_key(KEY_4))
+	InputMap.action_add_event("reload", _link_key(KEY_R))
 
 # For now, all events are set to defaults
 
