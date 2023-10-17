@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://debug/materials/debug_tile_0.tres" type="Material" id=1]
 [ext_resource path="res://behavior/player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://behavior/environment/camp/Camp.tscn" type="PackedScene" id=3]
 [ext_resource path="res://behavior/environment/map/Map.gd" type="Script" id=4]
+[ext_resource path="res://behavior/environment/extract/Extract.tscn" type="PackedScene" id=5]
 [ext_resource path="res://behavior/ai/basic_enemy/BasicEnemy.tscn" type="PackedScene" id=6]
 [ext_resource path="res://debug/debug_scenes/target_0.tscn" type="PackedScene" id=7]
 
@@ -44,3 +45,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.98574, 1.00096, 3.71535 )
 
 [node name="target" parent="." instance=ExtResource( 7 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.7816, 1.95305, -1.33422 )
+
+[node name="extract" parent="." instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -79.442, 1.90102, 12.6889 )
