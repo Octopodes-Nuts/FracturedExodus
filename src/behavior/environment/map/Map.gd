@@ -1,7 +1,7 @@
 
-extends Spatial
+extends Node3D
 
-onready var Global = get_node('/root/Global')
+@onready var Global = get_node('/root/Global')
 
 # When tree is entered, set as the map root
 func _ready():

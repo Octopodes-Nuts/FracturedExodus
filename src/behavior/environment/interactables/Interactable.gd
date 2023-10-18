@@ -1,10 +1,8 @@
-extends Area
+extends Area3D
 
 class_name Interactable
 
-onready var Global = get_node('/root/Global')
-
-onready var interact_zone: Area = $area # specifies the area where interaction is possible
+@onready var Global = get_node('/root/Global')
 
 var interactable: bool = false
 var auto_interact: bool = false

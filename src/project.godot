@@ -6,94 +6,13 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
-
-_global_script_classes=[ {
-"base": "Node",
-"class": "Account",
-"language": "GDScript",
-"path": "res://behavior/account/Account.gd"
-}, {
-"base": "RayCast",
-"class": "Bullet",
-"language": "GDScript",
-"path": "res://behavior/player/weapons/Bullet.gd"
-}, {
-"base": "Node",
-"class": "Character",
-"language": "GDScript",
-"path": "res://behavior/account/Character.gd"
-}, {
-"base": "KinematicBody",
-"class": "DefaultController",
-"language": "GDScript",
-"path": "res://behavior/player/movement/DefaultController.gd"
-}, {
-"base": "Gun",
-"class": "DefaultGun",
-"language": "GDScript",
-"path": "res://behavior/player/weapons/guns/default_gun/DefaultGun.gd"
-}, {
-"base": "Gun",
-"class": "DefaultPistol",
-"language": "GDScript",
-"path": "res://behavior/player/weapons/guns/default_pistol/DefaultPistol.gd"
-}, {
-"base": "Node",
-"class": "Equipment",
-"language": "GDScript",
-"path": "res://behavior/player/Equipment.gd"
-}, {
-"base": "Reference",
-"class": "Factions",
-"language": "GDScript",
-"path": "res://behavior/factions.gd"
-}, {
-"base": "Weapon",
-"class": "Gun",
-"language": "GDScript",
-"path": "res://behavior/player/weapons/Gun.gd"
-}, {
-"base": "Area",
-"class": "Interactable",
-"language": "GDScript",
-"path": "res://behavior/environment/interactables/Interactable.gd"
-}, {
-"base": "Weapon",
-"class": "Melee",
-"language": "GDScript",
-"path": "res://behavior/player/weapons/Melee.gd"
-}, {
-"base": "Spatial",
-"class": "ScannerLight",
-"language": "GDScript",
-"path": "res://behavior/player/scanner/ScannerLight.gd"
-}, {
-"base": "Spatial",
-"class": "Weapon",
-"language": "GDScript",
-"path": "res://behavior/player/weapons/Weapon.gd"
-} ]
-_global_script_class_icons={
-"Account": "",
-"Bullet": "",
-"Character": "",
-"DefaultController": "",
-"DefaultGun": "",
-"DefaultPistol": "",
-"Equipment": "",
-"Factions": "",
-"Gun": "",
-"Interactable": "",
-"Melee": "",
-"ScannerLight": "",
-"Weapon": ""
-}
+config_version=5
 
 [application]
 
 config/name="FracturedExodus"
 run/main_scene="res://environment/maps/test_map/TestMap.tscn"
+config/features=PackedStringArray("4.1")
 config/icon="res://icon.png"
 
 [autoload]
@@ -108,8 +27,8 @@ ClassRegister="*res://behavior/class_register.gd"
 
 [display]
 
-window/size/width=1920
-window/size/height=1080
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 window/size/resizable=false
 window/size/fullscreen=true
 
@@ -123,5 +42,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+environment/defaults/default_environment="res://default_env.tres"
 quality/shadows/filter_mode=2
-environment/default_environment="res://default_env.tres"

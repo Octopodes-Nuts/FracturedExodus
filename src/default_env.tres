@@ -1,10 +1,9 @@
-[gd_resource type="Environment" load_steps=2 format=2]
+[gd_resource type="Environment" load_steps=2 format=3 uid="uid://bpsr8wpuo8pbl"]
 
-[sub_resource type="ProceduralSky" id=1]
+[sub_resource type="Sky" id="1"]
 
 [resource]
 background_mode = 2
-background_sky = SubResource( 1 )
-ambient_light_color = Color( 0.207843, 0.188235, 0.188235, 1 )
+sky = SubResource("1")
+ambient_light_color = Color(0.207843, 0.188235, 0.188235, 1)
 fog_enabled = true
-fog_depth_enabled = false

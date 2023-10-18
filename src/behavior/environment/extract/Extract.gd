@@ -1,8 +1,8 @@
 extends Interactable
 
-export var faction: int
+@export var faction: int
 
-export var EXTRACT_TIME: float = 5.0
+@export var EXTRACT_TIME: float = 5.0
 var current_extract_time: float = 0.0
 
 var extracts: Dictionary = {}

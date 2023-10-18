@@ -1,8 +1,8 @@
 extends Control
 
-onready var ClassRegister = get_node('/root/ClassRegister')
-onready var Global = get_node('/root/Global')
-onready var Local = get_node('/root/Local')
+@onready var ClassRegister = get_node('/root/ClassRegister')
+@onready var Global = get_node('/root/Global')
+@onready var Local = get_node('/root/Local')
 var entente_classes: Dictionary
 var empire_classes: Dictionary
 var free_agent_classes: Dictionary
@@ -21,23 +21,23 @@ func _ready():
 # load actions
 
 func generate_buttons(classes: Dictionary, row: int):
-	var position = Vector2(0, row * 50)
+	var _position = Vector2(0, row * 50)
 	for key in classes.keys():
 		var button = Button.new()
 		button.text = key
 		# do this
 		button.set_size(Vector2(80, 35))
-		button.set_position(position)
+		button.set_position(_position)
 		# attach load_script with value to button click signal
-		button.connect('button_down', self, 'load_script', [classes[key]])
+		button.connect('button_down', Callable(self, 'load_script').bind(classes[key]))
 		self.add_child(button)
-		position += Vector2(100, 0)
+		_position += Vector2(100, 0)
 		
 
 func load_script(class_scene):
 	# set player class
 	Local.player.queue_free()
-	var new_player =  class_scene.instance()
+	var new_player =  class_scene.instantiate()
 	Global.map_root.add_child(new_player)
 	new_player.transform.origin = Vector3(0, 2, 0)
 	Local.player = new_player

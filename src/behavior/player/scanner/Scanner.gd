@@ -1,7 +1,7 @@
-extends Spatial
+extends Node3D
 
-onready var Global = get_node("/root/Global")
-onready var notifier: ScannerLight = $notifier
+@onready var Global = get_node("/root/Global")
+@onready var notifier: ScannerLight = $notifier
 
 var detected: bool = false
 
@@ -17,7 +17,7 @@ func _detect():
 		var x = site.transform.origin.x - transform.origin.x
 		var z = site.transform.origin.z - transform.origin.z
 
-		var angle = rad2deg(atan(x / z))
+		var angle = rad_to_deg(atan(x / z))
 
 		if x < 0:
 			if z < 0:

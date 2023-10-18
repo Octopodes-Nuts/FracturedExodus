@@ -1,32 +1,32 @@
 #TODO: Implement Crouch
-extends KinematicBody
+extends CharacterBody3D
 
 class_name DefaultController
 
-onready var WeaponRegister = get_node('/root/WeaponRegister')
-onready var Settings = get_node('/root/Settings')
-onready var Local = get_node('/root/Local')
-onready var HUD = preload('res://ui/hud/Hud.tscn').instance()
+@onready var WeaponRegister = get_node('/root/WeaponRegister')
+@onready var Settings = get_node('/root/Settings')
+@onready var Local = get_node('/root/Local')
+@onready var HUD = preload('res://ui/hud/Hud.tscn').instantiate()
 
-onready var escape_menu = preload(
-	'res://debug/ui/debug_escape_menu/DebugEscapeMenu.tscn').instance()
+@onready var escape_menu = preload(
+	'res://debug/ui/debug_escape_menu/DebugEscapeMenu.tscn').instantiate()
 
-export var MAX_SPEED: float = 6.0
-export var MAX_SPRINT: float = 12.0
+@export var MAX_SPEED: float = 6.0
+@export var MAX_SPRINT: float = 12.0
 
-export var ACCEL: float = 2.0
-export var SPRINT_ACCEL: float = 10.0
+@export var ACCEL: float = 2.0
+@export var SPRINT_ACCEL: float = 10.0
 
-export var DEACCEL: float = 10.0
+@export var DEACCEL: float = 10.0
 
-export var mouse_sensitivity: float = 0.03
-export var gravity: float = 20.0
-export var jump: float = 10.0
+@export var mouse_sensitivity: float = 0.03
+@export var gravity: float = 20.0
+@export var jump: float = 10.0
 
-export var step_sound: String
-export var step_volume: float
+@export var step_sound: String
+@export var step_volume: float
 
-export var FULL_HEALTH: float = 100.0
+@export var FULL_HEALTH: float = 100.0
 
 var full_contact = false
 var health = FULL_HEALTH
@@ -34,18 +34,18 @@ var health = FULL_HEALTH
 var direction = Vector3()
 var horizantal_velocity = Vector3()
 var movement = Vector3()
-var gravity_vec = Vector3()
+var gravity_direction = Vector3()
 var current_interaction: Interactable
 
 var active_weapon: Weapon = Weapon.new()
 
-onready var head = $camera_head
-onready var gun_location = $camera_head/gun_location
-onready var ground_check_0 = $ground_check_0
-onready var ground_check_1 = $ground_check_1
-onready var ground_check_2 = $ground_check_2
-onready var ground_check_3 = $ground_check_3
-onready var ground_check_4 = $ground_check_4
+@onready var head = $camera_head
+@onready var gun_location = $camera_head/gun_location
+@onready var ground_check_0 = $ground_check_0
+@onready var ground_check_1 = $ground_check_1
+@onready var ground_check_2 = $ground_check_2
+@onready var ground_check_3 = $ground_check_3
+@onready var ground_check_4 = $ground_check_4
 
 
 var character: Character
@@ -55,8 +55,8 @@ func _ready():
 	add_child(HUD)
 	# set up default character
 	character = Character.new()
-	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instance()
-	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instance()
+	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
+	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
 	# end default character
 	swap_weapon(character.primary_weapon)
@@ -67,15 +67,15 @@ func _ready():
 
 func _ads(delta):
 	active_weapon.transform.origin = active_weapon.transform.origin.\
-		linear_interpolate((active_weapon.ads_position - head.transform.origin),
+		lerp((active_weapon.ads_position - head.transform.origin),
 			active_weapon.ADS_LERP * delta)
 	head.fov = lerp(head.fov, active_weapon.ads_fov, active_weapon.ADS_LERP * delta)
 
 func _undo_ads(delta):
 	active_weapon.transform.origin = active_weapon.transform.origin.\
-		linear_interpolate((active_weapon.default_position - head.transform.origin),
+		lerp((active_weapon.default_position - head.transform.origin),
 			active_weapon.ADS_LERP * delta)
-	head.fov = lerp(head.fov, Settings.FOV, active_weapon.ADS_LERP * delta)
+	head.fov = lerp(head.fov, float(Settings.FOV), active_weapon.ADS_LERP * delta)
 
 
 func ground_check():
@@ -125,7 +125,8 @@ func _process(delta):
 
 func swap_weapon(weapon: Weapon):
 	if active_weapon != weapon:
-		head.remove_child(active_weapon)
+		if active_weapon.get_parent() == head:
+			head.remove_child(active_weapon)
 		# play stow animation
 		active_weapon = weapon
 		# play raise animation
@@ -138,9 +139,9 @@ func swap_weapon(weapon: Weapon):
 func _input(event):
 	if Local.input_active:
 		if event is InputEventMouseMotion:
-			rotate_y(deg2rad(-event.relative.x * mouse_sensitivity))
-			head.rotate_x(deg2rad((-event.relative.y * mouse_sensitivity)))
-			head.rotation.x = clamp(head.rotation.x, deg2rad(-89), deg2rad(89))
+			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity))
+			head.rotate_x(deg_to_rad((-event.relative.y * mouse_sensitivity)))
+			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
 	var speed = 0.0
@@ -155,15 +156,15 @@ func _physics_process(delta):
 		full_contact = false
 		
 	if not is_on_floor():
-		gravity_vec += Vector3.DOWN * gravity * delta
+		gravity_direction += Vector3.DOWN * gravity * delta
 	elif is_on_floor() and full_contact:
-		gravity_vec = -get_floor_normal() * gravity
+		gravity_direction = -get_floor_normal() * gravity
 	else:
-		gravity_vec = -get_floor_normal()
+		gravity_direction = -get_floor_normal()
 
 	if Input.is_action_just_pressed("jump") and is_on_floor()\
 		and full_contact and Local.input_active:
-		gravity_vec = Vector3.UP * jump
+		gravity_direction = Vector3.UP * jump
 
 	if Input.is_action_pressed("move_forward") and\
 			Local.input_active:
@@ -190,14 +191,16 @@ func _physics_process(delta):
 			accel = ACCEL
 
 	direction = direction.normalized()
-	horizantal_velocity = horizantal_velocity.linear_interpolate(
+	horizantal_velocity = horizantal_velocity.lerp(
 		direction * speed, accel * delta)
-	movement.z = horizantal_velocity.z + gravity_vec.z
-	movement.x = horizantal_velocity.x + gravity_vec.x
-	movement.y = gravity_vec.y
+	movement.z = horizantal_velocity.z + gravity_direction.z
+	movement.x = horizantal_velocity.x + gravity_direction.x
+	movement.y = gravity_direction.y
 	
 	#warning-ignore:return_value_discarded
-	move_and_slide(movement, Vector3.UP)
+	set_velocity(movement)
+	set_up_direction(Vector3.UP)
+	move_and_slide()
 
 func register_interaction(interactable: Interactable):
 	current_interaction = interactable

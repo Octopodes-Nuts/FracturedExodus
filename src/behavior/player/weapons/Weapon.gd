@@ -1,15 +1,15 @@
-extends Spatial
+extends Node3D
 
 # Class used as general interface
 
 class_name Weapon
 
-export var ADS_LERP: float = 20.0 # rate at which ADS occurs
-export var default_position : Vector3 = Vector3.ZERO
-export var ads_position : Vector3 = Vector3.ZERO
-export var ads_fov: float = 50.0
+@export var ADS_LERP: float = 20.0 # rate at which ADS occurs
+@export var default_position : Vector3 = Vector3.ZERO
+@export var ads_position : Vector3 = Vector3.ZERO
+@export var ads_fov: float = 50.0
 
-var muzzle_end: Spatial
+var muzzle_end: Node3D
 var ads: bool = false
 
 enum WeaponType {

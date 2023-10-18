@@ -1,7 +1,7 @@
 extends Control
 
 
-onready var Local = get_node('/root/Local')
+@onready var Local = get_node('/root/Local')
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
