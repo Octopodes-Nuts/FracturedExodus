@@ -12,7 +12,6 @@ var start_color: Material
 func _ready():
 	start_color = mesh.get_surface_override_material(0)
 
-
 func _process(delta):
 	if current_hit > 0.0:
 		current_hit -= delta

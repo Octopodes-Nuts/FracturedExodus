@@ -1,26 +1,22 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://d4dp1jiuyvvfd"]
 
-[ext_resource path="res://debug/materials/debug_red.tres" type="Material" id=1]
-[ext_resource path="res://behavior/ai/basic_enemy/BasicEnemy.gd" type="Script" id=2]
+[ext_resource type="Material" path="res://debug/materials/debug_red.tres" id="1"]
+[ext_resource type="Script" path="res://behavior/ai/basic_enemy/BasicEnemy.gd" id="2"]
 
-[sub_resource type="CapsuleMesh" id=1]
-material = ExtResource( 1 )
-radius = 0.5
-height = 2.0
+[sub_resource type="CapsuleMesh" id="1"]
+material = ExtResource("1")
 
-[sub_resource type="CapsuleShape3D" id=2]
-radius = 0.5
-height = 2.0
+[sub_resource type="CapsuleShape3D" id="2"]
 
 [node name="basic_enemy" type="CharacterBody3D"]
-script = ExtResource( 2 )
+script = ExtResource("2")
 
 [node name="enemy_mesh" type="MeshInstance3D" parent="."]
-transform = Transform3D( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
-mesh = SubResource( 1 )
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("1")
 
 [node name="enemy_collision" type="CollisionShape3D" parent="."]
-transform = Transform3D( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
-shape = SubResource( 2 )
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("2")
 
 [node name="enemy_ground_check" type="RayCast3D" parent="."]

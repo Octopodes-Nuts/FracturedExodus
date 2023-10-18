@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://ceruobdbatpjg" path="res://behavior/environment/camp/Camp.tscn" id="3"]
 [ext_resource type="Script" path="res://behavior/environment/map/Map.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://c0dtouqw086c3" path="res://behavior/environment/extract/Extract.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://behavior/ai/basic_enemy/BasicEnemy.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://d4dp1jiuyvvfd" path="res://behavior/ai/basic_enemy/BasicEnemy.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://tyrqdeshokos" path="res://debug/debug_scenes/target_0.tscn" id="7"]
 
 [sub_resource type="BoxShape3D" id="1"]
@@ -39,7 +39,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.02465, 3.54708, 0)
 [node name="obsticles" type="Node" parent="."]
 
 [node name="basic_enemy" parent="." instance=ExtResource("6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.9392, 3.58409, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6604, 3.58409, -1.19123)
 
 [node name="camp" parent="." instance=ExtResource("3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.98574, 0.437937, 3.71535)
