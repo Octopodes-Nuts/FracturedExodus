@@ -14,8 +14,8 @@ bullet_speed = 400.0
 bullet_lifetime = 4.0
 bullet_spread = 0.04
 ADS_LERP = 10.0
-default_position = Vector3(0.522, 0.471, -1.167)
-ads_position = Vector3(0, 1.015, -1.344)
+default_position = Vector3(0.522, -0.067, -1.167)
+ads_position = Vector3(0, 0.477, -1.344)
 
 [node name="collision" type="CollisionShape3D" parent="."]
 shape = SubResource("1")
