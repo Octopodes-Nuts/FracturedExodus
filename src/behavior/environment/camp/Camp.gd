@@ -1,4 +1,4 @@
-extends Area
+extends Area3D
 
 # Description of what a camp should do or be
 var ai_load_path = load('res://behavior/ai/basic_enemy/BasicEnemy.tscn')
@@ -11,11 +11,11 @@ var ai_load_path = load('res://behavior/ai/basic_enemy/BasicEnemy.tscn')
 # This should change in the future to harbor different kinds of AI
 # There may also be a need for camp types
 var number_fractured: int
-export var max_fractured: int = 5
+@export var max_fractured: int = 5
 var fractured: Array = []
 
-export var min_radius: float
-export var max_radius: float
+@export var min_radius: float
+@export var max_radius: float
 
 # Note: do not scale this node ever, it must always be set to (1,1,1)
 
@@ -23,10 +23,10 @@ export var max_radius: float
 func _ready():
 	# define random number of fractured
 	randomize()
-	number_fractured = int(rand_range(1, max_fractured + 1))
+	number_fractured = int(randf_range(1, max_fractured + 1))
 	# mint random number of fractured
 	for ai in range(number_fractured):
-		fractured.append(ai_load_path.instance())
+		fractured.append(ai_load_path.instantiate())
 		self.add_child(fractured[ai])
 		fractured[ai].transform.origin = Vector3(ai + 4, 2, ai + 4)
 		# set location to somewhere within the player radius

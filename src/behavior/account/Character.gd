@@ -35,7 +35,7 @@ func set_weapons_inactive():
 	secondary_weapon.active = false
 	tertiary_weapon.active = false
 
-func set_bullet_origin(spatial: Spatial):
+func set_bullet_origin(spatial: Node3D):
 	primary_weapon.muzzle_end = spatial
 	secondary_weapon.muzzle_end = spatial
 	tertiary_weapon.muzzle_end = spatial

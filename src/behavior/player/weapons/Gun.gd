@@ -2,31 +2,31 @@ extends Weapon
 
 class_name Gun
 
-var audio_player: AudioStreamPlayer = AudioStreamPlayer.new()
-var bolt_pull_stream: AudioStreamPlayer = AudioStreamPlayer.new()
+var audio_player: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
+var bolt_pull_stream: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 
-onready var Global = get_node('/root/Global')
-onready var Types = get_node('/root/Types')
-onready var Local = get_node('/root/Local')
+@onready var Global = get_node('/root/Global')
+@onready var Types = get_node('/root/Types')
+@onready var Local = get_node('/root/Local')
 
-export var clip_size: int = 4
+@export var clip_size: int = 4
 var current_clip: int
-export var ammo_pool: int = 10
+@export var ammo_pool: int = 10
 
-export var model: Mesh
+@export var model: Mesh
 var fire_sound: AudioStreamMP3
 var bolt_pull_sound: AudioStreamMP3
-export var ads_animation: String = "none"
-export var fire_animation: String = "none"
-export var cock_animation: String = "none"
-export var reload_animation: String = "none"
+@export var ads_animation: String = "none"
+@export var fire_animation: String = "none"
+@export var cock_animation: String = "none"
+@export var reload_animation: String = "none"
 var player: AnimationPlayer = AnimationPlayer.new()
-export var cycle_time: float = 0.7
+@export var cycle_time: float = 0.7
 
-export var bullet_damage: float
-export var bullet_speed: float
-export var bullet_lifetime: float
-export var bullet_spread: float # the hipfire spread for this gun
+@export var bullet_damage: float
+@export var bullet_speed: float
+@export var bullet_lifetime: float
+@export var bullet_spread: float # the hipfire spread for this gun
 
 var current_cycle: float = 0.0
 
@@ -36,7 +36,10 @@ func _ready():
 	self.add_child(audio_player)
 	self.add_child(bolt_pull_stream)
 	type = WeaponType.GUN
+	_local_ready()
 	
+func _local_ready():
+	pass
 
 func _process(delta):
 	if current_cycle > 0:

@@ -2,14 +2,18 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-path="res://.import/HammerCock.mp3-8cae1c7c4b67e6b5bd09f481ac7b96eb.mp3str"
+uid="uid://dcboiwv4ic0tg"
+path="res://.godot/imported/HammerCock.mp3-8cae1c7c4b67e6b5bd09f481ac7b96eb.mp3str"
 
 [deps]
 
 source_file="res://behavior/player/weapons/guns/default_pistol/HammerCock.mp3"
-dest_files=[ "res://.import/HammerCock.mp3-8cae1c7c4b67e6b5bd09f481ac7b96eb.mp3str" ]
+dest_files=["res://.godot/imported/HammerCock.mp3-8cae1c7c4b67e6b5bd09f481ac7b96eb.mp3str"]
 
 [params]
 
 loop=false
 loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

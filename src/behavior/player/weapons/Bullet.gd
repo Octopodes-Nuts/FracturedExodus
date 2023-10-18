@@ -1,4 +1,4 @@
-extends RayCast
+extends RayCast3D
 
 class_name Bullet
 
@@ -19,7 +19,7 @@ func set_properties(
 		damage: float,
 		angle: Vector3,
 		lifetime: float,
-		parent: Spatial,
+		parent: Node3D,
 		ads: bool = false,
 		spread: float = 0.0):
 	parent.add_child(self)
@@ -30,21 +30,20 @@ func set_properties(
 	if not ads:
 		randomize()
 		global_rotation += Vector3(
-			rand_range(0, spread),
-			rand_range(0, spread),
-			rand_range(0, spread)
+			randf_range(0, spread),
+			randf_range(0, spread),
+			randf_range(0, spread)
 		)
 	_lifetime = lifetime
-	set_cast_to(Vector3.FORWARD * 10)
+	set_target_position(Vector3.FORWARD * 10)
 	set_norm_ray()
 
 
 func _physics_process(delta):
 	# move and stretch bullet path
-	set_cast_to((2 * (Vector3.FORWARD * _speed * delta)) #Bullet forward
+	set_target_position((2 * (Vector3.FORWARD * _speed * delta)) #Bullet forward
 			 + Vector3.FORWARD * 2 ) #overlap
 	global_transform.origin += ((normal_direction_ray) * _speed * delta )
-
 	# test if hitting anything
 	if is_colliding():
 		var test = get_collider()

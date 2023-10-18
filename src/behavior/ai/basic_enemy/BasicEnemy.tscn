@@ -6,21 +6,21 @@
 [sub_resource type="CapsuleMesh" id=1]
 material = ExtResource( 1 )
 radius = 0.5
-mid_height = 2.0
+height = 2.0
 
-[sub_resource type="CapsuleShape" id=2]
+[sub_resource type="CapsuleShape3D" id=2]
 radius = 0.5
 height = 2.0
 
-[node name="basic_enemy" type="KinematicBody"]
+[node name="basic_enemy" type="CharacterBody3D"]
 script = ExtResource( 2 )
 
-[node name="enemy_mesh" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+[node name="enemy_mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 mesh = SubResource( 1 )
 
-[node name="enemy_collision" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+[node name="enemy_collision" type="CollisionShape3D" parent="."]
+transform = Transform3D( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
 shape = SubResource( 2 )
 
-[node name="enemy_ground_check" type="RayCast" parent="."]
+[node name="enemy_ground_check" type="RayCast3D" parent="."]

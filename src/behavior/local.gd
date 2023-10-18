@@ -4,7 +4,7 @@ extends Node
 
 # player ID, obtained from server
 var player_id: int
-var player: KinematicBody
+var player: CharacterBody3D
 var HUD: Control
 var input_active = true
 
