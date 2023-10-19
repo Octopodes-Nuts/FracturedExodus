@@ -1,15 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://df0acnq5uxhdc"]
+[gd_scene load_steps=4 format=3 uid="uid://df0acnq5uxhdc"]
 
 [ext_resource type="Script" path="res://behavior/player/weapons/guns/default_pistol/DefaultPistol.gd" id="1"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ilpyw"]
+size = Vector3(0.1, 0.1, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_24n8k"]
+size = Vector3(0.1, 0.1, 0.5)
 
 [node name="default_pistol" type="StaticBody3D"]
 script = ExtResource("1")
+default_position = Vector3(0.522, -0.066, -1.167)
+ads_position = Vector3(0, 0.481, -1.344)
 
 [node name="collision" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_ilpyw")
 disabled = true
 
 [node name="mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_24n8k")
 skeleton = NodePath("../collision")
