@@ -4,6 +4,11 @@
 
 [resource]
 background_mode = 2
+background_energy_multiplier = 1.52
 sky = SubResource("1")
-ambient_light_color = Color(0.207843, 0.188235, 0.188235, 1)
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 0.956863, 1)
+ambient_light_sky_contribution = 0.1
+ambient_light_energy = 0.18
 fog_enabled = true
+fog_sun_scatter = 0.2
