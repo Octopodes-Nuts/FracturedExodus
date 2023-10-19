@@ -3,7 +3,7 @@ extends StaticBody3D
 @export var hit_time: float = 1.0
 var current_hit: float = 0.0
 
-var hit_color: Material = load('res://debug/materials/debug_yellow.tres')
+var hit_color: Material = preload('res://debug/materials/debug_yellow.tres')
 var start_color: Material
 
 @onready var mesh: MeshInstance3D = $mesh
@@ -19,6 +19,7 @@ func _process(delta):
 			mesh.set_surface_override_material(0, start_color)
 
 func hit(_damage: float):
+	print('hit ' + str(_damage))
 	current_hit = hit_time
 	mesh.set_surface_override_material(0, hit_color)
 	
