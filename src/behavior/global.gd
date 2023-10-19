@@ -4,7 +4,7 @@ extends Node
 var chipsites: Array = []
 
 # Map Root is the top level of a map
-var map_root: Node3D
+var map_root: WorldEnvironment
 
 # Local Variables are Mapped by player
 var player_huds: Dictionary

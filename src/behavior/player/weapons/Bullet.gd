@@ -19,7 +19,7 @@ func set_properties(
 		damage: float,
 		angle: Vector3,
 		lifetime: float,
-		_parent: Node3D,
+		_parent: Node,
 		ads: bool = false,
 		spread: float = 0.0):
 	_parent.add_child(self)
