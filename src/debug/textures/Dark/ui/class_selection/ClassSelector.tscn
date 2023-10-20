@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://debug/textures/Dark/ui/class_selection/ClassSelector.gd" id="1"]
+
+[node name="character_select" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1320.0
+offset_bottom = -480.0
+script = ExtResource( 1 )
