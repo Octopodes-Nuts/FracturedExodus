@@ -1,0 +1,7 @@
+[gd_resource type="PhysicalSkyMaterial" load_steps=2 format=3 uid="uid://drj6a7b2brdo1"]
+
+[ext_resource type="Texture2D" uid="uid://cvefuwopok7hg" path="res://environment/maps/test_map/skybox/skybox_2.png" id="1_ebb0o"]
+
+[resource]
+ground_color = Color(0.101961, 0.0705882, 0.0352941, 1)
+night_sky = ExtResource("1_ebb0o")
