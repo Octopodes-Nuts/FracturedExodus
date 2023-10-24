@@ -101,15 +101,11 @@ func _process(delta):
 	if Input.is_action_just_pressed("primary_weapon") and\
 			Local.input_active:
 		swap_equipped(character.primary_weapon)
-		# remove all other weapons
-		# play animation
 	elif Input.is_action_just_pressed("secondary_weapon") and\
 			Local.input_active:
 		swap_equipped(character.secondary_weapon)
-		# play animtation
 	elif Input.is_action_just_pressed("tertiary_weapon") and\
 			Local.input_active:
-		# test to see if current class allows a tertiary weapon
 		swap_equipped(character.tertiary_weapon)
 	elif Input.is_action_just_pressed("equipment_1") and\
 		Local.input_active and character.equipment_1.equipment_instance != null:
