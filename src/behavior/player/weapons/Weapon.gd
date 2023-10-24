@@ -3,7 +3,7 @@
 # Authors: Isaiah Raspet
 ###############################################################
 
-extends Node3D
+extends Equipable
 
 # Class used as general interface
 
@@ -24,7 +24,6 @@ enum WeaponType {
 
 var type: int = 0
 var faction: int = 0
-var active: bool = false
 
 # perform action specified by weapon
 func _use():

@@ -7,28 +7,15 @@ extends Node
 
 class_name Character
 
-enum ClassType {
-	DEFAULT,
-	RIFLEMAN,
-	MEDIC,
-	CHASSEUR,
-	LIEUTENANT,
-	FUSILER,
-	MEDZIN,
-	LEUTNANT,
-	JAEGER,
-	RECRUIT,
-	CAPTAIN,
-	SHARPSHOOTER,
-	JUGGERNAUT
-}
-
 var class_type: int # ClassType
 var experience: int
 var primary_weapon: Weapon = Weapon.new()
 var secondary_weapon: Weapon = Weapon.new()
+# tertiary is utility melee
 var tertiary_weapon: Weapon = Weapon.new()
-var equipment: Array # Array of Equipment
+
+var equipment_1: EquipmentSlot = EquipmentSlot.new()
+var equipment_2: EquipmentSlot = EquipmentSlot.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
