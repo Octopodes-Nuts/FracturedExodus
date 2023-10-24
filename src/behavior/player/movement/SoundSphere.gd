@@ -1,6 +1,5 @@
-extends Area
+extends Area3D
 
-# this should be changed to be continuous
-func _on_sound_sphere_body_entered(body):
+func _on_body_entered(body):
 	if body.has_method('noise'):
 		body.noise(global_transform.origin)

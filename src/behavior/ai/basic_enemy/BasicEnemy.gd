@@ -9,6 +9,9 @@ var movement: Vector3 = Vector3()
 
 var home: Area3D
 
+func noise(direction: Vector3):
+	pass
+
 func _ready():
 	pass # Replace with function body.
 
