@@ -66,8 +66,8 @@ func _ready():
 	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
-	character.equipment_1.equipment_instance = Equipment.new()
-	character.equipment_2.equipment_instance = Equipment.new()
+	character.equipment_1.equipment_instance = MedPack.new(self)
+	character.equipment_2.equipment_instance = Equipment.new(self)
 	# end default character
 	swap_equipped(character.primary_weapon)
 	# load from character 
@@ -144,11 +144,11 @@ func swap_equipped(equipable: Equipable):
 	if active_equipable != equipable:
 		if active_equipable.get_parent() == head:
 			head.remove_child(active_equipable)
+		active_equipable._set_inactive()
 		# play stow animation
 		active_equipable = equipable
 		# play raise animation
-		character.set_weapons_inactive()
-		equipable.active = true
+		equipable._set_active()
 		head.add_child(equipable)
 		equipable.transform.origin = \
 		equipable.default_position - head.transform.origin

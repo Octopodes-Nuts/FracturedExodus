@@ -26,27 +26,57 @@ class_name Equipment
 @export var use_time: float = 1.0
 var charge_use_time: float
 
+var player: DefaultController
+
+# if the throwable has been lit, this is true
+var started: bool = false
+
+func _init(controller: DefaultController):
+	player = controller
+
 """
 This occurs when trigger use_time runs out
 """
 signal triggered
 
 func _process(delta):
+
 	if active:
 		if Input.is_action_just_pressed("fire"):
 			charge_use_time = use_time
-		elif Input.is_action_pressed("fire"):
+			if throwable:
+				started = true
+		elif Input.is_action_pressed("fire") and not throwable:
 			charge_use_time -= delta
 		elif Input.is_action_just_released("fire") and\
-				throwable:
+				not throwable:
 			charge_use_time = use_time
 		
 		if charge_use_time <= 0:
 			triggered.emit()
+			charges -= 1
+			# add a cool down here
+			charge_use_time = use_time
 			_action()
+	
+	if throwable and started:
+		charge_use_time -= delta
+
+func _set_inactive():
+	super._set_inactive()
+
+	if throwable and started:
+		_drop()
 
 """
 This is the action that is performed at the end of the countdown.
 """
 func _action():
+	pass
+
+# drop this equipment on the ground
+func _drop():
+	pass
+
+func throw():
 	pass
