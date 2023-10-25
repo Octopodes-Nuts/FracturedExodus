@@ -3,6 +3,9 @@
 # Authors: Isaiah Raspet
 ###############################################################
 
+# This may require a reference to the player who has the item 
+# equipped.
+
 extends Equipable
 
 class_name Equipment
@@ -10,20 +13,40 @@ class_name Equipment
 # if equipment is consumable, the equipment slot will be freed when
 # all charges are used. Otherwise, charges can be picked up during a 
 # resupply
-var consumable: bool = true
+@export var consumable: bool = true
 # if equipment is throwable, the player will throw it
 # the other option is player use, where an animation of the player
 # using it on himself or a teammate, but the item will not leave
 # the player's hand
-var throwable: bool = false
+@export var throwable: bool = false
 # the number of charges a piece of equipment has
-var charges: int = 1
+@export var charges: int = 1
+# use time is the time it takes to use. If the item is throwable, this timer is not
+# controllable.
+@export var use_time: float = 1.0
+var charge_use_time: float
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+"""
+This occurs when trigger use_time runs out
+"""
+signal triggered
 
+func _process(delta):
+	if active:
+		if Input.is_action_just_pressed("fire"):
+			charge_use_time = use_time
+		elif Input.is_action_pressed("fire"):
+			charge_use_time -= delta
+		elif Input.is_action_just_released("fire") and\
+				throwable:
+			charge_use_time = use_time
+		
+		if charge_use_time <= 0:
+			triggered.emit()
+			_action()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+"""
+This is the action that is performed at the end of the countdown.
+"""
+func _action():
+	pass
