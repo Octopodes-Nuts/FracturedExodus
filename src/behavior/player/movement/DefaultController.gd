@@ -8,6 +8,8 @@ extends CharacterBody3D
 
 class_name DefaultController
 
+var DEFAULT_LERP = 20.0
+
 @onready var WeaponRegister = get_node('/root/WeaponRegister')
 @onready var Settings = get_node('/root/Settings')
 @onready var Local = get_node('/root/Local')
@@ -64,6 +66,8 @@ func _ready():
 	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
+	character.equipment_1.equipment_instance = Equipment.new()
+	character.equipment_2.equipment_instance = Equipment.new()
 	# end default character
 	swap_equipped(character.primary_weapon)
 	# load from character 
@@ -85,7 +89,7 @@ func _undo_ads(delta):
 				active_equipable.ADS_LERP * delta)
 		head.fov = lerp(head.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
 	elif head.fov != float(Settings.FOV):
-		head.fov = lerp(head.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
+		head.fov = lerp(head.fov, float(Settings.FOV), DEFAULT_LERP * delta)
 
 func ground_check():
 
