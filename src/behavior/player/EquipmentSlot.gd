@@ -23,13 +23,3 @@ func use_report() -> Dictionary:
 	else: return {
 		'null': null
 	}
-
-func use():
-	if equipment_instance != null:
-		equipment_instance.charges -= 1
-
-		if equipment_instance.charges <= 0\
-			and equipment_instance.consumable:
-
-			equipment_instance.queue_free()
-			equipment_instance = null
