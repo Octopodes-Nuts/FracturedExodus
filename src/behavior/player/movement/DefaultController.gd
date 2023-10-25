@@ -76,14 +76,14 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _ads(delta):
-	if active_equipable.is_class("Weapon"):
+	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
 			lerp((active_equipable.ads_position - head.transform.origin),
 				active_equipable.ADS_LERP * delta)
 		head.fov = lerp(head.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
 
 func _undo_ads(delta):
-	if active_equipable.is_class("Weapon"):
+	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
 			lerp((active_equipable.default_position - head.transform.origin),
 				active_equipable.ADS_LERP * delta)
@@ -123,10 +123,12 @@ func _process(delta):
 	else:
 		_undo_ads(delta)
 	if Input.is_action_just_pressed("ads") and\
-			Local.input_active:
+			Local.input_active and\
+			active_equipable is Weapon:
 		active_equipable.ads = true
 	if Input.is_action_just_released("ads") and\
-			Local.input_active:
+			Local.input_active and\
+			active_equipable is Weapon:
 		active_equipable.ads = false
 	if Input.is_action_just_pressed("exit"):
 		if Local.input_active:
