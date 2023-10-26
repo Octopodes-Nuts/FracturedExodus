@@ -8,6 +8,8 @@ extends Node
 # setup
 func _ready():
 	# Register Inputs
+	var settings_text = FileAccess.get_file_as_string(path_to_settings)
+	settings = JSON.parse_string(settings_text)
 	_set_actions()
 	_load_bindings()
 
@@ -15,6 +17,7 @@ func _ready():
 var FOV: int = 70
 
 var path_to_settings = "res://load/settings.json"
+var settings: Dictionary
 
 var actions = [
 	"move_forward",
@@ -100,26 +103,6 @@ var key_codes = {
 
 # Load Key Bindings from .json
 func _load_bindings():
-	# InputMap.action_add_event("move_forward", _link_key(KEY_W))
-	# InputMap.action_add_event("move_backward", _link_key(KEY_S))
-	# InputMap.action_add_event("move_left", _link_key(KEY_A))
-	# InputMap.action_add_event("move_right", _link_key(KEY_D))
-	# InputMap.action_add_event("interact", _link_key(KEY_E))
-	# InputMap.action_add_event("fire", _link_mb(MOUSE_BUTTON_LEFT))
-	# InputMap.action_add_event("jump", _link_key(KEY_SPACE))
-	# InputMap.action_add_event("sprint", _link_key(KEY_SHIFT))
-	# InputMap.action_add_event("crouch", _link_key(KEY_CTRL))
-	# InputMap.action_add_event("exit", _link_key(KEY_ESCAPE))
-	# InputMap.action_add_event("ads", _link_mb(MOUSE_BUTTON_RIGHT))
-	# InputMap.action_add_event("use_scanner", _link_key(KEY_Q))
-	# InputMap.action_add_event("primary_weapon", _link_key(KEY_1))
-	# InputMap.action_add_event("secondary_weapon", _link_key(KEY_2))
-	# InputMap.action_add_event("tertiary_weapon", _link_key(KEY_3))
-	# InputMap.action_add_event("reload", _link_key(KEY_R))
-	# InputMap.action_add_event("equipment_1", _link_key(KEY_4))
-	# InputMap.action_add_event("equipment_2", _link_key(KEY_5))
-	var settings_text = FileAccess.get_file_as_string(path_to_settings)
-	var settings = JSON.parse_string(settings_text)
 	var controls = settings["controls"]
 	for control in controls.keys():
 		if controls[control].substr(0, 3) == "KEY":
