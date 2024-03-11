@@ -9,6 +9,9 @@ size = Vector3(0.11, 0.11, 0.807)
 
 [node name="default_shotgun" type="StaticBody3D"]
 script = ExtResource("1_pf4dg")
+bullet_speed = 400.0
+bullet_lifetime = 2.0
+bullet_spread = 0.003
 
 [node name="collision" type="CollisionShape3D" parent="."]
 shape = SubResource("1")
