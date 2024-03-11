@@ -11,7 +11,7 @@ size = Vector3(0.11, 0.11, 0.807)
 script = ExtResource("1_pf4dg")
 bullet_speed = 400.0
 bullet_lifetime = 2.0
-bullet_spread = 0.003
+bullet_spread = 0.04
 
 [node name="collision" type="CollisionShape3D" parent="."]
 shape = SubResource("1")
