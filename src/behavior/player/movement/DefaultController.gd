@@ -63,7 +63,7 @@ func _ready():
 	add_child(HUD)
 	# set up default character
 	character = Character.new()
-	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
+	character.primary_weapon = WeaponRegister.gun_register["DefaultShotgun"].instantiate()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
 	character.equipment_1.equipment_instance = MedPack.new(self)

@@ -1,21 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://dtorn2rmhnlqx"]
+[gd_scene load_steps=4 format=3 uid="uid://dwb6ow4faxw8g"]
 
-[ext_resource type="Script" path="res://behavior/player/weapons/guns/default_gun/DefaultGun.gd" id="1"]
+[ext_resource type="Script" path="res://behavior/player/weapons/guns/default_shotgun/DefaultShotgun.gd" id="1_pf4dg"]
 
 [sub_resource type="BoxShape3D" id="1"]
 size = Vector3(0.11, 0.11, 0.807)
 
 [sub_resource type="BoxMesh" id="2"]
 
-[node name="default_gun" type="StaticBody3D"]
-script = ExtResource("1")
-bullet_damage = 75.0
-bullet_speed = 400.0
-bullet_lifetime = 4.0
-bullet_spread = 0.04
-ADS_LERP = 10.0
-ads_position = Vector3(0, 0.477, -1.344)
-default_position = Vector3(0.522, -0.067, -1.167)
+[node name="default_shotgun" type="StaticBody3D"]
+script = ExtResource("1_pf4dg")
 
 [node name="collision" type="CollisionShape3D" parent="."]
 shape = SubResource("1")
