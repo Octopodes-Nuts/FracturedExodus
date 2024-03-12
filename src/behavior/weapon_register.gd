@@ -10,7 +10,8 @@ extends Node
 
 @onready var gun_register = {
 	"DefaultGun": load("res://behavior/player/weapons/guns/default_gun/DefaultGun.tscn"),
-	"DefaultPistol": load("res://behavior/player/weapons/guns/default_pistol/DefaultPistol.tscn")
+	"DefaultPistol": load("res://behavior/player/weapons/guns/default_pistol/DefaultPistol.tscn"),
+	"DefaultShotgun": load("res://behavior/player/weapons/guns/default_shotgun/DefaultShotgun.tscn"),
 }
 
 @onready var melee_register = {
