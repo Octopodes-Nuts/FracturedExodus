@@ -9,6 +9,8 @@ size = Vector3(0.11, 0.11, 0.807)
 
 [node name="default_shotgun" type="StaticBody3D"]
 script = ExtResource("1_pf4dg")
+clip_size = 1
+ammo_pool = 16
 bullet_speed = 400.0
 bullet_lifetime = 2.0
 bullet_spread = 0.04
