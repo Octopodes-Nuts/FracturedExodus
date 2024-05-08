@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://dwb6ow4faxw8g"]
+
+[ext_resource type="Script" path="res://behavior/player/weapons/guns/default_shotgun/DefaultShotgun.gd" id="1_pf4dg"]
+
+[sub_resource type="BoxShape3D" id="1"]
+size = Vector3(0.11, 0.11, 0.807)
+
+[sub_resource type="BoxMesh" id="2"]
+
+[node name="default_shotgun" type="StaticBody3D"]
+script = ExtResource("1_pf4dg")
+clip_size = 1
+ammo_pool = 16
+bullet_speed = 400.0
+bullet_lifetime = 2.0
+bullet_spread = 0.04
+
+[node name="collision" type="CollisionShape3D" parent="."]
+shape = SubResource("1")
+disabled = true
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.11, 0, 0, 0, 0.11, 0, 0, 0, 0.807, 0, 0, 0)
+mesh = SubResource("2")
+
+[node name="muzzle_end" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)

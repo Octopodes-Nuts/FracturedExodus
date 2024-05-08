@@ -45,7 +45,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.02465, 3.54708, 0)
 [node name="obsticles" type="Node" parent="."]
 
 [node name="basic_enemy" parent="." instance=ExtResource("6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6604, 3.58409, -1.19123)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6604, 3.58409, 5.83227)
 
 [node name="camp" parent="." instance=ExtResource("3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.98574, 0.437937, 3.71535)
