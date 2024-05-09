@@ -1,7 +1,14 @@
+###############################################################
+# Copyright (c) 2023 Octopodes Studio
+# Authors: Isaiah Raspet
+###############################################################
+
 #TODO: Implement Crouch
 extends CharacterBody3D
 
 class_name DefaultController
+
+var DEFAULT_LERP = 20.0
 
 @onready var WeaponRegister = get_node('/root/WeaponRegister')
 @onready var Settings = get_node('/root/Settings')
@@ -37,7 +44,8 @@ var movement = Vector3()
 var gravity_direction = Vector3()
 var current_interaction: Interactable
 
-var active_weapon: Weapon = Weapon.new()
+# this needs to be set to an active equipable
+var active_equipable: Equipable = Equipable.new()
 
 @onready var head = $camera_head
 @onready var gun_location = $camera_head/gun_location
@@ -55,28 +63,33 @@ func _ready():
 	add_child(HUD)
 	# set up default character
 	character = Character.new()
-	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
+	character.primary_weapon = WeaponRegister.gun_register["DefaultShotgun"].instantiate()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
+	character.equipment_1.equipment_instance = MedPack.new(self)
+	character.equipment_2.equipment_instance = Equipment.new(self)
 	# end default character
-	swap_weapon(character.primary_weapon)
+	swap_equipped(character.primary_weapon)
 	# load from character 
 	Local.player = self
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _ads(delta):
-	active_weapon.transform.origin = active_weapon.transform.origin.\
-		lerp((active_weapon.ads_position - head.transform.origin),
-			active_weapon.ADS_LERP * delta)
-	head.fov = lerp(head.fov, active_weapon.ads_fov, active_weapon.ADS_LERP * delta)
+	if active_equipable is Weapon:
+		active_equipable.transform.origin = active_equipable.transform.origin.\
+			lerp((active_equipable.ads_position - head.transform.origin),
+				active_equipable.ADS_LERP * delta)
+		head.fov = lerp(head.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
 
 func _undo_ads(delta):
-	active_weapon.transform.origin = active_weapon.transform.origin.\
-		lerp((active_weapon.default_position - head.transform.origin),
-			active_weapon.ADS_LERP * delta)
-	head.fov = lerp(head.fov, float(Settings.FOV), active_weapon.ADS_LERP * delta)
-
+	if active_equipable is Weapon:
+		active_equipable.transform.origin = active_equipable.transform.origin.\
+			lerp((active_equipable.default_position - head.transform.origin),
+				active_equipable.ADS_LERP * delta)
+		head.fov = lerp(head.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
+	elif head.fov != float(Settings.FOV):
+		head.fov = lerp(head.fov, float(Settings.FOV), DEFAULT_LERP * delta)
 
 func ground_check():
 
@@ -91,28 +104,32 @@ func _process(delta):
 	# shifting weapons but maybe not
 	if Input.is_action_just_pressed("primary_weapon") and\
 			Local.input_active:
-		swap_weapon(character.primary_weapon)
-		# remove all other weapons
-		# play animation
+		swap_equipped(character.primary_weapon)
 	elif Input.is_action_just_pressed("secondary_weapon") and\
 			Local.input_active:
-		swap_weapon(character.secondary_weapon)
-		# play animtation
+		swap_equipped(character.secondary_weapon)
 	elif Input.is_action_just_pressed("tertiary_weapon") and\
 			Local.input_active:
-		# test to see if current class allows a tertiary weapon
-		swap_weapon(character.tertiary_weapon)
+		swap_equipped(character.tertiary_weapon)
+	elif Input.is_action_just_pressed("equipment_1") and\
+		Local.input_active and character.equipment_1.equipment_instance != null:
+			swap_equipped(character.equipment_1.equipment_instance)
+	elif Input.is_action_just_pressed("equipment_2") and\
+		Local.input_active and character.equipment_2.equipment_instance != null:
+			swap_equipped(character.equipment_2.equipment_instance)
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
 		_ads(delta)
 	else:
 		_undo_ads(delta)
 	if Input.is_action_just_pressed("ads") and\
-			Local.input_active:
-		active_weapon.ads = true
+			Local.input_active and\
+			active_equipable is Weapon:
+		active_equipable.ads = true
 	if Input.is_action_just_released("ads") and\
-			Local.input_active:
-		active_weapon.ads = false
+			Local.input_active and\
+			active_equipable is Weapon:
+		active_equipable.ads = false
 	if Input.is_action_just_pressed("exit"):
 		if Local.input_active:
 			Local.input_active = false
@@ -123,18 +140,18 @@ func _process(delta):
 			self.remove_child(escape_menu)
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-func swap_weapon(weapon: Weapon):
-	if active_weapon != weapon:
-		if active_weapon.get_parent() == head:
-			head.remove_child(active_weapon)
+func swap_equipped(equipable: Equipable):
+	if active_equipable != equipable:
+		if active_equipable.get_parent() == head:
+			head.remove_child(active_equipable)
+		active_equipable._set_inactive()
 		# play stow animation
-		active_weapon = weapon
+		active_equipable = equipable
 		# play raise animation
-		character.set_weapons_inactive()
-		weapon.active = true
-		head.add_child(weapon)
-		weapon.transform.origin = \
-		weapon.default_position - head.transform.origin
+		equipable._set_active()
+		head.add_child(equipable)
+		equipable.transform.origin = \
+		equipable.default_position - head.transform.origin
 
 func _input(event):
 	if Local.input_active:

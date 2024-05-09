@@ -1,3 +1,8 @@
+###############################################################
+# Copyright (c) 2023 Octopodes Studio
+# Authors: Isaiah Raspet
+###############################################################
+
 # variables local to player, this information is not
 # relevent to the server
 extends Node

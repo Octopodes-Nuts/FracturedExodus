@@ -1,3 +1,8 @@
+###############################################################
+# Copyright (c) 2023 Octopodes Studio
+# Authors: Isaiah Raspet
+###############################################################
+
 extends RayCast3D
 
 class_name Bullet
@@ -30,9 +35,9 @@ func set_properties(
 	if not ads:
 		randomize()
 		global_rotation += Vector3(
-			randf_range(0, spread),
-			randf_range(0, spread),
-			randf_range(0, spread)
+			randf_range(-spread, spread),
+			randf_range(-spread, spread),
+			randf_range(-spread, spread)
 		)
 	_lifetime = lifetime
 	set_target_position(Vector3.FORWARD * 10)

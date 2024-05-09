@@ -1,3 +1,8 @@
+###############################################################
+# Copyright (c) 2023 Octopodes Studio
+# Authors: Isaiah Raspet
+###############################################################
+
 extends StaticBody3D
 
 @export var hit_time: float = 1.0

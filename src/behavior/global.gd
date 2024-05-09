@@ -1,3 +1,8 @@
+###############################################################
+# Copyright (c) 2023 Octopodes Studio
+# Authors: Isaiah Raspet
+###############################################################
+
 extends Node
 
 # Script containing variables that are global to each match

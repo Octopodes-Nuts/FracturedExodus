@@ -1,3 +1,8 @@
+###############################################################
+# Copyright (c) 2023 Octopodes Studio
+# Authors: Isaiah Raspet
+###############################################################
+
 extends Area3D
 
 # Description of what a camp should do or be

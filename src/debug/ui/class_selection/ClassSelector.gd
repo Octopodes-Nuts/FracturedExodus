@@ -1,3 +1,8 @@
+###############################################################
+# Copyright (c) 2023 Octopodes Studio
+# Authors: Isaiah Raspet
+###############################################################
+
 extends Control
 
 @onready var ClassRegister = get_node('/root/ClassRegister')

@@ -1,11 +1,17 @@
+###############################################################
+# Copyright (c) 2023 Octopodes Studio
+# Authors: Isaiah Raspet
+###############################################################
+
 extends Node
 
 # All weapons must be registeed here so that they can be loaded
 # This just references preset scenes
 
 @onready var gun_register = {
-	"DefaultGun": preload("res://behavior/player/weapons/guns/default_gun/DefaultGun.tscn"),
-	"DefaultPistol": preload("res://behavior/player/weapons/guns/default_pistol/DefaultPistol.tscn")
+	"DefaultGun": load("res://behavior/player/weapons/guns/default_gun/DefaultGun.tscn"),
+	"DefaultPistol": load("res://behavior/player/weapons/guns/default_pistol/DefaultPistol.tscn"),
+	"DefaultShotgun": load("res://behavior/player/weapons/guns/default_shotgun/DefaultShotgun.tscn"),
 }
 
 @onready var melee_register = {

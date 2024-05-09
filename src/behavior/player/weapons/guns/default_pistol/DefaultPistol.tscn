@@ -10,8 +10,11 @@ size = Vector3(0.1, 0.1, 0.5)
 
 [node name="default_pistol" type="StaticBody3D"]
 script = ExtResource("1")
-default_position = Vector3(0.522, -0.066, -1.167)
+bullet_speed = 360.0
+bullet_lifetime = 2.0
+bullet_spread = 0.04
 ads_position = Vector3(0, 0.481, -1.344)
+default_position = Vector3(0.522, -0.066, -1.167)
 
 [node name="collision" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_ilpyw")

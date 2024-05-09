@@ -1,0 +1,43 @@
+{
+    "controls" : {
+        "move_forward":     "KEY_W",
+        "move_backward":    "KEY_S",
+        "move_left":        "KEY_A",
+        "move_right":       "KEY_D",
+        "interact":         "KEY_E",
+        "fire":             "MOUSE_BUTTON_LEFT",
+        "jump":             "KEY_SPACE",
+        "sprint":           "KEY_SHIFT",
+        "crouch":           "KEY_C",
+        "exit":             "KEY_ESC",
+        "ads":              "MOUSE_BUTTON_RIGHT",
+        "use_scanner":      "KEY_F",
+        "primary_weapon":   "KEY_1",
+        "secondary_weapon": "KEY_2",
+        "tertiary_weapon":  "KEY_3",
+        "reload":           "KEY_R",
+        "equipment_1":      "KEY_4",
+        "equipment_2":      "KEY_5"
+    },
+
+    "default_controls" : {
+        "move_forward":     "KEY_W",
+        "move_backward":    "KEY_S",
+        "move_left":        "KEY_A",
+        "move_right":       "KEY_D",
+        "interact":         "KEY_E",
+        "fire":             "MOUSE_BUTTON_LEFT",
+        "jump":             "KEY_SPACE",
+        "sprint":           "KEY_SHIFT",
+        "crouch":           "KEY_C",
+        "exit":             "KEY_ESC",
+        "ads":              "MOUSE_BUTTON_RIGHT",
+        "use_scanner":      "KEY_F",
+        "primary_weapon":   "KEY_1",
+        "secondary_weapon": "KEY_2",
+        "tertiary_weapon":  "KEY_3",
+        "reload":           "KEY_R",
+        "equipment_1":      "KEY_4",
+        "equipment_2":      "KEY_5"
+    }
+}
