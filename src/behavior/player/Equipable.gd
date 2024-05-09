@@ -15,7 +15,7 @@ var active: bool = false
 # this is for a good reason anthony. This active setting needs
 # to be an event
 func _set_active():
-    active = true
+	active = true
 
 func _set_inactive():
-    active = false
+	active = false
