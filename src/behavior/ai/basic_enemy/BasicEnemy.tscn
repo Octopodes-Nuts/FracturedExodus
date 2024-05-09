@@ -21,3 +21,5 @@ shape = SubResource("2")
 
 [node name="enemy_ground_check" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.113872, 0)
+
+[node name="navigation" type="NavigationAgent3D" parent="."]
