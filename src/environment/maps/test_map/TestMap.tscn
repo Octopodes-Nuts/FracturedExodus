@@ -43,6 +43,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.98574, 0.437937, 3.71535)
 
 [node name="obsticles" type="Node" parent="NavigationRegion3D"]
 
+[node name="basic_enemy" parent="NavigationRegion3D" instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.8156, 3.58409, 5.83227)
+
 [node name="light" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.939693, 0.34202, 0, -0.241845, 0.664463, 0.707107, 0.241845, -0.664463, 0.707107, 0, 36.8459, 0)
 light_energy = 1.323
@@ -56,9 +59,6 @@ directional_shadow_max_distance = 2513.1
 
 [node name="player_body" parent="." instance=ExtResource("2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.02465, 3.54708, 0)
-
-[node name="basic_enemy" parent="." instance=ExtResource("6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6604, 3.58409, 5.83227)
 
 [node name="target" parent="." instance=ExtResource("7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.7816, 1.95305, -1.33422)
