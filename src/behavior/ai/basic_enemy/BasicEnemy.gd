@@ -38,7 +38,7 @@ func hit(damage: float):
 	print("Hit " + str(damage))
 
 func _die():
-	pass
+	queue_free()
 
 # This step is to evaluate what the enemy can see
 # And make a decision as to its current state
@@ -48,6 +48,8 @@ func evaluate():
 func _physics_process(delta):
 	var current_location = global_transform.origin
 	var heading: Vector3 = Vector3.ZERO
+
+	# this can be sped up significantly, this calculation does not have to be done every frame
 	if navigation.target_position != Vector3.ZERO or not navigation.target_reached:
 		heading = (navigation.get_next_path_position() - current_location).normalized() * speed * delta
 
