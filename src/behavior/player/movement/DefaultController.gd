@@ -63,7 +63,7 @@ func _ready():
 	add_child(HUD)
 	# set up default character
 	character = Character.new()
-	character.primary_weapon = WeaponRegister.gun_register["DefaultShotgun"].instantiate()
+	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
 	character.equipment_1.equipment_instance = MedPack.new(self)
@@ -122,13 +122,14 @@ func _process(delta):
 		_ads(delta)
 	else:
 		_undo_ads(delta)
-	if Input.is_action_just_pressed("ads") and\
+	if Input.is_action_pressed("ads") and\
 			Local.input_active and\
-			active_equipable is Weapon:
+			active_equipable is Weapon and\
+			is_on_floor():
 		active_equipable.ads = true
 	if Input.is_action_just_released("ads") and\
 			Local.input_active and\
-			active_equipable is Weapon:
+			active_equipable is Weapon or not is_on_floor():
 		active_equipable.ads = false
 	if Input.is_action_just_pressed("exit"):
 		if Local.input_active:

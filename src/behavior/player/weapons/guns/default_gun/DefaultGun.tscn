@@ -9,7 +9,8 @@ size = Vector3(0.11, 0.11, 0.807)
 
 [node name="default_gun" type="StaticBody3D"]
 script = ExtResource("1")
-bullet_damage = 75.0
+cycle_time = 1.5
+bullet_damage = 77.0
 bullet_speed = 400.0
 bullet_lifetime = 4.0
 bullet_spread = 0.01
