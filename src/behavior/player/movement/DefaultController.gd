@@ -230,5 +230,6 @@ func remove_interaction(interactable: Interactable):
 	if current_interaction == interactable:
 		current_interaction = Interactable.new()
 
+# this will be an RPC
 func extract():
 	print('extract successful')

@@ -23,9 +23,22 @@ func update_target_location(location):
 	print(location)
 
 
+enum AwarenessState {
+	IDLE,
+	SCAN,
+	PATROL,
+	AWARE,
+	PERSUIT,
+	RETREAT
+}
+
+
+var Awareness: AwarenessState = AwarenessState.IDLE
+
 # on the noise function, the creator of the noise is assigned as the target and 
 # the ai should turn to look at the player and commence chase
 func noise(direction: Vector3):
+	Awareness = AwarenessState.AWARE
 	update_target_location(direction)
 
 func _ready():
@@ -43,21 +56,77 @@ func _die():
 # This step is to evaluate what the enemy can see
 # And make a decision as to its current state
 func evaluate():
-	pass
+	if Awareness == AwarenessState.IDLE:
+		# find a random position to move to
+		randomize()
+		var positive_x = randf_range(10.0, 30.0)
+		var negative_x = randf_range(-30.0, -10.0)
+		
+		var positive_y = randf_range(10.0, 30.0)
+		var negative_y = randf_range(-30.0, -10.0)
+		
+		var x = 0
+		if abs(negative_x) > positive_x:
+			x = negative_x
+		else:
+			x = positive_x
+		
+		var z = 0
+		if abs(negative_y) > positive_y:
+			x = negative_y
+		else:
+			x = positive_y
+			
+		Awareness = AwarenessState.PATROL
+
+		var target = global_transform.origin + Vector3(x, 0, z)
+		update_target_location(target)
+		
+		return (navigation.get_next_path_position() - global_transform.origin).normalized()
+
+	if Awareness == AwarenessState.PATROL:
+		# continue along current path
+		if navigation.distance_to_target() < 2.0:
+			Awareness = AwarenessState.IDLE
+			print(navigation.target_position)
+			print(global_transform.origin)
+		else:
+			return (navigation.get_next_path_position() - global_transform.origin).normalized()
+
+	if Awareness == AwarenessState.AWARE:
+		
+		if navigation.distance_to_target() < 2.0:
+			Awareness = AwarenessState.IDLE
+		else:
+			return (navigation.get_next_path_position() - global_transform.origin).normalized()
+
+	if Awareness == AwarenessState.PERSUIT:
+		# actively chase player
+		pass
+	if Awareness == AwarenessState.RETREAT:
+		# run away from player
+		pass
+		
+	return Vector3.ZERO
 
 func _physics_process(delta):
 	var current_location = global_transform.origin
 	var heading: Vector3 = Vector3.ZERO
 
 	# this can be sped up significantly, this calculation does not have to be done every frame
-	if navigation.target_position != Vector3.ZERO or not navigation.target_reached:
-		heading = (navigation.get_next_path_position() - current_location).normalized() * speed * delta
+	# if navigation.target_position != Vector3.ZERO or not navigation.target_reached:
+	# 	heading = (navigation.get_next_path_position() - current_location).normalized() * speed * delta
+
+	heading = evaluate() * speed * delta
 
 	if not is_on_floor():
 		gravity_direction += Vector3.DOWN * gravity * delta
 	else:
 		gravity_direction = -get_floor_normal()
 
+
+	
+	# this movement should essential always happen
 	movement.z = gravity_direction.z
 	movement.x = gravity_direction.x
 	movement.y = gravity_direction.y
