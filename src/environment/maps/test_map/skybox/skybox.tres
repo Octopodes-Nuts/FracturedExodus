@@ -1,0 +1,9 @@
+[gd_resource type="ProceduralSkyMaterial" load_steps=2 format=3 uid="uid://bvipu02jedahr"]
+
+[ext_resource type="Texture2D" uid="uid://cvefuwopok7hg" path="res://environment/maps/test_map/skybox/skybox_2.png" id="1_21ni7"]
+
+[resource]
+sky_curve = 0.738686
+sky_cover = ExtResource("1_21ni7")
+ground_curve = 0.0303144
+use_debanding = false
