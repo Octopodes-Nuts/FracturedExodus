@@ -52,7 +52,7 @@ func _process(delta):
 				not throwable:
 			charge_use_time = use_time
 		
-		if charge_use_time <= 0:
+		if charge_use_time <= 0 and _isvalid():
 			triggered.emit()
 			charges -= 1
 			# add a cool down here
@@ -80,3 +80,7 @@ func _drop():
 
 func throw():
 	pass
+
+
+func _isvalid():
+	return true 

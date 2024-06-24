@@ -1,6 +1,6 @@
 ###############################################################
 # Copyright (c) 2023 Octopodes Studio
-# Authors: Isaiah Raspet
+# Authors: Isaiah Raspet, Julian Maat
 ###############################################################
 
 extends Equipment
@@ -15,3 +15,6 @@ func _action():
         player.health = player.FULL_HEALTH
     
     print('heal')
+
+func _isvalid():
+    return player.health < player.FULL_HEALTH
