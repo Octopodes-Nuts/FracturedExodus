@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://c2vdf5bs4gl6y"]
 
-[ext_resource path="res://ui/hud/crosshair.png" type="Texture2D" id=1]
+[ext_resource type="Texture2D" uid="uid://lj8x80hs34ug" path="res://ui/hud/crosshair.png" id="1"]
 
 [node name="hud" type="Control"]
 anchor_right = 1.0
@@ -15,5 +15,5 @@ offset_left = -128.0
 offset_top = -128.0
 offset_right = 384.0
 offset_bottom = 384.0
-scale = Vector2( 0.5, 0.5 )
-texture = ExtResource( 1 )
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1")

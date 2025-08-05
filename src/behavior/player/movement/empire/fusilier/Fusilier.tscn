@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://d2eq5a7qwmb6h"]
 
-[ext_resource type="Script" path="res://behavior/player/movement/empire/fusilier/FusilierController.gd" id="1"]
+[ext_resource type="Script" uid="uid://du34b478dlkmf" path="res://behavior/player/movement/empire/fusilier/FusilierController.gd" id="1"]
 [ext_resource type="Environment" uid="uid://bpsr8wpuo8pbl" path="res://default_env.tres" id="2"]
-[ext_resource type="Script" path="res://behavior/player/movement/SoundSphere.gd" id="3_h6fi0"]
+[ext_resource type="Script" uid="uid://dbotvawysdgfa" path="res://behavior/player/movement/SoundSphere.gd" id="3_h6fi0"]
 
 [sub_resource type="CapsuleMesh" id="2"]
 radius = 0.4
