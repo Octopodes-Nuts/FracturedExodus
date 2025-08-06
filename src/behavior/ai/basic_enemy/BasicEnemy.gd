@@ -116,7 +116,7 @@ func evaluate(delta):
 		# actively chase player
 		pass
 	elif Awareness == AwarenessState.RETREAT:
-		# run away from player
+		# run away from player or toward cover
 		pass
 		
 	return Vector3.ZERO
@@ -128,6 +128,7 @@ func _physics_process(delta):
 	# if navigation.target_position != Vector3.ZERO or not navigation.target_reached:
 	# 	heading = (navigation.get_next_path_position() - current_location).normalized() * speed * delta
 
+	# evaluate should not happen every frame
 	heading = evaluate(delta) * speed * delta
 
 	if not is_on_floor():
