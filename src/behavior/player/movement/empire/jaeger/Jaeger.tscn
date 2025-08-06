@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://bqvo8bvf83n53"]
 
-[ext_resource type="Script" path="res://behavior/player/movement/empire/jaeger/JaegerController.gd" id="1"]
+[ext_resource type="Script" uid="uid://bqa648no0hym5" path="res://behavior/player/movement/empire/jaeger/JaegerController.gd" id="1"]
 [ext_resource type="Environment" uid="uid://bpsr8wpuo8pbl" path="res://default_env.tres" id="2"]
-[ext_resource type="Script" path="res://behavior/player/movement/SoundSphere.gd" id="3_cwiu8"]
+[ext_resource type="Script" uid="uid://dbotvawysdgfa" path="res://behavior/player/movement/SoundSphere.gd" id="3_cwiu8"]
 
 [sub_resource type="CapsuleMesh" id="2"]
 radius = 0.4

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://ceruobdbatpjg"]
 
-[ext_resource type="Script" path="res://behavior/environment/camp/Camp.gd" id="1"]
+[ext_resource type="Script" uid="uid://bgj3m36qyjl3i" path="res://behavior/environment/camp/Camp.gd" id="1"]
 [ext_resource type="Material" path="res://debug/materials/debug_red.tres" id="2"]
 
 [sub_resource type="SphereShape3D" id="1"]

@@ -12,6 +12,8 @@ extends CharacterBody3D
 
 @export var gravity = 20.0
 
+@export var MAX_DIST = 20
+
 var gravity_direction: Vector3
 var movement: Vector3 = Vector3()
 
@@ -63,6 +65,13 @@ func _die():
 func evaluate(delta):
 	if Awareness == AwarenessState.IDLE:
 		# find a random position to move to
+
+		var too_far = false
+		if Vector2(global_transform.origin.x,global_transform.origin.z).\
+			distance_to(Vector2(home.global_transform.origin.x, home.global_transform.origin.z)) > MAX_DIST:
+			too_far = true
+			print("too far!")
+
 		randomize()
 		var positive_x = randf_range(5.0, 10.0)
 		var negative_x = randf_range(-10.0, -5.0)
@@ -81,10 +90,23 @@ func evaluate(delta):
 			x = negative_y
 		else:
 			x = positive_y
+
+		var target = Vector3.ZERO
+
+		if too_far:
+			x = home.global_transform.origin.x + randf_range(1.0, 2.0)
+			z = home.global_transform.origin.z + randf_range(1.0, 2.0)
+
+			target = Vector3(x, 0, z)
+
+			too_far = false
+		
+		else:
+			target = global_transform.origin + Vector3(x, 0, z)
+
 			
 		Awareness = AwarenessState.PATROL
 
-		var target = global_transform.origin + Vector3(x, 0, z)
 		update_target_location(target)
 		
 		return (navigation.get_next_path_position() - global_transform.origin).normalized()

@@ -1,18 +1,18 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=4 format=3 uid="uid://s6yab8aj3ysg"]
 
-[ext_resource path="res://debug/materials/debug_yellow.tres" type="Material" id=1]
+[ext_resource type="Material" path="res://debug/materials/debug_yellow.tres" id="1"]
 
-[sub_resource type="BoxShape3D" id=1]
+[sub_resource type="BoxShape3D" id="1"]
 
-[sub_resource type="BoxMesh" id=2]
+[sub_resource type="BoxMesh" id="2"]
 
 [node name="debug_wall" type="StaticBody3D"]
 
 [node name="collider" type="CollisionShape3D" parent="."]
-transform = Transform3D( 7, 0, 0, 0, 3, 0, 0, 0, 0.3, 0, 0, 0 )
-shape = SubResource( 1 )
+transform = Transform3D(7, 0, 0, 0, 3, 0, 0, 0, 0.3, 0, 0, 0)
+shape = SubResource("1")
 
 [node name="mesh" type="MeshInstance3D" parent="."]
-transform = Transform3D( 7, 0, 0, 0, 3, 0, 0, 0, 0.3, 0, 0, 0 )
-mesh = SubResource( 2 )
-material/0 = ExtResource( 1 )
+transform = Transform3D(7, 0, 0, 0, 3, 0, 0, 0, 0.3, 0, 0, 0)
+mesh = SubResource("2")
+material/0 = ExtResource("1")

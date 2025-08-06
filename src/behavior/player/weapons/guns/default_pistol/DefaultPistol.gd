@@ -15,4 +15,3 @@ func _local_ready():
 		load("res://behavior/player/weapons/guns/default_pistol/DefaultPistolShot.mp3")
 	bolt_pull_sound =\
 		load("res://behavior/player/weapons/guns/default_pistol/HammerCock.mp3")
-

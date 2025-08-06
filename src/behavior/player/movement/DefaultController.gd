@@ -43,6 +43,7 @@ var horizantal_velocity = Vector3()
 var movement = Vector3()
 var gravity_direction = Vector3()
 var current_interaction: Interactable
+var delta: float
 
 # this needs to be set to an active equipable
 var active_equipable: Equipable = Equipable.new()
@@ -165,6 +166,8 @@ func _physics_process(delta):
 	var speed = 0.0
 	var accel = DEACCEL
 	var forward = false
+	
+	self.delta = delta
 
 	direction = Vector3()
 
@@ -219,6 +222,9 @@ func _physics_process(delta):
 	set_velocity(movement)
 	set_up_direction(Vector3.UP)
 	move_and_slide()
+	
+	if Input.is_action_pressed("interact") && current_interaction:
+		current_interaction.interact(self)
 
 func register_interaction(interactable: Interactable):
 	current_interaction = interactable
