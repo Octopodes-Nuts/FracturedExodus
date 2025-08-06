@@ -16,8 +16,9 @@
 		"secondary_weapon": "KEY_2",
 		"tertiary_weapon":  "KEY_3",
 		"reload":           "KEY_R",
-		"equipment_1":      "KEY_4",
-		"equipment_2":      "KEY_5"
+		"medpack":			"KEY_4",
+		"equipment_1":      "KEY_5",
+		"equipment_2":      "KEY_6"
 	},
 
 	"default_controls" : {
@@ -37,7 +38,8 @@
 		"secondary_weapon": "KEY_2",
 		"tertiary_weapon":  "KEY_3",
 		"reload":           "KEY_R",
-		"equipment_1":      "KEY_4",
-		"equipment_2":      "KEY_5"
+		"medpack":			"KEY_4",
+		"equipment_1":      "KEY_5",
+		"equipment_2":      "KEY_6"
 	}
 }
