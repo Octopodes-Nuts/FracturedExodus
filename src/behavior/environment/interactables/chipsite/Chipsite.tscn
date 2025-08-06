@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://yd8x8go2gbvp"]
+
+[ext_resource type="Script" uid="uid://cnpecu486x5ec" path="res://behavior/environment/interactables/chipsite/Chipsite.gd" id="1_2u3oo"]
+[ext_resource type="Material" path="res://debug/materials/debug_yellow.tres" id="2_ddlpj"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_vn1s6"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_kmhir"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_0rs4c"]
+
+[node name="interactable" type="Area3D"]
+script = ExtResource("1_2u3oo")
+metadata/_custom_type_script = "uid://421oj18723k5"
+
+[node name="collision" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_vn1s6")
+
+[node name="model" type="StaticBody3D" parent="."]
+
+[node name="mesh" type="MeshInstance3D" parent="model"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.2, 0)
+material_override = ExtResource("2_ddlpj")
+mesh = SubResource("CylinderMesh_kmhir")
+
+[node name="collision" type="CollisionShape3D" parent="model"]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.2, 0)
+shape = SubResource("CylinderShape3D_0rs4c")
+
+[connection signal="body_entered" from="." to="." method="_on_interactable_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_interactable_body_exited"]

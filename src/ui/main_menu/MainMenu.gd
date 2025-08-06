@@ -7,8 +7,13 @@
 
 extends Control
 
+# this server code will likely be moved
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
+		pass
+
 	pass # Replace with function body.
 
 

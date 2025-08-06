@@ -43,4 +43,3 @@ func _use():
 	else:
 		# player plays weapon click
 		pass
-

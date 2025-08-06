@@ -1,4 +1,4 @@
-[gd_scene format=2]
+[gd_scene format=3 uid="uid://bfg7ec53qjakk"]
 
 [node name="settings_menu" type="Control"]
 anchor_right = 1.0

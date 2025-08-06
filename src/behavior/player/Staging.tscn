@@ -1,23 +1,23 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://hrl1e7hvkiwo"]
 
-[ext_resource path="res://behavior/player/Player.tscn" type="PackedScene" id=1]
-[ext_resource path="res://debug/materials/debug_tile_0.tres" type="Material" id=2]
+[ext_resource type="PackedScene" uid="uid://dcudvv4sp7mpc" path="res://behavior/player/Player.tscn" id="1"]
+[ext_resource type="Material" path="res://debug/materials/debug_tile_0.tres" id="2"]
 
-[sub_resource type="BoxShape3D" id=1]
+[sub_resource type="BoxShape3D" id="1"]
 
-[sub_resource type="BoxMesh" id=2]
+[sub_resource type="BoxMesh" id="2"]
 
 [node name="staging" type="Node3D"]
 
 [node name="floor" type="StaticBody3D" parent="."]
-transform = Transform3D( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0 )
+transform = Transform3D(100, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
-shape = SubResource( 1 )
+shape = SubResource("1")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
-mesh = SubResource( 2 )
-material/0 = ExtResource( 2 )
+mesh = SubResource("2")
+material/0 = ExtResource("2")
 
-[node name="player_body" parent="." instance=ExtResource( 1 )]
-transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.52237, 0 )
+[node name="player_body" parent="." instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.52237, 0)

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://d4dp1jiuyvvfd"]
 
 [ext_resource type="Material" path="res://debug/materials/debug_red.tres" id="1"]
-[ext_resource type="Script" path="res://behavior/ai/basic_enemy/BasicEnemy.gd" id="2"]
+[ext_resource type="Script" uid="uid://caku43dp742sm" path="res://behavior/ai/basic_enemy/BasicEnemy.gd" id="2"]
 
 [sub_resource type="CapsuleMesh" id="1"]
 material = ExtResource("1")
