@@ -1,11 +1,11 @@
 [gd_scene load_steps=12 format=3 uid="uid://duc3lnn8wj4oe"]
 
 [ext_resource type="Material" path="res://debug/materials/debug_tile_0.tres" id="1"]
-[ext_resource type="PackedScene" uid="uid://dcudvv4sp7mpc" path="res://behavior/player/Player.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://ceruobdbatpjg" path="res://behavior/environment/camp/Camp.tscn" id="3"]
 [ext_resource type="Script" uid="uid://cctu8la0pomnv" path="res://behavior/environment/map/Map.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://c0dtouqw086c3" path="res://behavior/environment/extract/Extract.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://tyrqdeshokos" path="res://debug/debug_scenes/target_0.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://ec8yapldak1y" path="res://behavior/environment/spawn/Spawn.tscn" id="7_6e0fn"]
 [ext_resource type="Environment" uid="uid://bpsr8wpuo8pbl" path="res://default_env.tres" id="8_2boat"]
 [ext_resource type="PackedScene" uid="uid://yd8x8go2gbvp" path="res://behavior/environment/interactables/chipsite/Chipsite.tscn" id="8_6e0fn"]
 
@@ -49,6 +49,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1775, 0.437937, -27.8467)
 [node name="target" parent="NavigationRegion3D" instance=ExtResource("7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.7816, 0.987813, -1.33422)
 
+[node name="Spawns" type="Node" parent="NavigationRegion3D"]
+
+[node name="Spawn3" parent="NavigationRegion3D/Spawns" instance=ExtResource("7_6e0fn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.9837, 1.38826, -47.9697)
+
+[node name="Spawn2" parent="NavigationRegion3D/Spawns" instance=ExtResource("7_6e0fn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.071, 1.46816, 0)
+
+[node name="Spawn" parent="NavigationRegion3D/Spawns" instance=ExtResource("7_6e0fn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.5511, 1.65233, 44.9728)
+
 [node name="light" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.939693, 0.34202, 0, -0.241845, 0.664463, 0.707107, 0.241845, -0.664463, 0.707107, 0, 36.8459, 0)
 light_energy = 1.323
@@ -59,9 +70,6 @@ shadow_bias = 0.05
 directional_shadow_mode = 1
 directional_shadow_split_2 = 0.206
 directional_shadow_max_distance = 2513.1
-
-[node name="player_body" parent="." instance=ExtResource("2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.02465, 3.54708, 0)
 
 [node name="interactable" parent="." instance=ExtResource("8_6e0fn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2715, 0.5, -9.47658)

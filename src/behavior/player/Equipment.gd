@@ -31,8 +31,8 @@ var player: DefaultController
 # if the throwable has been lit, this is true
 var started: bool = false
 
-func _init(controller: DefaultController):
-	player = controller
+func _init():
+	pass
 
 """
 This occurs when trigger use_time runs out
@@ -80,3 +80,6 @@ func _drop():
 
 func throw():
 	pass
+	
+func _register_controller(controller: DefaultController):
+	player = controller

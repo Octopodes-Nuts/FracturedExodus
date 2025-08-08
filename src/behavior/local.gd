@@ -22,4 +22,3 @@ func _get_player_attributes():
 	# along with whatever else becomes clear later
 	# this should happen once accepted into a match
 	pass
-

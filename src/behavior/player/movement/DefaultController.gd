@@ -67,12 +67,14 @@ func _ready():
 	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
-	character.equipment_1.equipment_instance = MedPack.new(self)
-	character.equipment_2.equipment_instance = Equipment.new(self)
+	character.medkit = MedPack.new()
+	character.equipment_1.equipment_instance = Equipment.new()
+	character.equipment_2.equipment_instance = Equipment.new()
 	# end default character
 	swap_equipped(character.primary_weapon)
 	# load from character 
 	Local.player = self
+	Local.HUD = HUD
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -82,6 +84,7 @@ func _ads(delta):
 			lerp((active_equipable.ads_position - head.transform.origin),
 				active_equipable.ADS_LERP * delta)
 		head.fov = lerp(head.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
+		Local.HUD.set_visible(false)
 
 func _undo_ads(delta):
 	if active_equipable is Weapon:
@@ -89,6 +92,7 @@ func _undo_ads(delta):
 			lerp((active_equipable.default_position - head.transform.origin),
 				active_equipable.ADS_LERP * delta)
 		head.fov = lerp(head.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
+		Local.HUD.set_visible(true)
 	elif head.fov != float(Settings.FOV):
 		head.fov = lerp(head.fov, float(Settings.FOV), DEFAULT_LERP * delta)
 
@@ -224,7 +228,8 @@ func _physics_process(delta):
 	move_and_slide()
 	
 	if Input.is_action_pressed("interact") && current_interaction:
-		current_interaction.interact(self)
+		if current_interaction.has_method("interact"):
+			current_interaction.interact(self)
 
 func register_interaction(interactable: Interactable):
 	current_interaction = interactable

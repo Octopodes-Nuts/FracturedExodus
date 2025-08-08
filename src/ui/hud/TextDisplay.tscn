@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bemh5f0ii405o"]
+
+[ext_resource type="Script" uid="uid://gfj0rg6cun4g" path="res://ui/hud/TextDisplay.gd" id="1_x7h1v"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_cxq14"]
+font_size = 24
+
+[node name="TextDisplay" type="Label"]
+label_settings = SubResource("LabelSettings_cxq14")
+script = ExtResource("1_x7h1v")

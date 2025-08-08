@@ -9,7 +9,7 @@ extends Node
 	"Fusilier": load('res://behavior/player/movement/empire/fusilier/Fusilier.tscn'),
 	"Jaeger": load('res://behavior/player/movement/empire/jaeger/Jaeger.tscn'),
 	"Leutnant": load('res://behavior/player/movement/empire/leutnant/Leutnant.tscn'),
-	"Medzin": load('res://behavior/player/movement/empire/medzin/Medzin.tscn')	
+	"Sanitäter": load('res://behavior/player/movement/empire/medzin/Medzin.tscn')	
 }
 
 @onready var entente_classes = {
