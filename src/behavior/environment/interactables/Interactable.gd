@@ -12,6 +12,8 @@ class_name Interactable
 var interactable: bool = false
 var auto_interact: bool = false
 var interaction_in_process = false
+var display_text = "Interact"
+var interact_actiom = "interact"
 
 func _physics_process(_delta):
 		_local_physics_step(_delta)
@@ -35,13 +37,23 @@ func _local_physics_step(_delta):
 # or by handlng this interaction on the player side. May be best to do it on the player side
 func _on_interactable_body_entered(body:Node):
 	if body.has_method('register_interaction'):
+		_add_interaction(body)
 		body.register_interaction(self)
+		Local.HUD.get_child(2).display_text(null, display_text)
 	pass # Replace with function body.
 
 func _on_interactable_body_exited(body):
 	if body.has_method('remove_interaction'):
 		body.remove_interaction(self)
 		_remove_interaction(body)
+		Local.HUD.get_child(2).clear()
+
+func _refresh(body: Node):
+	_on_interactable_body_entered(body)
+	_on_interactable_body_exited(body)
 
 func _remove_interaction(_node: Node):
+	pass
+
+func _add_interaction(_node: Node):
 	pass

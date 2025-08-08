@@ -13,6 +13,8 @@ var primary_weapon: Weapon = Weapon.new()
 var secondary_weapon: Weapon = Weapon.new()
 # tertiary is utility melee
 var tertiary_weapon: Weapon = Weapon.new()
+# quaternary is medkit
+var medkit: MedPack = MedPack.new()
 
 var equipment_1: EquipmentSlot = EquipmentSlot.new()
 var equipment_2: EquipmentSlot = EquipmentSlot.new()
