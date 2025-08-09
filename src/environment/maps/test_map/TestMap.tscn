@@ -55,10 +55,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.7816, 0.987813, -1.33422)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.9837, 1.38826, -47.9697)
 
 [node name="Spawn2" parent="NavigationRegion3D/Spawns" instance=ExtResource("7_6e0fn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 49.071, 1.46816, 0)
+transform = Transform3D(-0.100501, 0, 0.994937, 0, 1, 0, -0.994937, 0, -0.100501, 49.071, 1.46816, 0)
 
 [node name="Spawn" parent="NavigationRegion3D/Spawns" instance=ExtResource("7_6e0fn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.5511, 1.65233, 44.9728)
+transform = Transform3D(-0.649568, 0, 0.760304, 0, 1, 0, -0.760304, 0, -0.649568, 47.5511, 1.65233, 44.9728)
 
 [node name="light" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.939693, 0.34202, 0, -0.241845, 0.664463, 0.707107, 0.241845, -0.664463, 0.707107, 0, 36.8459, 0)
