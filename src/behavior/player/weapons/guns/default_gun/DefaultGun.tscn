@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dtorn2rmhnlqx"]
+[gd_scene load_steps=5 format=3 uid="uid://dtorn2rmhnlqx"]
 
 [ext_resource type="Script" uid="uid://dp5qccjsc4ko5" path="res://behavior/player/weapons/guns/default_gun/DefaultGun.gd" id="1"]
+[ext_resource type="ArrayMesh" uid="uid://gkebv2vgwuu3" path="res://debug/models/weapons/lee_einfield/Body.res" id="2_1qg7e"]
 
 [sub_resource type="BoxShape3D" id="1"]
 size = Vector3(0.11, 0.11, 0.807)
@@ -24,7 +25,15 @@ disabled = true
 
 [node name="mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.11, 0, 0, 0, 0.11, 0, 0, 0, 0.807, 0, 0, 0)
+visible = false
 mesh = SubResource("2")
 
 [node name="muzzle_end" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(-150, 0, -1.31134e-05, 0, 150, 0, 1.31134e-05, 0, -150, 0, -0.0868725, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
+mesh = ExtResource("2_1qg7e")
+skeleton = NodePath("../..")

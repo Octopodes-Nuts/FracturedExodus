@@ -1,0 +1,9 @@
+[gd_resource type="Environment" load_steps=2 format=3 uid="uid://bwgug8pu2v12l"]
+
+[ext_resource type="Sky" uid="uid://crbfl06idhep" path="res://ui/main_menu/Sky.tres" id="1_7ctcp"]
+
+[resource]
+background_mode = 2
+sky = ExtResource("1_7ctcp")
+ambient_light_source = 3
+ambient_light_color = Color(0.870813, 0.874185, 0.826203, 1)

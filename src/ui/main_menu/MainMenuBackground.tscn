@@ -1,3 +1,9 @@
-[gd_scene format=3 uid="uid://dx340x64cys4r"]
+[gd_scene load_steps=2 format=3 uid="uid://dx340x64cys4r"]
 
-[node name="MainMenuBackground" type="Node3D"]
+[ext_resource type="Environment" uid="uid://bwgug8pu2v12l" path="res://ui/main_menu/MainMenuBackground.tres" id="1_r6bfq"]
+
+[node name="MainMenuBackground" type="WorldEnvironment"]
+environment = ExtResource("1_r6bfq")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
