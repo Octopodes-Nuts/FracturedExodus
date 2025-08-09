@@ -61,6 +61,9 @@ var character: Character
 
 #This should be changed to be more global
 func _ready():
+	head.make_current()
+	if Local.terrain:
+		Local.terrain.set_camera(head)
 	add_child(HUD)
 	# set up default character
 	character = Character.new()
