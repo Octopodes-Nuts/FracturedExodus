@@ -1,11 +1,11 @@
 ###############################################################
 # Copyright (c) 2023 Octopodes Studio
-# Authors: Isaiah Raspet
+# Authors: Isaiah Raspet, Minsung Kim
 ###############################################################
-
 extends CharacterBody3D
 
 @onready var navigation: NavigationAgent3D = $navigation
+@onready var enemy_mesh: MeshInstance3D = $enemy_mesh
 
 @export var health: float = 100.0
 @export var speed: float = 40.0
@@ -18,6 +18,13 @@ var gravity_direction: Vector3
 var movement: Vector3 = Vector3()
 
 var home: Area3D
+
+var idle_color: Material = preload('res://debug/materials/debug_teal.tres')
+var scan_color: Material = preload('res://debug/materials/debug_forest_green.tres')
+var patrol_color: Material = preload('res://debug/materials/debug_yellow.tres')
+var aware_color: Material = preload('res://debug/materials/debug_red.tres')
+var persuit_color: Material = preload('res://debug/materials/debug_blue.tres')
+var retreat_color: Material = preload('res://debug/materials/debug_white.tres')
 
 func update_target_location(location):
 	location.y = 0
@@ -64,8 +71,9 @@ func _die():
 # And make a decision as to its current state
 func evaluate(delta):
 	if Awareness == AwarenessState.IDLE:
+		enemy_mesh.set_surface_override_material(0, idle_color)
+		
 		# find a random position to move to
-
 		var too_far = false
 		if Vector2(global_transform.origin.x,global_transform.origin.z).\
 			distance_to(Vector2(home.global_transform.origin.x, home.global_transform.origin.z)) > MAX_DIST:
@@ -112,6 +120,8 @@ func evaluate(delta):
 		return (navigation.get_next_path_position() - global_transform.origin).normalized()
 
 	elif Awareness == AwarenessState.PATROL:
+		enemy_mesh.set_surface_override_material(0, patrol_color)
+		
 		# continue along current path
 		# patrolling should take place within a certain range of the AI's home location
 		if navigation.distance_to_target() < 2.0:
@@ -121,6 +131,8 @@ func evaluate(delta):
 			return (navigation.get_next_path_position() - global_transform.origin).normalized()
 
 	elif Awareness == AwarenessState.SCAN:
+		enemy_mesh.set_surface_override_material(0, scan_color)
+		
 		current_scan_time -= delta
 		if current_scan_time <= 0:
 			Awareness = AwarenessState.IDLE
@@ -128,6 +140,7 @@ func evaluate(delta):
 		return Vector3.ZERO
 
 	elif Awareness == AwarenessState.AWARE:
+		enemy_mesh.set_surface_override_material(0, aware_color)
 		
 		if navigation.distance_to_target() < 2.0:
 			Awareness = AwarenessState.IDLE
@@ -135,9 +148,13 @@ func evaluate(delta):
 			return (navigation.get_next_path_position() - global_transform.origin).normalized()
 
 	elif Awareness == AwarenessState.PERSUIT:
+		enemy_mesh.set_surface_override_material(0, persuit_color)
+		
 		# actively chase player
 		pass
 	elif Awareness == AwarenessState.RETREAT:
+		enemy_mesh.set_surface_override_material(0, retreat_color)
+		
 		# run away from player or toward cover
 		pass
 		
