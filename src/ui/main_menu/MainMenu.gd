@@ -20,3 +20,9 @@ func _ready():
 func _on_test_scene_btn_pressed():
 	if not get_tree().change_scene_to_file("res://environment/maps/test_map/TestMap.tscn") == OK:
 		print("Error getting to file")
+
+
+func _on_test_scene_btn_2_pressed() -> void:
+	if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
+		print("Error getting to file")
+		

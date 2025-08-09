@@ -27,4 +27,18 @@ offset_right = 0.559967
 offset_bottom = 0.159973
 text = "Enter Test Scene"
 
+[node name="test_scene_btn2" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.026
+anchor_top = 0.375
+anchor_right = 0.207
+anchor_bottom = 0.456
+offset_left = -0.920002
+offset_top = -3.05176e-05
+offset_right = -0.440063
+offset_bottom = 0.519958
+text = "Enter Test Scene 2"
+
 [connection signal="pressed" from="test_scene_btn" to="." method="_on_test_scene_btn_pressed"]
+[connection signal="pressed" from="test_scene_btn2" to="." method="_on_test_scene_btn_2_pressed"]
