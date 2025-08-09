@@ -50,6 +50,7 @@ func noise(direction: Vector3):
 	if Awareness != AwarenessState.PERSUIT or \
 		Awareness != AwarenessState.RETREAT:
 		Awareness = AwarenessState.AWARE
+		first_frame = true
 		update_target_location(direction)
 
 func _ready():
@@ -69,9 +70,12 @@ func _die():
 
 # This step is to evaluate what the enemy can see
 # And make a decision as to its current state
+var first_frame: bool = true
 func evaluate(delta):
 	if Awareness == AwarenessState.IDLE:
-		enemy_mesh.set_surface_override_material(0, idle_color)
+		if first_frame:
+			enemy_mesh.set_surface_override_material(0, idle_color)
+			first_frame = false
 		
 		# find a random position to move to
 		var too_far = false
@@ -114,36 +118,46 @@ func evaluate(delta):
 
 			
 		Awareness = AwarenessState.PATROL
+		first_frame = true
 
 		update_target_location(target)
 		
 		return (navigation.get_next_path_position() - global_transform.origin).normalized()
 
 	elif Awareness == AwarenessState.PATROL:
-		enemy_mesh.set_surface_override_material(0, patrol_color)
+		if first_frame:
+			enemy_mesh.set_surface_override_material(0, patrol_color)
+			first_frame = false
 		
 		# continue along current path
 		# patrolling should take place within a certain range of the AI's home location
 		if navigation.distance_to_target() < 2.0:
 			current_scan_time = scan_time
 			Awareness = AwarenessState.SCAN
+			first_frame = true
 		else:
 			return (navigation.get_next_path_position() - global_transform.origin).normalized()
 
 	elif Awareness == AwarenessState.SCAN:
-		enemy_mesh.set_surface_override_material(0, scan_color)
+		if first_frame:
+			enemy_mesh.set_surface_override_material(0, scan_color)
+			first_frame = false
 		
 		current_scan_time -= delta
 		if current_scan_time <= 0:
 			Awareness = AwarenessState.IDLE
+			first_frame = true
 		
 		return Vector3.ZERO
 
 	elif Awareness == AwarenessState.AWARE:
-		enemy_mesh.set_surface_override_material(0, aware_color)
+		if first_frame:
+			enemy_mesh.set_surface_override_material(0, aware_color)
+			first_frame = false
 		
 		if navigation.distance_to_target() < 2.0:
 			Awareness = AwarenessState.IDLE
+			first_frame = true
 		else:
 			return (navigation.get_next_path_position() - global_transform.origin).normalized()
 
