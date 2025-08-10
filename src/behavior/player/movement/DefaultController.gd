@@ -61,6 +61,7 @@ var character: Character
 
 #This should be changed to be more global
 func _ready():
+	Local.input_active = true
 	head.make_current()
 	if Local.terrain:
 		Local.terrain.set_camera(head)
