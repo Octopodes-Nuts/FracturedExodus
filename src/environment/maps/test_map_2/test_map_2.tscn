@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://ccget10dm00lb"]
+[gd_scene load_steps=45 format=3 uid="uid://ccget10dm00lb"]
 
 [ext_resource type="Environment" uid="uid://etedssom36ge" path="res://environment/maps/test_map_2/new_environment.tres" id="1_un54m"]
 [ext_resource type="Script" uid="uid://cctu8la0pomnv" path="res://behavior/environment/map/Map.gd" id="2_qhi0f"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://bndw1kjtqx24o" path="res://environment/maps/test_map_2/textures/rocks_n.png" id="12_176ot"]
 [ext_resource type="Texture2D" uid="uid://7nbyrwyq03v4" path="res://environment/maps/test_map_2/textures/pathtex.png" id="13_176ot"]
 [ext_resource type="Texture2D" uid="uid://cljcjt3i4jrk0" path="res://environment/maps/test_map_2/textures/pathtex_n.png" id="14_i71pw"]
+[ext_resource type="Material" path="res://debug/materials/debug_blue.tres" id="20_i71pw"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_un54m"]
 cell_height = 1.0
@@ -188,6 +189,7 @@ name = "pathtex"
 id = 3
 albedo_texture = ExtResource("13_176ot")
 normal_texture = ExtResource("14_i71pw")
+uv_scale = 0.35
 
 [sub_resource type="Terrain3DAssets" id="Terrain3DAssets_qhi0f"]
 mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_16h54"), SubResource("Terrain3DMeshAsset_a4cet"), SubResource("Terrain3DMeshAsset_rtqky"), SubResource("Terrain3DMeshAsset_yu704"), SubResource("Terrain3DMeshAsset_6yoq6")])
@@ -195,6 +197,15 @@ texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_k2gh6"]
 size = Vector2(1000, 1000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i71pw"]
+size = Vector3(1, 40, 80)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6nkx3"]
+size = Vector3(1, 40, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ulnwu"]
+size = Vector3(1, 40, 200)
 
 [node name="TestMap2" type="WorldEnvironment"]
 environment = ExtResource("1_un54m")
@@ -212,17 +223,39 @@ top_level = true
 script = ExtResource("3_16h54")
 metadata/_edit_lock_ = true
 
-[node name="Spawn" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -230.458, 7.4808, 49.7773)
-
-[node name="interactable" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("4_16h54")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -243.341, 4.18713, 42.698)
-
 [node name="camp" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("5_qhi0f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8379, 45.1757, 126.566)
 
 [node name="Camera3D" type="Camera3D" parent="NavigationRegion3D/Terrain3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.35678, 36.4629, 197.521)
+
+[node name="Spawns" type="Node" parent="NavigationRegion3D/Terrain3D"]
+
+[node name="Spawn4" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.5465, 6.01037, 256.895)
+
+[node name="Spawn3" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 196.618, 6.4103, 146.855)
+
+[node name="Spawn2" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 227.597, 6.75896, 19.8544)
+
+[node name="Spawn" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -230.458, 7.4808, 49.7773)
+
+[node name="Extracts" type="Node" parent="NavigationRegion3D/Terrain3D"]
+
+[node name="interactable" parent="NavigationRegion3D/Terrain3D/Extracts" instance=ExtResource("4_16h54")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -243.341, 4.18713, 42.698)
+
+[node name="interactable2" parent="NavigationRegion3D/Terrain3D/Extracts" instance=ExtResource("4_16h54")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 237.655, 4.09218, 15.8427)
+
+[node name="interactable3" parent="NavigationRegion3D/Terrain3D/Extracts" instance=ExtResource("4_16h54")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200.508, 4.37122, 147.736)
+
+[node name="interactable4" parent="NavigationRegion3D/Terrain3D/Extracts" instance=ExtResource("4_16h54")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.8303, 3.7542, 260.524)
 
 [node name="water" type="MeshInstance3D" parent="NavigationRegion3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.51085, 0)
@@ -233,6 +266,174 @@ surface_material_override/0 = ExtResource("8_uidhu")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.511, 0)
 mesh = SubResource("PlaneMesh_k2gh6")
 surface_material_override/0 = ExtResource("8_uidhu")
+
+[node name="water3" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.511, 1000)
+mesh = SubResource("PlaneMesh_k2gh6")
+surface_material_override/0 = ExtResource("8_uidhu")
+
+[node name="water4" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.511, 1000)
+mesh = SubResource("PlaneMesh_k2gh6")
+surface_material_override/0 = ExtResource("8_uidhu")
+
+[node name="water9" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1000, 2.511, 1000)
+mesh = SubResource("PlaneMesh_k2gh6")
+surface_material_override/0 = ExtResource("8_uidhu")
+
+[node name="water5" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1000, 2.511, 0)
+mesh = SubResource("PlaneMesh_k2gh6")
+surface_material_override/0 = ExtResource("8_uidhu")
+
+[node name="water6" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1000, 2.511, -1000)
+mesh = SubResource("PlaneMesh_k2gh6")
+surface_material_override/0 = ExtResource("8_uidhu")
+
+[node name="water7" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.511, -1000)
+mesh = SubResource("PlaneMesh_k2gh6")
+surface_material_override/0 = ExtResource("8_uidhu")
+
+[node name="water8" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 2.511, -1000)
+mesh = SubResource("PlaneMesh_k2gh6")
+surface_material_override/0 = ExtResource("8_uidhu")
+
+[node name="water10" type="MeshInstance3D" parent="NavigationRegion3D"]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, -0.568834, 0)
+mesh = SubResource("PlaneMesh_k2gh6")
+surface_material_override/0 = ExtResource("20_i71pw")
+
+[node name="bounds" type="Node" parent="NavigationRegion3D"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 251.228, 15.5317, 73.0395)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D16" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 233.325, 15.5317, 149.512)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D16"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D17" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(0.928654, 0, -0.370946, 0, 1, 0, 0.370946, 0, 0.928654, 198.343, 15.5317, 217.822)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D17"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0.737335, 0, -5.92857)
+shape = SubResource("BoxShape3D_6nkx3")
+
+[node name="StaticBody3D18" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(0.391277, 0, -0.920273, 0, 1, 0, 0.920273, 0, 0.391277, 140.73, 15.5317, 252.468)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D18"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(0.986777, 0, 0.162086, 0, 1, 0, -0.162086, 0, 0.986777, 262.963, 15.5317, -3.34458)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D2"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(0.948229, 0, 0.317586, 0, 1, 0, -0.317586, 0, 0.948229, 262.094, 15.5317, -81.6436)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D3"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D4" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(0.714008, 0, 0.700137, 0, 1, 0, -0.700137, 0, 0.714008, 238.346, 17.8316, -154.578)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D4"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D5" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(0.590113, 0, 0.807321, 0, 1, 0, -0.807321, 0, 0.590113, 192.76, 17.8316, -217.92)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D5"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D6" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(0.590113, 0, 0.807321, 0, 1, 0, -0.807321, 0, 0.590113, 142.403, 17.8316, -277.089)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D6"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D7" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(0.174473, 0, 0.984662, 0, 1, 0, -0.984662, 0, 0.174473, 82.9758, 18.2725, -321.441)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D7"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D8" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(-0.180313, 0, 0.983609, 0, 1, 0, -0.983609, 0, -0.180313, 8.64065, 18.2725, -339.235)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D8"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D9" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(-0.499501, 0, 0.866313, 0, 1, 0, -0.866313, 0, -0.499501, -66.9987, 18.2725, -330.382)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D9"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D10" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(-0.991597, 0, 0.129367, 0, 1, 0, -0.129367, 0, -0.991597, -118.678, 18.2725, -283.59)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D10"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D11" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(-0.830469, 0, 0.557064, 0, 1, 0, -0.557064, 0, -0.830469, -161.861, 18.2725, -219.959)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D11"]
+transform = Transform3D(0.972679, 0, -0.232155, 0, 1, 0, 0.232155, 0, 0.972679, 0, 0, 0)
+shape = SubResource("BoxShape3D_i71pw")
+
+[node name="StaticBody3D12" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(-0.830469, 0, 0.557064, 0, 1, 0, -0.557064, 0, -0.830469, -266.039, 18.2725, -75.3831)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D12"]
+transform = Transform3D(0.995865, 0, 0.0908583, 0, 1, 0, -0.0908583, 0, 0.995865, -6.74313, 0, 45.0407)
+shape = SubResource("BoxShape3D_ulnwu")
+
+[node name="StaticBody3D13" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(-0.998051, 0, -0.0624072, 0, 1, 0, 0.0624072, 0, -0.998051, -271.697, 18.2725, 118.815)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D13"]
+transform = Transform3D(0.995865, 0, 0.0908583, 0, 1, 0, -0.0908583, 0, 0.995865, -6.74313, 0, 45.0407)
+shape = SubResource("BoxShape3D_ulnwu")
+
+[node name="StaticBody3D14" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(-0.649607, 0, -0.76027, 0, 1, 0, 0.76027, 0, -0.649607, -141.746, 18.2725, 263.331)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D14"]
+transform = Transform3D(0.995865, 0, 0.0908583, 0, 1, 0, -0.0908583, 0, 0.995865, -6.74313, 0, 45.0407)
+shape = SubResource("BoxShape3D_ulnwu")
+
+[node name="StaticBody3D15" type="StaticBody3D" parent="NavigationRegion3D/bounds"]
+transform = Transform3D(0.0376377, 0, -0.999291, 0, 1, 0, 0.999291, 0, 0.0376377, 51.0301, 18.2725, 278.828)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/bounds/StaticBody3D15"]
+transform = Transform3D(0.995865, 0, 0.0908583, 0, 1, 0, -0.0908583, 0, 0.995865, -6.74313, 0, 45.0407)
+shape = SubResource("BoxShape3D_ulnwu")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.583124, 0.752061, 0.307198, -0.811957, 0.527291, 0.25038, 0.0263186, -0.395434, 0.918117, 0, 170.534, 0)
