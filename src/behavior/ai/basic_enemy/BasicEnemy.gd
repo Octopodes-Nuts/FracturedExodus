@@ -186,8 +186,8 @@ func _physics_process(delta):
 
 	if not is_on_floor():
 		gravity_direction += Vector3.DOWN * gravity * delta
-	else:
-		gravity_direction = -get_floor_normal()
+	#else:
+	#	gravity_direction = -get_floor_normal()
 
 
 	

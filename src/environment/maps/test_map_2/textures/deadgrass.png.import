@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ddprscrpsofah"
-path.bptc="res://.godot/imported/ground037_alb_ht.png-d854c3c88beba9927351b95063edffa2.bptc.ctex"
+uid="uid://haq6ddq1tncs"
+path.s3tc="res://.godot/imported/deadgrass.png-3a27d8bc94f5332ab918f34ac0fe4413.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,16 +11,16 @@ metadata={
 
 [deps]
 
-source_file="res://demo/assets/textures/ground037_alb_ht.png"
-dest_files=["res://.godot/imported/ground037_alb_ht.png-d854c3c88beba9927351b95063edffa2.bptc.ctex"]
+source_file="res://environment/maps/test_map_2/textures/deadgrass.png"
+dest_files=["res://.godot/imported/deadgrass.png-3a27d8bc94f5332ab918f34ac0fe4413.s3tc.ctex"]
 
 [params]
 
 compress/mode=2
-compress/high_quality=true
+compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
-compress/normal_map=2
+compress/normal_map=0
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

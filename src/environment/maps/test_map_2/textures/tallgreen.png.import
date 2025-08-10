@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c307hdmos4gtm"
-path.bptc="res://.godot/imported/rock023_nrm_rgh.png-dd524905a15817dac8149681cddc8975.bptc.ctex"
+uid="uid://f07mmb6e4puk"
+path.s3tc="res://.godot/imported/tallgreen.png-a52e9741a6224d1e0ecd3e847082018b.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,16 +11,16 @@ metadata={
 
 [deps]
 
-source_file="res://demo/assets/textures/rock023_nrm_rgh.png"
-dest_files=["res://.godot/imported/rock023_nrm_rgh.png-dd524905a15817dac8149681cddc8975.bptc.ctex"]
+source_file="res://environment/maps/test_map_2/textures/tallgreen.png"
+dest_files=["res://.godot/imported/tallgreen.png-a52e9741a6224d1e0ecd3e847082018b.s3tc.ctex"]
 
 [params]
 
 compress/mode=2
-compress/high_quality=true
+compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1
-compress/normal_map=2
+compress/normal_map=0
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1

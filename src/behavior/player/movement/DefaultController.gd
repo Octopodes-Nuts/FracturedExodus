@@ -185,10 +185,9 @@ func _physics_process(delta):
 		
 	if not is_on_floor():
 		gravity_direction += Vector3.DOWN * gravity * delta
-	elif is_on_floor() and full_contact:
-		gravity_direction = -get_floor_normal() * gravity
-	else:
-		gravity_direction = -get_floor_normal()
+	#elif is_on_floor() and full_contact:
+	#	gravity_direction = -get_floor_normal() * gravity
+	##	gravity_direction = -get_floor_normal()
 
 	if Input.is_action_just_pressed("jump") and is_on_floor()\
 		and full_contact and Local.input_active:
