@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://bv066jxlvrrcm"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_xkvgi"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_iylui"]
+
+[node name="list_item" type="Button"]
+anchors_preset = -1
+offset_right = 477.0
+offset_bottom = 119.0
+
+[node name="image" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 32.0
+offset_right = 468.0
+offset_bottom = 107.0
+texture = SubResource("CanvasTexture_xkvgi")
+
+[node name="name" type="Label" parent="."]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 5.0
+offset_right = 469.0
+offset_bottom = 28.0
+text = "weapon name"
+label_settings = SubResource("LabelSettings_iylui")
+horizontal_alignment = 1
+vertical_alignment = 1
