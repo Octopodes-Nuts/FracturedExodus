@@ -38,6 +38,20 @@ func set_bullet_origin(spatial: Node3D):
 	secondary_weapon.muzzle_end = spatial
 	tertiary_weapon.muzzle_end = spatial
 
+func load_from_character(character: CharacterDef):
+	if character.Weapon1:
+		primary_weapon = WeaponRegister.gun_register[character.Weapon1]
+	if character.Weapon2:
+		secondary_weapon = WeaponRegister.gun_register[character.Weapon2]
+	if character.Weapon3:
+		tertiary_weapon = WeaponRegister.melee_register[character.Weapon3]
+	# TODO: Update when we have an equipment register
+	if character.Equipment1:
+		equipment_1.equipment_instance = null
+	if character.Equipment2:
+		equipment_2.equipment_instance = null
+
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

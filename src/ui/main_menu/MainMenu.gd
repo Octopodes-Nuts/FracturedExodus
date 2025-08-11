@@ -13,6 +13,11 @@ extends Control
 func _ready():
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
 		pass
+	if ResourceLoader.exists("res://load/Characters.res"):
+		Local.characters = ResourceLoader.load("res://Characters.res")
+	else:
+		var characters = CharactersResource.new()
+		ResourceSaver.save(characters, "res://load/Characters.res")
 
 	pass # Replace with function body.
 

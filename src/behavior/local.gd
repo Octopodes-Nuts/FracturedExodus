@@ -13,6 +13,7 @@ var player: CharacterBody3D
 var HUD: Control
 var input_active = true
 var terrain: Terrain3D = null
+var characters: CharactersResource
 
 func _ready():
 	_get_player_attributes()
