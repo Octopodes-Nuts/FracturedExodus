@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://fm55cmw02ao2"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_fx5rf"]
+
+[node name="weapon_select" type="Panel"]
+custom_minimum_size = Vector2(10, 10)
+anchors_preset = -1
+anchor_top = 0.051
+anchor_right = 0.257
+anchor_bottom = 0.95
+offset_top = -0.0800018
+offset_right = 0.559998
+
+[node name="search" type="TextEdit" parent="."]
+layout_mode = 2
+offset_left = 54.0
+offset_top = 4.0
+offset_right = 486.0
+offset_bottom = 42.0
+
+[node name="search_graphic" type="TextureRect" parent="."]
+layout_mode = 2
+offset_left = 11.0
+offset_top = 4.0
+offset_right = 49.0
+offset_bottom = 43.0
+texture = SubResource("CanvasTexture_fx5rf")

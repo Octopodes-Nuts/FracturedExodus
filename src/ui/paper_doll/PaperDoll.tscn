@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://cx8wrsam0j5j5"]
+
+[node name="paper_doll" type="Panel"]
+anchors_preset = -1
+anchor_right = 0.263
+anchor_bottom = 0.437
+offset_right = 0.039978
+offset_bottom = 0.039978
+
+[node name="weapon_slot_1" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 15.0
+offset_top = 14.0
+offset_right = 490.0
+offset_bottom = 148.0
+
+[node name="weapon_slot_2" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 15.0
+offset_top = 164.0
+offset_right = 490.0
+offset_bottom = 298.0
+
+[node name="weapon_slot_3" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 17.0
+offset_top = 317.0
+offset_right = 151.0
+offset_bottom = 451.0
+
+[node name="eq_slot_1" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 188.0
+offset_top = 317.0
+offset_right = 322.0
+offset_bottom = 451.0
+
+[node name="eq_slot_2" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 355.0
+offset_top = 318.0
+offset_right = 489.0
+offset_bottom = 452.0

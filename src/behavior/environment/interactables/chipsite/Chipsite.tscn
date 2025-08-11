@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://yd8x8go2gbvp"]
 
 [ext_resource type="Script" uid="uid://cnpecu486x5ec" path="res://behavior/environment/interactables/chipsite/Chipsite.gd" id="1_2u3oo"]
-[ext_resource type="Material" path="res://debug/materials/debug_yellow.tres" id="2_ddlpj"]
+[ext_resource type="Material" uid="uid://clxsvej0fs234" path="res://debug/materials/debug_yellow.tres" id="2_ddlpj"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_vn1s6"]
 

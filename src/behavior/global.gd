@@ -7,6 +7,8 @@ extends Node
 
 # Script containing variables that are global to each match
 var chipsites: Array = []
+var spawns: Array = []
+var chipsite_spawns: Array = []
 
 # Map Root is the top level of a map
 var map_root: WorldEnvironment
@@ -21,4 +23,7 @@ func add_chipsite(chipsite: Node3D):
 	chipsites.append(chipsite)
 
 func remove_chipsite(chipsite: Node):
-	chipsites.append(chipsite)
+	pass
+
+func add_spawn(spawn: Node):
+	spawns.append(spawn)

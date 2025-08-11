@@ -27,7 +27,7 @@ var DEFAULT_LERP = 20.0
 @export var DEACCEL: float = 10.0
 
 @export var mouse_sensitivity: float = 0.03
-@export var gravity: float = 20.0
+@export var gravity: float = 15.0
 @export var jump: float = 10.0
 
 @export var step_sound: String
@@ -61,18 +61,24 @@ var character: Character
 
 #This should be changed to be more global
 func _ready():
+	Local.input_active = true
+	head.make_current()
+	if Local.terrain:
+		Local.terrain.set_camera(head)
 	add_child(HUD)
 	# set up default character
 	character = Character.new()
 	character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
-	character.equipment_1.equipment_instance = MedPack.new(self)
-	character.equipment_2.equipment_instance = Equipment.new(self)
+	character.medkit = MedPack.new()
+	character.equipment_1.equipment_instance = Equipment.new()
+	character.equipment_2.equipment_instance = Equipment.new()
 	# end default character
 	swap_equipped(character.primary_weapon)
 	# load from character 
 	Local.player = self
+	Local.HUD = HUD
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -82,6 +88,7 @@ func _ads(delta):
 			lerp((active_equipable.ads_position - head.transform.origin),
 				active_equipable.ADS_LERP * delta)
 		head.fov = lerp(head.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
+		Local.HUD.set_visible(false)
 
 func _undo_ads(delta):
 	if active_equipable is Weapon:
@@ -89,6 +96,7 @@ func _undo_ads(delta):
 			lerp((active_equipable.default_position - head.transform.origin),
 				active_equipable.ADS_LERP * delta)
 		head.fov = lerp(head.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
+		Local.HUD.set_visible(true)
 	elif head.fov != float(Settings.FOV):
 		head.fov = lerp(head.fov, float(Settings.FOV), DEFAULT_LERP * delta)
 
@@ -118,6 +126,10 @@ func _process(delta):
 	elif Input.is_action_just_pressed("equipment_2") and\
 		Local.input_active and character.equipment_2.equipment_instance != null:
 			swap_equipped(character.equipment_2.equipment_instance)
+	elif Input.is_action_just_pressed("use_scanner"):
+		if Local.input_active and character.scanner != null:
+			swap_equipped(character.scanner)
+
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
 		_ads(delta)
@@ -178,10 +190,9 @@ func _physics_process(delta):
 		
 	if not is_on_floor():
 		gravity_direction += Vector3.DOWN * gravity * delta
-	elif is_on_floor() and full_contact:
-		gravity_direction = -get_floor_normal() * gravity
-	else:
-		gravity_direction = -get_floor_normal()
+	#elif is_on_floor() and full_contact:
+	#	gravity_direction = -get_floor_normal() * gravity
+	##	gravity_direction = -get_floor_normal()
 
 	if Input.is_action_just_pressed("jump") and is_on_floor()\
 		and full_contact and Local.input_active:
@@ -224,7 +235,8 @@ func _physics_process(delta):
 	move_and_slide()
 	
 	if Input.is_action_pressed("interact") && current_interaction:
-		current_interaction.interact(self)
+		if current_interaction.has_method("interact"):
+			current_interaction.interact(self)
 
 func register_interaction(interactable: Interactable):
 	current_interaction = interactable
@@ -238,4 +250,9 @@ func remove_interaction(interactable: Interactable):
 
 # this will be an RPC
 func extract():
+	#Send RPC to server to remove node from scene
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	Local.input_active = false
+	if not get_tree().change_scene_to_file("res://ui/extraction/Extraction.tscn") == OK:
+		print("Error getting to file")
 	print('extract successful')

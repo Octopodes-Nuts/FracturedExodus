@@ -1,12 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://c2vdf5bs4gl6y"]
+[gd_scene load_steps=4 format=3 uid="uid://c2vdf5bs4gl6y"]
 
 [ext_resource type="Texture2D" uid="uid://lj8x80hs34ug" path="res://ui/hud/crosshair.png" id="1"]
+[ext_resource type="PackedScene" uid="uid://brvwixs700y2q" path="res://ui/hud/ExtractTimer.tscn" id="2_ywxef"]
+[ext_resource type="PackedScene" uid="uid://bemh5f0ii405o" path="res://ui/hud/TextDisplay.tscn" id="3_4sqfl"]
 
 [node name="hud" type="Control"]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="crosshair" type="TextureRect" parent="."]
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -17,3 +24,29 @@ offset_right = 384.0
 offset_bottom = 384.0
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("1")
+
+[node name="ExtractTimer" parent="." instance=ExtResource("2_ywxef")]
+visible = false
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.081
+anchor_right = 0.5
+anchor_bottom = 0.081
+offset_left = -307.0
+offset_top = -0.480003
+offset_right = 307.0
+offset_bottom = 15.52
+
+[node name="TextDisplay" parent="." instance=ExtResource("3_4sqfl")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.745
+anchor_right = 0.5
+anchor_bottom = 0.745
+offset_left = -232.0
+offset_top = -11.6001
+offset_right = 230.0
+offset_bottom = 11.3999
+horizontal_alignment = 1
+vertical_alignment = 1

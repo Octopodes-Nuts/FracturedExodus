@@ -33,9 +33,6 @@ var started: bool = false
 
 func _init():
 	pass
-	
-func _register_equipment(controller: DefaultController):
-	player = controller
 
 """
 This occurs when trigger use_time runs out
@@ -83,3 +80,4 @@ func _drop():
 
 func throw():
 	pass
+	
