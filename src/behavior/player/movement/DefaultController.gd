@@ -27,7 +27,7 @@ var DEFAULT_LERP = 20.0
 @export var DEACCEL: float = 10.0
 
 @export var mouse_sensitivity: float = 0.03
-@export var gravity: float = 20.0
+@export var gravity: float = 15.0
 @export var jump: float = 10.0
 
 @export var step_sound: String

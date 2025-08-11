@@ -27,13 +27,14 @@ var fractured: Array = []
 # Placeholder for camp behavior
 func _ready():
 	# define random number of fractured
+	# Enemy spawing needs to be moved to LOD @MINSUNG YOU DO THIS
 	randomize()
 	number_fractured = int(randf_range(1, max_fractured + 1))
 	# mint random number of fractured
 	for ai in range(number_fractured):
 		fractured.append(ai_load_path.instantiate())
 		self.add_child(fractured[ai])
-		fractured[ai].transform.origin = Vector3(ai + 4, 2, ai + 4)
+		fractured[ai].transform.origin = Vector3(ai + 4, global_transform.origin.y + 2, ai + 4)
 		# set location to somewhere within the player radius
 		# future proof, make sure foot is on the ground in hilly areas
 		# fractured also cannot spawn inside eachother

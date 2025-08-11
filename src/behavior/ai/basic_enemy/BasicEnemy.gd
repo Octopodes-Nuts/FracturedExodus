@@ -182,7 +182,7 @@ func _physics_process(delta):
 	# 	heading = (navigation.get_next_path_position() - current_location).normalized() * speed * delta
 
 	# evaluate should not happen every frame
-	heading = evaluate(delta) * speed * delta
+	# heading = evaluate(delta) * speed * delta
 
 	if not is_on_floor():
 		gravity_direction += Vector3.DOWN * gravity * delta
@@ -196,8 +196,8 @@ func _physics_process(delta):
 	movement.x = gravity_direction.x
 	movement.y = gravity_direction.y
 
-	movement.z += heading.z
-	movement.x += heading.x
+	# movement.z += heading.z
+	# movement.x += heading.x
 
 	#warning-ignore:return_value_discarded
 	set_velocity(movement)
