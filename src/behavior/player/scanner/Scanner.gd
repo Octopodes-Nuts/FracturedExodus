@@ -3,7 +3,9 @@
 # Authors: Isaiah Raspet
 ###############################################################
 
-extends Node3D
+extends Equipable
+
+class_name Scanner
 
 @onready var Global = get_node("/root/Global")
 @onready var notifier: ScannerLight = $notifier
@@ -19,25 +21,25 @@ func _detect():
 
 	for site in Global.chipsites:
 		
-		var x = site.transform.origin.x - transform.origin.x
-		var z = site.transform.origin.z - transform.origin.z
+		var x = site.global_transform.origin.x - global_transform.origin.x
+		var z = site.global_transform.origin.z - global_transform.origin.z
 
-		var angle = rad_to_deg(atan(x / z))
 
-		if x < 0:
-			if z < 0:
-				angle = -angle #correct
-			else:
-				angle = 180 - angle
-		else:
-			if z < 0:
-				angle = -angle
-			else:
-				angle = -180 - angle #correct
+		var angle = rad_to_deg(atan2(-x , -z))
+
+		# if x < 0:
+		# 	if z < 0:
+		# 		angle = -angle #correct
+		# 	else:
+		# 		angle = 180 - angle
+		# else:
+		# 	if z < 0:
+		# 		angle = -angle
+		# 	else:
+		# 		angle = -180 - angle #correct
 		
-		if rotation_degrees.y > (angle - 5)\
-			and rotation_degrees.y < (angle + 5):
+		if global_rotation_degrees.y > (angle - 5)\
+			and global_rotation_degrees.y < (angle + 5):
 			return 1.0
 		else:
 			return -1.0
-

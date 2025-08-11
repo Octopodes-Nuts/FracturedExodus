@@ -14,7 +14,6 @@ class_name Weapon
 @export var ads_fov: float = 50.0
 
 var muzzle_end: Node3D
-var ads: bool = false
 
 enum WeaponType {
 	GUN,

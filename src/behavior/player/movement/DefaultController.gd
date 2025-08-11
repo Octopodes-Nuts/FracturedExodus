@@ -126,6 +126,10 @@ func _process(delta):
 	elif Input.is_action_just_pressed("equipment_2") and\
 		Local.input_active and character.equipment_2.equipment_instance != null:
 			swap_equipped(character.equipment_2.equipment_instance)
+	elif Input.is_action_just_pressed("use_scanner"):
+		if Local.input_active and character.scanner != null:
+			swap_equipped(character.scanner)
+
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
 		_ads(delta)

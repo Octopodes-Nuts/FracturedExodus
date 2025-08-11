@@ -8,6 +8,7 @@ extends Node
 # Script containing variables that are global to each match
 var chipsites: Array = []
 var spawns: Array = []
+var chipsite_spawns: Array = []
 
 # Map Root is the top level of a map
 var map_root: WorldEnvironment
