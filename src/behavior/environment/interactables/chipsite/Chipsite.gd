@@ -14,6 +14,7 @@ var debug_red = preload("res://debug/materials/debug_red.tres")
 
 func _ready():
 	Global.add_chipsite(self)
+	print("Here!")
 
 # Start extraction of resource
 func interact(other):

@@ -7,6 +7,8 @@ extends Node
 
 class_name Character
 
+var ScannerInstance = preload("res://behavior/player/scanner/Scanner.tscn")
+
 var class_type: int # ClassType
 var experience: int
 var primary_weapon: Weapon = Weapon.new()
@@ -15,13 +17,15 @@ var secondary_weapon: Weapon = Weapon.new()
 var tertiary_weapon: Weapon = Weapon.new()
 # quaternary is medkit
 var medkit: MedPack = MedPack.new()
+var scanner: Scanner
+
 
 var equipment_1: EquipmentSlot = EquipmentSlot.new()
 var equipment_2: EquipmentSlot = EquipmentSlot.new()
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+func _init():
+	scanner = ScannerInstance.instantiate()
 
 # set all weapons inactive
 func set_weapons_inactive():

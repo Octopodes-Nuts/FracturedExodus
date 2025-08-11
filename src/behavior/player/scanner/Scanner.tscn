@@ -1,17 +1,28 @@
-[gd_scene load_steps=3 format=3 uid="uid://cc356bcjf4g4q"]
+[gd_scene load_steps=5 format=3 uid="uid://cc356bcjf4g4q"]
+
+[ext_resource type="Script" uid="uid://b2i2dqrsheukd" path="res://behavior/player/scanner/Scanner.gd" id="1_hckro"]
+[ext_resource type="Script" uid="uid://qr7md7mgu5k1" path="res://behavior/player/scanner/ScannerLight.gd" id="2_mrisb"]
 
 [sub_resource type="BoxShape3D" id="1"]
 
 [sub_resource type="BoxMesh" id="2"]
 
 [node name="scanner" type="StaticBody3D"]
+script = ExtResource("1_hckro")
+default_position = Vector3(0, 0, -1)
 
 [node name="collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.3, 0, 0, 0)
 shape = SubResource("1")
+disabled = true
 
 [node name="mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.3, 0, 0, 0)
 mesh = SubResource("2")
 
 [node name="notifier" type="Node3D" parent="."]
+script = ExtResource("2_mrisb")
+
+[node name="light" type="OmniLight3D" parent="notifier"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00474741, 0.145679, 0.107874)
+light_color = Color(1, 0.0745098, 1, 1)

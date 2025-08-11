@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://ccget10dm00lb"]
+[gd_scene load_steps=46 format=3 uid="uid://ccget10dm00lb"]
 
 [ext_resource type="Environment" uid="uid://etedssom36ge" path="res://environment/maps/test_map_2/new_environment.tres" id="1_un54m"]
 [ext_resource type="Script" uid="uid://cctu8la0pomnv" path="res://behavior/environment/map/Map.gd" id="2_qhi0f"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://bndw1kjtqx24o" path="res://environment/maps/test_map_2/textures/rocks_n.png" id="12_176ot"]
 [ext_resource type="Texture2D" uid="uid://7nbyrwyq03v4" path="res://environment/maps/test_map_2/textures/pathtex.png" id="13_176ot"]
 [ext_resource type="Texture2D" uid="uid://cljcjt3i4jrk0" path="res://environment/maps/test_map_2/textures/pathtex_n.png" id="14_i71pw"]
+[ext_resource type="PackedScene" uid="uid://ilhiegf4ielk" path="res://behavior/environment/interactables/chipsite/ChipsiteSpawn.tscn" id="19_6nkx3"]
 [ext_resource type="Material" path="res://debug/materials/debug_blue.tres" id="20_i71pw"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_un54m"]
@@ -212,7 +213,7 @@ environment = ExtResource("1_un54m")
 script = ExtResource("2_qhi0f")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
 navigation_mesh = SubResource("NavigationMesh_un54m")
 
 [node name="Terrain3D" type="Terrain3D" parent="NavigationRegion3D"]
@@ -256,6 +257,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200.508, 4.37122, 147.736)
 
 [node name="interactable4" parent="NavigationRegion3D/Terrain3D/Extracts" instance=ExtResource("4_16h54")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.8303, 3.7542, 260.524)
+
+[node name="ChipsiteSpawn" parent="NavigationRegion3D/Terrain3D/Extracts" instance=ExtResource("19_6nkx3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100.024, 29.9186, 55.1323)
 
 [node name="water" type="MeshInstance3D" parent="NavigationRegion3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.51085, 0)
