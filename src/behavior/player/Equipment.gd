@@ -31,7 +31,10 @@ var player: DefaultController
 # if the throwable has been lit, this is true
 var started: bool = false
 
-func _init(controller: DefaultController):
+func _init():
+	pass
+	
+func _register_equipment(controller: DefaultController):
 	player = controller
 
 """
