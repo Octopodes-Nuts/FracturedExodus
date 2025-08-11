@@ -1,28 +1,40 @@
-[gd_scene load_steps=3 format=3 uid="uid://bv066jxlvrrcm"]
+[gd_scene load_steps=4 format=3 uid="uid://bv066jxlvrrcm"]
+
+[ext_resource type="Script" uid="uid://ch32fy084vqku" path="res://ui/paper_doll/ListItem.gd" id="1_nv8je"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_xkvgi"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_iylui"]
 
 [node name="list_item" type="Button"]
-anchors_preset = -1
 offset_right = 477.0
 offset_bottom = 119.0
+script = ExtResource("1_nv8je")
 
-[node name="image" type="TextureRect" parent="."]
-layout_mode = 0
+[node name="img" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 10.0
 offset_top = 32.0
-offset_right = 468.0
-offset_bottom = 107.0
+offset_right = -9.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = SubResource("CanvasTexture_xkvgi")
 
 [node name="name" type="Label" parent="."]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 9.0
 offset_top = 5.0
-offset_right = 469.0
-offset_bottom = 28.0
+offset_right = -8.0
+offset_bottom = -91.0
+grow_horizontal = 2
+grow_vertical = 2
 text = "weapon name"
 label_settings = SubResource("LabelSettings_iylui")
 horizontal_alignment = 1

@@ -40,11 +40,11 @@ func set_bullet_origin(spatial: Node3D):
 
 func load_from_character(character: CharacterDef):
 	if character.Weapon1:
-		primary_weapon = WeaponRegister.gun_register[character.Weapon1]
+		primary_weapon = WeaponRegister.gun_register[character.Weapon1].instantiate()
 	if character.Weapon2:
-		secondary_weapon = WeaponRegister.gun_register[character.Weapon2]
+		secondary_weapon = WeaponRegister.gun_register[character.Weapon2].instantiate()
 	if character.Weapon3:
-		tertiary_weapon = WeaponRegister.melee_register[character.Weapon3]
+		tertiary_weapon = WeaponRegister.melee_register[character.Weapon3].instantiate()
 	# TODO: Update when we have an equipment register
 	if character.Equipment1:
 		equipment_1.equipment_instance = null

@@ -1,4 +1,7 @@
-[gd_scene format=3 uid="uid://cx8wrsam0j5j5"]
+[gd_scene load_steps=3 format=3 uid="uid://cx8wrsam0j5j5"]
+
+[ext_resource type="Script" uid="uid://xw0vgnkaduua" path="res://ui/paper_doll/PaperDoll.gd" id="1_a1apq"]
+[ext_resource type="PackedScene" uid="uid://bv066jxlvrrcm" path="res://ui/paper_doll/ListItem.tscn" id="1_vdvxg"]
 
 [node name="paper_doll" type="Panel"]
 anchors_preset = -1
@@ -6,43 +9,49 @@ anchor_right = 0.263
 anchor_bottom = 0.437
 offset_right = 0.039978
 offset_bottom = 0.039978
+script = ExtResource("1_a1apq")
 
-[node name="weapon_slot_1" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 15.0
-offset_top = 14.0
+[node name="primary_weapon" parent="." instance=ExtResource("1_vdvxg")]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 10.0
 offset_right = 490.0
-offset_bottom = 148.0
+offset_bottom = 129.0
 
-[node name="weapon_slot_2" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 15.0
-offset_top = 164.0
-offset_right = 490.0
-offset_bottom = 298.0
-
-[node name="weapon_slot_3" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 17.0
-offset_top = 317.0
-offset_right = 151.0
-offset_bottom = 451.0
-
-[node name="eq_slot_1" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 188.0
-offset_top = 317.0
-offset_right = 322.0
-offset_bottom = 451.0
-
-[node name="eq_slot_2" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 355.0
-offset_top = 318.0
+[node name="secondary_weapon" parent="." instance=ExtResource("1_vdvxg")]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 144.0
 offset_right = 489.0
-offset_bottom = 452.0
+offset_bottom = 263.0
+
+[node name="melee_weapon" parent="." instance=ExtResource("1_vdvxg")]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 277.0
+offset_right = 156.0
+offset_bottom = 396.0
+
+[node name="eq_1" parent="." instance=ExtResource("1_vdvxg")]
+layout_mode = 0
+offset_left = 181.0
+offset_top = 279.0
+offset_right = 320.0
+offset_bottom = 398.0
+
+[node name="eq_2" parent="." instance=ExtResource("1_vdvxg")]
+layout_mode = 0
+offset_left = 349.0
+offset_top = 278.0
+offset_right = 489.0
+offset_bottom = 397.0
+
+[node name="done_btn" type="Button" parent="."]
+layout_mode = 0
+offset_left = 100.0
+offset_top = 417.0
+offset_right = 405.0
+offset_bottom = 458.0
+text = "Done"
+
+[connection signal="pressed" from="done_btn" to="." method="_on_done_btn_pressed"]
