@@ -220,6 +220,7 @@ navigation_mesh = SubResource("NavigationMesh_6nkx3")
 data_directory = "res://environment/maps/test_map_2/map_data"
 material = SubResource("Terrain3DMaterial_2g1uq")
 assets = SubResource("Terrain3DAssets_qhi0f")
+collision_mode = 3
 top_level = true
 script = ExtResource("3_16h54")
 metadata/_edit_lock_ = true
