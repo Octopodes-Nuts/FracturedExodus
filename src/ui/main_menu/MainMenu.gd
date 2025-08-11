@@ -14,12 +14,10 @@ func _ready():
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
 		pass
 	if ResourceLoader.exists("res://load/Characters.res"):
-		Local.characters = ResourceLoader.load("res://Characters.res")
+		Local.characters = ResourceLoader.load("res://load/Characters.res")
 	else:
 		var characters = CharactersResource.new()
 		ResourceSaver.save(characters, "res://load/Characters.res")
-
-	pass # Replace with function body.
 
 
 func _on_test_scene_btn_pressed():
