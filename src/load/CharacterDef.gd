@@ -2,20 +2,20 @@ extends Resource
 
 class_name CharacterDef
 
-var Name: String = ""
+@export var Name: String = ""
 
-var Date: String = ""
+@export var Date: String = ""
 
-var Weapon1: String = ""
+@export var Weapon1: String = ""
 
-var Weapon2: String = ""
+@export var Weapon2: String = ""
 
-var Weapon3: String = " "
+@export var Weapon3: String = " "
 
-var Equipment1: String = ""
+@export var Equipment1: String = ""
 
-var Equipment2: String = ""
+@export var Equipment2: String = ""
 
-var Class: String = ""
+@export var Class: String = ""
 
-var Faction: int = 0
+@export var Faction: int = 0

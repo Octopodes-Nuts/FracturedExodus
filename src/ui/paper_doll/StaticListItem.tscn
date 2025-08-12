@@ -5,10 +5,8 @@
 [sub_resource type="CanvasTexture" id="CanvasTexture_4cjdb"]
 
 [node name="static_list_item" type="Panel"]
-offset_left = 10.0
-offset_top = 8.0
-offset_right = 477.0
-offset_bottom = 116.0
+offset_right = 467.0
+offset_bottom = 108.0
 script = ExtResource("1_rdisf")
 
 [node name="name" type="Label" parent="."]

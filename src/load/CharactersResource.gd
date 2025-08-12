@@ -2,9 +2,12 @@ extends Resource
 
 class_name  CharactersResource
 
-var characters: Dictionary = {}
+@export var characters: Dictionary[String, CharacterDef] = {}
 
-func _init() -> void:
+func _init():
+	pass
+
+func make() -> void:
 	var minsung = CharacterDef.new()
 	minsung.Name = "Dirk MinSung"
 	minsung.Weapon1 = "DefaultShotgun"
@@ -13,3 +16,12 @@ func _init() -> void:
 	minsung.Equipment1 = ""
 	minsung.Equipment2 = ""
 	characters["MinSung"] = minsung
+	
+	var brevin = CharacterDef.new()
+	brevin.Name = "Brevin Squad"
+	brevin.Weapon1 = "DefaultGun"
+	brevin.Weapon2 = "DefaultPistol"
+	brevin.Weapon3 = ""
+	brevin.Equipment1 = ""
+	brevin.Equipment2 = ""
+	characters["Brevin"] = brevin
