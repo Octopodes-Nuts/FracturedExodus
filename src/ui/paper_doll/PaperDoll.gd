@@ -8,9 +8,22 @@ extends Node
 
 signal swap_paper_doll
 
+@onready var WeaponRegister = get_node('/root/WeaponRegister')
+
+var rendered = false
+func _process(_delta: float) -> void:
+	
+	if not rendered:
+		if Local.selected_character_def != null:
+			reload(Local.selected_character_def)
 
 func _on_done_btn_pressed() -> void:
 	emit_signal("swap_paper_doll")
 
 func reload(def: CharacterDef):
-	pass
+	primary_weapon.load_from(WeaponRegister.display_gun_register[def.Weapon1]["name"])
+	secondary_weapon.load_from(WeaponRegister.display_gun_register[def.Weapon2]["name"])
+	# melee_weapon.load_from(WeaponRegister.display_gun_register[def.Weapon3]["name"])
+	# eq_1.load_from(WeaponRegister.display_gun_register[def.Equipment1]["name"])
+	# eq_2.load_from(WeaponRegister.display_gun_register[def.Equipment2]["name"])
+	

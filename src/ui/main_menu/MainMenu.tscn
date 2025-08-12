@@ -57,7 +57,6 @@ offset_bottom = 0.519958
 text = "Enter Test Scene 2"
 
 [node name="static_paper_doll" parent="." instance=ExtResource("4_2ijps")]
-visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.478
@@ -78,6 +77,7 @@ offset_right = 1401.56
 offset_bottom = -13.0
 
 [node name="paper_doll" parent="." instance=ExtResource("6_vmw4a")]
+visible = false
 layout_mode = 1
 anchor_left = 0.467
 anchor_top = 0.52

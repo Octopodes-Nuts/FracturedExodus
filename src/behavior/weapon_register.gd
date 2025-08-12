@@ -14,6 +14,24 @@ extends Node
 	"DefaultShotgun": load("res://behavior/player/weapons/guns/default_shotgun/DefaultShotgun.tscn"),
 }
 
+@onready var display_gun_register = {
+	"DefaultGun": {
+		"name": "Default Gun",
+		"image": "",
+		"stats": "" # this will be a path to weapon stats?
+	},
+	"DefaultPistol": {
+		"name": "Default Pistol",
+		"image": "",
+		"stats": ""
+	},
+	"DefaultShotgun": {
+		"name": "Default Shotgun",
+		"image": "",
+		"stats": ""
+	}
+}
+
 @onready var melee_register = {
 	
 }
