@@ -1,10 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://jebyod4rmvpm"]
+[gd_scene load_steps=3 format=3 uid="uid://jebyod4rmvpm"]
+
+[ext_resource type="Script" uid="uid://cfhwf3ev5v2xy" path="res://ui/main_menu/CharacterChit.gd" id="1_2gbfb"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_7wtgf"]
 
 [node name="character_chit" type="Button"]
 offset_right = 138.0
 offset_bottom = 138.0
+script = ExtResource("1_2gbfb")
 
 [node name="name" type="Label" parent="."]
 layout_mode = 0

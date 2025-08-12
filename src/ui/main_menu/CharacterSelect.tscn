@@ -1,15 +1,29 @@
-[gd_scene load_steps=2 format=3 uid="uid://64xuuj3va1ut"]
+[gd_scene load_steps=3 format=3 uid="uid://64xuuj3va1ut"]
 
 [ext_resource type="PackedScene" uid="uid://jebyod4rmvpm" path="res://ui/main_menu/CharacterChit.tscn" id="1_6etpt"]
+[ext_resource type="Script" uid="uid://67rwda35h7k8" path="res://ui/main_menu/CharacterSelect.gd" id="1_xsfli"]
 
 [node name="character_select" type="Panel"]
 custom_minimum_size = Vector2(100, 100)
 offset_right = 1254.0
 offset_bottom = 182.0
+script = ExtResource("1_xsfli")
 
 [node name="character_chit" parent="." instance=ExtResource("1_6etpt")]
+visible = false
 layout_mode = 0
-offset_left = 18.0
+offset_left = 170.0
 offset_top = 18.0
-offset_right = 156.0
+offset_right = 308.0
 offset_bottom = 156.0
+
+[node name="new_btn" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 16.0
+offset_top = 19.0
+offset_right = 148.0
+offset_bottom = 156.0
+text = "+"
+
+[connection signal="pressed" from="new_btn" to="." method="_on_new_btn_pressed"]
