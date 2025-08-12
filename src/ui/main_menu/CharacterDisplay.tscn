@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://b835oks81kglu"]
+
+[ext_resource type="Script" uid="uid://cs4i8n7wnrwox" path="res://ui/main_menu/CharacterDisplay.gd" id="1_4g70r"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_552ua"]
+
+[node name="character_display" type="Panel"]
+offset_right = 357.0
+offset_bottom = 521.0
+script = ExtResource("1_4g70r")
+
+[node name="select_btn" type="Button" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 465.0
+offset_right = 341.0
+offset_bottom = 506.0
+text = "Select"
+
+[node name="character_render" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 49.0
+offset_right = 342.0
+offset_bottom = 450.0
+texture = SubResource("CanvasTexture_552ua")
+
+[node name="character_name" type="Label" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 8.0
+offset_right = 343.0
+offset_bottom = 41.0
+text = "Character Name"
+horizontal_alignment = 1
+vertical_alignment = 1

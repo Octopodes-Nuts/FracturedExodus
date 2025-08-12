@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://cncheqcuy6lqn"]
+
+[ext_resource type="PackedScene" uid="uid://dendx2knrmutr" path="res://ui/paper_doll/StaticListItem.tscn" id="1_dlnns"]
+[ext_resource type="Script" uid="uid://gfr3wakx4qgq" path="res://ui/paper_doll/StaticPaperDoll.gd" id="1_nnvwo"]
+
+[node name="static_paper_doll" type="Panel"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 490.0
+offset_bottom = 422.0
+script = ExtResource("1_nnvwo")
+
+[node name="primary_weapon" parent="." instance=ExtResource("1_dlnns")]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 0.0
+offset_right = 479.0
+offset_bottom = 108.0
+
+[node name="secondary_weapon" parent="." instance=ExtResource("1_dlnns")]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 124.0
+offset_right = 480.0
+offset_bottom = 232.0
+
+[node name="melee_weapon" parent="." instance=ExtResource("1_dlnns")]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 245.0
+offset_right = 147.0
+offset_bottom = 353.0
+
+[node name="eq_1" parent="." instance=ExtResource("1_dlnns")]
+layout_mode = 0
+offset_left = 171.0
+offset_top = 244.0
+offset_right = 308.0
+offset_bottom = 352.0
+
+[node name="eq_2" parent="." instance=ExtResource("1_dlnns")]
+layout_mode = 0
+offset_left = 337.0
+offset_top = 241.0
+offset_right = 475.0
+offset_bottom = 349.0

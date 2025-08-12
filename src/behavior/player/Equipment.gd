@@ -81,5 +81,3 @@ func _drop():
 func throw():
 	pass
 	
-func _register_controller(controller: DefaultController):
-	player = controller

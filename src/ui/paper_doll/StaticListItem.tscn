@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://dendx2knrmutr"]
+
+[ext_resource type="Script" uid="uid://ch32fy084vqku" path="res://ui/paper_doll/ListItem.gd" id="1_rdisf"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_4cjdb"]
+
+[node name="static_list_item" type="Panel"]
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 477.0
+offset_bottom = 116.0
+script = ExtResource("1_rdisf")
+
+[node name="name" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.998
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_right = -0.0660095
+offset_bottom = -85.0
+text = "Weapon Name"
+horizontal_alignment = 1
+
+[node name="img" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 27.0
+offset_right = -5.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_4cjdb")
