@@ -12,6 +12,7 @@ func _conntect_to_pressed(btn: Button):
 func _new_char_selected():
 	emit_signal("new_char_selected")
 
+# Make a change here to generating names
 var NameName = 0
 var rendered = false
 func _process(delta: float) -> void:
@@ -42,6 +43,9 @@ func render():
 
 func _on_new_btn_pressed() -> void:
 	var char_def = CharacterDef.new()
+	# prevent name collisions here
+	if str(NameName) in Local.characters.characters.keys():
+		NameName += 1
 	char_def.Name = str(NameName)
 	Local.characters.characters[char_def.Name] = char_def
 	Local.selected_character_def = char_def

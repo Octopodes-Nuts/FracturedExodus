@@ -10,7 +10,7 @@ class_name CharacterDef
 
 @export var Weapon2: String = ""
 
-@export var Weapon3: String = " "
+@export var Weapon3: String = ""
 
 @export var Equipment1: String = ""
 
