@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://64xuuj3va1ut"]
+
+[ext_resource type="PackedScene" uid="uid://jebyod4rmvpm" path="res://ui/main_menu/CharacterChit.tscn" id="1_6etpt"]
+
+[node name="character_select" type="Panel"]
+custom_minimum_size = Vector2(100, 100)
+offset_right = 1254.0
+offset_bottom = 182.0
+
+[node name="character_chit" parent="." instance=ExtResource("1_6etpt")]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = 156.0
+offset_bottom = 156.0

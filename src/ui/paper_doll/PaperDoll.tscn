@@ -6,9 +6,9 @@
 [node name="paper_doll" type="Panel"]
 anchors_preset = -1
 anchor_right = 0.263
-anchor_bottom = 0.437
+anchor_bottom = 0.386
 offset_right = 0.039978
-offset_bottom = 0.039978
+offset_bottom = 0.119995
 script = ExtResource("1_a1apq")
 
 [node name="primary_weapon" parent="." instance=ExtResource("1_vdvxg")]
@@ -45,13 +45,3 @@ offset_left = 349.0
 offset_top = 278.0
 offset_right = 489.0
 offset_bottom = 397.0
-
-[node name="done_btn" type="Button" parent="."]
-layout_mode = 0
-offset_left = 100.0
-offset_top = 417.0
-offset_right = 405.0
-offset_bottom = 458.0
-text = "Done"
-
-[connection signal="pressed" from="done_btn" to="." method="_on_done_btn_pressed"]

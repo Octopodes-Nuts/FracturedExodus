@@ -39,17 +39,4 @@ func _on_test_scene_btn_2_pressed() -> void:
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
-
-
-func _on_static_paper_doll_swap_paper_doll() -> void:
-	
-	
-	if static_paper_doll.visible:
-		static_paper_doll.visible = false
-		paper_doll.visible = true
-		paper_doll.reload(Local.selected_character_def)
-	else:
-		static_paper_doll.visible = true
-		paper_doll.visible = false
-		static_paper_doll.reload(Local.selected_character_def)
 		

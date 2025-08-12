@@ -43,15 +43,3 @@ offset_left = 337.0
 offset_top = 241.0
 offset_right = 475.0
 offset_bottom = 349.0
-
-[node name="select_btn" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 146.0
-offset_top = 370.0
-offset_right = 347.0
-offset_bottom = 409.0
-text = "Select
-"
-
-[connection signal="pressed" from="select_btn" to="." method="_on_select_btn_pressed"]
