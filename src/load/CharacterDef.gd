@@ -2,6 +2,9 @@ extends Resource
 
 class_name CharacterDef
 
+func _init(first: String = "", last: String = ""):
+	Name = first + " " + last
+
 @export var Name: String = ""
 
 @export var Date: String = ""

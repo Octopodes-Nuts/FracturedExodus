@@ -22,7 +22,6 @@ func _ready():
 		pass
 	if ResourceLoader.exists("res://load/Characters.res"):
 		Local.characters = ResourceLoader.load("res://load/Characters.res")
-		print("Loaded")
 		if len(Local.characters.characters) > 0:
 			Local.char_id = Local.characters.characters.keys()[0]
 			Local.selected_character_def = Local.characters.characters[Local.char_id]
@@ -32,6 +31,7 @@ func _ready():
 		if ResourceSaver.save(characters, "res://load/Characters.res") == OK:
 			Local.char_id = characters.characters.keys()[0]
 			Local.selected_character_def = characters.characters[Local.char_id]
+			Local.characters = characters
 
 
 func _on_test_scene_btn_pressed():
