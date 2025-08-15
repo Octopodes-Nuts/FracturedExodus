@@ -1,5 +1,7 @@
 extends Node
 
+@onready var block = $scroll_container/block
+
 signal new_char_selected
 signal new_char_created
 
@@ -41,7 +43,7 @@ func render():
 			var chit: CharacterChit = Chit.instantiate()
 			character_chits.append(chit)
 			chit.position = Vector2(170.0 + ((329 - 170) * pos), 18.0)
-			add_child(chit)
+			block.add_child(chit)
 			chit._def = Local.characters.characters[chr]
 			chit.pos = pos
 			chit.render()

@@ -9,21 +9,24 @@ offset_right = 1254.0
 offset_bottom = 182.0
 script = ExtResource("1_xsfli")
 
-[node name="character_chit" parent="." instance=ExtResource("1_6etpt")]
-visible = false
-layout_mode = 0
-offset_left = 170.0
-offset_top = 18.0
-offset_right = 308.0
-offset_bottom = 156.0
-
-[node name="new_btn" type="Button" parent="."]
+[node name="scroll_container" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
-offset_left = 16.0
-offset_top = 19.0
-offset_right = 148.0
-offset_bottom = 156.0
+anchor_right = 0.999
+offset_right = 0.253906
+offset_bottom = 200.0
+
+[node name="block" type="HBoxContainer" parent="scroll_container"]
+layout_mode = 2
+
+[node name="new_btn" type="Button" parent="scroll_container/block"]
+clip_contents = true
+custom_minimum_size = Vector2(180, 180)
+layout_mode = 2
 text = "+"
 
-[connection signal="pressed" from="new_btn" to="." method="_on_new_btn_pressed"]
+[node name="character_chit" parent="scroll_container/block" instance=ExtResource("1_6etpt")]
+visible = false
+layout_mode = 2
+
+[connection signal="pressed" from="scroll_container/block/new_btn" to="." method="_on_new_btn_pressed"]
