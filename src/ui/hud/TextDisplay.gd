@@ -1,8 +1,8 @@
 extends Label
 
-func display_text(action, text: String):
+func display_text(action, txt: String):
 	if not action:
-		self.text = text
+		self.text = txt
 	# Append action in front of text if there is text to display
 
 func clear():

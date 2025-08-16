@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://ccget10dm00lb"]
+[gd_scene load_steps=47 format=3 uid="uid://ccget10dm00lb"]
 
 [ext_resource type="Environment" uid="uid://etedssom36ge" path="res://environment/maps/test_map_2/new_environment.tres" id="1_un54m"]
 [ext_resource type="Script" uid="uid://cctu8la0pomnv" path="res://behavior/environment/map/Map.gd" id="2_qhi0f"]
@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://dddq8fu48dct4" path="res://environment/maps/test_map_2/textures/oneflower.png" id="4_6yoq6"]
 [ext_resource type="PackedScene" uid="uid://c0dtouqw086c3" path="res://behavior/environment/extract/Extract.tscn" id="4_16h54"]
 [ext_resource type="Texture2D" uid="uid://f07mmb6e4puk" path="res://environment/maps/test_map_2/textures/tallgreen.png" id="5_a4cet"]
-[ext_resource type="PackedScene" uid="uid://ceruobdbatpjg" path="res://behavior/environment/camp/Camp.tscn" id="5_qhi0f"]
 [ext_resource type="Texture2D" uid="uid://cl1xhadqj10g3" path="res://environment/maps/test_map_2/textures/grasstex.png" id="6_a4cet"]
 [ext_resource type="Texture2D" uid="uid://b7o2ubgp8jsb5" path="res://environment/maps/test_map_2/textures/twoflower.png" id="6_rtqky"]
 [ext_resource type="Texture2D" uid="uid://btawsr11s03jt" path="res://environment/maps/test_map_2/textures/sandtex.png" id="7_rtqky"]
@@ -242,10 +241,6 @@ top_level = true
 script = ExtResource("3_16h54")
 metadata/_edit_lock_ = true
 
-[node name="camp" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("5_qhi0f")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8379, 40.3115, -104.231)
-visible = false
-
 [node name="Camera3D" type="Camera3D" parent="NavigationRegion3D/Terrain3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.35678, 36.4629, 197.521)
 
@@ -289,14 +284,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.8303, 3.7542, 260.524)
 
 [node name="interactable5" parent="NavigationRegion3D/Terrain3D/Extracts" instance=ExtResource("4_16h54")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.89, 3.84746, -194.362)
-
-[node name="camp2" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("5_qhi0f")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63.3483, 19.9738, -206.683)
-visible = false
-
-[node name="camp3" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("5_qhi0f")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.52749, 20.4551, -235.284)
-visible = false
 
 [node name="ChipsiteSpawn" parent="." instance=ExtResource("19_6nkx3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100.024, 29.9186, 55.1323)

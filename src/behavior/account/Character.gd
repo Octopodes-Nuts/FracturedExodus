@@ -19,6 +19,7 @@ var tertiary_weapon: Weapon = Weapon.new()
 var medkit: MedPack = MedPack.new()
 var scanner: Scanner
 var has_scanner = false
+var has_objective = false
 
 
 var equipment_1: EquipmentSlot = EquipmentSlot.new()
@@ -86,9 +87,4 @@ func load_from_payload(pd: Dictionary):
 		equipment_1.equipment_instance = null
 	if pd["eq2"]:
 		equipment_2.equipment_instance = null
-
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	has_objective = pd["obj"]

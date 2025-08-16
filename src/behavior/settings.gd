@@ -31,14 +31,14 @@ var actions = [
 	"crouch",
 	"exit",
 	"ads",
-	"medkit",
 	"use_scanner",
 	"primary_weapon",
 	"secondary_weapon",
 	"tertiary_weapon",
 	"reload",
 	"equipment_1",
-	"equipment_2"
+	"equipment_2",
+	"medpack",
 ]
 
 # Key Bindings

@@ -3,6 +3,11 @@ extends Control
 @export var SIT_TIME = 4.0
 var time_sat = 0.0
 
+func _ready() -> void:
+	if Local.has_objective:
+		$text.text = "Extracted complete with objective"
+		Local.has_objective = false
+
 func _process(delta: float) -> void:
 	time_sat += delta
 	

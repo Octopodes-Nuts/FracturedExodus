@@ -149,7 +149,7 @@ func _process(delta):
 	elif Input.is_action_just_pressed("tertiary_weapon") and\
 			Local.input_active:
 		swap_equipped_from_index(2, true)
-	elif Input.is_action_just_pressed("medkit") and\
+	elif Input.is_action_just_pressed("medpack") and\
 		Local.input_active:
 		swap_equipped_from_index(3, true)
 	elif Input.is_action_just_pressed("equipment_1") and\
@@ -201,7 +201,7 @@ func swap_equipped(equipable: Equipable):
 		equipable.default_position - head.transform.origin
 		current_eqipped_key = equipable.key
 
-func swap_equipped_from_index(id: int, rpc: bool):
+func swap_equipped_from_index(id: int, call_rpc: bool):
 	var equipable = update_equipment()[id]
 	if active_equipable != equipable:
 		if active_equipable.get_parent() == head:
@@ -215,7 +215,7 @@ func swap_equipped_from_index(id: int, rpc: bool):
 		equipable.transform.origin = \
 		equipable.default_position - head.transform.origin
 		current_equipped_index = id
-		if rpc:
+		if call_rpc:
 			update_character_server.rpc_id(1, "active", id)
 
 func update_equipment():
@@ -343,7 +343,8 @@ func _character_payload() -> Dictionary:
 		"eq1": Local.selected_character_def.Equipment1,
 		"eq2": Local.selected_character_def.Equipment2,
 		"faction": Local.selected_character_def.Faction,
-		"scanner": character.has_scanner
+		"scanner": character.has_scanner,
+		"obj": character.has_objective
 	}
 
 @rpc("any_peer", "reliable")
@@ -364,6 +365,14 @@ func lose_scanner():
 		swap_equipped_from_index(3, true)
 	update_character_server.rpc_id(1, "scanner", false)
 
+func get_objective():
+	character.has_objective = true
+	update_character_server.rpc_id(1, "obj", true)
+
+func lose_objective():
+	character.has_objective = false
+	update_character_server.rpc_id(1, "obj", false)
+
 func hit(dmg: int):
 	_hit_local.rpc_id(name.to_int(), dmg)
 
@@ -382,6 +391,7 @@ func extract():
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	Local.input_active = false
 	multiplayer.multiplayer_peer = null
+	Local.has_objective = character.has_objective
 	if not get_tree().change_scene_to_file("res://ui/extraction/Extraction.tscn") == OK:
 		print("Error getting to file")
 	print('extract successful')
