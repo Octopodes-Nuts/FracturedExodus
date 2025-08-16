@@ -17,6 +17,7 @@ var characters: CharactersResource
 var selected_character_def: CharacterDef
 var char_id: String
 var host: bool = false
+var has_objective = false
 
 func _ready():
 	_get_player_attributes()

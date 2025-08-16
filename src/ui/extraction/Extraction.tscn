@@ -14,7 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_n3txe")
 
-[node name="Label" type="Label" parent="."]
+[node name="text" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.486

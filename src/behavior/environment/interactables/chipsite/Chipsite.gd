@@ -25,6 +25,7 @@ func interact(other):
 			$model/mesh.material_override = debug_red
 			print("Chip Extracted")
 			self.display_text = ""
+			other.get_objective()
 			_refresh(other)
 		Local.HUD.get_child(1).set_time_value((obtain_time / OBTAIN_TIME_TARGET) * 100)
 			
