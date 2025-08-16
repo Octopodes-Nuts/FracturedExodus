@@ -20,6 +20,7 @@ var player_huds: Dictionary
 var character_data: Dictionary = {}
 
 var spawn_parent: Node
+var bullet_spawn: Node
 
 signal character_update(ids: Array)
 # Deal with adding and removing chipsites from active list

@@ -158,7 +158,7 @@ func _process(delta):
 	elif Input.is_action_just_pressed("equipment_2") and\
 		Local.input_active and character.equipment_2.equipment_instance != null:
 			swap_equipped_from_index(5, true)
-	elif Input.is_action_just_pressed("use_scanner"):
+	elif Input.is_action_just_pressed("use_scanner") and character.has_scanner:
 		if Local.input_active and character.scanner != null:
 			swap_equipped_from_index(6, true)
 
@@ -342,7 +342,8 @@ func _character_payload() -> Dictionary:
 		"wep3": Local.selected_character_def.Weapon3,
 		"eq1": Local.selected_character_def.Equipment1,
 		"eq2": Local.selected_character_def.Equipment2,
-		"faction": Local.selected_character_def.Faction
+		"faction": Local.selected_character_def.Faction,
+		"scanner": character.has_scanner
 	}
 
 @rpc("any_peer", "reliable")
@@ -351,6 +352,17 @@ func update_character_server(field: String, val):
 	Global.character_data[sender_id][field] = val
 	Global.map_root.broadcast_character_data_update.rpc(sender_id, field, val)
 	emit_signal("character_update", [sender_id])
+
+func get_scanner():
+	character.has_scanner = true
+	update_character_server.rpc_id(1, "scanner", true)
+	swap_equipped_from_index(6, true)
+
+func lose_scanner():
+	character.has_scanner = false
+	if current_equipped_index == 6:
+		swap_equipped_from_index(3, true)
+	update_character_server.rpc_id(1, "scanner", false)
 
 func hit(dmg: int):
 	_hit_local.rpc_id(name.to_int(), dmg)

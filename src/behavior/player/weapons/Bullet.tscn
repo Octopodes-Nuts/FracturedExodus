@@ -1,21 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2onpcsaqdb3q"]
+[gd_scene load_steps=2 format=3 uid="uid://b2onpcsaqdb3q"]
 
 [ext_resource type="Script" uid="uid://bdfk0d7054ycq" path="res://behavior/player/weapons/Bullet.gd" id="1_ldov8"]
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ldov8"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:scale")
-properties/2/spawn = true
-properties/2/replication_mode = 1
 
 [node name="Bullet" type="RayCast3D"]
 collision_mask = 3
 script = ExtResource("1_ldov8")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_ldov8")

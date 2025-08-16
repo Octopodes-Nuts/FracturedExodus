@@ -13,7 +13,7 @@ var interactable: bool = false
 var auto_interact: bool = false
 var interaction_in_process = false
 var display_text = "Interact"
-var interact_actiom = "interact"
+var interact_action = "interact"
 
 func _physics_process(_delta):
 		_local_physics_step(_delta)
@@ -36,6 +36,7 @@ func _local_physics_step(_delta):
 # of the one who pressed the interact button with the one that is able to interact, 
 # or by handlng this interaction on the player side. May be best to do it on the player side
 func _on_interactable_body_entered(body:Node):
+	if not body.is_multiplayer_authority(): return
 	if body.has_method('register_interaction'):
 		_add_interaction(body)
 		body.register_interaction(self)
@@ -43,6 +44,7 @@ func _on_interactable_body_entered(body:Node):
 	pass # Replace with function body.
 
 func _on_interactable_body_exited(body):
+	if not body.is_multiplayer_authority(): return
 	if body.has_method('remove_interaction'):
 		body.remove_interaction(self)
 		_remove_interaction(body)

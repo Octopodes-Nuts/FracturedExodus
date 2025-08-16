@@ -39,8 +39,8 @@ var current_cycle: float = 0.0
 func _ready():
 	# set up envrionment
 	current_clip = clip_size
-	self.add_child(audio_player)
-	self.add_child(bolt_pull_stream)
+	Global.map_root.add_child(audio_player)
+	Global.map_root.add_child(bolt_pull_stream)
 	type = WeaponType.GUN
 	_local_ready()
 	
@@ -94,7 +94,7 @@ func _use():
 @rpc("any_peer")
 func _spawn_bullet(dict: Dictionary):
 	var bullet = BulletScene.instantiate()
-	Global.spawn_parent.add_child(bullet)
+	Global.bullet_spawn.add_child(bullet)
 	bullet.set_properties(
 		dict["speed"],
 		dict["origin"],

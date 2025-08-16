@@ -18,6 +18,7 @@ var tertiary_weapon: Weapon = Weapon.new()
 # quaternary is medkit
 var medkit: MedPack = MedPack.new()
 var scanner: Scanner
+var has_scanner = false
 
 
 var equipment_1: EquipmentSlot = EquipmentSlot.new()
@@ -79,6 +80,7 @@ func load_from_payload(pd: Dictionary):
 		else:
 			instances[pd["wep3"]] = WeaponRegister.gun_register[pd["wep3"]].instantiate()
 			tertiary_weapon = instances[pd["wep3"]]
+	has_scanner = pd["scanner"]
 	# TODO: Update when we have an equipment register
 	if pd["eq1"]:
 		equipment_1.equipment_instance = null

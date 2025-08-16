@@ -18,6 +18,7 @@ signal character_update(ids: Array)
 func _ready():
 	randomize()
 	Global.map_root = self
+	Global.bullet_spawn = $Bullet
 	connect("character_update", Global.emit_character_update)
 
 	if Local.host:
