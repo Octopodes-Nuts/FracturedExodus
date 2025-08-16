@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://hrl1e7hvkiwo"]
+[gd_scene load_steps=4 format=3 uid="uid://hrl1e7hvkiwo"]
 
 [ext_resource type="PackedScene" uid="uid://dcudvv4sp7mpc" path="res://behavior/player/Player.tscn" id="1"]
-[ext_resource type="Material" path="res://debug/materials/debug_tile_0.tres" id="2"]
 
 [sub_resource type="BoxShape3D" id="1"]
 
@@ -17,7 +16,6 @@ shape = SubResource("1")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
 mesh = SubResource("2")
-material/0 = ExtResource("2")
 
 [node name="player_body" parent="." instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.52237, 0)

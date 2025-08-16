@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://c2vdf5bs4gl6y"]
+[gd_scene load_steps=7 format=3 uid="uid://c2vdf5bs4gl6y"]
 
 [ext_resource type="Texture2D" uid="uid://lj8x80hs34ug" path="res://ui/hud/crosshair.png" id="1"]
+[ext_resource type="Script" uid="uid://c0yqvyd7ijmul" path="res://ui/hud/Hud.gd" id="1_by07e"]
 [ext_resource type="PackedScene" uid="uid://brvwixs700y2q" path="res://ui/hud/ExtractTimer.tscn" id="2_ywxef"]
 [ext_resource type="PackedScene" uid="uid://bemh5f0ii405o" path="res://ui/hud/TextDisplay.tscn" id="3_4sqfl"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_4sqfl"]
+font_size = 30
+
+[sub_resource type="ImageTexture" id="ImageTexture_by07e"]
 
 [node name="hud" type="Control"]
 layout_mode = 3
@@ -11,6 +17,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_by07e")
 
 [node name="crosshair" type="TextureRect" parent="."]
 layout_mode = 0
@@ -50,3 +57,37 @@ offset_right = 230.0
 offset_bottom = 11.3999
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="death_text" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -58.0
+offset_right = 190.0
+offset_bottom = 51.0
+text = "You Have Died"
+label_settings = SubResource("LabelSettings_4sqfl")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="health_slider" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 485.0
+offset_top = -147.0
+offset_right = -483.0
+offset_bottom = -33.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_icons/grabber_disabled = SubResource("ImageTexture_by07e")
+value = 100.0
+editable = false
+scrollable = false

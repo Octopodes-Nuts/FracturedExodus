@@ -15,7 +15,7 @@ func make() -> void:
 	minsung.Weapon3 = ""
 	minsung.Equipment1 = ""
 	minsung.Equipment2 = ""
-	characters["MinSung"] = minsung
+	characters[minsung.Name] = minsung
 	
 	var brevin = CharacterDef.new()
 	brevin.Name = "Brevin Squad"
@@ -24,4 +24,4 @@ func make() -> void:
 	brevin.Weapon3 = ""
 	brevin.Equipment1 = ""
 	brevin.Equipment2 = ""
-	characters["Brevin"] = brevin
+	characters[brevin.Name] = brevin

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dcudvv4sp7mpc"]
+[gd_scene load_steps=7 format=3 uid="uid://dcudvv4sp7mpc"]
 
 [ext_resource type="Script" uid="uid://p561hd5ejgpe" path="res://behavior/player/movement/DefaultController.gd" id="1"]
 [ext_resource type="Script" uid="uid://dbotvawysdgfa" path="res://behavior/player/movement/SoundSphere.gd" id="3_6l03r"]
@@ -11,7 +11,19 @@ radius = 0.4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_4ucha"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_psm2p"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:current_eqipped_key")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
 [node name="player_body" type="CharacterBody3D"]
+collision_layer = 2
 script = ExtResource("1")
 MAX_SPEED = 4.0
 MAX_SPRINT = 7.0
@@ -54,5 +66,8 @@ script = ExtResource("3_6l03r")
 [node name="collision" type="CollisionShape3D" parent="sound_sphere"]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 shape = SubResource("SphereShape3D_4ucha")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_psm2p")
 
 [connection signal="body_entered" from="sound_sphere" to="sound_sphere" method="_on_body_entered"]

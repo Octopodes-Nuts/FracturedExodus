@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://b2onpcsaqdb3q"]
+
+[ext_resource type="Script" uid="uid://bdfk0d7054ycq" path="res://behavior/player/weapons/Bullet.gd" id="1_ldov8"]
+
+[node name="Bullet" type="RayCast3D"]
+collision_mask = 3
+script = ExtResource("1_ldov8")

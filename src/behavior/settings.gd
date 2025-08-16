@@ -31,6 +31,7 @@ var actions = [
 	"crouch",
 	"exit",
 	"ads",
+	"medkit",
 	"use_scanner",
 	"primary_weapon",
 	"secondary_weapon",

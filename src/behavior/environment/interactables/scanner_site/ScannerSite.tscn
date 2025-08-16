@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://b1l5xp6ccjxo"]
+
+[ext_resource type="Script" uid="uid://bopgh7cajyti0" path="res://behavior/environment/interactables/scanner_site/ScannerSite.gd" id="1_1ne05"]
+[ext_resource type="Material" path="res://debug/materials/debug_blue.tres" id="2_1ne05"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tco2o"]
+radius = 1.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tco2o"]
+size = Vector3(0.608765, 0.558243, 0.718292)
+
+[sub_resource type="BoxMesh" id="BoxMesh_1ne05"]
+material = ExtResource("2_1ne05")
+size = Vector3(0.608765, 0.558243, 0.718292)
+
+[sub_resource type="BoxMesh" id="BoxMesh_d3wfa"]
+
+[node name="scanner_site" type="Area3D"]
+collision_mask = 3
+script = ExtResource("1_1ne05")
+metadata/_custom_type_script = "uid://421oj18723k5"
+
+[node name="collision" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_tco2o")
+
+[node name="model" type="StaticBody3D" parent="."]
+
+[node name="collision" type="CollisionShape3D" parent="model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0131226, -0.267235, 0.0583954)
+shape = SubResource("BoxShape3D_tco2o")
+
+[node name="mesh" type="MeshInstance3D" parent="model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00489277, -0.271394, 0.0563603)
+mesh = SubResource("BoxMesh_1ne05")
+
+[node name="scanner_model" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.0288866, -0.00215264)
+mesh = SubResource("BoxMesh_d3wfa")
+
+[connection signal="body_entered" from="." to="." method="_on_interactable_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_interactable_body_exited"]
