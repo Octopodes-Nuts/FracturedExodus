@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://ccget10dm00lb"]
+[gd_scene load_steps=47 format=3 uid="uid://ccget10dm00lb"]
 
 [ext_resource type="Environment" uid="uid://etedssom36ge" path="res://environment/maps/test_map_2/new_environment.tres" id="1_un54m"]
 [ext_resource type="Script" uid="uid://cctu8la0pomnv" path="res://behavior/environment/map/Map.gd" id="2_qhi0f"]
@@ -209,7 +209,21 @@ size = Vector3(1, 40, 100)
 [sub_resource type="BoxShape3D" id="BoxShape3D_ulnwu"]
 size = Vector3(1, 40, 200)
 
-[node name="TestMap2" type="WorldEnvironment"]
+[sub_resource type="GDScript" id="GDScript_6nkx3"]
+script/source = "extends Node
+
+func _ready() -> void:
+	Global.spawn_parent = self
+
+func _on_player_spawner_spawned(node: Node) -> void:
+	print(node)
+
+
+func _on_child_entered_tree(node: Node) -> void:
+	print(node)
+"
+
+[node name="env" type="WorldEnvironment"]
 environment = ExtResource("1_un54m")
 script = ExtResource("2_qhi0f")
 
@@ -227,6 +241,7 @@ metadata/_edit_lock_ = true
 
 [node name="camp" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("5_qhi0f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.8379, 40.3115, -104.231)
+visible = false
 
 [node name="Camera3D" type="Camera3D" parent="NavigationRegion3D/Terrain3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.35678, 36.4629, 197.521)
@@ -267,9 +282,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.89, 3.84746, -194.362)
 
 [node name="camp2" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("5_qhi0f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63.3483, 19.9738, -206.683)
+visible = false
 
 [node name="camp3" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("5_qhi0f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.52749, 20.4551, -235.284)
+visible = false
 
 [node name="ChipsiteSpawn" parent="." instance=ExtResource("19_6nkx3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100.024, 29.9186, 55.1323)
@@ -464,3 +481,13 @@ shape = SubResource("BoxShape3D_ulnwu")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.583124, 0.752061, 0.307198, -0.811957, 0.527291, 0.25038, 0.0263186, -0.395434, 0.918117, 0, 170.534, 0)
+
+[node name="Spawns" type="Node" parent="."]
+script = SubResource("GDScript_6nkx3")
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://yd8x8go2gbvp", "uid://dcudvv4sp7mpc", "uid://b2onpcsaqdb3q")
+spawn_path = NodePath("../Spawns")
+
+[connection signal="child_entered_tree" from="Spawns" to="Spawns" method="_on_child_entered_tree"]
+[connection signal="spawned" from="PlayerSpawner" to="Spawns" method="_on_player_spawner_spawned"]

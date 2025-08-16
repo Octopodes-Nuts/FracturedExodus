@@ -59,8 +59,14 @@ var active_equipable: Equipable = Equipable.new()
 
 var character: Character
 
+func _enter_tree() -> void:
+	set_multiplayer_authority(str(name).to_int())
+
 #This should be changed to be more global
 func _ready():
+	
+	if not is_multiplayer_authority(): return
+	
 	Local.input_active = true
 	head.make_current()
 	if Local.terrain:
@@ -80,7 +86,7 @@ func _ready():
 	# load from character 
 	Local.player = self
 	Local.HUD = HUD
-
+	transform.origin = Global.get_spawn().transform.origin
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _ads(delta):
@@ -110,6 +116,7 @@ func ground_check():
 		   ground_check_4.is_colliding()
 
 func _process(delta):
+	if not is_multiplayer_authority(): return
 	# set cycle time ? so that you can't just keep
 	# shifting weapons but maybe not
 	if Input.is_action_just_pressed("primary_weapon") and\
@@ -176,6 +183,7 @@ func _input(event):
 			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
+	if not is_multiplayer_authority(): return
 	var speed = 0.0
 	var accel = DEACCEL
 	var forward = false
@@ -254,6 +262,7 @@ func extract():
 	#Send RPC to server to remove node from scene
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	Local.input_active = false
+	multiplayer.multiplayer_peer = null
 	if not get_tree().change_scene_to_file("res://ui/extraction/Extraction.tscn") == OK:
 		print("Error getting to file")
 	print('extract successful')

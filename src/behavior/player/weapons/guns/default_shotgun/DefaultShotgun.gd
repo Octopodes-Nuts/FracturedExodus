@@ -26,14 +26,15 @@ func _use():
 
 		for i in range(num_pellets):
 
-			var bullet = Bullet.new()
+			var bullet = BulletScene.instantiate()
+			Global.spawn_parent.add_child(bullet)
 			bullet.set_properties(
 				bullet_speed,
 				muzzle_end.global_transform.origin,
 				bullet_damage,
 				muzzle_end.global_rotation,
 				bullet_lifetime,
-				Global.map_root,
+				Global.spawn_parent,
 				false, # ads is always false for shotguns
 				bullet_spread
 			)

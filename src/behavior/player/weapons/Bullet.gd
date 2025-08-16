@@ -27,7 +27,6 @@ func set_properties(
 		_parent: Node,
 		ads: bool = false,
 		spread: float = 0.0):
-	_parent.add_child(self)
 	_speed = speed
 	global_transform.origin = origin
 	_damage = damage

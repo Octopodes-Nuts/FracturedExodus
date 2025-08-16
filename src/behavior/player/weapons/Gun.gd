@@ -13,6 +13,7 @@ var bolt_pull_stream: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 @onready var Global = get_node('/root/Global')
 @onready var Types = get_node('/root/Types')
 @onready var Local = get_node('/root/Local')
+@onready var BulletScene = preload("res://behavior/player/weapons/Bullet.tscn")
 
 @export var clip_size: int = 4
 var current_clip: int
@@ -72,14 +73,15 @@ func _use():
 		bolt_pull_stream.play()
 
 		# spawn a bullet
-		var bullet = Bullet.new()
+		var bullet = BulletScene.instantiate()
+		Global.spawn_parent.add_child(bullet)
 		bullet.set_properties(
 			bullet_speed,
 			muzzle_end.global_transform.origin,
 			bullet_damage,
 			muzzle_end.global_rotation,
 			bullet_lifetime,
-			Global.map_root,
+			Global.spawn_parent,
 			ads,
 			bullet_spread
 		)

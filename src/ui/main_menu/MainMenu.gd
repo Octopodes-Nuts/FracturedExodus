@@ -19,7 +19,9 @@ var active_register = 1
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
-		pass
+		Local.host = true
+		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
+			print("Error getting to file")
 	if ResourceLoader.exists("res://load/Characters.res"):
 		Local.characters = ResourceLoader.load("res://load/Characters.res")
 		if len(Local.characters.characters) > 0:

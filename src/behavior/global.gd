@@ -8,6 +8,7 @@ extends Node
 # Script containing variables that are global to each match
 var chipsites: Array = []
 var spawns: Array = []
+var used_spawns: Array = []
 var chipsite_spawns: Array = []
 
 # Map Root is the top level of a map
@@ -16,6 +17,7 @@ var map_root: WorldEnvironment
 # Local Variables are Mapped by player
 var player_huds: Dictionary
 
+var spawn_parent: Node
 # Deal with adding and removing chipsites from active list
 # Basically just dealing with addtl context that may become
 # clearer down the line
@@ -27,3 +29,10 @@ func remove_chipsite(chipsite: Node):
 
 func add_spawn(spawn: Node):
 	spawns.append(spawn)
+
+func get_spawn():
+	var spawn = spawns[randi() % len(spawns)]
+	while spawn in used_spawns:
+		spawn = spawns[randi() % len(spawns)]
+	used_spawns.append(spawn)
+	return spawn
