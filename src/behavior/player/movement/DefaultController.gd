@@ -149,15 +149,18 @@ func _process(delta):
 	elif Input.is_action_just_pressed("tertiary_weapon") and\
 			Local.input_active:
 		swap_equipped_from_index(2, true)
+	elif Input.is_action_just_pressed("medkit") and\
+		Local.input_active:
+		swap_equipped_from_index(3, true)
 	elif Input.is_action_just_pressed("equipment_1") and\
 		Local.input_active and character.equipment_1.equipment_instance != null:
-			swap_equipped_from_index(3, true)
+			swap_equipped_from_index(4, true)
 	elif Input.is_action_just_pressed("equipment_2") and\
 		Local.input_active and character.equipment_2.equipment_instance != null:
-			swap_equipped_from_index(4, true)
+			swap_equipped_from_index(5, true)
 	elif Input.is_action_just_pressed("use_scanner"):
 		if Local.input_active and character.scanner != null:
-			swap_equipped_from_index(5, true)
+			swap_equipped_from_index(6, true)
 
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
@@ -310,12 +313,14 @@ func _physics_process(delta):
 			active_equipable._reload()
 
 func register_interaction(interactable: Interactable):
+	if not is_multiplayer_authority(): return
 	current_interaction = interactable
 	if interactable.auto_interact:
 		interactable._interact(self)
 	print(interactable.name)
 
 func remove_interaction(interactable: Interactable):
+	if not is_multiplayer_authority(): return
 	if current_interaction == interactable:
 		current_interaction = Interactable.new()
 
@@ -360,6 +365,7 @@ func _hit_local(dmg: int):
 
 # this will be an RPC
 func extract():
+	if not is_multiplayer_authority(): return
 	#Send RPC to server to remove node from scene
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	Local.input_active = false
