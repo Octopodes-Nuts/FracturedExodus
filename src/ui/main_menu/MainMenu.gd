@@ -7,7 +7,6 @@
 
 extends Control
 
-@onready var static_paper_doll = $static_paper_doll
 @onready var paper_doll = $paper_doll
 @onready var character_display = $character_display
 @onready var character_select = $character_select

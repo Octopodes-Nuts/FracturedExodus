@@ -149,7 +149,7 @@ func _process(delta):
 	elif Input.is_action_just_pressed("tertiary_weapon") and\
 			Local.input_active:
 		swap_equipped_from_index(2, true)
-	elif Input.is_action_just_pressed("medkit") and\
+	elif Input.is_action_just_pressed("medpack") and\
 		Local.input_active:
 		swap_equipped_from_index(3, true)
 	elif Input.is_action_just_pressed("equipment_1") and\
