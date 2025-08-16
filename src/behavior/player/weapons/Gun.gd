@@ -63,27 +63,38 @@ func _use():
 		audio_player.play()
 		bolt_pull_stream.play()
 
+		_spawn_bullet.rpc_id(1, {
+			"speed": bullet_speed,
+			"origin": muzzle_end.global_transform.origin,
+			"dmg": bullet_damage,
+			"ang": muzzle_end.global_rotation,
+			"lifetime": bullet_lifetime,
+			"ads": ads,
+			"spread": bullet_spread
+		})
+
 		# spawn a bullet
-		var bullet = BulletScene.instantiate()
-		Global.spawn_parent.add_child(bullet)
-		bullet.set_properties(
-			bullet_speed,
-			muzzle_end.global_transform.origin,
-			bullet_damage,
-			muzzle_end.global_rotation,
-			bullet_lifetime,
-			ads,
-			bullet_spread
-		)
+		# var bullet = BulletScene.instantiate()
+		# Global.spawn_parent.add_child(bullet)
+		# bullet.set_properties(
+		# 	bullet_speed,
+		# 	muzzle_end.global_transform.origin,
+		# 	bullet_damage,
+		# 	muzzle_end.global_rotation,
+		# 	bullet_lifetime,
+		# 	ads,
+		# 	bullet_spread
+		# )
 		current_clip -= 1
 
 	else:
 		# player play weapon click
 		pass
 
-@rpc("call_remote")
+@rpc("any_peer")
 func _spawn_bullet(dict: Dictionary):
 	var bullet = BulletScene.instantiate()
+	Global.spawn_parent.add_child(bullet)
 	bullet.set_properties(
 		dict["speed"],
 		dict["origin"],

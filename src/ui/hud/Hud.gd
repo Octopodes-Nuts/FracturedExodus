@@ -5,6 +5,10 @@
 
 extends Control
 
+@onready var crosshair = $crosshair
+@onready var death_text = $death_text
+@onready var health_slider = $health_slider
+
 
 @onready var Local = get_node('/root/Local')
 # Declare member variables here. Examples:

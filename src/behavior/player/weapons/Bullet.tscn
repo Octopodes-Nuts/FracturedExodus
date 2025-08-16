@@ -14,6 +14,7 @@ properties/2/spawn = true
 properties/2/replication_mode = 1
 
 [node name="Bullet" type="RayCast3D"]
+collision_mask = 3
 script = ExtResource("1_ldov8")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]

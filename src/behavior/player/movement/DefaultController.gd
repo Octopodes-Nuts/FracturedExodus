@@ -34,6 +34,7 @@ var DEFAULT_LERP = 20.0
 @export var step_volume: float
 
 @export var FULL_HEALTH: float = 100.0
+var current_health: float = FULL_HEALTH
 
 @export var current_eqipped_key: String = ""
 
@@ -199,7 +200,6 @@ func swap_equipped(equipable: Equipable):
 
 func swap_equipped_from_index(id: int, rpc: bool):
 	var equipable = update_equipment()[id]
-	print("ID ", id)
 	if active_equipable != equipable:
 		if active_equipable.get_parent() == head:
 			head.remove_child(active_equipable)
@@ -215,8 +215,6 @@ func swap_equipped_from_index(id: int, rpc: bool):
 		if rpc:
 			update_character_server.rpc_id(1, "active", id)
 
-
-
 func update_equipment():
 	return [
 		character.primary_weapon,
@@ -229,7 +227,7 @@ func update_equipment():
 	]
 
 func _input(event):
-	if not is_multiplayer_authority(): return
+	if not is_multiplayer_authority() or current_health <= 0: return
 	if Local.input_active:
 		if event is InputEventMouseMotion:
 			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity))
@@ -237,7 +235,7 @@ func _input(event):
 			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
-	if not is_multiplayer_authority(): return
+	if not is_multiplayer_authority() or current_health <= 0: return
 	var speed = 0.0
 	var accel = DEACCEL
 	var forward = false
@@ -304,7 +302,7 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed('fire') and\
 		Local.input_active:
 		if active_equipable.has_method("use"):
-			active_equipable.use()
+			active_equipable.use(self)
 	
 	if Input.is_action_just_pressed('reload') and\
 		Local.input_active:
@@ -349,7 +347,16 @@ func update_character_server(field: String, val):
 	Global.map_root.broadcast_character_data_update.rpc(sender_id, field, val)
 	emit_signal("character_update", [sender_id])
 
+func hit(dmg: int):
+	_hit_local.rpc_id(name.to_int(), dmg)
 
+@rpc("any_peer")
+func _hit_local(dmg: int):
+	current_health -= dmg
+	Local.HUD.health_slider.value = ( current_health / FULL_HEALTH ) * 100
+	if current_health <= 0:
+		Local.HUD.crosshair.visible = false
+		Local.HUD.death_text.visible = true
 
 # this will be an RPC
 func extract():

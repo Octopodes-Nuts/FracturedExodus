@@ -26,17 +26,15 @@ func _use():
 		bolt_pull_stream.play()
 
 		for i in range(num_pellets):
-
-			var bullet = BulletScene.instantiate()
-			bullet.set_properties(
-				bullet_speed,
-				muzzle_end.global_transform.origin,
-				bullet_damage,
-				muzzle_end.global_rotation,
-				bullet_lifetime,
-				false, # ads is always false for shotguns
-				bullet_spread
-			)
+			_spawn_bullet.rpc_id(1, {
+				"speed": bullet_speed,
+				"origin": muzzle_end.global_transform.origin,
+				"dmg": bullet_damage,
+				"ang": muzzle_end.global_rotation,
+				"lifetime": bullet_lifetime,
+				"ads": ads,
+				"spread": bullet_spread
+			})
 
 		current_clip -= 1
 

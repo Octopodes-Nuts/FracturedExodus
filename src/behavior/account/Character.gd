@@ -38,20 +38,27 @@ func set_bullet_origin(spatial: Node3D):
 	secondary_weapon.muzzle_end = spatial
 	tertiary_weapon.muzzle_end = spatial
 
+var instances = {}
+
 func load_from_character(character: CharacterDef):
 	if character.Weapon1:
-		primary_weapon = WeaponRegister.gun_register[character.Weapon1].instantiate()
+		if character.Weapon1 in instances.keys():
+			primary_weapon = instances[character.Weapon1]
+		else:
+			instances[character.Weapon1] = WeaponRegister.gun_register[character.Weapon1].instantiate()
+			primary_weapon = instances[character.Weapon1]
 	if character.Weapon2:
-		secondary_weapon = WeaponRegister.gun_register[character.Weapon2].instantiate()
+		if character.Weapon2 in instances.keys():
+			primary_weapon = instances[character.Weapon2]
+		else:
+			instances[character.Weapon2] = WeaponRegister.gun_register[character.Weapon2].instantiate()
+			primary_weapon = instances[character.Weapon2]
 	if character.Weapon3:
-		tertiary_weapon = WeaponRegister.melee_register[character.Weapon3].instantiate()
-	# TODO: Update when we have an equipment register
-	if character.Equipment1:
-		equipment_1.equipment_instance = null
-	if character.Equipment2:
-		equipment_2.equipment_instance = null
-
-var instances = {}
+		if character.Weapon3 in instances.keys():
+			primary_weapon = instances[character.Weapon3]
+		else:
+			instances[character.Weapon3] = WeaponRegister.gun_register[character.Weapon3].instantiate()
+			primary_weapon = instances[character.Weapon3]
 
 func load_from_payload(pd: Dictionary):
 	if pd["wep1"]:

@@ -44,21 +44,17 @@ func _on_test_scene_btn_pressed():
 func _on_test_scene_btn_2_pressed() -> void:
 	if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 		print("Error getting to file")
-		
 
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
-		
 
 func _on_character_display_character_select() -> void:
 	character_select.visible = true
 
-
 func _on_character_select_new_char_selected() -> void:
 	character_select.visible = false
 	character_display.reload(Local.selected_character_def)
-
 
 func _on_paper_doll_weapon_change(register: int) -> void:
 	active_register = register
@@ -67,8 +63,6 @@ func _on_paper_doll_weapon_change(register: int) -> void:
 		weapon_select.render_out(WeaponRegister.display_gun_register)
 	if register == 2:
 		weapon_select.render_out(WeaponRegister.display_gun_register)
-		
-
 
 func _on_weapon_select_weapon_selected(id: String) -> void:
 	weapon_select.visible = false
