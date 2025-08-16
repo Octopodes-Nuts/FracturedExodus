@@ -35,6 +35,8 @@ var DEFAULT_LERP = 20.0
 
 @export var FULL_HEALTH: float = 100.0
 
+@export var current_eqipped_key: String = ""
+
 var full_contact = false
 var health = FULL_HEALTH
 
@@ -58,12 +60,17 @@ var active_equipable: Equipable = Equipable.new()
 
 
 var character: Character
+signal character_update(ids: Array)
+var equipment: Array = []
+var current_equipped_index: int = 0
 
 func _enter_tree() -> void:
 	set_multiplayer_authority(str(name).to_int())
 
 #This should be changed to be more global
 func _ready():
+	connect("character_update", Global.emit_character_update)
+	Global.connect("character_update", char_serv_update)
 	
 	if not is_multiplayer_authority(): return
 	
@@ -87,7 +94,20 @@ func _ready():
 	Local.player = self
 	Local.HUD = HUD
 	transform.origin = Global.get_spawn().transform.origin
+	send_character_data.rpc_id(1, _character_payload())
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+func char_serv_update(ids: Array):
+	
+	if name in ids:
+		load_from_payload(Global.character_data[name])
+
+
+func load_from_payload(payload: Dictionary):
+
+	character = Character.new()
+	character.load_from_payload(payload)
+	swap_equipped_from_index(payload["active"], false)
 
 func _ads(delta):
 	if active_equipable is Weapon:
@@ -121,22 +141,22 @@ func _process(delta):
 	# shifting weapons but maybe not
 	if Input.is_action_just_pressed("primary_weapon") and\
 			Local.input_active:
-		swap_equipped(character.primary_weapon)
+		swap_equipped_from_index(0, true)
 	elif Input.is_action_just_pressed("secondary_weapon") and\
 			Local.input_active:
-		swap_equipped(character.secondary_weapon)
+		swap_equipped_from_index(1, true)
 	elif Input.is_action_just_pressed("tertiary_weapon") and\
 			Local.input_active:
-		swap_equipped(character.tertiary_weapon)
+		swap_equipped_from_index(2, true)
 	elif Input.is_action_just_pressed("equipment_1") and\
 		Local.input_active and character.equipment_1.equipment_instance != null:
-			swap_equipped(character.equipment_1.equipment_instance)
+			swap_equipped_from_index(3, true)
 	elif Input.is_action_just_pressed("equipment_2") and\
 		Local.input_active and character.equipment_2.equipment_instance != null:
-			swap_equipped(character.equipment_2.equipment_instance)
+			swap_equipped_from_index(4, true)
 	elif Input.is_action_just_pressed("use_scanner"):
 		if Local.input_active and character.scanner != null:
-			swap_equipped(character.scanner)
+			swap_equipped_from_index(5, true)
 
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
@@ -162,6 +182,7 @@ func _process(delta):
 			self.remove_child(escape_menu)
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+# @rpc("call_local", "any_peer")
 func swap_equipped(equipable: Equipable):
 	if active_equipable != equipable:
 		if active_equipable.get_parent() == head:
@@ -174,8 +195,41 @@ func swap_equipped(equipable: Equipable):
 		head.add_child(equipable)
 		equipable.transform.origin = \
 		equipable.default_position - head.transform.origin
+		current_eqipped_key = equipable.key
+
+func swap_equipped_from_index(id: int, rpc: bool):
+	var equipable = update_equipment()[id]
+	print("ID ", id)
+	if active_equipable != equipable:
+		if active_equipable.get_parent() == head:
+			head.remove_child(active_equipable)
+		active_equipable._set_inactive()
+		# play stow animation
+		active_equipable = equipable
+		# play raise animation
+		equipable._set_active()
+		head.add_child(equipable)
+		equipable.transform.origin = \
+		equipable.default_position - head.transform.origin
+		current_equipped_index = id
+		if rpc:
+			update_character_server.rpc_id(1, "active", id)
+
+
+
+func update_equipment():
+	return [
+		character.primary_weapon,
+		character.secondary_weapon,
+		character.tertiary_weapon,
+		character.medkit,
+		character.equipment_1,
+		character.equipment_2,
+		character.scanner
+	]
 
 func _input(event):
+	if not is_multiplayer_authority(): return
 	if Local.input_active:
 		if event is InputEventMouseMotion:
 			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity))
@@ -246,6 +300,16 @@ func _physics_process(delta):
 	if Input.is_action_pressed("interact") && current_interaction:
 		if current_interaction.has_method("interact"):
 			current_interaction.interact(self)
+			
+	if Input.is_action_just_pressed('fire') and\
+		Local.input_active:
+		if active_equipable.has_method("use"):
+			active_equipable.use()
+	
+	if Input.is_action_just_pressed('reload') and\
+		Local.input_active:
+		if active_equipable.has_method("_reload"):
+			active_equipable._reload()
 
 func register_interaction(interactable: Interactable):
 	current_interaction = interactable
@@ -256,6 +320,36 @@ func register_interaction(interactable: Interactable):
 func remove_interaction(interactable: Interactable):
 	if current_interaction == interactable:
 		current_interaction = Interactable.new()
+
+@rpc("any_peer", "reliable")
+func  send_character_data(payload: Dictionary):
+	var sender_id := str(multiplayer.get_remote_sender_id())
+	Global.character_data[sender_id] = payload
+	Global.map_root.broadcast_character_data.rpc(Global.character_data)
+	emit_signal("character_update", [sender_id])
+
+
+func _character_payload() -> Dictionary:
+	
+	return {
+		"active": current_equipped_index,
+		"name": Local.selected_character_def.Name,
+		"wep1": Local.selected_character_def.Weapon1,
+		"wep2": Local.selected_character_def.Weapon2,
+		"wep3": Local.selected_character_def.Weapon3,
+		"eq1": Local.selected_character_def.Equipment1,
+		"eq2": Local.selected_character_def.Equipment2,
+		"faction": Local.selected_character_def.Faction
+	}
+
+@rpc("any_peer", "reliable")
+func update_character_server(field: String, val):
+	var sender_id = str(multiplayer.get_remote_sender_id())
+	Global.character_data[sender_id][field] = val
+	Global.map_root.broadcast_character_data_update.rpc(sender_id, field, val)
+	emit_signal("character_update", [sender_id])
+
+
 
 # this will be an RPC
 func extract():

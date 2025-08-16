@@ -24,9 +24,9 @@ func set_properties(
 		damage: float,
 		angle: Vector3,
 		lifetime: float,
-		_parent: Node,
 		ads: bool = false,
 		spread: float = 0.0):
+	Global.spawn_parent.add_child(self)
 	_speed = speed
 	global_transform.origin = origin
 	_damage = damage
@@ -41,7 +41,6 @@ func set_properties(
 	_lifetime = lifetime
 	set_target_position(Vector3.FORWARD * 10)
 	set_norm_ray()
-
 
 func _physics_process(delta):
 	# move and stretch bullet path

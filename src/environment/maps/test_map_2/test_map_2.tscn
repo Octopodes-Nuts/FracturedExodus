@@ -216,11 +216,13 @@ func _ready() -> void:
 	Global.spawn_parent = self
 
 func _on_player_spawner_spawned(node: Node) -> void:
-	print(node)
+	pass
+	# print(node)
 
 
 func _on_child_entered_tree(node: Node) -> void:
-	print(node)
+	pass
+	# print(node)
 "
 
 [node name="env" type="WorldEnvironment"]
@@ -250,15 +252,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.35678, 36.4629, 197.521)
 
 [node name="Spawn" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -230.458, 7.4808, 49.7773)
+enabled = false
 
 [node name="Spawn2" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 227.597, 6.75896, 19.8544)
+enabled = false
 
 [node name="Spawn3" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 196.618, 6.4103, 146.855)
+enabled = false
 
 [node name="Spawn4" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.5465, 6.01037, 256.895)
+enabled = false
 
 [node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 130.393, 5.10136, -192.91)

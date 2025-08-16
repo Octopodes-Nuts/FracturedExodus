@@ -51,18 +51,9 @@ func _process(delta):
 	if current_cycle > 0:
 		current_cycle -= delta
 	
-	if current_cycle <= 0 and\
-		Input.is_action_just_pressed('fire') and\
-		active and Local.input_active:
-		_use()
-	
-	if Input.is_action_just_pressed('reload') and\
-		active and Local.input_active:
-		_reload()
-	
 
 func _use():
-	if current_clip > 0:
+	if current_clip > 0 and current_cycle <= 0:
 
 		player.play(fire_animation)
 		current_cycle = cycle_time
@@ -81,7 +72,6 @@ func _use():
 			bullet_damage,
 			muzzle_end.global_rotation,
 			bullet_lifetime,
-			Global.spawn_parent,
 			ads,
 			bullet_spread
 		)
@@ -90,6 +80,19 @@ func _use():
 	else:
 		# player play weapon click
 		pass
+
+@rpc("call_remote")
+func _spawn_bullet(dict: Dictionary):
+	var bullet = BulletScene.instantiate()
+	bullet.set_properties(
+		dict["speed"],
+		dict["origin"],
+		dict["dmg"],
+		dict["ang"],
+		dict["lifetime"],
+		dict["ads"],
+		dict["spread"]
+	)
 
 func _reload():
 	player.play(reload_animation)

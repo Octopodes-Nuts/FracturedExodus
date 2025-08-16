@@ -17,7 +17,11 @@ var map_root: WorldEnvironment
 # Local Variables are Mapped by player
 var player_huds: Dictionary
 
+var character_data: Dictionary = {}
+
 var spawn_parent: Node
+
+signal character_update(ids: Array)
 # Deal with adding and removing chipsites from active list
 # Basically just dealing with addtl context that may become
 # clearer down the line
@@ -36,3 +40,6 @@ func get_spawn():
 		spawn = spawns[randi() % len(spawns)]
 	used_spawns.append(spawn)
 	return spawn
+
+func emit_character_update(ids: Array):
+	emit_signal("character_update", ids)

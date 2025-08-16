@@ -1,4 +1,7 @@
 extends Node
 
-func _init():
-	Global.add_spawn(self)
+@export var enabled: bool = true
+
+func _ready():
+	if enabled:
+		Global.add_spawn(self)

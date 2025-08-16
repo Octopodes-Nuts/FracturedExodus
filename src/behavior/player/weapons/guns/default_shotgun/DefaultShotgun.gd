@@ -10,6 +10,7 @@ func _init():
 func _local_ready():
 	fire_sound =\
 		load("res://behavior/player/weapons/guns/default_shotgun/default_shotgun.mp3")
+	key = "DefaultShotgun"
 
 
 func _use():
@@ -27,14 +28,12 @@ func _use():
 		for i in range(num_pellets):
 
 			var bullet = BulletScene.instantiate()
-			Global.spawn_parent.add_child(bullet)
 			bullet.set_properties(
 				bullet_speed,
 				muzzle_end.global_transform.origin,
 				bullet_damage,
 				muzzle_end.global_rotation,
 				bullet_lifetime,
-				Global.spawn_parent,
 				false, # ads is always false for shotguns
 				bullet_spread
 			)

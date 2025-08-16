@@ -24,5 +24,9 @@ var type: int = 0
 var faction: int = 0
 
 # perform action specified by weapon
+func use():
+	if active:
+		_use()
+
 func _use():
 	pass

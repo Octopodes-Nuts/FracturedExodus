@@ -51,6 +51,33 @@ func load_from_character(character: CharacterDef):
 	if character.Equipment2:
 		equipment_2.equipment_instance = null
 
+var instances = {}
+
+func load_from_payload(pd: Dictionary):
+	if pd["wep1"]:
+		if pd["wep1"] in instances.keys():
+			primary_weapon = instances[pd["wep1"]]
+		else:
+			instances[pd["wep1"]] = WeaponRegister.gun_register[pd["wep1"]].instantiate()
+			primary_weapon = instances[pd["wep1"]]
+	if pd["wep2"]:
+		if pd["wep2"] in instances.keys():
+			secondary_weapon = instances[pd["wep2"]]
+		else:
+			instances[pd["wep2"]] = WeaponRegister.gun_register[pd["wep2"]].instantiate()
+			secondary_weapon = instances[pd["wep2"]]
+	if pd["wep3"]:
+		if pd["wep3"] in instances.keys():
+			tertiary_weapon = instances[pd["wep3"]]
+		else:
+			instances[pd["wep3"]] = WeaponRegister.gun_register[pd["wep3"]].instantiate()
+			tertiary_weapon = instances[pd["wep3"]]
+	# TODO: Update when we have an equipment register
+	if pd["eq1"]:
+		equipment_1.equipment_instance = null
+	if pd["eq2"]:
+		equipment_2.equipment_instance = null
+
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
