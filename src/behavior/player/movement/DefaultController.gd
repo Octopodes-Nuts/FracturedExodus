@@ -110,21 +110,25 @@ func load_from_payload(payload: Dictionary):
 	character.load_from_payload(payload)
 	swap_equipped_from_index(payload["active"], false)
 
+@rpc("call_local")
 func _ads(delta):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
 			lerp((active_equipable.ads_position - head.transform.origin),
 				active_equipable.ADS_LERP * delta)
 		head.fov = lerp(head.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
-		Local.HUD.set_visible(false)
+		if is_multiplayer_authority():
+			Local.HUD.set_visible(false)
 
+@rpc("call_local")
 func _undo_ads(delta):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
 			lerp((active_equipable.default_position - head.transform.origin),
 				active_equipable.ADS_LERP * delta)
 		head.fov = lerp(head.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
-		Local.HUD.set_visible(true)
+		if is_multiplayer_authority():
+			Local.HUD.set_visible(true)
 	elif head.fov != float(Settings.FOV):
 		head.fov = lerp(head.fov, float(Settings.FOV), DEFAULT_LERP * delta)
 
@@ -164,9 +168,9 @@ func _process(delta):
 
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
-		_ads(delta)
+		_ads.rpc(delta)
 	else:
-		_undo_ads(delta)
+		_undo_ads.rpc(delta)
 	if Input.is_action_pressed("ads") and\
 			Local.input_active and\
 			active_equipable is Weapon and\

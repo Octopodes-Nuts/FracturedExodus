@@ -22,7 +22,6 @@ func _ready():
 	connect("character_update", Global.emit_character_update)
 
 	if Local.host:
-		print("HOST")
 		enet_peer.create_server(PORT)
 		multiplayer.multiplayer_peer = enet_peer
 		multiplayer.peer_connected.connect(add_player)

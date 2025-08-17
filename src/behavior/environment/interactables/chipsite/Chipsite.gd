@@ -14,17 +14,13 @@ var debug_red = preload("res://debug/materials/debug_red.tres")
 
 func _ready():
 	Global.add_chipsite(self)
-	print("Here!")
 
 # Start extraction of resource
 func interact(other):
 	if not extracted:
 		obtain_time += other.delta
 		if obtain_time >= OBTAIN_TIME_TARGET and not extracted:
-			extracted = true
-			$model/mesh.material_override = debug_red
-			print("Chip Extracted")
-			self.display_text = ""
+			_extract_chip.rpc()
 			other.get_objective()
 			_refresh(other)
 		Local.HUD.get_child(1).set_time_value((obtain_time / OBTAIN_TIME_TARGET) * 100)
@@ -37,3 +33,10 @@ func _add_interaction(node: Node):
 
 func _remove_interaction(node: Node):
 	Local.HUD.get_child(1).set_visible(false)
+
+@rpc("call_local")
+func _extract_chip():
+	extracted = true
+	$model/mesh.material_override = debug_red
+	print("Chip Extracted")
+	self.display_text = ""
