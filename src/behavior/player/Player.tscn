@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dcudvv4sp7mpc"]
+[gd_scene load_steps=8 format=3 uid="uid://dcudvv4sp7mpc"]
 
 [ext_resource type="Script" uid="uid://p561hd5ejgpe" path="res://behavior/player/movement/DefaultController.gd" id="1"]
 [ext_resource type="Script" uid="uid://dbotvawysdgfa" path="res://behavior/player/movement/SoundSphere.gd" id="3_6l03r"]
+[ext_resource type="PackedScene" uid="uid://t64shttxwiks" path="res://behavior/environment/interactables/res_sphere/res_sphere.tscn" id="3_6yuvp"]
 
 [sub_resource type="CapsuleMesh" id="2"]
 radius = 0.4
@@ -69,5 +70,7 @@ shape = SubResource("SphereShape3D_4ucha")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_psm2p")
+
+[node name="res_sphere" parent="." instance=ExtResource("3_6yuvp")]
 
 [connection signal="body_entered" from="sound_sphere" to="sound_sphere" method="_on_body_entered"]

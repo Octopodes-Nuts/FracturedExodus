@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://t64shttxwiks"]
+
+[ext_resource type="Script" uid="uid://dra4tl6ltth58" path="res://behavior/environment/interactables/res_sphere/res_sphere.gd" id="1_xiwcg"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_xn1ii"]
+radius = 1.045
+
+[node name="res_sphere" type="Area3D"]
+collision_mask = 2
+monitoring = false
+script = ExtResource("1_xiwcg")
+metadata/_custom_type_script = "uid://421oj18723k5"
+
+[node name="collision" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_xn1ii")
+
+[connection signal="body_entered" from="." to="." method="_on_interactable_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_interactable_body_exited"]

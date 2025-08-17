@@ -53,6 +53,7 @@ var active_equipable: Equipable = Equipable.new()
 
 @onready var head = $camera_head
 @onready var gun_location = $camera_head/gun_location
+@onready var res_sphere = $res_sphere
 @onready var ground_check_0 = $ground_check_0
 @onready var ground_check_1 = $ground_check_1
 @onready var ground_check_2 = $ground_check_2
@@ -72,6 +73,7 @@ func _enter_tree() -> void:
 func _ready():
 	connect("character_update", Global.emit_character_update)
 	Global.connect("character_update", char_serv_update)
+	res_sphere.set_player(self)
 	
 	if not is_multiplayer_authority(): return
 	
@@ -387,6 +389,7 @@ func _hit_local(dmg: int):
 	if current_health <= 0:
 		Local.HUD.crosshair.visible = false
 		Local.HUD.death_text.visible = true
+		set_res_sphere.rpc(true)
 
 # this will be an RPC
 func extract():
@@ -399,3 +402,22 @@ func extract():
 	if not get_tree().change_scene_to_file("res://ui/extraction/Extraction.tscn") == OK:
 		print("Error getting to file")
 	print('extract successful')
+
+@rpc("call_local", "any_peer")
+func res(health, name):
+	current_health = health
+	if Local.host:
+		_res_local.rpc_id(name.to_int(), health)
+
+@rpc("any_peer")
+func _res_local(health):
+	current_health = health
+	Local.HUD.health_slider.value = ( current_health / FULL_HEALTH ) * 100
+	Local.HUD.crosshair.visible = true
+	Local.HUD.death_text.visible = false
+	set_res_sphere.rpc(false)
+
+@rpc("any_peer")
+func set_res_sphere(active: bool):
+	res_sphere.monitorable = active
+	res_sphere.monitoring = active
