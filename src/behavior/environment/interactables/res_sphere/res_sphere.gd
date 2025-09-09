@@ -16,7 +16,12 @@ func interact(other: Node):
 	if current_res >= RES_TIME:
 		player.res.rpc_id(1, 50, player.name)
 		_refresh(other)
+	Local.HUD.get_child(1).set_time_value((current_res / RES_TIME) * 100)
 
 func _add_interaction(node: Node):
 	current_res = 0.0
-	pass
+	Local.HUD.get_child(1).set_time_value((current_res / RES_TIME) * 100)
+	Local.HUD.get_child(1).set_visible(true)
+
+func _remove_interaction(other: Node):
+	Local.HUD.get_child(1).set_visible(false)
