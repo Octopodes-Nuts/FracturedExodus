@@ -5,6 +5,7 @@
 [sub_resource type="BoxMesh" id="BoxMesh_rf2q6"]
 
 [node name="Pier" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.52436, -0.717294, -0.386242)
 
 [node name="Board" type="MeshInstance3D" parent="."]
 transform = Transform3D(20, 0, 0, 0, 0.2, 0, 0, 0, 2, 0, 0, 0)
