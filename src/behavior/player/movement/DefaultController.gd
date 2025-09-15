@@ -34,7 +34,7 @@ var DEFAULT_LERP = 20.0
 @export var step_volume: float
 
 @export var FULL_HEALTH: float = 100.0
-var current_health: float = FULL_HEALTH
+var current_health: float = 30 : set = _set_current_health
 
 @export var current_eqipped_key: String = ""
 
@@ -80,13 +80,13 @@ func _ready():
 	if Local.terrain:
 		Local.terrain.set_camera(head)
 	add_child(HUD)
+	HUD.get_node("health_slider").value = current_health
 	# set up default character
 	character = Character.new()
 	character.load_from_character(Local.selected_character_def)
 	# character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	# character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
-	character.medkit = MedPack.new()
 	character.equipment_1.equipment_instance = Equipment.new()
 	character.equipment_2.equipment_instance = Equipment.new()
 	# end default character
@@ -97,6 +97,16 @@ func _ready():
 	transform.origin = Global.get_spawn().transform.origin
 	send_character_data.rpc_id(1, _character_payload())
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+func _set_current_health(updated_health: int):
+	if updated_health <= 0:
+		current_health = 0
+	elif updated_health >= FULL_HEALTH:
+		current_health = FULL_HEALTH
+	else:
+		current_health = updated_health
+	
+	HUD.get_node("health_slider").value = current_health
 
 func char_serv_update(ids: Array):
 	
@@ -161,7 +171,11 @@ func _process(delta):
 	elif Input.is_action_just_pressed("use_scanner") and character.has_scanner:
 		if Local.input_active and character.scanner != null:
 			swap_equipped_from_index(6, true)
-
+	elif Input.is_action_just_pressed("heal"):
+		# If medpack is equipped
+		if current_equipped_index == 3:
+			character.medkit.heal(self)
+		
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
 		_ads(delta)

@@ -12,7 +12,7 @@ radius = 0.4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_tmqkr"]
 
-[node name="player_body" type="CharacterBody3D"]
+[node name="player_body2" type="CharacterBody3D"]
 script = ExtResource("1")
 MAX_SPEED = 10.0
 MAX_SPRINT = 20.0
