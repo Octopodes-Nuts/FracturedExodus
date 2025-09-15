@@ -25,7 +25,6 @@ var actions = [
 	"move_left",
 	"move_right",
 	"interact",
-	"heal",
 	"fire",
 	"jump",
 	"sprint",

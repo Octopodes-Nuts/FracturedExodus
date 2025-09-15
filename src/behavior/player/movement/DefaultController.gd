@@ -171,11 +171,6 @@ func _process(delta):
 	elif Input.is_action_just_pressed("use_scanner") and character.has_scanner:
 		if Local.input_active and character.scanner != null:
 			swap_equipped_from_index(6, true)
-	elif Input.is_action_just_pressed("heal"):
-		# If medpack is equipped
-		if current_equipped_index == 3:
-			character.medkit.heal(self)
-		
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
 		_ads(delta)

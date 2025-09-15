@@ -9,7 +9,7 @@ class_name  MedPack
 
 @export var health_increase: int = 50
 "res://behavior/player/equipment/MedPack.gd"
-func heal(player: DefaultController):
+func use(player: DefaultController):
 	if player.current_health != player.FULL_HEALTH:
 		player.current_health += 50
 		if player.current_health > player.FULL_HEALTH:
