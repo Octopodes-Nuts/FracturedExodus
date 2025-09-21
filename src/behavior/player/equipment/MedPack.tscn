@@ -33,3 +33,8 @@ transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -2.4, -2.292, 0.107)
 rotation_order = 0
 axis = 0
 texture = SubResource("ViewportTexture_in6q0")
+
+[node name="Timer" type="Timer" parent="."]
+process_callback = 0
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

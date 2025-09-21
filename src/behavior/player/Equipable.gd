@@ -10,6 +10,8 @@ class_name Equipable
 var active: bool = false
 var ads: bool = false
 var key: String = ""
+var continuous_usage: bool = false
+var cool_down: bool = false
 
 @export var default_position: Vector3 = Vector3.ZERO
 

@@ -33,7 +33,7 @@ var DEFAULT_LERP = 20.0
 @export var step_sound: String
 @export var step_volume: float
 
-@export var FULL_HEALTH: float = 100.0
+@export var FULL_HEALTH: float = 200.0
 var current_health: float = 30 : set = _set_current_health
 
 @export var current_eqipped_key: String = ""
@@ -80,7 +80,10 @@ func _ready():
 	if Local.terrain:
 		Local.terrain.set_camera(head)
 	add_child(HUD)
-	HUD.get_node("health_slider").value = current_health
+	var health_slider = HUD.get_node("health_slider")
+	health_slider.max_value = FULL_HEALTH
+	health_slider.value = current_health
+	
 	# set up default character
 	character = Character.new()
 	character.load_from_character(Local.selected_character_def)
@@ -311,9 +314,17 @@ func _physics_process(delta):
 		if current_interaction.has_method("interact"):
 			current_interaction.interact(self)
 			
-	if Input.is_action_just_pressed('fire') and\
+	if  not active_equipable.continuous_usage and\
+		Input.is_action_just_pressed('fire') and\
 		Local.input_active:
 		if active_equipable.has_method("use"):
+			active_equipable.use(self)
+			
+	if active_equipable.continuous_usage and\
+		Input.is_action_pressed("fire") and\
+		Local.input_active:
+		if not active_equipable.cool_down and\
+		 active_equipable.has_method("use"):
 			active_equipable.use(self)
 	
 	if Input.is_action_just_pressed('reload') and\
