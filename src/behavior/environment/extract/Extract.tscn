@@ -9,7 +9,7 @@
 
 [sub_resource type="CylinderMesh" id="3"]
 
-[node name="interactable" type="Area3D"]
+[node name="interactable2" type="Area3D"]
 collision_mask = 3
 script = ExtResource("1")
 
