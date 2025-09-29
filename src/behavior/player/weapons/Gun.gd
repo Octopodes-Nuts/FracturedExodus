@@ -18,6 +18,7 @@ var bolt_pull_stream: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 @export var clip_size: int = 4
 var current_clip: int
 @export var ammo_pool: int = 10
+var current_reserve: int = ammo_pool
 
 @export var model: Mesh
 var fire_sound: AudioStreamMP3
@@ -110,3 +111,6 @@ func _reload():
 	# increase weapon inside animation, but that is too 
 	# involved for this point
 	current_clip = clip_size
+	
+func get_ammo():
+	return [current_clip, current_reserve]

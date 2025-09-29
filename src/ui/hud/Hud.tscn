@@ -1,14 +1,18 @@
-[gd_scene load_steps=7 format=3 uid="uid://c2vdf5bs4gl6y"]
+[gd_scene load_steps=9 format=3 uid="uid://c2vdf5bs4gl6y"]
 
 [ext_resource type="Texture2D" uid="uid://lj8x80hs34ug" path="res://ui/hud/crosshair.png" id="1"]
 [ext_resource type="Script" uid="uid://c0yqvyd7ijmul" path="res://ui/hud/Hud.gd" id="1_by07e"]
 [ext_resource type="PackedScene" uid="uid://brvwixs700y2q" path="res://ui/hud/ExtractTimer.tscn" id="2_ywxef"]
 [ext_resource type="PackedScene" uid="uid://bemh5f0ii405o" path="res://ui/hud/TextDisplay.tscn" id="3_4sqfl"]
+[ext_resource type="Script" uid="uid://c5fv6p3x4adkp" path="res://ui/hud/AmmoCounter.gd" id="5_gt2ij"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4sqfl"]
 font_size = 30
 
 [sub_resource type="ImageTexture" id="ImageTexture_by07e"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_dqfrj"]
+font_size = 40
 
 [node name="hud" type="Control"]
 layout_mode = 3
@@ -105,3 +109,13 @@ theme_override_icons/grabber_disabled = SubResource("ImageTexture_by07e")
 value = 100.0
 editable = false
 scrollable = false
+
+[node name="AmmoCounter" type="Label" parent="."]
+layout_mode = 0
+offset_left = 1504.0
+offset_top = 966.0
+offset_right = 1571.0
+offset_bottom = 1021.0
+text = "0/0"
+label_settings = SubResource("LabelSettings_dqfrj")
+script = ExtResource("5_gt2ij")

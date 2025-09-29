@@ -23,3 +23,6 @@ func _set_active():
 
 func _set_inactive():
 	active = false
+
+func get_ammo():
+	return [0, 0]

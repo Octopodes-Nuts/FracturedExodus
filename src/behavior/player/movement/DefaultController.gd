@@ -236,6 +236,7 @@ func swap_equipped_from_index(id: int, call_rpc: bool):
 		current_equipped_index = id
 		if call_rpc:
 			update_character_server.rpc_id(1, "active", id)
+		HUD.display_ammo(active_equipable.get_ammo())
 
 func update_equipment():
 	return [
@@ -320,12 +321,14 @@ func _physics_process(delta):
 	if Input.is_action_pressed("interact") && current_interaction:
 		if current_interaction.has_method("interact"):
 			current_interaction.interact(self)
+			HUD.display_ammo(active_equipable.get_ammo())
 			
 	if  not active_equipable.continuous_usage and\
 		Input.is_action_just_pressed('fire') and\
 		Local.input_active:
 		if active_equipable.has_method("use"):
 			active_equipable.use(self)
+			HUD.display_ammo(active_equipable.get_ammo())
 			
 	if active_equipable.continuous_usage and\
 		Input.is_action_pressed("fire") and\
@@ -333,11 +336,13 @@ func _physics_process(delta):
 		if not active_equipable.cool_down and\
 		 active_equipable.has_method("use"):
 			active_equipable.use(self)
+			HUD.display_ammo(active_equipable.get_ammo())
 	
 	if Input.is_action_just_pressed('reload') and\
 		Local.input_active:
 		if active_equipable.has_method("_reload"):
 			active_equipable._reload()
+			HUD.display_ammo(active_equipable.get_ammo())
 
 func register_interaction(interactable: Interactable):
 	if not is_multiplayer_authority(): return
