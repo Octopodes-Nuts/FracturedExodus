@@ -34,7 +34,7 @@ var DEFAULT_LERP = 20.0
 @export var step_volume: float
 
 @export var FULL_HEALTH: float = 100.0
-var current_health: float = 30 : set = _set_current_health
+var current_health: float = 100 : set = _set_current_health
 
 @export var current_eqipped_key: String = ""
 
