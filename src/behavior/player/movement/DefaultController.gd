@@ -34,7 +34,7 @@ var DEFAULT_LERP = 20.0
 @export var step_volume: float
 
 @export var FULL_HEALTH: float = 100.0
-var current_health: float = FULL_HEALTH
+var current_health: float = 100 : set = _set_current_health
 
 @export var current_eqipped_key: String = ""
 
@@ -82,6 +82,10 @@ func _ready():
 	if Local.terrain:
 		Local.terrain.set_camera(head)
 	add_child(HUD)
+	var health_slider = HUD.get_node("health_slider")
+	health_slider.max_value = FULL_HEALTH
+	health_slider.value = current_health
+	
 	# set up default character
 	character = Character.new()
 	character.load_from_character(Local.selected_character_def)
@@ -98,6 +102,16 @@ func _ready():
 	transform.origin = Global.get_spawn().transform.origin
 	send_character_data.rpc_id(1, _character_payload())
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+func _set_current_health(updated_health: float):
+	if updated_health <= 0:
+		current_health = 0
+	elif updated_health >= FULL_HEALTH:
+		current_health = FULL_HEALTH
+	else:
+		current_health = updated_health
+	
+	HUD.get_node("health_slider").value = current_health
 
 func char_serv_update(ids: Array):
 	
@@ -142,6 +156,7 @@ func ground_check():
 		   ground_check_4.is_colliding()
 
 func _process(delta):
+	self.delta = delta
 	if not is_multiplayer_authority(): return
 	# set cycle time ? so that you can't just keep
 	# shifting weapons but maybe not
@@ -166,7 +181,6 @@ func _process(delta):
 	elif Input.is_action_just_pressed("use_scanner") and character.has_scanner:
 		if Local.input_active and character.scanner != null:
 			swap_equipped_from_index(6, true)
-
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
 		_ads.rpc(delta)
@@ -307,9 +321,17 @@ func _physics_process(delta):
 		if current_interaction.has_method("interact"):
 			current_interaction.interact(self)
 			
-	if Input.is_action_just_pressed('fire') and\
+	if  not active_equipable.continuous_usage and\
+		Input.is_action_just_pressed('fire') and\
 		Local.input_active:
 		if active_equipable.has_method("use"):
+			active_equipable.use(self)
+			
+	if active_equipable.continuous_usage and\
+		Input.is_action_pressed("fire") and\
+		Local.input_active:
+		if not active_equipable.cool_down and\
+		 active_equipable.has_method("use"):
 			active_equipable.use(self)
 	
 	if Input.is_action_just_pressed('reload') and\
