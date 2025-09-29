@@ -33,7 +33,7 @@ var DEFAULT_LERP = 20.0
 @export var step_sound: String
 @export var step_volume: float
 
-@export var FULL_HEALTH: float = 200.0
+@export var FULL_HEALTH: float = 100.0
 var current_health: float = 30 : set = _set_current_health
 
 @export var current_eqipped_key: String = ""
@@ -101,7 +101,7 @@ func _ready():
 	send_character_data.rpc_id(1, _character_payload())
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
-func _set_current_health(updated_health: int):
+func _set_current_health(updated_health: float):
 	if updated_health <= 0:
 		current_health = 0
 	elif updated_health >= FULL_HEALTH:
@@ -150,6 +150,7 @@ func ground_check():
 		   ground_check_4.is_colliding()
 
 func _process(delta):
+	self.delta = delta
 	if not is_multiplayer_authority(): return
 	# set cycle time ? so that you can't just keep
 	# shifting weapons but maybe not

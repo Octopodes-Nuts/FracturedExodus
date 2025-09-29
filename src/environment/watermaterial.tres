@@ -8,10 +8,10 @@ frequency = 0.007
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bcpi7"]
 generate_mipmaps = false
-seamless = true
-seamless_blend_skirt = 0.5
-as_normal_map = true
 noise = SubResource("FastNoiseLite_d0y3h")
+seamless = true
+as_normal_map = true
+seamless_blend_skirt = 0.5
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6i3b2"]
 noise_type = 0
@@ -20,10 +20,10 @@ fractal_type = 0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r4a3k"]
 generate_mipmaps = false
-seamless = true
-seamless_blend_skirt = 0.5
-as_normal_map = true
 noise = SubResource("FastNoiseLite_6i3b2")
+seamless = true
+as_normal_map = true
+seamless_blend_skirt = 0.5
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_5edmb"]
 frequency = 0.0005
@@ -31,9 +31,9 @@ fractal_type = 2
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qdptp"]
 generate_mipmaps = false
+noise = SubResource("FastNoiseLite_5edmb")
 seamless = true
 seamless_blend_skirt = 0.5
-noise = SubResource("FastNoiseLite_5edmb")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_tf0ow"]
 noise_type = 3
@@ -42,9 +42,9 @@ fractal_type = 0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_w84gw"]
 generate_mipmaps = false
+noise = SubResource("FastNoiseLite_tf0ow")
 seamless = true
 seamless_blend_skirt = 0.5
-noise = SubResource("FastNoiseLite_tf0ow")
 
 [resource]
 render_priority = -128
