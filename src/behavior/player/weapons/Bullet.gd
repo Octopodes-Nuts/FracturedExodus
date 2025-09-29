@@ -26,7 +26,6 @@ func set_properties(
 		lifetime: float,
 		ads: bool = false,
 		spread: float = 0.0):
-	Global.spawn_parent.add_child(self)
 	_speed = speed
 	global_transform.origin = origin
 	_damage = damage

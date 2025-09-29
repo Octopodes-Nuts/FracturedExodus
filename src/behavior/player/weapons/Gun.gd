@@ -39,8 +39,8 @@ var current_cycle: float = 0.0
 func _ready():
 	# set up envrionment
 	current_clip = clip_size
-	Global.map_root.add_child(audio_player)
-	Global.map_root.add_child(bolt_pull_stream)
+	self.add_child(audio_player)
+	self.add_child(bolt_pull_stream)
 	type = WeaponType.GUN
 	_local_ready()
 	

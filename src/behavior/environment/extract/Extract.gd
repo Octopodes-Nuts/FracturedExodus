@@ -25,7 +25,6 @@ func _local_physics_step(delta):
 			node.extract()
 			#warning-ignore:return_value_discarded
 			extracts.erase(node)
-			
 
 func _interact(node: Node):
 	# check if factions match. fcations are not yet implemented

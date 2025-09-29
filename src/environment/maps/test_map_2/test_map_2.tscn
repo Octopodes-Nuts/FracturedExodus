@@ -248,7 +248,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.35678, 36.4629, 197.521)
 
 [node name="Spawn" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -230.458, 7.4808, 49.7773)
-enabled = false
 
 [node name="Spawn2" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 227.597, 6.75896, 19.8544)
@@ -264,6 +263,7 @@ enabled = false
 
 [node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 130.393, 5.10136, -192.91)
+enabled = false
 
 [node name="scanner_site" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("18_ulnwu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.12, 7.36761, -195.226)
@@ -286,7 +286,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.8303, 3.7542, 260.524)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.89, 3.84746, -194.362)
 
 [node name="ChipsiteSpawn" parent="." instance=ExtResource("19_6nkx3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100.024, 29.9186, 55.1323)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -152.571, 20.0789, 55.1323)
 
 [node name="water" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.61085, 0)
@@ -487,6 +487,9 @@ script = SubResource("GDScript_6nkx3")
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("uid://yd8x8go2gbvp", "uid://dcudvv4sp7mpc")
 spawn_path = NodePath("../Spawns")
+
+[node name="scanner_site" parent="." instance=ExtResource("18_ulnwu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -196.547, 20.4796, 75.1885)
 
 [connection signal="child_entered_tree" from="Spawns" to="Spawns" method="_on_child_entered_tree"]
 [connection signal="spawned" from="PlayerSpawner" to="Spawns" method="_on_player_spawner_spawned"]
