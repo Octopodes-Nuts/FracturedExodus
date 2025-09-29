@@ -88,7 +88,6 @@ func _ready():
 	# character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	# character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
-	character.medkit = MedPack.new()
 	character.equipment_1.equipment_instance = Equipment.new()
 	character.equipment_2.equipment_instance = Equipment.new()
 	# end default character
