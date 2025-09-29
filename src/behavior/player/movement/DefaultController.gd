@@ -394,6 +394,7 @@ func _hit_local(dmg: int):
 # this will be an RPC
 func extract():
 	if not is_multiplayer_authority(): return
+	notify_extract(character.has_objective)
 	#Send RPC to server to remove node from scene
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	Local.input_active = false
@@ -402,6 +403,10 @@ func extract():
 	if not get_tree().change_scene_to_file("res://ui/extraction/Extraction.tscn") == OK:
 		print("Error getting to file")
 	print('extract successful')
+
+func notify_extract(objective_left):
+	if objective_left and not Local.host:
+		Local.HUD.notify.rpc("Objective has left the mission area", 3.0)
 
 @rpc("call_local", "any_peer")
 func res(health, name):
