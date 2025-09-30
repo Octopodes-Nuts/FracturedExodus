@@ -43,9 +43,9 @@ domain_warp_fractal_lacunarity = 1.5
 domain_warp_fractal_gain = 1.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ohthy"]
-seamless = true
-color_ramp = SubResource("Gradient_un54m")
 noise = SubResource("FastNoiseLite_jp2xi")
+color_ramp = SubResource("Gradient_un54m")
+seamless = true
 
 [sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_2g1uq"]
 _shader_parameters = {
@@ -239,7 +239,6 @@ assets = SubResource("Terrain3DAssets_qhi0f")
 collision_mode = 3
 top_level = true
 script = ExtResource("3_16h54")
-metadata/_edit_lock_ = true
 
 [node name="Camera3D" type="Camera3D" parent="NavigationRegion3D/Terrain3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.35678, 36.4629, 197.521)

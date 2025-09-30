@@ -11,6 +11,7 @@ var Chipsite = preload("res://behavior/environment/interactables/chipsite/Chipsi
 
 const PORT: int = 7072
 var enet_peer = ENetMultiplayerPeer.new()
+var player_count = 0
 
 signal character_update(ids: Array)
 
@@ -50,9 +51,14 @@ func add_player(peer_id):
 	var player = Player.instantiate()
 	player.name = str(peer_id)
 	$Spawns.add_child(player)
+	player_count += 1
 	
 	
 func remove_player(peer_id):
 	var player = $Spawns.get_node_or_null(str(peer_id))
 	if player:
 		player.queue_free()
+	player_count -= 1
+	if player_count == 0:
+		# reload script
+		get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn")
