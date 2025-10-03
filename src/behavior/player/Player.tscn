@@ -1,14 +1,17 @@
-[gd_scene load_steps=8 format=3 uid="uid://dcudvv4sp7mpc"]
+[gd_scene load_steps=11 format=3 uid="uid://dcudvv4sp7mpc"]
 
 [ext_resource type="Script" uid="uid://p561hd5ejgpe" path="res://behavior/player/movement/DefaultController.gd" id="1"]
 [ext_resource type="Script" uid="uid://dbotvawysdgfa" path="res://behavior/player/movement/SoundSphere.gd" id="3_6l03r"]
 [ext_resource type="PackedScene" uid="uid://t64shttxwiks" path="res://behavior/environment/interactables/res_sphere/res_sphere.tscn" id="3_6yuvp"]
+[ext_resource type="Script" uid="uid://hpvfcmyrxokr" path="res://behavior/player/Head.gd" id="4_xn1ii"]
 
 [sub_resource type="CapsuleMesh" id="2"]
-radius = 0.4
+radius = 0.3
+height = 1.3
 
 [sub_resource type="CapsuleShape3D" id="1"]
-radius = 0.4
+radius = 0.32763672
+height = 1.269043
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_4ucha"]
 
@@ -22,6 +25,15 @@ properties/1/replication_mode = 1
 properties/2/path = NodePath(".:current_eqipped_key")
 properties/2/spawn = true
 properties/2/replication_mode = 1
+properties/3/path = NodePath("neck:rotation")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
+[sub_resource type="BoxMesh" id="BoxMesh_6yuvp"]
+size = Vector3(0.3, 0.3, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6yuvp"]
+size = Vector3(0.2994995, 0.30334473, 0.29882813)
 
 [node name="player_body" type="CharacterBody3D"]
 collision_layer = 2
@@ -31,16 +43,12 @@ MAX_SPRINT = 7.0
 jump = 7.0
 
 [node name="player_mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.36986238, 0)
 mesh = SubResource("2")
 
 [node name="player_main_collider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.36547852, 0)
 shape = SubResource("1")
-
-[node name="camera_head" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.538456, 0)
-
-[node name="gun_location" type="Node3D" parent="camera_head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)
 
 [node name="ground_check_0" type="RayCast3D" parent="."]
 target_position = Vector3(0, -2, 0)
@@ -72,5 +80,26 @@ shape = SubResource("SphereShape3D_4ucha")
 replication_config = SubResource("SceneReplicationConfig_psm2p")
 
 [node name="res_sphere" parent="." instance=ExtResource("3_6yuvp")]
+
+[node name="neck" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36387455, 0)
+collision_layer = 3
+script = ExtResource("4_xn1ii")
+
+[node name="head" type="MeshInstance3D" parent="neck"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17458147, 0)
+layers = 2
+mesh = SubResource("BoxMesh_6yuvp")
+skeleton = NodePath("../..")
+
+[node name="head_collision" type="CollisionShape3D" parent="neck"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00021362305, 0.16973877, -0.0029296875)
+shape = SubResource("BoxShape3D_6yuvp")
+
+[node name="camera_head" type="Camera3D" parent="neck"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17458147, 0)
+
+[node name="gun_location" type="Node3D" parent="neck/camera_head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)
 
 [connection signal="body_entered" from="sound_sphere" to="sound_sphere" method="_on_body_entered"]

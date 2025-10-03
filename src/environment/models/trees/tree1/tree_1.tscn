@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://7uetw5vocfu3"]
+
+[ext_resource type="ArrayMesh" uid="uid://uon1bp3k07ei" path="res://environment/models/trees/tree1/tree.res" id="1_h25fj"]
+[ext_resource type="ArrayMesh" uid="uid://bkj7mxbvegbr3" path="res://environment/models/trees/tree1/leaves.res" id="2_1xpu3"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_6b07q"]
+height = 3.3640137
+radius = 0.35
+
+[node name="tree1" type="StaticBody3D"]
+
+[node name="tree" type="MeshInstance3D" parent="."]
+transform = Transform3D(300, 0, 0, 0, -1.3113417e-05, 300, 0, -300, -1.3113417e-05, 0, 0, 0)
+mesh = ExtResource("1_h25fj")
+
+[node name="leaves" type="MeshInstance3D" parent="tree"]
+mesh = ExtResource("2_1xpu3")
+
+[node name="collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6870837, 0)
+shape = SubResource("CylinderShape3D_6b07q")

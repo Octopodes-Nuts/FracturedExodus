@@ -51,8 +51,9 @@ var delta: float
 # this needs to be set to an active equipable
 var active_equipable: Equipable = Equipable.new()
 
-@onready var head = $camera_head
-@onready var gun_location = $camera_head/gun_location
+@onready var camera = $neck/camera_head
+@onready var neck = $neck
+@onready var gun_location = $neck/camera_head/gun_location
 @onready var res_sphere = $res_sphere
 @onready var ground_check_0 = $ground_check_0
 @onready var ground_check_1 = $ground_check_1
@@ -78,9 +79,9 @@ func _ready():
 	if not is_multiplayer_authority(): return
 	
 	Local.input_active = true
-	head.make_current()
+	camera.make_current()
 	if Local.terrain:
-		Local.terrain.set_camera(head)
+		Local.terrain.set_camera(camera)
 	add_child(HUD)
 	var health_slider = HUD.get_node("health_slider")
 	health_slider.max_value = FULL_HEALTH
@@ -129,9 +130,9 @@ func load_from_payload(payload: Dictionary):
 func _ads(delta):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
-			lerp((active_equipable.ads_position - head.transform.origin),
+			lerp((active_equipable.ads_position - camera.transform.origin),
 				active_equipable.ADS_LERP * delta)
-		head.fov = lerp(head.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
+		camera.fov = lerp(camera.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
 		if is_multiplayer_authority():
 			Local.HUD.set_visible(false)
 
@@ -139,13 +140,13 @@ func _ads(delta):
 func _undo_ads(delta):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
-			lerp((active_equipable.default_position - head.transform.origin),
+			lerp((active_equipable.default_position - camera.transform.origin),
 				active_equipable.ADS_LERP * delta)
-		head.fov = lerp(head.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
+		camera.fov = lerp(camera.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
 		if is_multiplayer_authority():
 			Local.HUD.set_visible(true)
-	elif head.fov != float(Settings.FOV):
-		head.fov = lerp(head.fov, float(Settings.FOV), DEFAULT_LERP * delta)
+	elif camera.fov != float(Settings.FOV):
+		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * delta)
 
 func ground_check():
 
@@ -208,31 +209,31 @@ func _process(delta):
 # @rpc("call_local", "any_peer")
 func swap_equipped(equipable: Equipable):
 	if active_equipable != equipable:
-		if active_equipable.get_parent() == head:
-			head.remove_child(active_equipable)
+		if active_equipable.get_parent() == camera:
+			camera.remove_child(active_equipable)
 		active_equipable._set_inactive()
 		# play stow animation
 		active_equipable = equipable
 		# play raise animation
 		equipable._set_active()
-		head.add_child(equipable)
+		camera.add_child(equipable)
 		equipable.transform.origin = \
-		equipable.default_position - head.transform.origin
+		equipable.default_position - camera.transform.origin
 		current_eqipped_key = equipable.key
 
 func swap_equipped_from_index(id: int, call_rpc: bool):
 	var equipable = update_equipment()[id]
 	if active_equipable != equipable:
-		if active_equipable.get_parent() == head:
-			head.remove_child(active_equipable)
+		if active_equipable.get_parent() == camera:
+			camera.remove_child(active_equipable)
 		active_equipable._set_inactive()
 		# play stow animation
 		active_equipable = equipable
 		# play raise animation
 		equipable._set_active()
-		head.add_child(equipable)
+		camera.add_child(equipable)
 		equipable.transform.origin = \
-		equipable.default_position - head.transform.origin
+		equipable.default_position - camera.transform.origin
 		current_equipped_index = id
 		if call_rpc:
 			update_character_server.rpc_id(1, "active", id)
@@ -254,8 +255,8 @@ func _input(event):
 	if Local.input_active:
 		if event is InputEventMouseMotion:
 			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity))
-			head.rotate_x(deg_to_rad((-event.relative.y * mouse_sensitivity)))
-			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+			neck.rotate_x(deg_to_rad((-event.relative.y * mouse_sensitivity)))
+			neck.rotation.x = clamp(neck.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
 	if not is_multiplayer_authority() or current_health <= 0: return
