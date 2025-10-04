@@ -18,6 +18,7 @@ var headshot_mult = 2.0
 func _ready():
 	enabled = true
 	collide_with_areas = true
+	hit_from_inside = true
 
 # Set bullet properties
 func set_properties(
@@ -51,18 +52,20 @@ func _physics_process(delta):
 	# test if hitting anything
 	if is_colliding():
 		var test = get_collider()
+		print(test)
 
 		if test.has_method("hit"):
 			test.hit(_damage)
 			self.queue_free()
 		elif test.has_method("headshot"):
 			test.headshot(_damage * headshot_mult)
+			self.queue_free()
 	_lifetime -= delta
 
 	#kill bullet
 	if _lifetime <= 0.0:
 		queue_free()
-
+	force_raycast_update()
 
 func set_norm_ray():
 

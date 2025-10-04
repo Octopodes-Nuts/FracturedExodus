@@ -36,7 +36,7 @@ size = Vector3(0.3, 0.3, 0.3)
 size = Vector3(0.2994995, 0.30334473, 0.29882813)
 
 [node name="player_body" type="CharacterBody3D"]
-collision_layer = 2
+collision_layer = 10
 script = ExtResource("1")
 MAX_SPEED = 4.0
 MAX_SPRINT = 7.0
@@ -70,6 +70,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, 0)
 target_position = Vector3(0, -2, 0)
 
 [node name="sound_sphere" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 4
+input_ray_pickable = false
 script = ExtResource("3_6l03r")
 
 [node name="collision" type="CollisionShape3D" parent="sound_sphere"]
@@ -80,10 +83,12 @@ shape = SubResource("SphereShape3D_4ucha")
 replication_config = SubResource("SceneReplicationConfig_psm2p")
 
 [node name="res_sphere" parent="." instance=ExtResource("3_6yuvp")]
+input_ray_pickable = false
 
 [node name="neck" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36387455, 0)
-collision_layer = 3
+collision_layer = 8
+collision_mask = 8
 script = ExtResource("4_xn1ii")
 
 [node name="head" type="MeshInstance3D" parent="neck"]

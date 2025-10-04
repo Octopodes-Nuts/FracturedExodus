@@ -62,3 +62,14 @@ func remove_player(peer_id):
 	if player_count == 0:
 		# reload script
 		get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn")
+		
+@rpc("any_peer")
+func spawn_box(position):
+	var mesh = BoxMesh.new()
+	mesh.size = Vector3(1, 1, 1)
+	
+	var mi = MeshInstance3D.new()
+	mi.mesh = mesh
+	add_child(mi)
+	print(mi)
+	mi.global_transform.origin = position
