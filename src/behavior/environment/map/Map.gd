@@ -30,7 +30,8 @@ func _ready():
 		set_multiplayer_authority(1)
 	
 	else:
-		enet_peer.create_client("34.82.173.20", PORT)
+		enet_peer.create_client("34.55.251.69", PORT)
+		#enet_peer.create_client("localhost", PORT)
 		multiplayer.multiplayer_peer = enet_peer
 	
 	var chipsite = Chipsite.instantiate()

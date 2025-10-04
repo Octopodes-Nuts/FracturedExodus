@@ -267,19 +267,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -230.458, 7.4808, 49.7773)
 
 [node name="Spawn2" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 227.597, 6.75896, 19.8544)
-enabled = false
 
 [node name="Spawn3" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 196.618, 6.4103, 146.855)
-enabled = false
 
 [node name="Spawn4" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.5465, 6.01037, 256.895)
-enabled = false
 
 [node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns" instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 130.393, 5.10136, -192.91)
-enabled = false
 
 [node name="scanner_site" parent="NavigationRegion3D/Terrain3D" instance=ExtResource("18_ulnwu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.12, 7.36761, -195.226)
