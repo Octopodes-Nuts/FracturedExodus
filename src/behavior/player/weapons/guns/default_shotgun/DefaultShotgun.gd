@@ -17,13 +17,8 @@ func _use():
 
 	if current_clip > 0:
 
-		player.play(fire_animation)
+		play_sounds_and_anims.rpc()
 		current_cycle = cycle_time
-
-		audio_player.stream = fire_sound
-		bolt_pull_stream.stream = bolt_pull_sound
-		audio_player.play()
-		bolt_pull_stream.play()
 
 		for i in range(num_pellets):
 			_spawn_bullet.rpc_id(1, {

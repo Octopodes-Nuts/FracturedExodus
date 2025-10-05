@@ -41,6 +41,19 @@ var current_health: float = 100 : set = _set_current_health
 var full_contact = false
 var health = FULL_HEALTH
 
+#sounds
+var hits = [preload("res://behavior/player/sounds/hit1.wav"),
+			preload("res://behavior/player/sounds/hit2wav.wav"),
+			preload("res://behavior/player/sounds/hit3.wav")]
+var deaths = [preload("res://behavior/player/sounds/death1.wav")]
+var groans = [preload("res://behavior/player/sounds/groan1.wav"),
+			  preload("res://behavior/player/sounds/groan2.wav"),
+			  preload("res://behavior/player/sounds/groan3.wav")]
+var walk = preload("res://behavior/player/sounds/walk.wav")
+var run = preload("res://behavior/player/sounds/run.wav")
+
+@onready var audio_player = $audio_player
+
 var direction = Vector3()
 var horizantal_velocity = Vector3()
 var movement = Vector3()
@@ -258,6 +271,12 @@ func _input(event):
 			neck.rotate_x(deg_to_rad((-event.relative.y * mouse_sensitivity)))
 			neck.rotation.x = clamp(neck.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
+enum WALK_STATES {
+	WALK,
+	RUN,
+	STOP
+}
+
 func _physics_process(delta):
 	if not is_multiplayer_authority() or current_health <= 0: return
 	var speed = 0.0
@@ -273,6 +292,7 @@ func _physics_process(delta):
 	else:
 		full_contact = false
 		
+		
 	if not is_on_floor():
 		gravity_direction += Vector3.DOWN * gravity * delta
 	#elif is_on_floor() and full_contact:
@@ -282,30 +302,43 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("jump") and is_on_floor()\
 		and full_contact and Local.input_active:
 		gravity_direction = Vector3.UP * jump
+	
+	var walk_state = WALK_STATES.STOP
 
 	if Input.is_action_pressed("move_forward") and\
 			Local.input_active:
 		direction -= transform.basis.z
 		forward = true
+		walk_state = WALK_STATES.WALK
 	if Input.is_action_pressed("move_backward") and\
 			Local.input_active:
 		forward = false
 		direction += transform.basis.z
+		walk_state = WALK_STATES.WALK
 	if Input.is_action_pressed("move_left") and\
 			Local.input_active:
 		direction -= transform.basis.x
+		walk_state = WALK_STATES.WALK
 	if Input.is_action_pressed("move_right") and\
 			Local.input_active:
 		direction += transform.basis.x
+		walk_state = WALK_STATES.WALK
 		
 	if direction != Vector3.ZERO:
 		if Input.is_action_pressed("sprint") and forward and\
 				Local.input_active:
 			speed = MAX_SPRINT
 			accel = SPRINT_ACCEL
+			walk_state = WALK_STATES.RUN
 		else:
 			speed = MAX_SPEED
 			accel = ACCEL
+			walk_state = WALK_STATES.WALK
+	
+	if not is_on_floor():
+		walk_state = WALK_STATES.STOP
+	
+	play_walk.rpc(name, walk_state)
 
 	direction = direction.normalized()
 	horizantal_velocity = horizantal_velocity.lerp(
@@ -344,6 +377,38 @@ func _physics_process(delta):
 		if active_equipable.has_method("_reload"):
 			active_equipable._reload()
 			HUD.display_ammo(active_equipable.get_ammo())
+
+var play_state = {}
+
+@rpc("call_local","any_peer")
+func play_walk(id, walk_state):
+	if name == id:
+		if walk_state == WALK_STATES.STOP:
+			$footsteps.stop()
+			play_state[name] = WALK_STATES.STOP
+		elif walk_state == WALK_STATES.WALK:
+			if not $footsteps.playing:
+				$footsteps.stream = walk
+				$footsteps.autoplay = true
+				$footsteps.play()
+				play_state[name] = WALK_STATES.WALK
+			elif play_state[name] != WALK_STATES.WALK:
+				$footsteps.stream = walk
+				$footsteps.autoplay = true
+				$footsteps.play()
+				play_state[name] = WALK_STATES.WALK
+		elif walk_state == WALK_STATES.RUN:
+			if not $footsteps.playing:
+				$footsteps.stream = run
+				$footsteps.autoplay = true
+				$footsteps.play()
+				play_state[name] = WALK_STATES.RUN
+			elif play_state[name] != WALK_STATES.RUN:
+				$footsteps.stream = run
+				$footsteps.autoplay = true
+				$footsteps.play()
+				play_state[name] = WALK_STATES.RUN
+
 
 func register_interaction(interactable: Interactable):
 	if not is_multiplayer_authority(): return
@@ -406,8 +471,16 @@ func lose_objective():
 	character.has_objective = false
 	update_character_server.rpc_id(1, "obj", false)
 
+@rpc("call_local", "any_peer")
+func play_hit_noise(id):
+	if name == id:
+		print(id)
+		audio_player.stream = hits.pick_random()
+		audio_player.play()
+
 func hit(dmg: int):
 	_hit_local.rpc_id(name.to_int(), dmg)
+	play_hit_noise.rpc(name)
 
 @rpc("any_peer")
 func _hit_local(dmg: int):
