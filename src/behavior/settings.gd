@@ -39,6 +39,7 @@ var actions = [
 	"equipment_1",
 	"equipment_2",
 	"medpack",
+	"help"
 ]
 
 # Key Bindings

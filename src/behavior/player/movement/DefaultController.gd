@@ -49,6 +49,8 @@ var deaths = [preload("res://behavior/player/sounds/death1.wav")]
 var groans = [preload("res://behavior/player/sounds/groan1.wav"),
 			  preload("res://behavior/player/sounds/groan2.wav"),
 			  preload("res://behavior/player/sounds/groan3.wav")]
+var helps = [preload('res://behavior/player/sounds/help1.wav'),
+			 preload('res://behavior/player/sounds/help2.wav')]
 var walk = preload("res://behavior/player/sounds/walk.wav")
 var run = preload("res://behavior/player/sounds/run.wav")
 
@@ -219,6 +221,7 @@ func _process(delta):
 			self.remove_child(escape_menu)
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+
 # @rpc("call_local", "any_peer")
 func swap_equipped(equipable: Equipable):
 	if active_equipable != equipable:
@@ -278,7 +281,7 @@ enum WALK_STATES {
 }
 
 func _physics_process(delta):
-	if not is_multiplayer_authority() or current_health <= 0: return
+	if not is_multiplayer_authority(): return
 	var speed = 0.0
 	var accel = DEACCEL
 	var forward = false
@@ -298,10 +301,11 @@ func _physics_process(delta):
 	#elif is_on_floor() and full_contact:
 	#	gravity_direction = -get_floor_normal() * gravity
 	##	gravity_direction = -get_floor_normal()
-
-	if Input.is_action_just_pressed("jump") and is_on_floor()\
-		and full_contact and Local.input_active:
-		gravity_direction = Vector3.UP * jump
+	
+	if health > 0:
+		if Input.is_action_just_pressed("jump") and is_on_floor()\
+			and full_contact and Local.input_active:
+			gravity_direction = Vector3.UP * jump
 	
 	var walk_state = WALK_STATES.STOP
 
@@ -348,35 +352,51 @@ func _physics_process(delta):
 	movement.y = gravity_direction.y
 	
 	#warning-ignore:return_value_discarded
+	if current_health <= 0:
+		movement = movement * Vector3.UP
 	set_velocity(movement)
 	set_up_direction(Vector3.UP)
 	move_and_slide()
 	
-	if Input.is_action_pressed("interact") && current_interaction:
-		if current_interaction.has_method("interact"):
-			current_interaction.interact(self)
-			HUD.display_ammo(active_equipable.get_ammo())
+	if current_health > 0:
+		if Input.is_action_pressed("interact") && current_interaction:
+			if current_interaction.has_method("interact"):
+				current_interaction.interact(self)
+				HUD.display_ammo(active_equipable.get_ammo())
 			
-	if  not active_equipable.continuous_usage and\
-		Input.is_action_just_pressed('fire') and\
-		Local.input_active:
-		if active_equipable.has_method("use"):
-			active_equipable.use(self)
-			HUD.display_ammo(active_equipable.get_ammo())
+		if  not active_equipable.continuous_usage and\
+			Input.is_action_just_pressed('fire') and\
+			Local.input_active:
+			if active_equipable.has_method("use"):
+				active_equipable.use(self)
+				HUD.display_ammo(active_equipable.get_ammo())
 			
-	if active_equipable.continuous_usage and\
-		Input.is_action_pressed("fire") and\
-		Local.input_active:
-		if not active_equipable.cool_down and\
-		 active_equipable.has_method("use"):
-			active_equipable.use(self)
-			HUD.display_ammo(active_equipable.get_ammo())
+		if active_equipable.continuous_usage and\
+			Input.is_action_pressed("fire") and\
+			Local.input_active:
+			if not active_equipable.cool_down and\
+		 	active_equipable.has_method("use"):
+				active_equipable.use(self)
+				HUD.display_ammo(active_equipable.get_ammo())
 	
-	if Input.is_action_just_pressed('reload') and\
-		Local.input_active:
-		if active_equipable.has_method("_reload"):
-			active_equipable._reload()
-			HUD.display_ammo(active_equipable.get_ammo())
+		if Input.is_action_just_pressed('reload') and\
+			Local.input_active:
+			if active_equipable.has_method("_reload"):
+				active_equipable._reload()
+				HUD.display_ammo(active_equipable.get_ammo())
+		
+		if Input.is_action_just_pressed("help"):
+			print("help")
+	
+	if Input.is_action_just_pressed("help") and\
+		current_health <= 0 and not audio_player.playing:
+			call_help.rpc(name)
+
+@rpc("call_local", "any_peer")
+func call_help(id):
+	if name == id:
+		audio_player.stream = helps.pick_random()
+		audio_player.play()
 
 var play_state = {}
 

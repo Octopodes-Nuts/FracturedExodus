@@ -18,7 +18,8 @@
 		"reload":           "KEY_R",
 		"medpack":			"KEY_4",
 		"equipment_1":      "KEY_5",
-		"equipment_2":      "KEY_6"
+		"equipment_2":      "KEY_6",
+		"help": 			"KEY_X"
 	},
 
 	"default_controls" : {
@@ -40,6 +41,7 @@
 		"reload":           "KEY_R",
 		"medpack":			"KEY_4",
 		"equipment_1":      "KEY_5",
-		"equipment_2":      "KEY_6"
+		"equipment_2":      "KEY_6",
+		"help": 			"KEY_X"
 	}
 }
