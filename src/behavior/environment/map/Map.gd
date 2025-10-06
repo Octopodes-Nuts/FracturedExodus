@@ -30,13 +30,28 @@ func _ready():
 		set_multiplayer_authority(1)
 	
 	else:
+		multiplayer.connected_to_server.connect(_on_connection)
+		multiplayer.connection_failed.connect(_on_connection_failed)
 		#enet_peer.create_client("34.55.251.69", PORT)
-		enet_peer.create_client("localhost", PORT)
-		multiplayer.multiplayer_peer = enet_peer
+		if enet_peer.create_client("localhost", PORT) == OK:
+			multiplayer.multiplayer_peer = enet_peer
+		else:
+			print("MAKE SERVER")
+			
 	
 	var chipsite = Chipsite.instantiate()
 	chipsite.transform.origin = Global.chipsite_spawns[randi() % len(Global.chipsite_spawns)].transform.origin
 	$Spawns.add_child(chipsite)
+
+func _on_connection():
+	pass
+func _on_connection_failed():
+	print("CONN FAILED")
+	enet_peer.create_server(PORT)
+	multiplayer.multiplayer_peer = enet_peer
+	multiplayer.peer_connected.connect(add_player)
+	multiplayer.peer_disconnected.connect(remove_player)
+	set_multiplayer_authority(1)
 
 @rpc("authority", "reliable")
 func broadcast_character_data(payload):

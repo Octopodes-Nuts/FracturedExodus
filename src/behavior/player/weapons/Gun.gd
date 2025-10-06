@@ -10,9 +10,6 @@ class_name Gun
 var audio_player: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 var bolt_pull_stream: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 
-@onready var Global = get_node('/root/Global')
-@onready var Types = get_node('/root/Types')
-@onready var Local = get_node('/root/Local')
 @onready var BulletScene = preload("res://behavior/player/weapons/Bullet.tscn")
 
 @export var clip_size: int = 4

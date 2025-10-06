@@ -9,6 +9,9 @@ class_name DefaultGun
 
 func _init():
 	faction = Factions.DEFAULT
+	slots = {
+		Types.Classes.CLASS_DEFAULT: [1]
+	}
 
 func _local_ready():
 	fire_sound =\
