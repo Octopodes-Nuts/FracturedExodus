@@ -1,6 +1,7 @@
 extends Node
 
 var PlayerIDs: Dictionary[String, bool]
+var TimeRemaining: float = 25.0 * 60.0
 
 @onready var map = $".."
 
@@ -23,3 +24,9 @@ func _on_player_join(id: String):
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	map.player_added.connect(_on_player_join)
+
+func _process(delta: float) -> void:
+	TimeRemaining -= delta
+	if TimeRemaining < 0.0:
+		TimeRemaining = 0.0
+		# end game
