@@ -1,5 +1,8 @@
 extends Resource
 
+class_name SettingsRes
+
+@export var volume: float = 0.5
 @export var music_volume: float = 0.5
 @export var sfx_volume: float = 0.5
 @export var fullscreen: bool = true

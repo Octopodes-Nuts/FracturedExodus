@@ -5,19 +5,32 @@
 
 extends Node
 
+var settings_res: SettingsRes
+
 # setup
 func _ready():
-	# Register Inputs
-	var settings_text = FileAccess.get_file_as_string(path_to_settings)
-	settings = JSON.parse_string(settings_text)
+
+	if ResourceLoader.exists("res://load/Settings.res"):
+		settings_res = ResourceLoader.load("res://load/Settings.res")
+	else:
+		settings_res = SettingsRes.new()
+		ResourceSaver.save(settings_res, "res://load/Settings.res")
+	
+	key_binds = settings_res.key_binds
+	volume = settings_res.volume
+	music_volume = settings_res.music_volume
+	environment_volume = settings_res.sfx_volume
+
 	_set_actions()
 	_load_bindings()
+		
 
 # Gameplay settings
 var FOV: int = 70
-
-var path_to_settings = "res://load/settings.json"
-var settings: Dictionary
+var key_binds: Dictionary
+var volume: float
+var music_volume: float
+var environment_volume: float
 
 var actions = [
 	"move_forward",
@@ -148,7 +161,7 @@ var key_codes = {
 
 # Load Key Bindings from .json
 func _load_bindings():
-	var controls = settings["controls"]
+	var controls = key_binds
 	for control in controls.keys():
 		if controls[control].substr(0, 3) == "KEY":
 			InputMap.action_add_event(
@@ -166,9 +179,5 @@ func _load_bindings():
 # Audio Settings
 const MAX_AUDIO: float = 100.0
 const MIN_AUDIO: float = 0.0
-
-var volume: float = MAX_AUDIO
-var music_volume: float = MAX_AUDIO
-var environment_volume: float = MAX_AUDIO
 
 # Load Audio from .json
