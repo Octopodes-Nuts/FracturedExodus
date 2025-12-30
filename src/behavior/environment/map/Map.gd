@@ -6,6 +6,7 @@
 extends WorldEnvironment
 
 @onready var Global = get_node('/root/Global')
+@onready var Game = $"./Game"
 var Player = preload("res://behavior/player/Player.tscn")
 var Chipsite = preload("res://behavior/environment/interactables/chipsite/Chipsite.tscn")
 
@@ -13,6 +14,7 @@ const PORT: int = 7072
 var enet_peer = ENetMultiplayerPeer.new()
 
 signal character_update(ids: Array)
+signal player_added(id: String)
 
 # When tree is entered, set as the map root
 func _ready():

@@ -11,19 +11,19 @@ class_name Account
 
 var empire_funds: float
 var empire_level: int
-var empire_soliders: Array
+var empire_soliders: Array[CharacterDef]
 var empire_guns: Array
 var empire_equipment: Array
 
 var entene_funds: float
 var entente_level: int
-var entente_soldiers: Array
+var entente_soldiers: Array[CharacterDef]
 var entente_guns: Array
 var entente_equipment: Array
 
 var free_agent_funds: float
 var free_agent_level: int
-var free_agent_agents: Array
+var free_agent_agents: Array[CharacterDef]
 var free_agent_guns: Array
 var free_agent_equipment: Array
 

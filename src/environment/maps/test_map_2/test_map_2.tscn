@@ -1,10 +1,11 @@
-[gd_scene load_steps=47 format=3 uid="uid://ccget10dm00lb"]
+[gd_scene load_steps=48 format=3 uid="uid://ccget10dm00lb"]
 
 [ext_resource type="Environment" uid="uid://etedssom36ge" path="res://environment/maps/test_map_2/new_environment.tres" id="1_un54m"]
 [ext_resource type="Script" uid="uid://cctu8la0pomnv" path="res://behavior/environment/map/Map.gd" id="2_qhi0f"]
 [ext_resource type="Script" uid="uid://cadnyra354uxb" path="res://environment/maps/test_map_2/terrain_3d.gd" id="3_16h54"]
 [ext_resource type="PackedScene" uid="uid://ec8yapldak1y" path="res://behavior/environment/spawn/Spawn.tscn" id="3_aqnjy"]
 [ext_resource type="Texture2D" uid="uid://haq6ddq1tncs" path="res://environment/maps/test_map_2/textures/deadgrass.png" id="3_lio7l"]
+[ext_resource type="PackedScene" uid="uid://cbpckpkhcylm2" path="res://behavior/game/Game.tscn" id="3_ulnwu"]
 [ext_resource type="Texture2D" uid="uid://dddq8fu48dct4" path="res://environment/maps/test_map_2/textures/oneflower.png" id="4_6yoq6"]
 [ext_resource type="PackedScene" uid="uid://c0dtouqw086c3" path="res://behavior/environment/extract/Extract.tscn" id="4_16h54"]
 [ext_resource type="Texture2D" uid="uid://f07mmb6e4puk" path="res://environment/maps/test_map_2/textures/tallgreen.png" id="5_a4cet"]
@@ -228,6 +229,8 @@ func _on_child_entered_tree(node: Node) -> void:
 [node name="env" type="WorldEnvironment"]
 environment = ExtResource("1_un54m")
 script = ExtResource("2_qhi0f")
+
+[node name="Game" parent="." instance=ExtResource("3_ulnwu")]
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_6nkx3")
