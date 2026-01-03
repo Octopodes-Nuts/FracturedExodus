@@ -58,10 +58,7 @@ func _on_character_select_new_char_selected() -> void:
 func _on_paper_doll_weapon_change(register: int) -> void:
 	active_register = register
 	weapon_select.visible = true
-	if register == 1:
-		weapon_select.render_out(WeaponRegister.display_gun_register)
-	if register == 2:
-		weapon_select.render_out(WeaponRegister.display_gun_register)
+	weapon_select.render_out(register, WeaponRegister.display_gun_register, WeaponRegister.gun_register)
 
 func _on_weapon_select_weapon_selected(id: String) -> void:
 	weapon_select.visible = false

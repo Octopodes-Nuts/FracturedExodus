@@ -12,6 +12,7 @@ var Chipsite = preload("res://behavior/environment/interactables/chipsite/Chipsi
 
 const PORT: int = 7072
 var enet_peer = ENetMultiplayerPeer.new()
+var player_count = 0
 
 signal character_update(ids: Array)
 signal player_added(id: String)
@@ -31,12 +32,28 @@ func _ready():
 		set_multiplayer_authority(1)
 	
 	else:
-		enet_peer.create_client("localhost", PORT)
-		multiplayer.multiplayer_peer = enet_peer
+		multiplayer.connected_to_server.connect(_on_connection)
+		multiplayer.connection_failed.connect(_on_connection_failed)
+		#enet_peer.create_client("34.55.251.69", PORT)
+		if enet_peer.create_client("localhost", PORT) == OK:
+			multiplayer.multiplayer_peer = enet_peer
+		else:
+			print("MAKE SERVER")
+			
 	
 	var chipsite = Chipsite.instantiate()
 	chipsite.transform.origin = Global.chipsite_spawns[randi() % len(Global.chipsite_spawns)].transform.origin
 	$Spawns.add_child(chipsite)
+
+func _on_connection():
+	pass
+func _on_connection_failed():
+	print("CONN FAILED")
+	enet_peer.create_server(PORT)
+	multiplayer.multiplayer_peer = enet_peer
+	multiplayer.peer_connected.connect(add_player)
+	multiplayer.peer_disconnected.connect(remove_player)
+	set_multiplayer_authority(1)
 
 @rpc("authority", "reliable")
 func broadcast_character_data(payload):
@@ -52,9 +69,25 @@ func add_player(peer_id):
 	var player = Player.instantiate()
 	player.name = str(peer_id)
 	$Spawns.add_child(player)
+	player_count += 1
 	
 	
 func remove_player(peer_id):
 	var player = $Spawns.get_node_or_null(str(peer_id))
 	if player:
 		player.queue_free()
+	player_count -= 1
+	if player_count == 0:
+		# reload script
+		get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn")
+		
+@rpc("any_peer")
+func spawn_box(position):
+	var mesh = BoxMesh.new()
+	mesh.size = Vector3(1, 1, 1)
+	
+	var mi = MeshInstance3D.new()
+	mi.mesh = mesh
+	add_child(mi)
+	print(mi)
+	mi.global_transform.origin = position

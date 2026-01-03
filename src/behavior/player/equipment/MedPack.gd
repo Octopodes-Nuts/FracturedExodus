@@ -29,3 +29,6 @@ func use(player: DefaultController):
 		print('healed ' + str(heal_amount) + ' to: '\
 		 	+ str(player.current_health))
 		print('health available: ' + str(health_pool))
+
+func get_ammo():
+	return [int(health_pool), 0]

@@ -29,19 +29,12 @@ func _ui_report():
 func _local_physics_step(_delta):
 	pass
 
-# this needs to be rethought ... it must be confirmed that
-# a player that is able to interact is interacting
-# the way that it will work will need to be refactored to work over
-# the network. This will be done by confirming the player id
-# of the one who pressed the interact button with the one that is able to interact, 
-# or by handlng this interaction on the player side. May be best to do it on the player side
 func _on_interactable_body_entered(body:Node):
 	if not body.is_multiplayer_authority(): return
 	if body.has_method('register_interaction'):
 		_add_interaction(body)
 		body.register_interaction(self)
 		Local.HUD.get_child(2).display_text(null, display_text)
-	pass # Replace with function body.
 
 func _on_interactable_body_exited(body):
 	if not body.is_multiplayer_authority(): return

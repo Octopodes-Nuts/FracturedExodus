@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://uhc1vpii21u"]
+
+[ext_resource type="ArrayMesh" uid="uid://mpluc5skbuyg" path="res://environment/models/rocks/rock2/rock2_Icosphere.res" id="1_2a70f"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_2a70f"]
+radius = 0.6271794
+
+[node name="Rock2" type="StaticBody3D"]
+
+[node name="rock" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_2a70f")
+
+[node name="collision" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_2a70f")

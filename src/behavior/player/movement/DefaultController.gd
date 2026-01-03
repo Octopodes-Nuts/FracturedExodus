@@ -41,6 +41,21 @@ var current_health: float = 100 : set = _set_current_health
 var full_contact = false
 var health = FULL_HEALTH
 
+#sounds
+var hits = [preload("res://behavior/player/sounds/hit1.wav"),
+			preload("res://behavior/player/sounds/hit2wav.wav"),
+			preload("res://behavior/player/sounds/hit3.wav")]
+var deaths = [preload("res://behavior/player/sounds/death1.wav")]
+var groans = [preload("res://behavior/player/sounds/groan1.wav"),
+			  preload("res://behavior/player/sounds/groan2.wav"),
+			  preload("res://behavior/player/sounds/groan3.wav")]
+var helps = [preload('res://behavior/player/sounds/help1.wav'),
+			 preload('res://behavior/player/sounds/help2.wav')]
+var walk = preload("res://behavior/player/sounds/walk.wav")
+var run = preload("res://behavior/player/sounds/run.wav")
+
+@onready var audio_player = $audio_player
+
 var direction = Vector3()
 var horizantal_velocity = Vector3()
 var movement = Vector3()
@@ -51,8 +66,9 @@ var delta: float
 # this needs to be set to an active equipable
 var active_equipable: Equipable = Equipable.new()
 
-@onready var head = $camera_head
-@onready var gun_location = $camera_head/gun_location
+@onready var camera = $neck/camera_head
+@onready var neck = $neck
+@onready var gun_location = $neck/camera_head/gun_location
 @onready var res_sphere = $res_sphere
 @onready var ground_check_0 = $ground_check_0
 @onready var ground_check_1 = $ground_check_1
@@ -78,9 +94,9 @@ func _ready():
 	if not is_multiplayer_authority(): return
 	
 	Local.input_active = true
-	head.make_current()
+	camera.make_current()
 	if Local.terrain:
-		Local.terrain.set_camera(head)
+		Local.terrain.set_camera(camera)
 	add_child(HUD)
 	var health_slider = HUD.get_node("health_slider")
 	health_slider.max_value = FULL_HEALTH
@@ -129,9 +145,9 @@ func load_from_payload(payload: Dictionary):
 func _ads(delta):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
-			lerp((active_equipable.ads_position - head.transform.origin),
+			lerp((active_equipable.ads_position - camera.transform.origin),
 				active_equipable.ADS_LERP * delta)
-		head.fov = lerp(head.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
+		camera.fov = lerp(camera.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
 		if is_multiplayer_authority():
 			Local.HUD.set_visible(false)
 
@@ -139,13 +155,13 @@ func _ads(delta):
 func _undo_ads(delta):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
-			lerp((active_equipable.default_position - head.transform.origin),
+			lerp((active_equipable.default_position - camera.transform.origin),
 				active_equipable.ADS_LERP * delta)
-		head.fov = lerp(head.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
+		camera.fov = lerp(camera.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
 		if is_multiplayer_authority():
 			Local.HUD.set_visible(true)
-	elif head.fov != float(Settings.FOV):
-		head.fov = lerp(head.fov, float(Settings.FOV), DEFAULT_LERP * delta)
+	elif camera.fov != float(Settings.FOV):
+		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * delta)
 
 func ground_check():
 
@@ -205,37 +221,39 @@ func _process(delta):
 			self.remove_child(escape_menu)
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+
 # @rpc("call_local", "any_peer")
 func swap_equipped(equipable: Equipable):
 	if active_equipable != equipable:
-		if active_equipable.get_parent() == head:
-			head.remove_child(active_equipable)
+		if active_equipable.get_parent() == camera:
+			camera.remove_child(active_equipable)
 		active_equipable._set_inactive()
 		# play stow animation
 		active_equipable = equipable
 		# play raise animation
 		equipable._set_active()
-		head.add_child(equipable)
+		camera.add_child(equipable)
 		equipable.transform.origin = \
-		equipable.default_position - head.transform.origin
+		equipable.default_position - camera.transform.origin
 		current_eqipped_key = equipable.key
 
 func swap_equipped_from_index(id: int, call_rpc: bool):
 	var equipable = update_equipment()[id]
 	if active_equipable != equipable:
-		if active_equipable.get_parent() == head:
-			head.remove_child(active_equipable)
+		if active_equipable.get_parent() == camera:
+			camera.remove_child(active_equipable)
 		active_equipable._set_inactive()
 		# play stow animation
 		active_equipable = equipable
 		# play raise animation
 		equipable._set_active()
-		head.add_child(equipable)
+		camera.add_child(equipable)
 		equipable.transform.origin = \
-		equipable.default_position - head.transform.origin
+		equipable.default_position - camera.transform.origin
 		current_equipped_index = id
 		if call_rpc:
 			update_character_server.rpc_id(1, "active", id)
+		HUD.display_ammo(active_equipable.get_ammo())
 
 func update_equipment():
 	return [
@@ -253,11 +271,17 @@ func _input(event):
 	if Local.input_active:
 		if event is InputEventMouseMotion:
 			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity))
-			head.rotate_x(deg_to_rad((-event.relative.y * mouse_sensitivity)))
-			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+			neck.rotate_x(deg_to_rad((-event.relative.y * mouse_sensitivity)))
+			neck.rotation.x = clamp(neck.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+
+enum WALK_STATES {
+	WALK,
+	RUN,
+	STOP
+}
 
 func _physics_process(delta):
-	if not is_multiplayer_authority() or current_health <= 0: return
+	if not is_multiplayer_authority(): return
 	var speed = 0.0
 	var accel = DEACCEL
 	var forward = false
@@ -271,39 +295,54 @@ func _physics_process(delta):
 	else:
 		full_contact = false
 		
+		
 	if not is_on_floor():
 		gravity_direction += Vector3.DOWN * gravity * delta
 	#elif is_on_floor() and full_contact:
 	#	gravity_direction = -get_floor_normal() * gravity
 	##	gravity_direction = -get_floor_normal()
-
-	if Input.is_action_just_pressed("jump") and is_on_floor()\
-		and full_contact and Local.input_active:
-		gravity_direction = Vector3.UP * jump
+	
+	if health > 0:
+		if Input.is_action_just_pressed("jump") and is_on_floor()\
+			and full_contact and Local.input_active:
+			gravity_direction = Vector3.UP * jump
+	
+	var walk_state = WALK_STATES.STOP
 
 	if Input.is_action_pressed("move_forward") and\
 			Local.input_active:
 		direction -= transform.basis.z
 		forward = true
+		walk_state = WALK_STATES.WALK
 	if Input.is_action_pressed("move_backward") and\
 			Local.input_active:
 		forward = false
 		direction += transform.basis.z
+		walk_state = WALK_STATES.WALK
 	if Input.is_action_pressed("move_left") and\
 			Local.input_active:
 		direction -= transform.basis.x
+		walk_state = WALK_STATES.WALK
 	if Input.is_action_pressed("move_right") and\
 			Local.input_active:
 		direction += transform.basis.x
+		walk_state = WALK_STATES.WALK
 		
 	if direction != Vector3.ZERO:
 		if Input.is_action_pressed("sprint") and forward and\
 				Local.input_active:
 			speed = MAX_SPRINT
 			accel = SPRINT_ACCEL
+			walk_state = WALK_STATES.RUN
 		else:
 			speed = MAX_SPEED
 			accel = ACCEL
+			walk_state = WALK_STATES.WALK
+	
+	if not is_on_floor():
+		walk_state = WALK_STATES.STOP
+	
+	play_walk.rpc(name, walk_state)
 
 	direction = direction.normalized()
 	horizantal_velocity = horizantal_velocity.lerp(
@@ -313,31 +352,83 @@ func _physics_process(delta):
 	movement.y = gravity_direction.y
 	
 	#warning-ignore:return_value_discarded
+	if current_health <= 0:
+		movement = movement * Vector3.UP
 	set_velocity(movement)
 	set_up_direction(Vector3.UP)
 	move_and_slide()
 	
-	if Input.is_action_pressed("interact") && current_interaction:
-		if current_interaction.has_method("interact"):
-			current_interaction.interact(self)
+	if current_health > 0:
+		if Input.is_action_pressed("interact") && current_interaction:
+			if current_interaction.has_method("interact"):
+				current_interaction.interact(self)
+				HUD.display_ammo(active_equipable.get_ammo())
 			
-	if  not active_equipable.continuous_usage and\
-		Input.is_action_just_pressed('fire') and\
-		Local.input_active:
-		if active_equipable.has_method("use"):
-			active_equipable.use(self)
+		if  not active_equipable.continuous_usage and\
+			Input.is_action_just_pressed('fire') and\
+			Local.input_active:
+			if active_equipable.has_method("use"):
+				active_equipable.use(self)
+				HUD.display_ammo(active_equipable.get_ammo())
 			
-	if active_equipable.continuous_usage and\
-		Input.is_action_pressed("fire") and\
-		Local.input_active:
-		if not active_equipable.cool_down and\
-		 active_equipable.has_method("use"):
-			active_equipable.use(self)
+		if active_equipable.continuous_usage and\
+			Input.is_action_pressed("fire") and\
+			Local.input_active:
+			if not active_equipable.cool_down and\
+		 	active_equipable.has_method("use"):
+				active_equipable.use(self)
+				HUD.display_ammo(active_equipable.get_ammo())
 	
-	if Input.is_action_just_pressed('reload') and\
-		Local.input_active:
-		if active_equipable.has_method("_reload"):
-			active_equipable._reload()
+		if Input.is_action_just_pressed('reload') and\
+			Local.input_active:
+			if active_equipable.has_method("_reload"):
+				active_equipable._reload()
+				HUD.display_ammo(active_equipable.get_ammo())
+		
+		if Input.is_action_just_pressed("help"):
+			print("help")
+	
+	if Input.is_action_just_pressed("help") and\
+		current_health <= 0 and not audio_player.playing:
+			call_help.rpc(name)
+
+@rpc("call_local", "any_peer")
+func call_help(id):
+	if name == id:
+		audio_player.stream = helps.pick_random()
+		audio_player.play()
+
+var play_state = {}
+
+@rpc("call_local","any_peer")
+func play_walk(id, walk_state):
+	if name == id:
+		if walk_state == WALK_STATES.STOP:
+			$footsteps.stop()
+			play_state[name] = WALK_STATES.STOP
+		elif walk_state == WALK_STATES.WALK:
+			if not $footsteps.playing:
+				$footsteps.stream = walk
+				$footsteps.autoplay = true
+				$footsteps.play()
+				play_state[name] = WALK_STATES.WALK
+			elif play_state[name] != WALK_STATES.WALK:
+				$footsteps.stream = walk
+				$footsteps.autoplay = true
+				$footsteps.play()
+				play_state[name] = WALK_STATES.WALK
+		elif walk_state == WALK_STATES.RUN:
+			if not $footsteps.playing:
+				$footsteps.stream = run
+				$footsteps.autoplay = true
+				$footsteps.play()
+				play_state[name] = WALK_STATES.RUN
+			elif play_state[name] != WALK_STATES.RUN:
+				$footsteps.stream = run
+				$footsteps.autoplay = true
+				$footsteps.play()
+				play_state[name] = WALK_STATES.RUN
+
 
 func register_interaction(interactable: Interactable):
 	if not is_multiplayer_authority(): return
@@ -400,8 +491,16 @@ func lose_objective():
 	character.has_objective = false
 	update_character_server.rpc_id(1, "obj", false)
 
+@rpc("call_local", "any_peer")
+func play_hit_noise(id):
+	if name == id:
+		print(id)
+		audio_player.stream = hits.pick_random()
+		audio_player.play()
+
 func hit(dmg: int):
 	_hit_local.rpc_id(name.to_int(), dmg)
+	play_hit_noise.rpc(name)
 
 @rpc("any_peer")
 func _hit_local(dmg: int):

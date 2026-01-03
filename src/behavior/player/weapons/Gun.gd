@@ -10,14 +10,12 @@ class_name Gun
 var audio_player: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 var bolt_pull_stream: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 
-@onready var Global = get_node('/root/Global')
-@onready var Types = get_node('/root/Types')
-@onready var Local = get_node('/root/Local')
 @onready var BulletScene = preload("res://behavior/player/weapons/Bullet.tscn")
 
 @export var clip_size: int = 4
 var current_clip: int
 @export var ammo_pool: int = 10
+var current_reserve: int = ammo_pool
 
 @export var model: Mesh
 var fire_sound: AudioStreamMP3
@@ -38,6 +36,9 @@ var current_cycle: float = 0.0
 
 func _ready():
 	# set up envrionment
+	audio_player.max_distance = 1200
+	audio_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+	bolt_pull_stream.max_distance = 10
 	current_clip = clip_size
 	self.add_child(audio_player)
 	self.add_child(bolt_pull_stream)
@@ -50,18 +51,21 @@ func _local_ready():
 func _process(delta):
 	if current_cycle > 0:
 		current_cycle -= delta
+
+@rpc("call_local","any_peer")
+func play_sounds_and_anims():
+	player.play(fire_animation)
 	
+	audio_player.stream = fire_sound
+	bolt_pull_stream.stream = bolt_pull_sound
+	audio_player.play()
+	bolt_pull_stream.play()
 
 func _use():
 	if current_clip > 0 and current_cycle <= 0:
 
-		player.play(fire_animation)
+		play_sounds_and_anims.rpc()
 		current_cycle = cycle_time
-
-		audio_player.stream = fire_sound
-		bolt_pull_stream.stream = bolt_pull_sound
-		audio_player.play()
-		bolt_pull_stream.play()
 
 		_spawn_bullet.rpc_id(1, {
 			"speed": bullet_speed,
@@ -110,3 +114,6 @@ func _reload():
 	# increase weapon inside animation, but that is too 
 	# involved for this point
 	current_clip = clip_size
+	
+func get_ammo():
+	return [current_clip, current_reserve]

@@ -19,6 +19,6 @@ func _init(first: String = "", last: String = ""):
 
 @export var Equipment2: String = ""
 
-@export var Class: String = ""
+@export var Class: Types.Classes = Types.Classes.CLASS_DEFAULT
 
 @export var Faction: int = 0

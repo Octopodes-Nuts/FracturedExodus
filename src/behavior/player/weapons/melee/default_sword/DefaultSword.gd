@@ -5,6 +5,8 @@
 
 extends Melee
 
+func _init():
+	classes = [Types.Classes.CLASS_OFFICER]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

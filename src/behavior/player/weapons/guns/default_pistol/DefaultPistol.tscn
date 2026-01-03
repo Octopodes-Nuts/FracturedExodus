@@ -17,7 +17,7 @@ bullet_damage = 52.0
 bullet_speed = 360.0
 bullet_lifetime = 2.0
 bullet_spread = 0.04
-ads_position = Vector3(0, 0.481, -1.344)
+ads_position = Vector3(0, 0.12, -1.344)
 default_position = Vector3(0.522, -0.066, -1.167)
 
 [node name="collision" type="CollisionShape3D" parent="."]

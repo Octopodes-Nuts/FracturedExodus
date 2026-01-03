@@ -16,14 +16,14 @@ offset_right = 0.559998
 script = ExtResource("1_vq13a")
 
 [node name="search" type="TextEdit" parent="."]
-layout_mode = 2
+layout_mode = 0
 offset_left = 54.0
 offset_top = 4.0
 offset_right = 486.0
 offset_bottom = 42.0
 
 [node name="search_graphic" type="TextureRect" parent="."]
-layout_mode = 2
+layout_mode = 0
 offset_left = 11.0
 offset_top = 4.0
 offset_right = 49.0

@@ -35,6 +35,8 @@ func _process(delta):
 			display_text.text = ""
 			clear_text = false
 
+func display_ammo(ammo):
+	$AmmoCounter.set_ammo(ammo[0], ammo[1])
 
 func show_crosshair():
 	pass

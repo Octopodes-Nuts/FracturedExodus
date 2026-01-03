@@ -16,12 +16,18 @@ class_name Weapon
 var muzzle_end: Node3D
 
 enum WeaponType {
+	NONE,
 	GUN,
 	MELEE
 }
 
-var type: int = 0
-var faction: int = 0
+var type: int = WeaponType.NONE
+var faction: int = Types.Factions.FACTION_DEFAULT
+var classes: Array[Types.Classes] = [Types.Classes.CLASS_DEFAULT]
+
+var slots: Dictionary = {
+	Types.Classes.CLASS_DEFAULT: [1, 2]
+}
 
 # perform action specified by weapon
 func use(parent: DefaultController):

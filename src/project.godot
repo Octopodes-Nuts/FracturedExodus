@@ -34,11 +34,17 @@ window/size/fullscreen=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/terrain_3d/plugin.cfg")
+enabled=PackedStringArray("res://addons/SunshineClouds2/plugin.cfg", "res://addons/SunshineVolumetricClouds/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
 
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
+
+[importer_defaults]
+
+wav={
+&"edit/loop_mode": 2
+}
 
 [physics]
 
@@ -48,3 +54,14 @@ common/enable_pause_aware_picking=true
 
 renderer/rendering_method="mobile"
 quality/shadows/filter_mode=2
+
+[shader_globals]
+
+SunshineClouds_SunDirection={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
+SunshineClouds_WindDirection={
+"type": "vec2",
+"value": Vector2(0, 0)
+}
