@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-[gd_scene load_steps=48 format=3 uid="uid://ccget10dm00lb"]
-=======
 [gd_scene load_steps=52 format=3 uid="uid://ccget10dm00lb"]
->>>>>>> 0a5a7d5282dcc473dd1ddd71dfbcf3a2678cf897
 
 [ext_resource type="Environment" uid="uid://etedssom36ge" path="res://environment/maps/test_map_2/new_environment.tres" id="1_un54m"]
 [ext_resource type="Script" uid="uid://cctu8la0pomnv" path="res://behavior/environment/map/Map.gd" id="2_qhi0f"]
