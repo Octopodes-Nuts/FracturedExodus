@@ -10,7 +10,7 @@ extends WorldEnvironment
 var Player = preload("res://behavior/player/Player.tscn")
 var Chipsite = preload("res://behavior/environment/interactables/chipsite/Chipsite.tscn")
 
-const PORT: int = 7072
+const PORT: int = 8080
 var enet_peer = ENetMultiplayerPeer.new()
 var player_count = 0
 

@@ -45,7 +45,7 @@ _subresources={
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://environment/models/rocks/rock1_Icosphere.res",
+"save_to_file/fallback_path": "res://environment/models/rocks/rock1/rock1_Icosphere.res",
 "save_to_file/path": "uid://diqm0j41msrou"
 }
 }
@@ -60,6 +60,7 @@ blender/meshes/colors=false
 blender/meshes/uvs=true
 blender/meshes/normals=true
 blender/meshes/export_geometry_nodes_instances=false
+blender/meshes/gpu_instances=false
 blender/meshes/tangents=true
 blender/meshes/skins=2
 blender/meshes/export_bones_deforming_mesh_only=false

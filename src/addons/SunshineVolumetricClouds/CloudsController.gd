@@ -84,16 +84,32 @@ func _process(delta):
 
 func UpdateGlobalVariableTextures():
 	if (gradientControlTexture == null):
-		gradientControlTexture = ResourceLoader.load("res://addons/SunshineVolumetricClouds/HeightWeightGradient.tres");
+		var loaded_gradient = ResourceLoader.load("res://addons/SunshineVolumetricClouds/HeightWeightGradient.tres");
+		if (loaded_gradient is GradientTexture1D):
+			gradientControlTexture = loaded_gradient;
+		else:
+			gradientControlTexture = GradientTexture1D.new();
 	
 	if (baseNoiseTexture == null):
-		baseNoiseTexture = ResourceLoader.load("res://addons/SunshineVolumetricClouds/BaseNoiseTexture.tres");
+		var loaded_base_noise = ResourceLoader.load("res://addons/SunshineVolumetricClouds/BaseNoiseTexture.tres");
+		if (loaded_base_noise is NoiseTexture3D):
+			baseNoiseTexture = loaded_base_noise;
+		else:
+			baseNoiseTexture = NoiseTexture3D.new();
 	
 	if (detailNoiseTexture == null):
-		detailNoiseTexture = ResourceLoader.load("res://addons/SunshineVolumetricClouds/BaseNoiseDetailTexture.tres");
+		var loaded_detail_noise = ResourceLoader.load("res://addons/SunshineVolumetricClouds/BaseNoiseDetailTexture.tres");
+		if (loaded_detail_noise is NoiseTexture3D):
+			detailNoiseTexture = loaded_detail_noise;
+		else:
+			detailNoiseTexture = NoiseTexture3D.new();
 	
 	if (largeScaleNoiseTexture == null):
-		largeScaleNoiseTexture = ResourceLoader.load("res://addons/SunshineVolumetricClouds/BaseNoiseLargeScaleTexture.tres");
+		var loaded_large_scale_noise = ResourceLoader.load("res://addons/SunshineVolumetricClouds/BaseNoiseLargeScaleTexture.tres");
+		if (loaded_large_scale_noise is NoiseTexture3D):
+			largeScaleNoiseTexture = loaded_large_scale_noise;
+		else:
+			largeScaleNoiseTexture = NoiseTexture3D.new();
 	
 
 func UpdateGlobalVariables():

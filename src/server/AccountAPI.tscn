@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dsvo3hbtfsxtg"]
+
+[ext_resource type="Script" uid="uid://bwnyd5mgyoq20" path="res://server/AccountAPI.gd" id="1_6h8is"]
+
+[node name="AccountApi" type="Node" unique_id=1242941056]
+script = ExtResource("1_6h8is")
