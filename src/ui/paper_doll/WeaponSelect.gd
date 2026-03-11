@@ -17,7 +17,7 @@ func render_out(register: int, dict: Dictionary, restrictions: Dictionary):
 	for item in dict.keys():
 		var weapon = restrictions[item].instantiate()
 		if not register in weapon.slots[Types.Classes.CLASS_DEFAULT] or \
-		   not register in weapon.slots[Local.selected_character_def.Class]: continue
+		   not register in weapon.slots[Local.selected_character_def.ClassType]: continue
 		var li = ListItem.instantiate()
 		connect("clear", li.queue_free)
 		add_child(li)

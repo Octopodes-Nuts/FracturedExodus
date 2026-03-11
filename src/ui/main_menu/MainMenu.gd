@@ -11,6 +11,7 @@ extends Control
 @onready var character_display = $character_display
 @onready var character_select = $character_select
 @onready var weapon_select = $weapon_select
+@onready var account_api = $AccountApi
 
 # this server code will likely be moved
 var active_register = 1
@@ -21,18 +22,23 @@ func _ready():
 		Local.host = true
 		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 			print("Error getting to file")
-	if ResourceLoader.exists("res://load/Characters.res"):
-		Local.characters = ResourceLoader.load("res://load/Characters.res")
-		if len(Local.characters.characters) > 0:
-			Local.char_id = Local.characters.characters.keys()[0]
-			Local.selected_character_def = Local.characters.characters[Local.char_id]
-	else:
-		var characters: CharactersResource = CharactersResource.new()
-		characters.make()
-		if ResourceSaver.save(characters, "res://load/Characters.res") == OK:
-			Local.char_id = characters.characters.keys()[0]
-			Local.selected_character_def = characters.characters[Local.char_id]
-			Local.characters = characters
+
+	character_select.account_api = account_api
+
+	for character in Local.characters.characters.keys():
+		print("Character: ", character, " Def: ", Local.characters.characters[character])
+	# if ResourceLoader.exists("res://load/Characters.res"):
+	#	Local.characters = ResourceLoader.load("res://load/Characters.res")
+	#	if len(Local.characters.characters) > 0:
+	#		Local.char_id = Local.characters.characters.keys()[0]
+	#		Local.selected_character_def = Local.characters.characters[Local.char_id]
+	#else:
+	#	var characters: CharactersResource = CharactersResource.new()
+	#	characters.make()
+		# if len(characters.characters.keys()) > 0 and ResourceSaver.save(characters, "res://load/Characters.res") == OK:
+		#	Local.char_id = characters.characters.keys()[0]
+		#	Local.selected_character_def = characters.characters[Local.char_id]
+		#	Local.characters = characters
 
 
 func _on_test_scene_btn_pressed():
@@ -67,10 +73,13 @@ func _on_weapon_select_weapon_selected(id: String) -> void:
 	if active_register == 2:
 		Local.selected_character_def.Weapon2 = id
 	
+	account_api.update_character(Local.session_token, Local.selected_character_def)
+	
 	if ResourceSaver.save(Local.characters, "res://load/Characters.res", ResourceSaver.FLAG_NONE) == OK:
 		character_display.reload(Local.selected_character_def)
 
 
 func _on_character_select_new_char_created() -> void:
-	if ResourceSaver.save(Local.characters, "res://load/Characters.res", ResourceSaver.FLAG_NONE) == OK:
-		character_display.reload(Local.selected_character_def)
+	# if ResourceSaver.save(Local.characters, "res://load/Characters.res", ResourceSaver.FLAG_NONE) == OK:
+	#	character_display.reload(Local.selected_character_def)
+	pass

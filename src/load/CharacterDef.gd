@@ -4,6 +4,8 @@ class_name CharacterDef
 
 func _init(first: String = "", last: String = ""):
 	Name = first + " " + last
+	
+@export var ID: String = ""
 
 @export var Name: String = ""
 
@@ -19,6 +21,6 @@ func _init(first: String = "", last: String = ""):
 
 @export var Equipment2: String = ""
 
-@export var Class: Types.Classes = Types.Classes.CLASS_DEFAULT
+@export var ClassType: Types.Classes = Types.Classes.CLASS_DEFAULT
 
 @export var Faction: int = 0

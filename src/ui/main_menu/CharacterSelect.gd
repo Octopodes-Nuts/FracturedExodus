@@ -1,6 +1,7 @@
 extends Node
 
 @onready var block = $scroll_container/block
+var account_api: AccountAPI
 
 signal new_char_selected
 signal new_char_created
@@ -37,6 +38,9 @@ func get_characters() -> Dictionary[String, CharacterDef]:
 	return d
 
 func render():
+	for chit in character_chits:
+		chit.queue_free()
+	character_chits.clear()
 	if Local.selected_character_def and Local.characters != null:
 		var pos = 0
 		for chr in Local.characters.characters.keys():
@@ -51,15 +55,22 @@ func render():
 			pos += 1
 			rendered = true
 
+var create_character_connected = false
+
 func _on_new_btn_pressed() -> void:
 	var char_def = CharacterDef.new()
+	if not create_character_connected:
+		account_api.character_created.connect(_on_character_created)
+		create_character_connected = true
 	# prevent name collisions here
 	char_def.Name = get_name_name()
-	Local.characters.characters[char_def.Name] = char_def
-	Local.selected_character_def = char_def
+	account_api.create_character(Local.session_token, char_def)
+	# ID needs to be saved here
 	emit_signal("new_char_created")
-	render()
 
+func _on_character_created():
+	render()
+	
 func get_name_name():
 	var name_name = first_names[randi_range(0, len(first_names) - 1)] + " " +\
 		last_names[randi_range(0, len(last_names) - 1)]

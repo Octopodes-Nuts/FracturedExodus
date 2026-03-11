@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c8dj4at3lkd4j"]
+[gd_scene format=3 uid="uid://c8dj4at3lkd4j"]
 
 [ext_resource type="PackedScene" uid="uid://dx340x64cys4r" path="res://ui/main_menu/MainMenuBackground.tscn" id="1_10aiy"]
 [ext_resource type="Script" uid="uid://bftj6q2dy5akg" path="res://ui/main_menu/MainMenu.gd" id="1_vrxho"]
@@ -6,8 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://fm55cmw02ao2" path="res://ui/paper_doll/WeaponSelect.tscn" id="5_2ijps"]
 [ext_resource type="PackedScene" uid="uid://64xuuj3va1ut" path="res://ui/main_menu/CharacterSelect.tscn" id="6_3vjg6"]
 [ext_resource type="PackedScene" uid="uid://cx8wrsam0j5j5" path="res://ui/paper_doll/PaperDoll.tscn" id="6_vmw4a"]
+[ext_resource type="PackedScene" uid="uid://dsvo3hbtfsxtg" path="res://server/AccountAPI.tscn" id="7_3vjg6"]
 
-[node name="main_menu" type="Control"]
+[node name="main_menu" type="Control" unique_id=1345078188]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,9 +17,9 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vrxho")
 
-[node name="MainMenuBackground" parent="." instance=ExtResource("1_10aiy")]
+[node name="MainMenuBackground" parent="." unique_id=1022720626 instance=ExtResource("1_10aiy")]
 
-[node name="character_display" parent="." instance=ExtResource("3_u1tth")]
+[node name="character_display" parent="." unique_id=1443262840 instance=ExtResource("3_u1tth")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -30,7 +31,7 @@ offset_top = -260.72
 offset_right = -133.0
 offset_bottom = 260.28
 
-[node name="test_scene_btn" type="Button" parent="."]
+[node name="test_scene_btn" type="Button" parent="." unique_id=120431858]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.026
@@ -43,7 +44,7 @@ offset_right = 0.559967
 offset_bottom = 0.159973
 text = "Enter Test Scene"
 
-[node name="test_scene_btn2" type="Button" parent="."]
+[node name="test_scene_btn2" type="Button" parent="." unique_id=1351891964]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.026
@@ -56,7 +57,7 @@ offset_right = -0.440063
 offset_bottom = 0.519958
 text = "Enter Test Scene 2"
 
-[node name="quit" type="Button" parent="."]
+[node name="quit" type="Button" parent="." unique_id=261054412]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.998
@@ -66,7 +67,7 @@ offset_top = 3.0
 offset_right = 0.839966
 offset_bottom = 37.0
 
-[node name="paper_doll" parent="." instance=ExtResource("6_vmw4a")]
+[node name="paper_doll" parent="." unique_id=1042987710 instance=ExtResource("6_vmw4a")]
 layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.481
@@ -77,7 +78,7 @@ offset_top = -207.48
 offset_right = 413.0
 offset_bottom = 209.52
 
-[node name="character_select" parent="." instance=ExtResource("6_3vjg6")]
+[node name="character_select" parent="." unique_id=499057137 instance=ExtResource("6_3vjg6")]
 visible = false
 layout_mode = 1
 anchors_preset = 12
@@ -91,7 +92,7 @@ offset_bottom = -47.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="weapon_select" parent="." instance=ExtResource("5_2ijps")]
+[node name="weapon_select" parent="." unique_id=1873297619 instance=ExtResource("5_2ijps")]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -105,6 +106,8 @@ offset_right = 934.0
 offset_bottom = 497.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="AccountApi" parent="." unique_id=1242941056 instance=ExtResource("7_3vjg6")]
 
 [connection signal="character_select" from="character_display" to="." method="_on_character_display_character_select"]
 [connection signal="pressed" from="test_scene_btn" to="." method="_on_test_scene_btn_pressed"]

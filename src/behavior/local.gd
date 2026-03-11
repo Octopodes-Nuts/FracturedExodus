@@ -15,7 +15,7 @@ var player: CharacterBody3D
 var HUD: Control
 var input_active = true
 var terrain: Terrain3D = null
-var characters: CharactersResource
+var characters: CharactersResource = CharactersResource.new()
 var selected_character_def: CharacterDef
 var char_id: String
 var host: bool = false
