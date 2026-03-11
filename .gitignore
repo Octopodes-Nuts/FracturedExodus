@@ -19,3 +19,4 @@ mono_crash.*.json
 
 # Imported Resources
 src/load/Characters.res
+src/load/AccountInfo.res
