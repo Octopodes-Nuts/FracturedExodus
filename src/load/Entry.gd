@@ -25,7 +25,8 @@ func _ready() -> void:
 
 	# set up pipeline
 	AccountAPI.connect("login_complete", get_characters)
-	AccountAPI.connect("characters_received", enter_main_menu)
+	AccountAPI.connect("characters_received", get_account_info)
+	AccountAPI.account_info_received.connect(enter_main_menu)
 	
 	# load settings
 	
@@ -37,7 +38,10 @@ func _ready() -> void:
 
 func get_characters():
 	AccountAPI.get_characters(Local.session_token)
-	
+
+func get_account_info():
+	AccountAPI.get_account_info(Local.session_token, Local.player_id)
+
 func enter_main_menu():
 	get_tree().change_scene_to_file("res://ui/main_menu/MainMenu.tscn")
 

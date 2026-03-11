@@ -10,6 +10,11 @@ extends Node
 # player ID, obtained from server
 var player_id: String
 var session_token: String
+var friends: Array
+var friend_requests: Array
+var pending_friend_requests: Array
+var player_level: int
+var player_xp: int
 
 var player: CharacterBody3D
 var HUD: Control

@@ -5,6 +5,7 @@ class_name AccountAPI
 signal login_complete
 signal characters_received
 signal character_created
+signal account_info_received
 
 @onready var newCharacterRequest: HTTPRequest = HTTPRequest.new()
 @onready var update_character_request: HTTPRequest = HTTPRequest.new()
@@ -87,6 +88,7 @@ func _on_get_characters_request_complete(_result, response_code, _headers, body)
 			Local.char_id = Local.characters.characters.keys()[0]
 			Local.selected_character_def = Local.characters.characters[Local.char_id]
 		
+		print("Characters received: ", Local.characters.characters)
 		emit_signal("characters_received")
 	else:
 		print("Characters request failed with code: ", response_code)
@@ -154,3 +156,40 @@ func _on_update_character_request_completed(_result, response_code, _headers, _b
 		print("Character Updated")
 	else:
 		print(response_code, "character could not be updated")
+
+func get_account_info(token: String, player_id: String):
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+
+	print("Getting account info with token: ", token)
+
+	var url = "http://127.0.0.1:8000/player/accountInfo"
+	var body = {"sessionToken": token, "playerId": player_id}
+	var json_body = JSON.stringify(body)
+	var headers = ["Content-Type: application/json"]
+	http_request.request_completed.connect(_on_get_account_info_request_complete)
+	var err = http_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+	if err != OK:
+		print("Error making get_account_info request: ", err)
+
+func _on_get_account_info_request_complete(_result, response_code, _headers, body):
+	print("Account info response code: ", response_code)
+	if response_code == 200:
+		var response = JSON.parse_string(body.get_string_from_utf8())
+		Local.player_level = response["accountLevel"]
+		Local.player_xp = response["experience"]
+		Local.friends = response["friends"]
+		Local.friend_requests = response["friendRequests"]
+		Local.pending_friend_requests = response["pendingFriendRequests"]
+
+		# print account info
+		print("Account Level: ", Local.player_level)
+		print("Player XP: ", Local.player_xp)
+		print("Friends: ", Local.friends)
+		print("Friend Requests: ", Local.friend_requests)
+		print("Pending Friend Requests: ", Local.pending_friend_requests)
+
+		emit_signal("account_info_received")
+		print("Account info received")
+	else:
+		print("Account info request failed with code: ", response_code)
