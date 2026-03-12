@@ -17,11 +17,11 @@ func _input(_event):
 
 	if Input.is_action_just_pressed("sprint"):
 		scale = (Vector3.ONE * sprint_size)
-		print(scale)
+		#print(scale)
 	
 	if Input.is_action_just_released("sprint"):
 		scale = (Vector3.ONE * default_size)
-		print(scale)
+		#print(scale)
 
 
 func update_state(state: int):

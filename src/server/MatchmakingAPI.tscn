@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://f6kx521fvf0h"]
+
+[ext_resource type="Script" uid="uid://dfl33in0b2hh2" path="res://server/MatchmakingAPI.gd" id="1_fkgpx"]
+
+[node name="MatchmakingApi" type="Node" unique_id=1586885325]
+script = ExtResource("1_fkgpx")

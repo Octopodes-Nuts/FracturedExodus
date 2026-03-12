@@ -12,6 +12,8 @@ extends Control
 @onready var character_select = $character_select
 @onready var weapon_select = $weapon_select
 @onready var account_api = $AccountApi
+@onready var queue_button = $ready_button
+@onready var matchmaking_api = $MatchmakingApi
 
 # this server code will likely be moved
 var active_register = 1
@@ -24,21 +26,16 @@ func _ready():
 			print("Error getting to file")
 
 	character_select.account_api = account_api
+	matchmaking_api.match_found.connect(match_found)
 
 	for character in Local.characters.characters.keys():
 		print("Character: ", character, " Def: ", Local.characters.characters[character])
-	# if ResourceLoader.exists("res://load/Characters.res"):
-	#	Local.characters = ResourceLoader.load("res://load/Characters.res")
-	#	if len(Local.characters.characters) > 0:
-	#		Local.char_id = Local.characters.characters.keys()[0]
-	#		Local.selected_character_def = Local.characters.characters[Local.char_id]
-	#else:
-	#	var characters: CharactersResource = CharactersResource.new()
-	#	characters.make()
-		# if len(characters.characters.keys()) > 0 and ResourceSaver.save(characters, "res://load/Characters.res") == OK:
-		#	Local.char_id = characters.characters.keys()[0]
-		#	Local.selected_character_def = characters.characters[Local.char_id]
-		#	Local.characters = characters
+
+
+func match_found(port: int, ip: String):
+	Local.port = port
+	Local.ip = ip
+	get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn")
 
 
 func _on_test_scene_btn_pressed():
@@ -83,3 +80,8 @@ func _on_character_select_new_char_created() -> void:
 	# if ResourceSaver.save(Local.characters, "res://load/Characters.res", ResourceSaver.FLAG_NONE) == OK:
 	#	character_display.reload(Local.selected_character_def)
 	pass
+
+
+func _on_ready_button_pressed() -> void:
+	queue_button.disabled = true
+	matchmaking_api.queue_for_match()

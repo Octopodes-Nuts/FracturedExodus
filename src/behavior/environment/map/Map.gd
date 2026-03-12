@@ -17,6 +17,19 @@ var player_count = 0
 signal character_update(ids: Array)
 signal player_added(id: String)
 
+func _setup_as_server(context: String = ""):
+	var err = enet_peer.create_server(PORT)
+	if err != OK:
+		push_error("[Map] Failed to create server%s on port %d (error=%d)" % [context, PORT, err])
+		return false
+
+	multiplayer.multiplayer_peer = enet_peer
+	multiplayer.peer_connected.connect(add_player)
+	multiplayer.peer_disconnected.connect(remove_player)
+	set_multiplayer_authority(1)
+	print("[Map] Server started%s on port %d" % [context, PORT])
+	return true
+
 # When tree is entered, set as the map root
 func _ready():
 	randomize()
@@ -25,20 +38,20 @@ func _ready():
 	connect("character_update", Global.emit_character_update)
 
 	if Local.host:
-		enet_peer.create_server(PORT)
-		multiplayer.multiplayer_peer = enet_peer
-		multiplayer.peer_connected.connect(add_player)
-		multiplayer.peer_disconnected.connect(remove_player)
-		set_multiplayer_authority(1)
+		_setup_as_server(" (host mode)")
 	
 	else:
 		multiplayer.connected_to_server.connect(_on_connection)
 		multiplayer.connection_failed.connect(_on_connection_failed)
 		#enet_peer.create_client("34.55.251.69", PORT)
-		if enet_peer.create_client("localhost", PORT) == OK:
+		print("Attempting to connect to server at %s:%d" % [Local.ip, Local.port])
+		var client_err = enet_peer.create_client("localhost", Local.port)
+		if client_err == OK:
 			multiplayer.multiplayer_peer = enet_peer
+			print("[Map] Client connection request sent to localhost:%d" % [Local.port])
 		else:
-			print("MAKE SERVER")
+			push_error("[Map] Failed to create client for localhost:%d (error=%d). Falling back to server setup." % [Local.port, client_err])
+			_setup_as_server(" (client creation fallback)")
 			
 	
 	var chipsite = Chipsite.instantiate()
@@ -48,12 +61,8 @@ func _ready():
 func _on_connection():
 	pass
 func _on_connection_failed():
-	print("CONN FAILED")
-	enet_peer.create_server(PORT)
-	multiplayer.multiplayer_peer = enet_peer
-	multiplayer.peer_connected.connect(add_player)
-	multiplayer.peer_disconnected.connect(remove_player)
-	set_multiplayer_authority(1)
+	push_warning("[Map] Connection to server failed. Attempting local server fallback.")
+	_setup_as_server(" (connection failed fallback)")
 
 @rpc("authority", "reliable")
 func broadcast_character_data(payload):

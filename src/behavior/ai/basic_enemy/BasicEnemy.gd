@@ -29,7 +29,7 @@ var retreat_color: Material = preload('res://debug/materials/debug_white.tres')
 func update_target_location(location):
 	location.y = 0
 	navigation.target_position = location
-	print(location)
+	#print(location)
 
 
 enum AwarenessState {

@@ -29,7 +29,7 @@ func _local_physics_step(delta):
 func _interact(node: Node):
 	# check if factions match. fcations are not yet implemented
 	extracts[node] = EXTRACT_TIME
-	print(extracts)
+	#print(extracts)
 
 func _add_interaction(node: Node):
 	if not node.is_multiplayer_authority(): return

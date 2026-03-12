@@ -10,8 +10,7 @@ extends Node
 func _ready() -> void:
 
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
-		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
-			print("Error getting to file")
+		call_deferred("_enter_dedicated_server_map")
 		return
 
 	LoginButton.pressed.connect(_on_SubmitButton_pressed)
@@ -56,3 +55,8 @@ func _on_SubmitButton_pressed():
 	
 	ResourceSaver.save(account_info, "res://load/AccountInfo.res")
 	AccountAPI.login(account_info.AccountName, account_info.Password)
+
+func _enter_dedicated_server_map() -> void:
+	var err = get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn")
+	if err != OK:
+		push_error("[Entry] Failed to enter dedicated server map (error=%d)" % [err])

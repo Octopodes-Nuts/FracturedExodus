@@ -15,6 +15,10 @@ var friend_requests: Array
 var pending_friend_requests: Array
 var player_level: int
 var player_xp: int
+var matchmaking_ticket: String = ""
+var matchmaking_status: String = ""
+var port: int
+var ip: String
 
 var player: CharacterBody3D
 var HUD: Control
