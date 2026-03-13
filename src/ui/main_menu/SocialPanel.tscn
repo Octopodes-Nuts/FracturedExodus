@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://c0wkvdhyqflre"]
+
+[ext_resource type="Script" uid="uid://0xrgpjf5xic6" path="res://ui/main_menu/SocialPanel.gd" id="1_jvl1h"]
+
+[node name="social_panel" type="Panel" unique_id=846758153]
+anchors_preset = -1
+anchor_left = 0.99700004
+anchor_top = 0.104
+anchor_right = 0.99700004
+anchor_bottom = 1.0
+offset_left = -308.2401
+offset_top = -0.3199997
+offset_right = -0.2401123
+offset_bottom = -1.0
+script = ExtResource("1_jvl1h")
+
+[node name="RequestsContainer" type="ScrollContainer" parent="." unique_id=1225341197]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.78900003
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.036987305
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RequestsContainer" unique_id=1376303215]
+layout_mode = 2
+
+[node name="SocialLabel" type="Label" parent="." unique_id=924862426]
+layout_mode = 0
+offset_right = 306.0
+offset_bottom = 42.0
+text = "Social"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FriendsLabel" type="Label" parent="." unique_id=2085123490]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.055000003
+anchor_bottom = 0.083000004
+offset_left = 4.0
+offset_top = -0.18500519
+offset_right = 79.0
+offset_bottom = -0.2610016
+text = "Friends"
+
+[node name="RequestsLabel" type="Label" parent="." unique_id=607149835]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.768
+anchor_bottom = 0.78000003
+offset_left = 5.0
+offset_top = -11.656006
+offset_right = 76.0
+offset_bottom = -0.26000977
+text = "Requests"
+
+[node name="FriendsContainer" type="ScrollContainer" parent="." unique_id=514754292]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.013
+anchor_top = 0.094000004
+anchor_right = 0.99000007
+anchor_bottom = 0.71800005
+offset_left = -0.004000187
+offset_top = 0.101997375
+offset_right = 0.07998657
+offset_bottom = -0.30603027
+
+[node name="VBoxContainer" type="VBoxContainer" parent="FriendsContainer" unique_id=1129978758]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="AddFriendButton" type="Button" parent="FriendsContainer/VBoxContainer" unique_id=2048759532]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+text = "+"
+
+[node name="FriendCode" type="Label" parent="." unique_id=1117848741]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.032
+anchor_bottom = 0.056
+offset_top = 0.05599785
+offset_right = 306.0
+offset_bottom = -0.15200043
