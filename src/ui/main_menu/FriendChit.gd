@@ -2,6 +2,8 @@ extends Button
 
 class_name FriendChit
 
+var account_api: AccountAPI
+
 var friend_id: String
 
 func _init():
@@ -10,3 +12,6 @@ func _init():
 func set_id(id: String):
 	text = id
 	friend_id = id
+
+func set_api(acc_api: AccountAPI):
+	account_api = acc_api

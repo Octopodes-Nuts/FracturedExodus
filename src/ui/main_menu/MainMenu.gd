@@ -29,7 +29,7 @@ func _ready():
 		Local.host = true
 		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 			print("Error getting to file")
-	
+	social_panel.account_api = account_api
 	add_child(account_info_update_timer)
 	account_info_update_timer.wait_time = account_info_update_interval
 	account_info_update_timer.timeout.connect(account_api.get_account_info_update)

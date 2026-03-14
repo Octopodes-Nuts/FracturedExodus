@@ -12,6 +12,7 @@ signal account_info_updated
 @onready var update_character_request: HTTPRequest = HTTPRequest.new()
 @onready var account_info_update_request: HTTPRequest = HTTPRequest.new()
 @onready var friend_request: HTTPRequest = HTTPRequest.new()
+@onready var accept_friend_req_request: HTTPRequest = HTTPRequest.new()
 
 func _ready():
 	add_child(newCharacterRequest)
@@ -22,6 +23,8 @@ func _ready():
 	account_info_update_request.request_completed.connect(_on_get_account_info_update_request_complete)
 	add_child(friend_request)
 	friend_request.request_completed.connect(_on_send_friend_request_complete)
+	add_child(accept_friend_req_request)
+	accept_friend_req_request.request_completed.connect(_on_accept_friend_request_complete)
 
 func login(username: String, password: String):
 
@@ -246,3 +249,21 @@ func _on_send_friend_request_complete(_result, response_code, _headers, _body):
 		print("Friend request sent successfully")
 	else:
 		print("Friend request failed with code: ", response_code)
+
+func accept_friend_request(friend_id: String):
+	var url = "http://127.0.0.1:8000/player/acceptRejectFriendRequest"
+	var body = {"sessionToken": Local.session_token, "playerId": friend_id, "accept": true}
+	var json_body = JSON.stringify(body)
+	var headers = ["Content-Type: application/json"]
+	var request = HTTPRequest.new()
+	add_child(request)
+	request.request_completed.connect(_on_accept_friend_request_complete)
+	var err = request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+	if err != OK:
+		print("Error accepting friend request: ", err)
+
+func _on_accept_friend_request_complete(_result, response_code, _headers, _body):
+	if response_code == 200:
+		print("Friend request accepted successfully")
+	else:
+		print("Accepting friend request failed with code: ", response_code)

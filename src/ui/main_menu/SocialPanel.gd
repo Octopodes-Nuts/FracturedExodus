@@ -5,6 +5,8 @@ extends Panel
 @onready var RequestsVBox = $RequestsContainer/VBoxContainer
 @onready var AddFriendButton = $FriendsContainer/VBoxContainer/AddFriendButton
 
+var account_api: AccountAPI
+
 @onready var FriendChitScene = preload("res://ui/main_menu/FriendChit.tscn")
 @onready var RequestChitScene = preload("res://ui/main_menu/RequestChit.tscn")
 var FriendChits: Dictionary = {}
@@ -24,6 +26,7 @@ func set_friend_chits():
 		if not friend in FriendChits.keys():
 			var chit = FriendChitScene.instantiate()
 			chit.set_id(friend)
+			chit.set_api(account_api)
 			FriendVBox.add_child(chit)
 			FriendChits[friend] = chit
 
@@ -47,6 +50,7 @@ func set_request_chits():
 		if not request in RequestChits.keys():
 			var chit = RequestChitScene.instantiate()
 			chit.set_id(request)
+			chit.set_api(account_api)
 			RequestsVBox.add_child(chit)
 			RequestChits[request] = chit
 	
