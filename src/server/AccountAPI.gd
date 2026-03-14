@@ -6,15 +6,22 @@ signal login_complete
 signal characters_received
 signal character_created
 signal account_info_received
+signal account_info_updated
 
 @onready var newCharacterRequest: HTTPRequest = HTTPRequest.new()
 @onready var update_character_request: HTTPRequest = HTTPRequest.new()
+@onready var account_info_update_request: HTTPRequest = HTTPRequest.new()
+@onready var friend_request: HTTPRequest = HTTPRequest.new()
 
 func _ready():
 	add_child(newCharacterRequest)
 	newCharacterRequest.request_completed.connect(_on_create_character_request_complete)
 	add_child(update_character_request)
 	update_character_request.request_completed.connect(_on_update_character_request_completed)
+	add_child(account_info_update_request)
+	account_info_update_request.request_completed.connect(_on_get_account_info_update_request_complete)
+	add_child(friend_request)
+	friend_request.request_completed.connect(_on_send_friend_request_complete)
 
 func login(username: String, password: String):
 
@@ -193,3 +200,49 @@ func _on_get_account_info_request_complete(_result, response_code, _headers, bod
 		print("Account info received")
 	else:
 		print("Account info request failed with code: ", response_code)
+
+func get_account_info_update():
+	var url = "http://127.0.01:8000/player/accountInfo"
+	var body = {"sessionToken": Local.session_token, "playerId": Local.player_id}
+	var json_body = JSON.stringify(body)
+	var headers = ["Content-Type: application/json"]
+	account_info_update_request.request_completed.connect(_on_get_account_info_update_request_complete)
+	var err = account_info_update_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+	if err != OK:
+		print("Error making account info update request: ", err)
+
+func _on_get_account_info_update_request_complete(_result, response_code, _headers, body):
+	print("Account info update response code: ", response_code)
+	if response_code == 200:
+		var response = JSON.parse_string(body.get_string_from_utf8())
+		# ignore level and xp, this will be tracked locally and updated after each match
+		Local.friends = response["friends"]
+		Local.friend_requests = response["friendRequests"]
+		Local.pending_friend_requests = response["pendingFriendRequests"]
+
+		# print account info
+		print("[Account Info Update]")
+		print("Friends: ", Local.friends)
+		print("Friend Requests: ", Local.friend_requests)
+		print("Pending Friend Requests: ", Local.pending_friend_requests)
+		emit_signal("account_info_updated")
+
+	else:
+		print("Account info update request failed with code: ", response_code)
+
+
+func send_friend_request(friend_id: String):
+	var url = "http://127.0.0.1:8000/player/friendRequest"
+	var body = {"sessionToken": Local.session_token, "playerId": friend_id}
+	var json_body = JSON.stringify(body)
+	var headers = ["Content-Type: application/json"]
+	friend_request.request_completed.connect(_on_send_friend_request_complete)
+	var err = friend_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+	if err != OK:
+		print("Error sending friend request: ", err)
+
+func _on_send_friend_request_complete(_result, response_code, _headers, _body):
+	if response_code == 200:
+		print("Friend request sent successfully")
+	else:
+		print("Friend request failed with code: ", response_code)

@@ -14,6 +14,11 @@ extends Control
 @onready var account_api = $AccountApi
 @onready var queue_button = $ready_button
 @onready var matchmaking_api = $MatchmakingApi
+@onready var social_panel = $social_panel
+@onready var friend_request_panel = $add_friend_panel
+
+@onready var account_info_update_timer: Timer = Timer.new()
+var account_info_update_interval: float = 5.0
 
 # this server code will likely be moved
 var active_register = 1
@@ -24,10 +29,20 @@ func _ready():
 		Local.host = true
 		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 			print("Error getting to file")
+	
+	add_child(account_info_update_timer)
+	account_info_update_timer.wait_time = account_info_update_interval
+	account_info_update_timer.timeout.connect(account_api.get_account_info_update)
+	account_info_update_timer.start()
 
 	character_select.account_api = account_api
 	matchmaking_api.match_found.connect(match_found)
+	account_api.account_info_updated.connect(_on_account_api_account_info_updated)
+	# account_api.account_info_updated.connect(account_info_update_timer.start)
 
+	social_panel.add_friend_button_pressed.connect(_on_social_panel_add_friend_button_pressed)
+	friend_request_panel.friend_request_ready.connect(_on_friend_request_panel_ready)
+ 
 	for character in Local.characters.characters.keys():
 		print("Character: ", character, " Def: ", Local.characters.characters[character])
 
@@ -85,3 +100,17 @@ func _on_character_select_new_char_created() -> void:
 func _on_ready_button_pressed() -> void:
 	queue_button.disabled = true
 	matchmaking_api.queue_for_match()
+
+
+func _on_account_api_account_info_updated() -> void:
+	print("Account info updated, refreshing social panel")
+	social_panel.set_friend_chits()
+	social_panel.set_request_chits()
+
+
+func _on_social_panel_add_friend_button_pressed() -> void:
+	friend_request_panel.show()
+
+
+func _on_friend_request_panel_ready(friend_id: String):
+	account_api.send_friend_request(friend_id)

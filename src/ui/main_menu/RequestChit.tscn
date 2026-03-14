@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dlpsh20v0iut0"]
+
+[ext_resource type="Script" uid="uid://bycgvryttve8s" path="res://ui/main_menu/RequestChit.gd" id="1_ypcxh"]
+
+[node name="RequestChit" type="Button" unique_id=845312112]
+custom_minimum_size = Vector2(0, 40)
+script = ExtResource("1_ypcxh")

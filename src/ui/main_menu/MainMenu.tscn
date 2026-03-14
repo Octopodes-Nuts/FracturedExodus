@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dsvo3hbtfsxtg" path="res://server/AccountAPI.tscn" id="7_3vjg6"]
 [ext_resource type="PackedScene" uid="uid://f6kx521fvf0h" path="res://server/MatchmakingAPI.tscn" id="8_wuivf"]
 [ext_resource type="PackedScene" uid="uid://c0wkvdhyqflre" path="res://ui/main_menu/SocialPanel.tscn" id="9_o6kyq"]
+[ext_resource type="Script" uid="uid://b8kharo2dvtji" path="res://ui/main_menu/AddFriendPanel.gd" id="10_olnjm"]
 
 [node name="main_menu" type="Control" unique_id=1345078188]
 layout_mode = 3
@@ -138,6 +139,35 @@ offset_left = -390.8402
 offset_top = -1.5258789e-05
 offset_right = -0.84020996
 offset_bottom = 0.19995117
+
+[node name="add_friend_panel" type="Panel" parent="." unique_id=1874122280]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.53300005
+anchor_top = 0.5
+anchor_right = 0.53300005
+anchor_bottom = 0.5
+offset_left = -211.3601
+offset_top = 308.0
+offset_right = 212.6399
+offset_bottom = 493.0
+script = ExtResource("10_olnjm")
+
+[node name="friend_code" type="TextEdit" parent="add_friend_panel" unique_id=1441197320]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 33.0
+offset_right = 402.0
+offset_bottom = 71.0
+
+[node name="accept_button" type="Button" parent="add_friend_panel" unique_id=1853384120]
+layout_mode = 0
+offset_left = 147.0
+offset_top = 101.0
+offset_right = 278.0
+offset_bottom = 158.0
+text = "Accept"
 
 [connection signal="character_select" from="character_display" to="." method="_on_character_display_character_select"]
 [connection signal="pressed" from="test_scene_btn" to="." method="_on_test_scene_btn_pressed"]

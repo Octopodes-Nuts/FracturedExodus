@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://b8h5ifics84cn"]
+
+[ext_resource type="Script" uid="uid://yg00hh11tn00" path="res://ui/main_menu/FriendChit.gd" id="1_6volv"]
+
+[node name="FriendChit" type="Button" unique_id=694693285]
+custom_minimum_size = Vector2(0, 40)
+script = ExtResource("1_6volv")
