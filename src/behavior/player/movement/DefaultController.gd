@@ -515,6 +515,8 @@ func _hit_local(dmg: int):
 # this will be an RPC
 func extract():
 	if not is_multiplayer_authority(): return
+	if Global.map_root != null and Global.map_root.has_method("report_match_left"):
+		Global.map_root.report_match_left("extract")
 	notify_extract(character.has_objective)
 	#Send RPC to server to remove node from scene
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)

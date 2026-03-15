@@ -9,6 +9,9 @@ extends WorldEnvironment
 @onready var Game = $"./Game"
 @onready var MatchmakingAPI = $MatchmakingApi
 
+@onready var heartbeat_timer: Timer = Timer.new()
+var heartbeat_interval: float = 15.0
+
 var Player = preload("res://behavior/player/Player.tscn")
 var Chipsite = preload("res://behavior/environment/interactables/chipsite/Chipsite.tscn")
 
@@ -18,6 +21,9 @@ var player_count = 0
 
 signal character_update(ids: Array)
 signal player_added(id: String)
+signal match_left(reason: String)
+
+var _match_left_reported: bool = false
 
 func _setup_as_server(context: String = ""):
 	var err = enet_peer.create_server(PORT)
@@ -38,6 +44,7 @@ func _ready():
 	Global.map_root = self
 	Global.bullet_spawn = $Bullet
 	connect("character_update", Global.emit_character_update)
+	match_left.connect(_on_match_left)
 
 	if Local.host:
 		_setup_as_server(" (host mode)")
@@ -51,6 +58,11 @@ func _ready():
 		if client_err == OK:
 			multiplayer.multiplayer_peer = enet_peer
 			print("[Map] Client connection request sent to localhost:%d" % [Local.port])
+			heartbeat_timer.wait_time = heartbeat_interval
+			heartbeat_timer.timeout.connect(_send_heartbeat)
+			add_child(heartbeat_timer)
+			heartbeat_timer.start()
+			return
 		else:
 			push_error("[Map] Failed to create client for localhost:%d (error=%d). Falling back to server setup." % [Local.port, client_err])
 			_setup_as_server(" (client creation fallback)")
@@ -89,8 +101,7 @@ func remove_player(peer_id):
 		player.queue_free()
 	player_count -= 1
 	if player_count == 0:
-		# reload script
-		get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn")
+		end_match()
 		
 @rpc("any_peer")
 func spawn_box(position):
@@ -102,3 +113,33 @@ func spawn_box(position):
 	add_child(mi)
 	print(mi)
 	mi.global_transform.origin = position
+
+func end_match():
+	if Local.host:
+		MatchmakingAPI.match_ended()
+		get_tree().quit()
+	else:
+		report_match_left("end_match")
+
+func report_match_left(reason: String = ""):
+	if _match_left_reported:
+		return
+	_match_left_reported = true
+	emit_signal("match_left", reason)
+
+func _on_match_left(reason: String) -> void:
+	if Local.host:
+		return
+	if MatchmakingAPI != null:
+		MatchmakingAPI.leave_match()
+		print("[Map] Reported match left (%s)" % reason)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		report_match_left("wm_close_request")
+
+func _exit_tree() -> void:
+	report_match_left("map_exit_tree")
+
+func _send_heartbeat():
+	MatchmakingAPI.send_match_heartbeat()

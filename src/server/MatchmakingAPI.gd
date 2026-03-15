@@ -14,6 +14,11 @@ var party_invite_request: HTTPRequest = HTTPRequest.new()
 var party_status_request: HTTPRequest = HTTPRequest.new()
 var party_leave_request: HTTPRequest = HTTPRequest.new()
 var party_response_request: HTTPRequest = HTTPRequest.new()
+var match_heartbeat_request: HTTPRequest = HTTPRequest.new()
+var left_match_request: HTTPRequest = HTTPRequest.new()
+var joined_match_request: HTTPRequest = HTTPRequest.new()
+var match_ended_request: HTTPRequest = HTTPRequest.new()
+var register_server_request: HTTPRequest = HTTPRequest.new()
 
 var status_timer: Timer = Timer.new()
 var status_update_interval: float = 1.0
@@ -38,6 +43,21 @@ func _ready() -> void:
 
 	add_child(party_response_request)
 	party_response_request.request_completed.connect(_on_party_response_request_request_completed)
+
+	add_child(match_heartbeat_request)
+	match_heartbeat_request.request_completed.connect(_on_match_heartbeat_request_request_completed)
+
+	add_child(left_match_request)
+	left_match_request.request_completed.connect(_on_left_match_request_request_completed)
+
+	add_child(joined_match_request)
+	joined_match_request.request_completed.connect(_on_joined_match_request_request_completed)
+
+	add_child(match_ended_request)
+	match_ended_request.request_completed.connect(_on_match_ended_request_request_completed)
+
+	add_child(register_server_request)
+	register_server_request.request_completed.connect(_on_register_server_request_request_completed)
 
 	status_timer.wait_time = status_update_interval
 	status_timer.timeout.connect(_on_status_timer_timeout)
@@ -158,3 +178,64 @@ func _on_party_response_request_request_completed(_result, response_code, _heade
 		print("Party response sent successfully")
 	else:
 		print("Failed to send party response, response code: %d" % response_code)
+
+func send_match_heartbeat():
+	var url = server_url + "/matchmaking/heartbeat"
+	var headers = ["Content-Type: application/json"]
+	var body = JSON.stringify({"sessionToken": Local.session_token})
+	match_heartbeat_request.request(url, headers, HTTPClient.METHOD_POST, body)
+
+func _on_match_heartbeat_request_request_completed(_result, response_code, _headers, _body) -> void:
+	if response_code >= 200 and response_code < 300:
+		print("Match heartbeat sent successfully")
+	else:
+		print("Failed to send match heartbeat, response code: %d" % response_code)
+
+func leave_match():
+	var url = server_url + "/matchmaking/left"
+	var headers = ["Content-Type: application/json"]
+	var body = JSON.stringify({"sessionToken": Local.session_token})
+	left_match_request.request(url, headers, HTTPClient.METHOD_POST, body)
+
+func _on_left_match_request_request_completed(_result, response_code, _headers, _body) -> void:
+	if response_code >= 200 and response_code < 300:
+		print("Left match successfully")
+	else:
+		print("Failed to leave match, response code: %d" % response_code)
+
+func joined_match():
+	var url = server_url + "/matchmaking/joined"
+	var headers = ["Content-Type: application/json"]
+	var body = JSON.stringify({"sessionToken": Local.session_token})
+	joined_match_request.request(url, headers, HTTPClient.METHOD_POST, body)
+
+func _on_joined_match_request_request_completed(_result, response_code, _headers, _body) -> void:
+	if response_code >= 200 and response_code < 300:
+		print("Joined match successfully")
+	else:
+		print("Failed to join match, response code: %d" % response_code)
+
+func match_ended():
+	var url = server_url + "/matchmaking/match-ended"
+	var headers = ["Content-Type: application/json"]
+	var body = JSON.stringify({"sessionToken": Local.session_token})
+	match_ended_request.request(url, headers, HTTPClient.METHOD_POST, body)
+
+func _on_match_ended_request_request_completed(_result, response_code, _headers, _body) -> void:
+	if response_code >= 200 and response_code < 300:
+		print("Match ended reported successfully")
+	else:
+		print("Failed to report match ended, response code: %d" % response_code)
+
+func register_server(server_name: String, registration_token: String):
+	var url = server_url + "/matchmaking/register-server"
+	var headers = ["Content-Type: application/json"]
+	var body = JSON.stringify({"sessionToken": Local.session_token, "serverName": server_name, "registrationKey": registration_token})
+	register_server_request.request(url, headers, HTTPClient.METHOD_POST, body)
+
+func _on_register_server_request_request_completed(_result, response_code, _headers, _body) -> void:
+	if response_code >= 200 and response_code < 300:
+		print("Server registered successfully")
+		Local.server_token = JSON.parse_string(_body.get_string_from_utf8())["serverToken"]
+	else:
+		print("Failed to register server, response code: %d" % response_code)
