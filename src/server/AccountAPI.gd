@@ -211,7 +211,6 @@ func get_account_info_update():
 	var body = {"sessionToken": Local.session_token, "playerId": Local.player_id}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
-	account_info_update_request.request_completed.connect(_on_get_account_info_update_request_complete)
 	var err = account_info_update_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
 	if err != OK:
 		print("Error making account info update request: ", err)
