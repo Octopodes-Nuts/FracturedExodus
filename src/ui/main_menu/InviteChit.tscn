@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://jcry001ooqsx"]
+
+[ext_resource type="Script" uid="uid://dlse3r0awwjoc" path="res://ui/main_menu/InviteChit.gd" id="1_xum86"]
+
+[node name="InviteChit" type="Button" unique_id=754294398]
+custom_minimum_size = Vector2(0, 40)
+script = ExtResource("1_xum86")

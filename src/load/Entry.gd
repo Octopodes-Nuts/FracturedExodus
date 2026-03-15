@@ -5,6 +5,7 @@ extends Node
 @onready var Passfield = $Control/Panel/PassField
 @onready var ViewPanel = $Control/Panel
 @onready var LoginButton = $Control/Panel/SubmitButton
+@onready var MatchmakingAPI = $MatchmakingApi
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -17,6 +18,7 @@ func _ready() -> void:
 	AccountAPI.connect("login_complete", get_characters)
 	AccountAPI.connect("characters_received", get_account_info)
 	AccountAPI.account_info_received.connect(enter_main_menu)
+	AccountAPI.login_complete.connect(MatchmakingAPI.party_leave)
 
 	LoginButton.pressed.connect(_on_SubmitButton_pressed)
 
@@ -30,7 +32,8 @@ func _ready() -> void:
 		ViewPanel.show()
 	else:
 		var account_info = ResourceLoader.load("res://load/AccountInfo.res")
-		AccountAPI.login(account_info.AccountName, account_info.Password)   
+		AccountAPI.login(account_info.AccountName, account_info.Password)
+	
 	
 	# load settings
 	

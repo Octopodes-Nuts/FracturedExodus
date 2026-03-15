@@ -18,7 +18,9 @@ extends Control
 @onready var friend_request_panel = $add_friend_panel
 
 @onready var account_info_update_timer: Timer = Timer.new()
+@onready var party_update_timer: Timer = Timer.new()
 var account_info_update_interval: float = 5.0
+var party_update_interval: float = 5.0
 
 # this server code will likely be moved
 var active_register = 1
@@ -30,18 +32,26 @@ func _ready():
 		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 			print("Error getting to file")
 	social_panel.account_api = account_api
+	social_panel.matchmaking_api = matchmaking_api
 	add_child(account_info_update_timer)
+	add_child(party_update_timer)
 	account_info_update_timer.wait_time = account_info_update_interval
 	account_info_update_timer.timeout.connect(account_api.get_account_info_update)
 	account_info_update_timer.start()
 
+	party_update_timer.wait_time = party_update_interval
+	party_update_timer.timeout.connect(matchmaking_api.party_status)
+	party_update_timer.start()
+
 	character_select.account_api = account_api
 	matchmaking_api.match_found.connect(match_found)
+	matchmaking_api.matchmaking_status_changed.connect(_on_matchmaking_status_changed)
 	account_api.account_info_updated.connect(_on_account_api_account_info_updated)
-	# account_api.account_info_updated.connect(account_info_update_timer.start)
+	account_api.get_account_info_update()
 
 	social_panel.add_friend_button_pressed.connect(_on_social_panel_add_friend_button_pressed)
 	friend_request_panel.friend_request_ready.connect(_on_friend_request_panel_ready)
+	account_api.get_account_info_update()
  
 	for character in Local.characters.characters.keys():
 		print("Character: ", character, " Def: ", Local.characters.characters[character])
@@ -97,6 +107,10 @@ func _on_character_select_new_char_created() -> void:
 	pass
 
 
+func _on_matchmaking_status_changed(status: String) -> void:
+	queue_button.disabled = status == "searching"
+
+
 func _on_ready_button_pressed() -> void:
 	queue_button.disabled = true
 	matchmaking_api.queue_for_match()
@@ -106,6 +120,7 @@ func _on_account_api_account_info_updated() -> void:
 	print("Account info updated, refreshing social panel")
 	social_panel.set_friend_chits()
 	social_panel.set_request_chits()
+	social_panel.set_invite_chits()
 
 
 func _on_social_panel_add_friend_button_pressed() -> void:
@@ -114,3 +129,7 @@ func _on_social_panel_add_friend_button_pressed() -> void:
 
 func _on_friend_request_panel_ready(friend_id: String):
 	account_api.send_friend_request(friend_id)
+
+
+func _on_leave_party_btn_pressed() -> void:
+	matchmaking_api.party_leave()

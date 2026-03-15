@@ -19,6 +19,10 @@ var matchmaking_ticket: String = ""
 var matchmaking_status: String = ""
 var port: int
 var ip: String
+var party_invites: Array = []
+var party_members: Array = []
+var party_status: String = ""
+var in_party: bool = false
 
 var player: CharacterBody3D
 var HUD: Control

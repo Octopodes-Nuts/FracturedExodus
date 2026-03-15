@@ -169,6 +169,31 @@ offset_right = 278.0
 offset_bottom = 158.0
 text = "Accept"
 
+[node name="party_panel" type="Panel" parent="." unique_id=1848652855]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.002
+anchor_right = 1.0
+anchor_bottom = 0.002
+offset_left = -485.0
+offset_top = -0.16000009
+offset_right = -61.0
+offset_bottom = 120.84
+
+[node name="leave_party_btn" type="Button" parent="party_panel" unique_id=1191599071]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -84.0
+offset_top = 21.5
+offset_right = 86.0
+offset_bottom = 52.5
+text = "Leave"
+
 [connection signal="character_select" from="character_display" to="." method="_on_character_display_character_select"]
 [connection signal="pressed" from="test_scene_btn" to="." method="_on_test_scene_btn_pressed"]
 [connection signal="pressed" from="ready_button" to="." method="_on_ready_button_pressed"]
@@ -178,3 +203,4 @@ text = "Accept"
 [connection signal="new_char_created" from="character_select" to="." method="_on_character_select_new_char_created"]
 [connection signal="new_char_selected" from="character_select" to="." method="_on_character_select_new_char_selected"]
 [connection signal="weapon_selected" from="weapon_select" to="." method="_on_weapon_select_weapon_selected"]
+[connection signal="pressed" from="party_panel/leave_party_btn" to="." method="_on_leave_party_btn_pressed"]

@@ -2,11 +2,14 @@
 
 [ext_resource type="Script" uid="uid://b2as38vcohqji" path="res://load/Entry.gd" id="1_bsg4i"]
 [ext_resource type="PackedScene" uid="uid://dsvo3hbtfsxtg" path="res://server/AccountAPI.tscn" id="2_6b5qe"]
+[ext_resource type="PackedScene" uid="uid://f6kx521fvf0h" path="res://server/MatchmakingAPI.tscn" id="3_w7qdv"]
 
 [node name="Entry" type="Node" unique_id=1126440176]
 script = ExtResource("1_bsg4i")
 
 [node name="AccountApi" parent="." unique_id=1242941056 instance=ExtResource("2_6b5qe")]
+
+[node name="MatchmakingApi" parent="." unique_id=1586885325 instance=ExtResource("3_w7qdv")]
 
 [node name="Control" type="Control" parent="." unique_id=1384325857]
 layout_mode = 3

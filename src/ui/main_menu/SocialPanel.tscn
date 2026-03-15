@@ -41,12 +41,12 @@ vertical_alignment = 1
 [node name="FriendsLabel" type="Label" parent="." unique_id=2085123490]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.055000003
-anchor_bottom = 0.083000004
-offset_left = 4.0
-offset_top = -0.18500519
-offset_right = 79.0
-offset_bottom = -0.2610016
+anchor_top = 0.279
+anchor_bottom = 0.293
+offset_left = 5.0
+offset_top = -13.792999
+offset_right = 80.0
+offset_bottom = -0.33102417
 text = "Friends"
 
 [node name="RequestsLabel" type="Label" parent="." unique_id=607149835]
@@ -64,11 +64,11 @@ text = "Requests"
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.013
-anchor_top = 0.094000004
+anchor_top = 0.3
 anchor_right = 0.99000007
 anchor_bottom = 0.71800005
 offset_left = -0.004000187
-offset_top = 0.101997375
+offset_top = -0.1000061
 offset_right = 0.07998657
 offset_bottom = -0.30603027
 
@@ -90,3 +90,30 @@ anchor_bottom = 0.056
 offset_top = 0.05599785
 offset_right = 306.0
 offset_bottom = -0.15200043
+
+[node name="InvitesLabel" type="Label" parent="." unique_id=655437378]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.068
+anchor_bottom = 0.09200001
+offset_left = 5.0
+offset_top = 0.24399567
+offset_right = 57.0
+offset_bottom = 0.035995483
+text = "Invites"
+
+[node name="InvitesContainer" type="ScrollContainer" parent="." unique_id=1856647595]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.095000006
+anchor_right = 1.0
+anchor_bottom = 0.261
+offset_left = 2.0
+offset_top = 0.1349945
+offset_right = -1.0
+offset_bottom = 0.61299133
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InvitesContainer" unique_id=993471569]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

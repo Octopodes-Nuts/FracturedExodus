@@ -14,6 +14,8 @@ signal account_info_updated
 @onready var friend_request: HTTPRequest = HTTPRequest.new()
 @onready var accept_friend_req_request: HTTPRequest = HTTPRequest.new()
 
+var server_url: String = "http://127.0.0.1:8000/"
+
 func _ready():
 	add_child(newCharacterRequest)
 	newCharacterRequest.request_completed.connect(_on_create_character_request_complete)
@@ -33,7 +35,7 @@ func login(username: String, password: String):
 
 	request.request_completed.connect(_on_login_request_completed)
 
-	var url = "http://127.0.0.1:8000/player/login"
+	var url = server_url + "player/login"
 	var body = {"username": username, "password": password}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
@@ -68,7 +70,7 @@ func get_characters(token: String):
 	
 	request.request_completed.connect(_on_get_characters_request_complete)
 
-	var url = "http://127.0.0.1:8000/player/characters"
+	var url = server_url + "player/characters"
 	var body = {"sessionToken": token}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
@@ -106,7 +108,7 @@ func _on_get_characters_request_complete(_result, response_code, _headers, body)
 
 func create_character(token: String, character_def: CharacterDef):
 
-	var url = "http://127.0.0.1:8000/player/newCharacter"
+	var url = server_url + "player/newCharacter"
 	var body = {
 		"sessionToken": token,
 		"name": character_def.Name,
@@ -141,7 +143,7 @@ func _on_create_character_request_complete(_result, response_code, _headers, bod
 		
 
 func update_character(token: String, character: CharacterDef):
-	var url = "http://127.0.0.1:8000/player/updateCharacter"
+	var url = server_url + "player/updateCharacter"
 	var body = {
 		"sessionToken": token,
 		"characterId": character.ID,
@@ -173,7 +175,7 @@ func get_account_info(token: String, player_id: String):
 
 	print("Getting account info with token: ", token)
 
-	var url = "http://127.0.0.1:8000/player/accountInfo"
+	var url = server_url + "player/accountInfo"
 	var body = {"sessionToken": token, "playerId": player_id}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
@@ -205,7 +207,7 @@ func _on_get_account_info_request_complete(_result, response_code, _headers, bod
 		print("Account info request failed with code: ", response_code)
 
 func get_account_info_update():
-	var url = "http://127.0.01:8000/player/accountInfo"
+	var url = server_url + "player/accountInfo"
 	var body = {"sessionToken": Local.session_token, "playerId": Local.player_id}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
@@ -235,7 +237,7 @@ func _on_get_account_info_update_request_complete(_result, response_code, _heade
 
 
 func send_friend_request(friend_id: String):
-	var url = "http://127.0.0.1:8000/player/friendRequest"
+	var url = server_url + "player/friendRequest"
 	var body = {"sessionToken": Local.session_token, "playerId": friend_id}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
@@ -251,7 +253,7 @@ func _on_send_friend_request_complete(_result, response_code, _headers, _body):
 		print("Friend request failed with code: ", response_code)
 
 func accept_friend_request(friend_id: String):
-	var url = "http://127.0.0.1:8000/player/acceptRejectFriendRequest"
+	var url = server_url + "player/acceptRejectFriendRequest"
 	var body = {"sessionToken": Local.session_token, "playerId": friend_id, "accept": true}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
