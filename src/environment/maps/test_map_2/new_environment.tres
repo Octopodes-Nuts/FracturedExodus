@@ -9,6 +9,7 @@ process_mode = 1
 [resource]
 background_mode = 2
 sky = SubResource("Sky_pmjc1")
+ambient_light_color = Color(0.69135684, 0.6913568, 0.69135684, 1)
 ambient_light_energy = 0.51
 fog_density = 0.0
 volumetric_fog_enabled = true

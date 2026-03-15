@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://cctu8la0pomnv" path="res://behavior/environment/map/Map.gd" id="2_qhi0f"]
 [ext_resource type="Script" uid="uid://cadnyra354uxb" path="res://environment/maps/test_map_2/terrain_3d.gd" id="3_16h54"]
 [ext_resource type="PackedScene" uid="uid://ec8yapldak1y" path="res://behavior/environment/spawn/Spawn.tscn" id="3_aqnjy"]
-[ext_resource type="PackedScene" uid="uid://byjn5yc1m1okl" path="res://addons/SunshineVolumetricClouds/CloudsPrefab.tscn" id="3_fsibm"]
 [ext_resource type="Texture2D" uid="uid://haq6ddq1tncs" path="res://environment/maps/test_map_2/textures/deadgrass.png" id="3_lio7l"]
 [ext_resource type="PackedScene" uid="uid://cbpckpkhcylm2" path="res://behavior/game/Game.tscn" id="3_ulnwu"]
 [ext_resource type="Texture2D" uid="uid://dddq8fu48dct4" path="res://environment/maps/test_map_2/textures/oneflower.png" id="4_6yoq6"]
@@ -240,17 +239,6 @@ script = ExtResource("2_qhi0f")
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=26450132]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0012464523, 0, 0.04676056)
 navigation_mesh = SubResource("NavigationMesh_6nkx3")
-
-[node name="CloudsSystem" parent="NavigationRegion3D" unique_id=176559858 node_paths=PackedStringArray("sunLight", "worldEnvironment") instance=ExtResource("3_fsibm")]
-updateConstantly = true
-sunLight = NodePath("../../DirectionalLight3D")
-worldEnvironment = NodePath("../..")
-cloudsCeiling = 300.0
-globalCloudScale = 1000.0
-sunColorDefault = Color(0.745, 0.745, 0.745, 0.745)
-overrideAmbientLight = true
-useFogDefault = false
-fogColorDefault = Color(0.518, 0.553, 0.608, 1)
 
 [node name="Terrain3D" type="Terrain3D" parent="NavigationRegion3D" unique_id=685931199]
 data_directory = "res://environment/maps/test_map_2/map_data"
