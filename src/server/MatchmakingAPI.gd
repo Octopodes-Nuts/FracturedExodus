@@ -18,7 +18,7 @@ var party_response_request: HTTPRequest = HTTPRequest.new()
 var status_timer: Timer = Timer.new()
 var status_update_interval: float = 1.0
 
-var server_url = "http://localhost:8000"
+var server_url = "http://209.38.77.226:8000"
 
 func _ready() -> void:
 	add_child(queue_request)
@@ -79,7 +79,8 @@ func _on_status_update_request_request_completed(_result, response_code, _header
 			status_timer.stop()
 			queued = false
 			var port = int(status["port"])
-			var ip = "127.0.0.1"
+			print("PORT:", port)
+			var ip = "209.38.77.226"
 			emit_signal("match_found", port, ip)
 		
 	else:

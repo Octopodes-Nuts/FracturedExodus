@@ -302,7 +302,7 @@ func _physics_process(delta):
 	#	gravity_direction = -get_floor_normal() * gravity
 	##	gravity_direction = -get_floor_normal()
 	
-	if health > 0:
+	if current_health > 0:
 		if Input.is_action_just_pressed("jump") and is_on_floor()\
 			and full_contact and Local.input_active:
 			gravity_direction = Vector3.UP * jump
@@ -509,6 +509,7 @@ func _hit_local(dmg: int):
 	if current_health <= 0:
 		Local.HUD.crosshair.visible = false
 		Local.HUD.death_text.visible = true
+		set_res_sphere(true)
 		set_res_sphere.rpc(true)
 
 # this will be an RPC
@@ -528,21 +529,28 @@ func notify_extract(objective_left):
 	if objective_left and not Local.host:
 		Local.HUD.notify.rpc("Objective has left the mission area", 3.0)
 
-@rpc("call_local", "any_peer")
-func res(health, name):
-	current_health = health
-	if Local.host:
-		_res_local.rpc_id(name.to_int(), health)
+@rpc("any_peer", "reliable")
+func res(revive_health: float):
+	if not multiplayer.is_server():
+		return
 
-@rpc("any_peer")
-func _res_local(health):
-	current_health = health
+	current_health = revive_health
+	var revived_peer_id := str(name).to_int()
+	if revived_peer_id == multiplayer.get_unique_id():
+		_res_local(revive_health)
+	else:
+		_res_local.rpc_id(revived_peer_id, revive_health)
+
+@rpc("any_peer", "reliable")
+func _res_local(revive_health: float):
+	current_health = revive_health
 	Local.HUD.health_slider.value = ( current_health / FULL_HEALTH ) * 100
 	Local.HUD.crosshair.visible = true
 	Local.HUD.death_text.visible = false
+	set_res_sphere(false)
 	set_res_sphere.rpc(false)
 
-@rpc("any_peer")
+@rpc("any_peer", "reliable")
 func set_res_sphere(active: bool):
 	res_sphere.monitorable = active
 	res_sphere.monitoring = active

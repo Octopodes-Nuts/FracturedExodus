@@ -7,6 +7,8 @@ extends WorldEnvironment
 
 @onready var Global = get_node('/root/Global')
 @onready var Game = $"./Game"
+@onready var MatchmakingAPI = $MatchmakingApi
+
 var Player = preload("res://behavior/player/Player.tscn")
 var Chipsite = preload("res://behavior/environment/interactables/chipsite/Chipsite.tscn")
 
@@ -45,7 +47,7 @@ func _ready():
 		multiplayer.connection_failed.connect(_on_connection_failed)
 		#enet_peer.create_client("34.55.251.69", PORT)
 		print("Attempting to connect to server at %s:%d" % [Local.ip, Local.port])
-		var client_err = enet_peer.create_client("localhost", Local.port)
+		var client_err = enet_peer.create_client("209.38.77.226", Local.port)
 		if client_err == OK:
 			multiplayer.multiplayer_peer = enet_peer
 			print("[Map] Client connection request sent to localhost:%d" % [Local.port])
