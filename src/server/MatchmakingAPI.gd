@@ -7,6 +7,8 @@ var queued: bool = false
 signal match_found(port: int, ip: String)
 signal in_party_status_changed(party_members: Array[String])
 signal matchmaking_status_changed(status: String)
+signal server_registered
+signal match_ended_reported
 
 var queue_request: HTTPRequest = HTTPRequest.new()
 var status_update_request: HTTPRequest = HTTPRequest.new()
@@ -218,11 +220,12 @@ func _on_joined_match_request_request_completed(_result, response_code, _headers
 func match_ended():
 	var url = server_url + "/matchmaking/match-ended"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token})
+	var body = JSON.stringify({"serverToken": Local.server_token})
 	match_ended_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func _on_match_ended_request_request_completed(_result, response_code, _headers, _body) -> void:
 	if response_code >= 200 and response_code < 300:
+		emit_signal("match_ended_reported")
 		print("Match ended reported successfully")
 	else:
 		print("Failed to report match ended, response code: %d" % response_code)
@@ -237,5 +240,7 @@ func _on_register_server_request_request_completed(_result, response_code, _head
 	if response_code >= 200 and response_code < 300:
 		print("Server registered successfully")
 		Local.server_token = JSON.parse_string(_body.get_string_from_utf8())["serverToken"]
+		Local.server_token_id = JSON.parse_string(_body.get_string_from_utf8())["tokenId"]
+		emit_signal("server_registered")
 	else:
 		print("Failed to register server, response code: %d" % response_code)

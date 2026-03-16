@@ -13,6 +13,7 @@ func _ready() -> void:
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
 		Local.server_name = OS.get_environment("MM_SERVER_NAME")
 		Local.registration_token = OS.get_environment("MM_SERVER_REGISTRATION_KEY")
+		Local.host = true
 			# If no registration token is provided, we assume this is a local dedicated server for testing
 		if Local.registration_token == "":
 			print("No registration token provided, assuming local dedicated server for testing")
@@ -22,7 +23,7 @@ func _ready() -> void:
 			print("Registration token provided, attempting to register server with matchmaking service")
 			MatchmakingAPI.register_server(Local.server_name, Local.registration_token)
 				# If registration fails, we fall back to local dedicated server mode
-		call_deferred("_enter_dedicated_server_map")
+		MatchmakingAPI.server_registered.connect(func(): call_deferred("_enter_dedicated_server_map"))
 		return
 
 	# set up pipeline

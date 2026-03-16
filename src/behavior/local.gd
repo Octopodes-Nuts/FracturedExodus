@@ -27,6 +27,7 @@ var in_party: bool = false
 var registration_token: String = ""
 var server_name: String = ""
 var server_token: String = ""
+var server_token_id: String = ""
 
 var player: CharacterBody3D
 var HUD: Control

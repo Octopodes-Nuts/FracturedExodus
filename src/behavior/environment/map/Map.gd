@@ -94,7 +94,6 @@ func add_player(peer_id):
 	$Spawns.add_child(player)
 	player_count += 1
 	
-	
 func remove_player(peer_id):
 	var player = $Spawns.get_node_or_null(str(peer_id))
 	if player:
@@ -117,7 +116,7 @@ func spawn_box(position):
 func end_match():
 	if Local.host:
 		MatchmakingAPI.match_ended()
-		get_tree().quit()
+		MatchmakingAPI.match_ended_reported.connect(func(): get_tree().quit())
 	else:
 		report_match_left("end_match")
 
