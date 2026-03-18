@@ -9,6 +9,7 @@ extends CharacterBody3D
 class_name DefaultController
 
 var DEFAULT_LERP = 20.0
+const RECONCILE_DISTANCE_SQUARED = 0.0004
 
 @onready var WeaponRegister = get_node('/root/WeaponRegister')
 @onready var Settings = get_node('/root/Settings')
@@ -72,6 +73,9 @@ var net_wants_sprint: bool = false
 var net_jump_pressed: bool = false
 var net_yaw: float = 0.0
 var net_pitch: float = 0.0
+var input_sequence: int = 0
+var last_server_sequence: int = -1
+var pending_inputs: Array = []
 
 @onready var camera = $neck/camera_head
 @onready var neck = $neck
@@ -167,7 +171,6 @@ func load_from_payload(payload: Dictionary):
 	character.load_from_payload(payload)
 	swap_equipped_from_index(payload["active"], false)
 
-@rpc("call_local")
 func _ads(dt: float):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
@@ -177,7 +180,6 @@ func _ads(dt: float):
 		if _is_local_player():
 			Local.HUD.set_visible(false)
 
-@rpc("call_local")
 func _undo_ads(dt: float):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
@@ -200,7 +202,6 @@ func ground_check():
 func _process(dt: float):
 	self.delta = dt
 	if not _is_local_player(): return
-	_send_movement_input()
 	# set cycle time ? so that you can't just keep
 	# shifting weapons but maybe not
 	if Input.is_action_just_pressed("primary_weapon") and\
@@ -226,9 +227,9 @@ func _process(dt: float):
 			swap_equipped_from_index(6, true)
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
-		_ads.rpc(dt)
+		_ads(dt)
 	else:
-		_undo_ads.rpc(dt)
+		_undo_ads(dt)
 	if Input.is_action_pressed("ads") and\
 			Local.input_active and\
 			active_equipable is Weapon and\
@@ -311,7 +312,7 @@ func _set_movement_input(move_x: float, move_y: float, wants_sprint: bool, jump_
 	net_yaw = yaw
 	net_pitch = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
 
-func _send_movement_input() -> void:
+func _build_local_input(dt: float) -> Dictionary:
 	var move_x: float = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	var move_y: float = Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
 	if not Local.input_active:
@@ -319,20 +320,108 @@ func _send_movement_input() -> void:
 		move_y = 0.0
 	var wants_sprint: bool = Local.input_active and Input.is_action_pressed("sprint")
 	var jump_pressed: bool = Local.input_active and Input.is_action_just_pressed("jump")
+	return {
+		"seq": input_sequence,
+		"dt": dt,
+		"move_x": move_x,
+		"move_y": move_y,
+		"wants_sprint": wants_sprint,
+		"jump_pressed": jump_pressed,
+		"yaw": net_yaw,
+		"pitch": net_pitch,
+	}
+
+func _apply_input_packet(input_packet: Dictionary) -> void:
+	_set_movement_input(
+		input_packet["move_x"],
+		input_packet["move_y"],
+		input_packet["wants_sprint"],
+		input_packet["jump_pressed"],
+		input_packet["yaw"],
+		input_packet["pitch"]
+	)
+
+func _capture_and_submit_input(dt: float) -> void:
+	var input_packet := _build_local_input(dt)
+	input_sequence += 1
+	input_packet["seq"] = input_sequence
+	_apply_input_packet(input_packet)
 
 	if multiplayer.is_server():
-		_set_movement_input(move_x, move_y, wants_sprint, jump_pressed, net_yaw, net_pitch)
+		last_server_sequence = input_packet["seq"]
 	else:
-		submit_movement_input.rpc_id(1, move_x, move_y, wants_sprint, jump_pressed, net_yaw, net_pitch)
+		pending_inputs.append(input_packet)
+		submit_movement_input.rpc_id(
+			1,
+			input_packet["seq"],
+			input_packet["move_x"],
+			input_packet["move_y"],
+			input_packet["wants_sprint"],
+			input_packet["jump_pressed"],
+			input_packet["yaw"],
+			input_packet["pitch"]
+		)
 
 @rpc("any_peer", "unreliable_ordered")
-func submit_movement_input(move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float):
+func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float):
 	if not multiplayer.is_server():
 		return
 	var sender_id := multiplayer.get_remote_sender_id()
 	if sender_id != str(name).to_int():
 		return
+	last_server_sequence = seq
 	_set_movement_input(move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
+
+func _create_authoritative_state() -> Dictionary:
+	return {
+		"position": global_position,
+		"horizontal_velocity": horizantal_velocity,
+		"gravity_direction": gravity_direction,
+		"yaw": rotation.y,
+		"pitch": neck.rotation.x,
+	}
+
+func _restore_authoritative_state(state: Dictionary) -> void:
+	global_position = state["position"]
+	horizantal_velocity = state["horizontal_velocity"]
+	gravity_direction = state["gravity_direction"]
+	net_yaw = state["yaw"]
+	net_pitch = state["pitch"]
+	_apply_look_rotation(net_yaw, net_pitch)
+
+func _discard_acknowledged_inputs(sequence: int) -> void:
+	if pending_inputs.is_empty():
+		return
+	var remaining_inputs: Array = []
+	for input_packet in pending_inputs:
+		if input_packet["seq"] > sequence:
+			remaining_inputs.append(input_packet)
+	pending_inputs = remaining_inputs
+
+func _replay_pending_inputs() -> void:
+	for input_packet in pending_inputs:
+		_apply_input_packet(input_packet)
+		_simulate_movement(input_packet["dt"], false, false)
+
+@rpc("authority", "unreliable_ordered")
+func reconcile_movement(sequence: int, state: Dictionary):
+	if multiplayer.is_server() or not _is_local_player():
+		return
+	var authoritative_position: Vector3 = state["position"]
+	var needs_reconcile := global_position.distance_squared_to(authoritative_position) > RECONCILE_DISTANCE_SQUARED
+	_restore_authoritative_state(state)
+	_discard_acknowledged_inputs(sequence)
+	if needs_reconcile and not pending_inputs.is_empty():
+		_replay_pending_inputs()
+	elif pending_inputs.is_empty():
+		_apply_input_packet({
+			"move_x": 0.0,
+			"move_y": 0.0,
+			"wants_sprint": false,
+			"jump_pressed": false,
+			"yaw": net_yaw,
+			"pitch": net_pitch,
+		})
 
 enum WALK_STATES {
 	WALK,
@@ -341,6 +430,11 @@ enum WALK_STATES {
 }
 
 func _physics_process(dt: float):
+	if _is_local_player():
+		_capture_and_submit_input(dt)
+		if not multiplayer.is_server():
+			_simulate_movement(dt, false, true)
+
 	if _is_local_player() and current_health > 0:
 		if Input.is_action_pressed("interact") && current_interaction:
 			if current_interaction.has_method("interact"):
@@ -378,6 +472,12 @@ func _physics_process(dt: float):
 	if not multiplayer.is_server():
 		return
 
+	_simulate_movement(dt, true, false)
+	if not _is_local_player() and last_server_sequence >= 0:
+		reconcile_movement.rpc_id(str(name).to_int(), last_server_sequence, _create_authoritative_state())
+
+
+func _simulate_movement(dt: float, replicate_walk_state: bool, play_walk_locally: bool) -> void:
 	var speed = 0.0
 	var accel = DEACCEL
 	var forward = false
@@ -434,7 +534,10 @@ func _physics_process(dt: float):
 	if not is_on_floor():
 		walk_state = WALK_STATES.STOP
 	
-	play_walk.rpc(name, walk_state)
+	if replicate_walk_state:
+		play_walk.rpc(name, walk_state)
+	elif play_walk_locally:
+		play_walk(name, walk_state)
 
 	direction = direction.normalized()
 	horizantal_velocity = horizantal_velocity.lerp(
