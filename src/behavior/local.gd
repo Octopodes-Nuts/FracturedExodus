@@ -34,13 +34,30 @@ var HUD: Control
 var input_active = true
 var terrain: Terrain3D = null
 var characters: CharactersResource = CharactersResource.new()
+var entente_characters: CharactersResource = CharactersResource.new()
+var empire_characters: CharactersResource = CharactersResource.new()
+var free_agent_characters: CharactersResource = CharactersResource.new()
 var selected_character_def: CharacterDef
+var selected_faction: int = Factions.DEFAULT
 var char_id: String
 var host: bool = false
 var has_objective = false
 
 func _ready():
 	_get_player_attributes()
+
+
+func sort_characters():
+	for agent_name in characters.characters.keys():
+		var agent = characters.characters[agent_name]
+
+		match agent.Faction:
+			Factions.EMPIRE:
+				empire_characters.characters[agent_name] = agent
+			Factions.ENTENTE:
+				entente_characters.characters[agent_name] = agent
+			Factions.FREE_AGENTS:
+				free_agent_characters.characters[agent_name] = agent
 
 
 func _get_player_attributes():

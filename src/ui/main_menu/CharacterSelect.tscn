@@ -1,31 +1,31 @@
-[gd_scene load_steps=3 format=3 uid="uid://64xuuj3va1ut"]
+[gd_scene format=3 uid="uid://64xuuj3va1ut"]
 
 [ext_resource type="PackedScene" uid="uid://jebyod4rmvpm" path="res://ui/main_menu/CharacterChit.tscn" id="1_6etpt"]
 [ext_resource type="Script" uid="uid://67rwda35h7k8" path="res://ui/main_menu/CharacterSelect.gd" id="1_xsfli"]
 
-[node name="character_select" type="Panel"]
+[node name="character_select" type="Panel" unique_id=300673962]
 custom_minimum_size = Vector2(100, 100)
 offset_right = 1254.0
 offset_bottom = 182.0
 script = ExtResource("1_xsfli")
 
-[node name="scroll_container" type="ScrollContainer" parent="."]
+[node name="scroll_container" type="ScrollContainer" parent="." unique_id=528639948]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.999
 offset_right = 0.253906
 offset_bottom = 200.0
 
-[node name="block" type="HBoxContainer" parent="scroll_container"]
+[node name="block" type="HBoxContainer" parent="scroll_container" unique_id=1559144547]
 layout_mode = 2
 
-[node name="new_btn" type="Button" parent="scroll_container/block"]
+[node name="new_btn" type="Button" parent="scroll_container/block" unique_id=101862357]
 clip_contents = true
 custom_minimum_size = Vector2(180, 180)
 layout_mode = 2
 text = "+"
 
-[node name="character_chit" parent="scroll_container/block" instance=ExtResource("1_6etpt")]
+[node name="character_chit" parent="scroll_container/block" unique_id=1032329851 instance=ExtResource("1_6etpt")]
 visible = false
 layout_mode = 2
 

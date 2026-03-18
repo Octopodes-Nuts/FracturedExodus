@@ -194,6 +194,20 @@ offset_right = 86.0
 offset_bottom = 52.5
 text = "Leave"
 
+[node name="FactionSelect" type="OptionButton" parent="." unique_id=691005504]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 1.0
+offset_right = 275.0
+offset_bottom = 34.0
+item_count = 3
+popup/item_0/text = "Entente"
+popup/item_0/id = 0
+popup/item_1/text = "Empire"
+popup/item_1/id = 1
+popup/item_2/text = "Free Agents"
+popup/item_2/id = 2
+
 [connection signal="character_select" from="character_display" to="." method="_on_character_display_character_select"]
 [connection signal="pressed" from="test_scene_btn" to="." method="_on_test_scene_btn_pressed"]
 [connection signal="pressed" from="ready_button" to="." method="_on_ready_button_pressed"]
@@ -204,3 +218,4 @@ text = "Leave"
 [connection signal="new_char_selected" from="character_select" to="." method="_on_character_select_new_char_selected"]
 [connection signal="weapon_selected" from="weapon_select" to="." method="_on_weapon_select_weapon_selected"]
 [connection signal="pressed" from="party_panel/leave_party_btn" to="." method="_on_leave_party_btn_pressed"]
+[connection signal="item_selected" from="FactionSelect" to="." method="_on_option_button_item_selected"]

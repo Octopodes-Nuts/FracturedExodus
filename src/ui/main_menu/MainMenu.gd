@@ -16,6 +16,7 @@ extends Control
 @onready var matchmaking_api = $MatchmakingApi
 @onready var social_panel = $social_panel
 @onready var friend_request_panel = $add_friend_panel
+@onready var faction_select = $FactionSelect
 
 @onready var account_info_update_timer: Timer = Timer.new()
 @onready var party_update_timer: Timer = Timer.new()
@@ -31,6 +32,8 @@ func _ready():
 		Local.host = true
 		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 			print("Error getting to file")
+			
+	faction_select.select(0)
 	social_panel.account_api = account_api
 	social_panel.matchmaking_api = matchmaking_api
 	add_child(account_info_update_timer)
@@ -133,3 +136,14 @@ func _on_friend_request_panel_ready(friend_id: String):
 
 func _on_leave_party_btn_pressed() -> void:
 	matchmaking_api.party_leave()
+
+
+func _on_option_button_item_selected(index: int) -> void:
+	match index:
+		0:
+			Local.selected_faction = Factions.ENTENTE
+		1:
+			Local.selected_faction = Factions.EMPIRE
+		2:
+			Local.selected_faction = Factions.FREE_AGENTS
+	character_select.render()

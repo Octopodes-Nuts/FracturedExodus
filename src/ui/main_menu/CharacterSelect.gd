@@ -41,24 +41,40 @@ func render():
 	for chit in character_chits:
 		chit.queue_free()
 	character_chits.clear()
-	if Local.selected_character_def and Local.characters != null:
+
+	var characters_to_render: CharactersResource
+
+	if Local.selected_faction == Factions.ENTENTE:
+		characters_to_render = Local.entente_characters
+	elif Local.selected_faction == Factions.EMPIRE:
+		characters_to_render = Local.empire_characters
+	elif Local.selected_faction == Factions.FREE_AGENTS:
+		characters_to_render = Local.free_agent_characters
+	else:
+		characters_to_render = Local.characters
+
+	if Local.selected_character_def and characters_to_render != null:
 		var pos = 0
-		for chr in Local.characters.characters.keys():
+		for chr in characters_to_render.characters.keys():
+			# Skip empty character names
+			if chr.is_empty() or characters_to_render.characters[chr].Name.is_empty():
+				continue
 			var chit: CharacterChit = Chit.instantiate()
 			character_chits.append(chit)
 			chit.position = Vector2(170.0 + ((329 - 170) * pos), 18.0)
 			block.add_child(chit)
-			chit._def = Local.characters.characters[chr]
+			chit._def = characters_to_render.characters[chr]
 			chit.pos = pos
 			chit.render()
 			_conntect_to_pressed(chit)
 			pos += 1
-			rendered = true
+		rendered = true
 
 var create_character_connected = false
 
 func _on_new_btn_pressed() -> void:
 	var char_def = CharacterDef.new()
+	char_def.Faction = Local.selected_faction
 	if not create_character_connected:
 		account_api.character_created.connect(_on_character_created)
 		create_character_connected = true

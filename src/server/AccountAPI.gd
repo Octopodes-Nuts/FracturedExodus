@@ -136,6 +136,7 @@ func _on_create_character_request_complete(_result, response_code, _headers, bod
 		for character in Local.characters.characters.keys():
 			if Local.characters.characters[character].ID == "":
 				Local.characters.characters[character].ID = response["characterId"]
+				Local.sort_characters()
 		
 		emit_signal("character_created")
 	else:

@@ -25,26 +25,28 @@ func _ready() -> void:
 				# If registration fails, we fall back to local dedicated server mode
 		MatchmakingAPI.server_registered.connect(func(): call_deferred("_enter_dedicated_server_map"))
 		return
-
-	# set up pipeline
-	AccountAPI.connect("login_complete", get_characters)
-	AccountAPI.connect("characters_received", get_account_info)
-	AccountAPI.account_info_received.connect(enter_main_menu)
-	AccountAPI.login_complete.connect(MatchmakingAPI.party_leave)
-
-	LoginButton.pressed.connect(_on_SubmitButton_pressed)
-
-	var cli_credentials = _get_cli_credentials()
-	if not cli_credentials.is_empty():
-		AccountAPI.login(cli_credentials.user, cli_credentials.password)
-		print(cli_credentials.user, cli_credentials.password)
-		return
-
-	if not ResourceLoader.exists("res://load/AccountInfo.res"):
-		ViewPanel.show()
 	else:
-		var account_info = ResourceLoader.load("res://load/AccountInfo.res")
-		AccountAPI.login(account_info.AccountName, account_info.Password)
+	# set up pipeline
+		Local.selected_faction = Factions.ENTENTE
+		AccountAPI.connect("login_complete", get_characters)
+		AccountAPI.connect("characters_received", get_account_info)
+		AccountAPI.characters_received.connect(Local.sort_characters)
+		AccountAPI.account_info_received.connect(enter_main_menu)
+		AccountAPI.login_complete.connect(MatchmakingAPI.party_leave)
+
+		LoginButton.pressed.connect(_on_SubmitButton_pressed)
+
+		var cli_credentials = _get_cli_credentials()
+		if not cli_credentials.is_empty():
+			AccountAPI.login(cli_credentials.user, cli_credentials.password)
+			print(cli_credentials.user, cli_credentials.password)
+			return
+
+		if not ResourceLoader.exists("res://load/AccountInfo.res"):
+			ViewPanel.show()
+		else:
+			var account_info = ResourceLoader.load("res://load/AccountInfo.res")
+			AccountAPI.login(account_info.AccountName, account_info.Password)
 	
 	
 	# load settings
