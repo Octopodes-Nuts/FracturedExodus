@@ -66,6 +66,13 @@ var delta: float
 # this needs to be set to an active equipable
 var active_equipable: Equipable = Equipable.new()
 
+var net_move_x: float = 0.0
+var net_move_y: float = 0.0
+var net_wants_sprint: bool = false
+var net_jump_pressed: bool = false
+var net_yaw: float = 0.0
+var net_pitch: float = 0.0
+
 @onready var camera = $neck/camera_head
 @onready var neck = $neck
 @onready var gun_location = $neck/camera_head/gun_location
@@ -82,8 +89,17 @@ signal character_update(ids: Array)
 var equipment: Array = []
 var current_equipped_index: int = 0
 
+func _is_local_player() -> bool:
+	if multiplayer == null or name.is_empty():
+		return false
+	return str(name).to_int() == multiplayer.get_unique_id()
+
+func _apply_look_rotation(yaw: float, pitch: float) -> void:
+	rotation.y = yaw
+	neck.rotation.x = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+
 func _enter_tree() -> void:
-	set_multiplayer_authority(str(name).to_int())
+	set_multiplayer_authority(1)
 
 #This should be changed to be more global
 func _ready():
@@ -91,7 +107,16 @@ func _ready():
 	Global.connect("character_update", char_serv_update)
 	res_sphere.set_player(self)
 	
-	if not is_multiplayer_authority(): return
+	if multiplayer.is_server():
+		var faction: int = Factions.DEFAULT
+		if Global.character_data.has(name) and Global.character_data[name].has("faction"):
+			faction = Global.character_data[name]["faction"]
+		var spawn = Global.get_spawn(faction)
+		if spawn != null:
+			transform.origin = spawn.transform.origin
+			global_position = spawn.global_position
+	
+	if not _is_local_player(): return
 	
 	Local.input_active = true
 	camera.make_current()
@@ -115,12 +140,8 @@ func _ready():
 	# load from character 
 	Local.player = self
 	Local.HUD = HUD
-	var faction: int = Factions.DEFAULT
-	if Local.selected_character_def != null:
-		faction = Local.selected_character_def.Faction
-	var spawn = Global.get_spawn(faction)
-	if spawn != null:
-		transform.origin = spawn.transform.origin
+	net_yaw = rotation.y
+	net_pitch = neck.rotation.x
 	send_character_data.rpc_id(1, _character_payload())
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
@@ -147,26 +168,26 @@ func load_from_payload(payload: Dictionary):
 	swap_equipped_from_index(payload["active"], false)
 
 @rpc("call_local")
-func _ads(delta):
+func _ads(dt: float):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
 			lerp((active_equipable.ads_position - camera.transform.origin),
-				active_equipable.ADS_LERP * delta)
-		camera.fov = lerp(camera.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * delta)
-		if is_multiplayer_authority():
+				active_equipable.ADS_LERP * dt)
+		camera.fov = lerp(camera.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * dt)
+		if _is_local_player():
 			Local.HUD.set_visible(false)
 
 @rpc("call_local")
-func _undo_ads(delta):
+func _undo_ads(dt: float):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
 			lerp((active_equipable.default_position - camera.transform.origin),
-				active_equipable.ADS_LERP * delta)
-		camera.fov = lerp(camera.fov, float(Settings.FOV), active_equipable.ADS_LERP * delta)
-		if is_multiplayer_authority():
+				active_equipable.ADS_LERP * dt)
+		camera.fov = lerp(camera.fov, float(Settings.FOV), active_equipable.ADS_LERP * dt)
+		if _is_local_player():
 			Local.HUD.set_visible(true)
 	elif camera.fov != float(Settings.FOV):
-		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * delta)
+		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * dt)
 
 func ground_check():
 
@@ -176,9 +197,10 @@ func ground_check():
 		   ground_check_3.is_colliding() or \
 		   ground_check_4.is_colliding()
 
-func _process(delta):
-	self.delta = delta
-	if not is_multiplayer_authority(): return
+func _process(dt: float):
+	self.delta = dt
+	if not _is_local_player(): return
+	_send_movement_input()
 	# set cycle time ? so that you can't just keep
 	# shifting weapons but maybe not
 	if Input.is_action_just_pressed("primary_weapon") and\
@@ -204,9 +226,9 @@ func _process(delta):
 			swap_equipped_from_index(6, true)
 	if Input.is_action_pressed("ads") and\
 			Local.input_active:
-		_ads.rpc(delta)
+		_ads.rpc(dt)
 	else:
-		_undo_ads.rpc(delta)
+		_undo_ads.rpc(dt)
 	if Input.is_action_pressed("ads") and\
 			Local.input_active and\
 			active_equipable is Weapon and\
@@ -272,12 +294,45 @@ func update_equipment():
 	]
 
 func _input(event):
-	if not is_multiplayer_authority() or current_health <= 0: return
+	if not _is_local_player() or current_health <= 0: return
 	if Local.input_active:
 		if event is InputEventMouseMotion:
-			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity))
-			neck.rotate_x(deg_to_rad((-event.relative.y * mouse_sensitivity)))
-			neck.rotation.x = clamp(neck.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+			net_yaw += deg_to_rad(-event.relative.x * mouse_sensitivity)
+			net_pitch += deg_to_rad(-event.relative.y * mouse_sensitivity)
+			net_pitch = clamp(net_pitch, deg_to_rad(-89), deg_to_rad(89))
+			_apply_look_rotation(net_yaw, net_pitch)
+
+func _set_movement_input(move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float) -> void:
+	net_move_x = clamp(move_x, -1.0, 1.0)
+	net_move_y = clamp(move_y, -1.0, 1.0)
+	net_wants_sprint = wants_sprint
+	if jump_pressed:
+		net_jump_pressed = true
+	net_yaw = yaw
+	net_pitch = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+
+func _send_movement_input() -> void:
+	var move_x: float = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	var move_y: float = Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
+	if not Local.input_active:
+		move_x = 0.0
+		move_y = 0.0
+	var wants_sprint: bool = Local.input_active and Input.is_action_pressed("sprint")
+	var jump_pressed: bool = Local.input_active and Input.is_action_just_pressed("jump")
+
+	if multiplayer.is_server():
+		_set_movement_input(move_x, move_y, wants_sprint, jump_pressed, net_yaw, net_pitch)
+	else:
+		submit_movement_input.rpc_id(1, move_x, move_y, wants_sprint, jump_pressed, net_yaw, net_pitch)
+
+@rpc("any_peer", "unreliable_ordered")
+func submit_movement_input(move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float):
+	if not multiplayer.is_server():
+		return
+	var sender_id := multiplayer.get_remote_sender_id()
+	if sender_id != str(name).to_int():
+		return
+	_set_movement_input(move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
 
 enum WALK_STATES {
 	WALK,
@@ -285,13 +340,50 @@ enum WALK_STATES {
 	STOP
 }
 
-func _physics_process(delta):
-	if not is_multiplayer_authority(): return
+func _physics_process(dt: float):
+	if _is_local_player() and current_health > 0:
+		if Input.is_action_pressed("interact") && current_interaction:
+			if current_interaction.has_method("interact"):
+				current_interaction.interact(self)
+				HUD.display_ammo(active_equipable.get_ammo())
+		
+		if  not active_equipable.continuous_usage and\
+			Input.is_action_just_pressed('fire') and\
+			Local.input_active:
+			if active_equipable.has_method("use"):
+				active_equipable.use(self)
+				HUD.display_ammo(active_equipable.get_ammo())
+		
+		if active_equipable.continuous_usage and\
+			Input.is_action_pressed("fire") and\
+			Local.input_active:
+			if not active_equipable.cool_down and\
+			 	active_equipable.has_method("use"):
+				active_equipable.use(self)
+				HUD.display_ammo(active_equipable.get_ammo())
+
+		if Input.is_action_just_pressed('reload') and\
+			Local.input_active:
+			if active_equipable.has_method("_reload"):
+				active_equipable._reload()
+				HUD.display_ammo(active_equipable.get_ammo())
+		
+		if Input.is_action_just_pressed("help"):
+			print("help")
+
+	if _is_local_player() and Input.is_action_just_pressed("help") and\
+		current_health <= 0 and not audio_player.playing:
+			call_help.rpc(name)
+
+	if not multiplayer.is_server():
+		return
+
 	var speed = 0.0
 	var accel = DEACCEL
 	var forward = false
 	
-	self.delta = delta
+	self.delta = dt
+	_apply_look_rotation(net_yaw, net_pitch)
 
 	direction = Vector3()
 
@@ -302,40 +394,35 @@ func _physics_process(delta):
 		
 		
 	if not is_on_floor():
-		gravity_direction += Vector3.DOWN * gravity * delta
+		gravity_direction += Vector3.DOWN * gravity * dt
 	#elif is_on_floor() and full_contact:
 	#	gravity_direction = -get_floor_normal() * gravity
 	##	gravity_direction = -get_floor_normal()
 	
 	if current_health > 0:
-		if Input.is_action_just_pressed("jump") and is_on_floor()\
-			and full_contact and Local.input_active:
+		if net_jump_pressed and is_on_floor() and full_contact:
 			gravity_direction = Vector3.UP * jump
+			net_jump_pressed = false
 	
 	var walk_state = WALK_STATES.STOP
 
-	if Input.is_action_pressed("move_forward") and\
-			Local.input_active:
+	if net_move_y < 0.0:
 		direction -= transform.basis.z
 		forward = true
 		walk_state = WALK_STATES.WALK
-	if Input.is_action_pressed("move_backward") and\
-			Local.input_active:
+	if net_move_y > 0.0:
 		forward = false
 		direction += transform.basis.z
 		walk_state = WALK_STATES.WALK
-	if Input.is_action_pressed("move_left") and\
-			Local.input_active:
+	if net_move_x < 0.0:
 		direction -= transform.basis.x
 		walk_state = WALK_STATES.WALK
-	if Input.is_action_pressed("move_right") and\
-			Local.input_active:
+	if net_move_x > 0.0:
 		direction += transform.basis.x
 		walk_state = WALK_STATES.WALK
 		
 	if direction != Vector3.ZERO:
-		if Input.is_action_pressed("sprint") and forward and\
-				Local.input_active:
+		if net_wants_sprint and forward:
 			speed = MAX_SPRINT
 			accel = SPRINT_ACCEL
 			walk_state = WALK_STATES.RUN
@@ -351,7 +438,7 @@ func _physics_process(delta):
 
 	direction = direction.normalized()
 	horizantal_velocity = horizantal_velocity.lerp(
-		direction * speed, accel * delta)
+		direction * speed, accel * dt)
 	movement.z = horizantal_velocity.z + gravity_direction.z
 	movement.x = horizantal_velocity.x + gravity_direction.x
 	movement.y = gravity_direction.y
@@ -362,40 +449,6 @@ func _physics_process(delta):
 	set_velocity(movement)
 	set_up_direction(Vector3.UP)
 	move_and_slide()
-	
-	if current_health > 0:
-		if Input.is_action_pressed("interact") && current_interaction:
-			if current_interaction.has_method("interact"):
-				current_interaction.interact(self)
-				HUD.display_ammo(active_equipable.get_ammo())
-			
-		if  not active_equipable.continuous_usage and\
-			Input.is_action_just_pressed('fire') and\
-			Local.input_active:
-			if active_equipable.has_method("use"):
-				active_equipable.use(self)
-				HUD.display_ammo(active_equipable.get_ammo())
-			
-		if active_equipable.continuous_usage and\
-			Input.is_action_pressed("fire") and\
-			Local.input_active:
-			if not active_equipable.cool_down and\
-		 	active_equipable.has_method("use"):
-				active_equipable.use(self)
-				HUD.display_ammo(active_equipable.get_ammo())
-	
-		if Input.is_action_just_pressed('reload') and\
-			Local.input_active:
-			if active_equipable.has_method("_reload"):
-				active_equipable._reload()
-				HUD.display_ammo(active_equipable.get_ammo())
-		
-		if Input.is_action_just_pressed("help"):
-			print("help")
-	
-	if Input.is_action_just_pressed("help") and\
-		current_health <= 0 and not audio_player.playing:
-			call_help.rpc(name)
 
 @rpc("call_local", "any_peer")
 func call_help(id):
@@ -436,14 +489,14 @@ func play_walk(id, walk_state):
 
 
 func register_interaction(interactable: Interactable):
-	if not is_multiplayer_authority(): return
+	if not _is_local_player(): return
 	current_interaction = interactable
 	if interactable.auto_interact:
 		interactable._interact(self)
 	print(interactable.name)
 
 func remove_interaction(interactable: Interactable):
-	if not is_multiplayer_authority(): return
+	if not _is_local_player(): return
 	if current_interaction == interactable:
 		current_interaction = Interactable.new()
 
@@ -519,7 +572,7 @@ func _hit_local(dmg: int):
 
 # this will be an RPC
 func extract():
-	if not is_multiplayer_authority(): return
+	if not _is_local_player(): return
 	if Global.map_root != null and Global.map_root.has_method("report_match_left"):
 		Global.map_root.report_match_left("extract")
 	notify_extract(character.has_objective)
