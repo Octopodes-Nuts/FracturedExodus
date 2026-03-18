@@ -5,8 +5,8 @@
 
 class_name Factions
 enum {
-	EMPIRE,
+	DEFAULT,
 	ENTENTE,
+	EMPIRE,
 	FREE_AGENTS,
-	DEFAULT
 }

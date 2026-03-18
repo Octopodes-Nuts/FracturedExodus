@@ -70,14 +70,9 @@ func render():
 			pos += 1
 		rendered = true
 
-var create_character_connected = false
-
 func _on_new_btn_pressed() -> void:
 	var char_def = CharacterDef.new()
 	char_def.Faction = Local.selected_faction
-	if not create_character_connected:
-		account_api.character_created.connect(_on_character_created)
-		create_character_connected = true
 	# prevent name collisions here
 	char_def.Name = get_name_name()
 	account_api.create_character(Local.session_token, char_def)

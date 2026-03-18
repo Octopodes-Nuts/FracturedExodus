@@ -115,7 +115,12 @@ func _ready():
 	# load from character 
 	Local.player = self
 	Local.HUD = HUD
-	transform.origin = Global.get_spawn().transform.origin
+	var faction: int = Factions.DEFAULT
+	if Local.selected_character_def != null:
+		faction = Local.selected_character_def.Faction
+	var spawn = Global.get_spawn(faction)
+	if spawn != null:
+		transform.origin = spawn.transform.origin
 	send_character_data.rpc_id(1, _character_payload())
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	

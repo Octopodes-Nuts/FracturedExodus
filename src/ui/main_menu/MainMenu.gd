@@ -47,6 +47,7 @@ func _ready():
 	party_update_timer.start()
 
 	character_select.account_api = account_api
+	account_api.character_created.connect(character_select._on_character_created)
 	matchmaking_api.match_found.connect(match_found)
 	matchmaking_api.matchmaking_status_changed.connect(_on_matchmaking_status_changed)
 	account_api.account_info_updated.connect(_on_account_api_account_info_updated)

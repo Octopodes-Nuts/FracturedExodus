@@ -8,6 +8,9 @@ extends Node
 # Script containing variables that are global to each match
 var chipsites: Array = []
 var spawns: Array = []
+var empire_spawns: Array = []
+var entente_spawns: Array = []
+var free_agent_spawns: Array = []
 var used_spawns: Array = []
 var chipsite_spawns: Array = []
 
@@ -32,15 +35,51 @@ func add_chipsite(chipsite: Node3D):
 func remove_chipsite(chipsite: Node):
 	pass
 
-func add_spawn(spawn: Node):
-	spawns.append(spawn)
+func add_spawn(spawn: Spawn):
+	match spawn.faction:
+		Spawn.Faction.DEFAULT:
+			spawns.append(spawn)
+		Spawn.Faction.ENTETNE:
+			entente_spawns.append(spawn)
+		Spawn.Faction.EMPIRE:
+			empire_spawns.append(spawn)
+		Spawn.Faction.FREE_AGENTS:
+			free_agent_spawns.append(spawn)
 
-func get_spawn():
-	var spawn = spawns[randi() % len(spawns)]
-	while spawn in used_spawns:
-		spawn = spawns[randi() % len(spawns)]
-	used_spawns.append(spawn)
-	return spawn
+func _get_spawn_pool_for_faction(faction: int) -> Array:
+	match faction:
+		Factions.ENTENTE:
+			return entente_spawns
+		Factions.EMPIRE:
+			return empire_spawns
+		Factions.FREE_AGENTS:
+			return free_agent_spawns
+		_:
+			return spawns
+
+func get_spawn(faction: int = Factions.DEFAULT):
+	var pool: Array = _get_spawn_pool_for_faction(faction)
+	if pool.is_empty():
+		pool = spawns
+
+	if pool.is_empty():
+		push_warning("[Global] No available spawn points.")
+		return null
+
+	var available_spawns: Array = []
+	for spawn in pool:
+		if spawn not in used_spawns:
+			available_spawns.append(spawn)
+
+	# Recycle only this faction's pool once all of its points have been used.
+	if available_spawns.is_empty():
+		for spawn in pool:
+			used_spawns.erase(spawn)
+		available_spawns = pool.duplicate()
+
+	var selected_spawn = available_spawns[randi() % len(available_spawns)]
+	used_spawns.append(selected_spawn)
+	return selected_spawn
 
 func emit_character_update(ids: Array):
 	emit_signal("character_update", ids)

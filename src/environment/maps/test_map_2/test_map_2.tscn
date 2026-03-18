@@ -261,14 +261,59 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -230.458, 7.4808, 49.7773)
 [node name="Spawn2" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=988414263 instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 227.597, 6.75896, 19.8544)
 
-[node name="Spawn3" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=224702857 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 196.618, 6.4103, 146.855)
+[node name="EntenteSpawns" type="Node" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=1951043550]
 
-[node name="Spawn4" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=703774187 instance=ExtResource("3_aqnjy")]
+[node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns/EntenteSpawns" unique_id=1479352653 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 134.60751, 4.8514376, -196.80034)
+faction = 1
+
+[node name="Spawn6" parent="NavigationRegion3D/Terrain3D/Spawns/EntenteSpawns" unique_id=450104313 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 137.95819, 4.8514376, -196.80034)
+faction = 1
+
+[node name="Spawn7" parent="NavigationRegion3D/Terrain3D/Spawns/EntenteSpawns" unique_id=1956070949 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 138.84593, 4.2277603, -191.37755)
+faction = 1
+
+[node name="Spawn8" parent="NavigationRegion3D/Terrain3D/Spawns/EntenteSpawns" unique_id=828159389 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.58823, 4.486186, -191.37755)
+faction = 1
+
+[node name="FreeAgentSpawns" type="Node" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=1824688086]
+
+[node name="Spawn3" parent="NavigationRegion3D/Terrain3D/Spawns/FreeAgentSpawns" unique_id=224702857 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 196.618, 6.4103, 144.90846)
+faction = 3
+
+[node name="Spawn4" parent="NavigationRegion3D/Terrain3D/Spawns/FreeAgentSpawns" unique_id=705631738 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 202.91621, 6.4103, 144.90846)
+faction = 3
+
+[node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns/FreeAgentSpawns" unique_id=1623199168 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 202.91621, 6.4103, 152.63547)
+faction = 3
+
+[node name="Spawn6" parent="NavigationRegion3D/Terrain3D/Spawns/FreeAgentSpawns" unique_id=1411299684 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 197.77507, 5.9244995, 151.25711)
+faction = 3
+
+[node name="EmpireSpawns" type="Node" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=681632820]
+
+[node name="Spawn4" parent="NavigationRegion3D/Terrain3D/Spawns/EmpireSpawns" unique_id=703774187 instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.5465, 6.01037, 256.895)
+faction = 2
 
-[node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=1479352653 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 130.393, 5.10136, -192.91)
+[node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns/EmpireSpawns" unique_id=1492860271 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.5465, 6.01037, 262.63934)
+faction = 2
+
+[node name="Spawn6" parent="NavigationRegion3D/Terrain3D/Spawns/EmpireSpawns" unique_id=898135829 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.214565, 6.01037, 262.63934)
+faction = 2
+
+[node name="Spawn7" parent="NavigationRegion3D/Terrain3D/Spawns/EmpireSpawns" unique_id=1556386126 instance=ExtResource("3_aqnjy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.214565, 6.01037, 258.68857)
+faction = 2
 
 [node name="scanner_site" parent="NavigationRegion3D/Terrain3D" unique_id=616897090 instance=ExtResource("18_ulnwu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.12, 7.36761, -195.226)
