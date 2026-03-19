@@ -44,7 +44,7 @@ var host: bool = false
 var has_objective = false
 
 func _ready():
-	_get_player_attributes()
+	pass
 
 
 func sort_characters():
@@ -58,10 +58,3 @@ func sort_characters():
 				entente_characters.characters[agent_name] = agent
 			Factions.FREE_AGENTS:
 				free_agent_characters.characters[agent_name] = agent
-
-
-func _get_player_attributes():
-	# grab player ID from server
-	# along with whatever else becomes clear later
-	# this should happen once accepted into a match
-	pass
