@@ -17,7 +17,7 @@ var party_status_request: HTTPRequest = HTTPRequest.new()
 var party_leave_request: HTTPRequest = HTTPRequest.new()
 var party_response_request: HTTPRequest = HTTPRequest.new()
 var match_heartbeat_request: HTTPRequest = HTTPRequest.new()
-var left_match_request: HTTPRequest = HTTPRequest.new()
+
 var joined_match_request: HTTPRequest = HTTPRequest.new()
 var match_ended_request: HTTPRequest = HTTPRequest.new()
 var register_server_request: HTTPRequest = HTTPRequest.new()
@@ -25,7 +25,8 @@ var register_server_request: HTTPRequest = HTTPRequest.new()
 var status_timer: Timer = Timer.new()
 var status_update_interval: float = 1.0
 
-var server_url = "http://209.38.77.226:8000"
+#var server_url = "http://209.38.77.226:8000/"
+var server_url = "http://192.168.1.235:8000/"
 
 func _ready() -> void:
 	add_child(queue_request)
@@ -49,9 +50,6 @@ func _ready() -> void:
 	add_child(match_heartbeat_request)
 	match_heartbeat_request.request_completed.connect(_on_match_heartbeat_request_request_completed)
 
-	add_child(left_match_request)
-	left_match_request.request_completed.connect(_on_left_match_request_request_completed)
-
 	add_child(joined_match_request)
 	joined_match_request.request_completed.connect(_on_joined_match_request_request_completed)
 
@@ -70,7 +68,7 @@ func _process(_delta: float) -> void:
 
 func queue_for_match():
 	if not queued:
-		var url = server_url + "/matchmaking/queue"
+		var url = server_url + "matchmaking/queue"
 		
 		var headers = ["Content-Type: application/json"]
 		var body = JSON.stringify({"sessionToken": Local.session_token})
@@ -109,13 +107,13 @@ func _on_status_update_request_request_completed(_result, response_code, _header
 		print("Failed to get matchmaking status, response code: %d" % response_code)
 
 func _on_status_timer_timeout() -> void:
-	var url = server_url + "/matchmaking/status"
+	var url = server_url + "matchmaking/status"
 	var headers = ["Content-Type: application/json"]
 	var body = JSON.stringify({"sessionToken": Local.session_token, "ticketId": Local.matchmaking_ticket})
 	status_update_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func party_invite(player_id: String):
-	var url = server_url + "/matchmaking/party/invite"
+	var url = server_url + "matchmaking/party/invite"
 	var headers = ["Content-Type: application/json"]
 	var body = JSON.stringify({"sessionToken": Local.session_token, "playerId": player_id})
 	party_invite_request.request(url, headers, HTTPClient.METHOD_POST, body)
@@ -128,7 +126,7 @@ func _on_party_invite_request_request_completed(_result, response_code, _headers
 
 func party_status():
 	var encoded_session_token = Local.session_token.uri_encode()
-	var url = server_url + "/matchmaking/party/status?sessionToken=" + encoded_session_token
+	var url = server_url + "matchmaking/party/status?sessionToken=" + encoded_session_token
 	party_status_request.request(url, [], HTTPClient.METHOD_GET)
 
 func _on_party_status_request_request_completed(_result, response_code, _headers, _body) -> void:
@@ -158,7 +156,7 @@ func _on_party_status_request_request_completed(_result, response_code, _headers
 		print("Failed to retrieve party status, response code: %d" % response_code)
 
 func party_leave():
-	var url = server_url + "/matchmaking/party/leave"
+	var url = server_url + "matchmaking/party/leave"
 	var headers = ["Content-Type: application/json"]
 	var body = JSON.stringify({"sessionToken": Local.session_token})
 	party_leave_request.request(url, headers, HTTPClient.METHOD_POST, body)
@@ -170,7 +168,7 @@ func _on_party_leave_request_request_completed(_result, response_code, _headers,
 		print("Failed to leave party, response code: %d" % response_code)
 
 func party_response(invite_id: String, accept: bool):
-	var url = server_url + "/matchmaking/party/respond"
+	var url = server_url + "matchmaking/party/respond"
 	var headers = ["Content-Type: application/json"]
 	var body = JSON.stringify({"sessionToken": Local.session_token, "inviteId": invite_id, "accept": accept})
 	party_response_request.request(url, headers, HTTPClient.METHOD_POST, body)
@@ -182,7 +180,7 @@ func _on_party_response_request_request_completed(_result, response_code, _heade
 		print("Failed to send party response, response code: %d" % response_code)
 
 func send_match_heartbeat():
-	var url = server_url + "/matchmaking/heartbeat"
+	var url = server_url + "matchmaking/heartbeat"
 	var headers = ["Content-Type: application/json"]
 	var body = JSON.stringify({"sessionToken": Local.session_token})
 	match_heartbeat_request.request(url, headers, HTTPClient.METHOD_POST, body)
@@ -194,19 +192,23 @@ func _on_match_heartbeat_request_request_completed(_result, response_code, _head
 		print("Failed to send match heartbeat, response code: %d" % response_code)
 
 func leave_match():
-	var url = server_url + "/matchmaking/left"
+	var url = server_url + "matchmaking/left"
 	var headers = ["Content-Type: application/json"]
 	var body = JSON.stringify({"sessionToken": Local.session_token})
-	left_match_request.request(url, headers, HTTPClient.METHOD_POST, body)
-
-func _on_left_match_request_request_completed(_result, response_code, _headers, _body) -> void:
-	if response_code >= 200 and response_code < 300:
-		print("Left match successfully")
-	else:
-		print("Failed to leave match, response code: %d" % response_code)
+	# Attach to root so the request survives scene changes (e.g. _exit_tree or change_scene_to_file)
+	var req := HTTPRequest.new()
+	get_tree().root.add_child(req)
+	req.request_completed.connect(func(_result, response_code, _headers, _body):
+		if response_code >= 200 and response_code < 300:
+			print("Left match successfully")
+		else:
+			print("Failed to leave match, response code: %d" % response_code)
+		req.queue_free()
+	)
+	req.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func joined_match():
-	var url = server_url + "/matchmaking/joined"
+	var url = server_url + "matchmaking/joined"
 	var headers = ["Content-Type: application/json"]
 	var body = JSON.stringify({"sessionToken": Local.session_token})
 	joined_match_request.request(url, headers, HTTPClient.METHOD_POST, body)
@@ -218,7 +220,7 @@ func _on_joined_match_request_request_completed(_result, response_code, _headers
 		print("Failed to join match, response code: %d" % response_code)
 
 func match_ended():
-	var url = server_url + "/matchmaking/match-ended"
+	var url = server_url + "matchmaking/match/ended"
 	var headers = ["Content-Type: application/json"]
 	var body = JSON.stringify({"serverToken": Local.server_token})
 	match_ended_request.request(url, headers, HTTPClient.METHOD_POST, body)
@@ -231,7 +233,8 @@ func _on_match_ended_request_request_completed(_result, response_code, _headers,
 		print("Failed to report match ended, response code: %d" % response_code)
 
 func register_server(server_name: String, registration_token: String):
-	var url = server_url + "/matchmaking/register-server"
+	var url = server_url + "matchmaking/server/register"
+	print("[SERVER] URL for server registration: ", url)
 	var headers = ["Content-Type: application/json"]
 	var body = JSON.stringify({"sessionToken": Local.session_token, "serverName": server_name, "registrationKey": registration_token})
 	register_server_request.request(url, headers, HTTPClient.METHOD_POST, body)

@@ -16,18 +16,9 @@ height = 1.269043
 [sub_resource type="SphereShape3D" id="SphereShape3D_4ucha"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_psm2p"]
-properties/0/path = NodePath(".:position")
+properties/0/path = NodePath(".:current_eqipped_key")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:rotation")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:current_eqipped_key")
-properties/2/spawn = true
-properties/2/replication_mode = 1
-properties/3/path = NodePath("neck:rotation")
-properties/3/spawn = true
-properties/3/replication_mode = 1
 
 [sub_resource type="BoxMesh" id="BoxMesh_6yuvp"]
 size = Vector3(0.3, 0.3, 0.3)

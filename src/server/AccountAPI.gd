@@ -14,7 +14,8 @@ signal account_info_updated
 @onready var friend_request: HTTPRequest = HTTPRequest.new()
 @onready var accept_friend_req_request: HTTPRequest = HTTPRequest.new()
 
-var server_url: String = "http://209.38.77.226:8000/"
+#var server_url: String = "http://209.38.77.226:8000/"
+var server_url: String = "http://192.168.1.235:8000/"
 
 func _ready():
 	add_child(newCharacterRequest)

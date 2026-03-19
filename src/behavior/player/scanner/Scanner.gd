@@ -19,6 +19,15 @@ func _detect():
 	if Global.chipsites.size() < 1:
 		return -1.0
 
+	# Prune stale references so scene changes or freed sites do not crash scanning.
+	for i in range(Global.chipsites.size() - 1, -1, -1):
+		var site_ref = Global.chipsites[i]
+		if site_ref == null or not is_instance_valid(site_ref):
+			Global.chipsites.remove_at(i)
+
+	if Global.chipsites.size() < 1:
+		return -1.0
+
 	for site in Global.chipsites:
 		
 		var x = site.global_transform.origin.x - global_transform.origin.x

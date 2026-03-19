@@ -15,6 +15,10 @@ var debug_red = preload("res://debug/materials/debug_red.tres")
 func _ready():
 	Global.add_chipsite(self)
 
+func _exit_tree() -> void:
+	if Global != null:
+		Global.remove_chipsite(self)
+
 # Start extraction of resource
 func interact(other):
 	if not extracted:
@@ -26,12 +30,12 @@ func interact(other):
 		Local.HUD.get_child(1).set_time_value((obtain_time / OBTAIN_TIME_TARGET) * 100)
 			
 
-func _add_interaction(node: Node):
+func _add_interaction(_node: Node):
 	if not extracted:
 		Local.HUD.get_child(1).set_time_value((obtain_time / OBTAIN_TIME_TARGET) * 100)
 		Local.HUD.get_child(1).set_visible(true)
 
-func _remove_interaction(node: Node):
+func _remove_interaction(_node: Node):
 	Local.HUD.get_child(1).set_visible(false)
 
 @rpc("call_local")

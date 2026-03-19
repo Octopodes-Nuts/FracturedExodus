@@ -31,8 +31,7 @@ func _interact(node: Node):
 	extracts[node] = EXTRACT_TIME
 	#print(extracts)
 
-func _add_interaction(node: Node):
-	if not node.is_multiplayer_authority(): return
+func _add_interaction(_node: Node):
 	Local.HUD.get_child(1).set_visible(true)
 
 func _remove_interaction(node: Node):

@@ -8,6 +8,7 @@ extends WorldEnvironment
 @onready var Global = get_node('/root/Global')
 @onready var Game = $"./Game"
 @onready var MatchmakingAPI = $MatchmakingApi
+@onready var PlayerSpawner: MultiplayerSpawner = $PlayerSpawner
 
 @onready var heartbeat_timer: Timer = Timer.new()
 var heartbeat_interval: float = 15.0
@@ -24,6 +25,29 @@ signal player_added(id: String)
 signal match_left(reason: String)
 
 var _match_left_reported: bool = false
+
+func _collect_valid_chipsite_spawns() -> Array[Node3D]:
+	var valid_chipsite_spawns: Array[Node3D] = []
+	for spawn in Global.chipsite_spawns:
+		if not is_instance_valid(spawn):
+			continue
+		if not (spawn is Node3D):
+			continue
+		if not spawn.is_inside_tree():
+			continue
+		valid_chipsite_spawns.append(spawn)
+	return valid_chipsite_spawns
+
+func _spawn_custom_networked_node(data: Variant) -> Node:
+	if not (data is Dictionary):
+		return null
+	if String(data.get("kind", "")) != "chipsite":
+		return null
+	var chipsite := Chipsite.instantiate()
+	var spawn_position: Vector3 = data.get("position", Vector3.ZERO)
+	# This runs before the node is added to the tree, so defer global placement.
+	chipsite.set_deferred("global_position", spawn_position)
+	return chipsite
 
 func _setup_as_server(context: String = ""):
 	var err = enet_peer.create_server(PORT)
@@ -43,6 +67,7 @@ func _ready():
 	randomize()
 	Global.map_root = self
 	Global.bullet_spawn = $Bullet
+	PlayerSpawner.spawn_function = Callable(self, "_spawn_custom_networked_node")
 	connect("character_update", Global.emit_character_update)
 	match_left.connect(_on_match_left)
 
@@ -54,9 +79,11 @@ func _ready():
 		multiplayer.connection_failed.connect(_on_connection_failed)
 		#enet_peer.create_client("34.55.251.69", PORT)
 		print("Attempting to connect to server at %s:%d" % [Local.ip, Local.port])
-		var client_err = enet_peer.create_client("209.38.77.226", Local.port)
+		# var client_err = enet_peer.create_client("209.38.77.226", Local.port)
+		var  client_err = enet_peer.create_client("192.168.1.235", Local.port)
 		if client_err == OK:
 			multiplayer.multiplayer_peer = enet_peer
+			MatchmakingAPI.joined_match()
 			print("[Map] Client connection request sent to localhost:%d" % [Local.port])
 			heartbeat_timer.wait_time = heartbeat_interval
 			heartbeat_timer.timeout.connect(_send_heartbeat)
@@ -68,9 +95,36 @@ func _ready():
 			_setup_as_server(" (client creation fallback)")
 			
 	
-	var chipsite = Chipsite.instantiate()
-	chipsite.transform.origin = Global.chipsite_spawns[randi() % len(Global.chipsite_spawns)].transform.origin
-	$Spawns.add_child(chipsite)
+	if Global.chipsite_spawns.is_empty():
+		push_warning("[Map] No ChipsiteSpawn nodes registered. Skipping chipsite spawn.")
+		return
+
+	var valid_chipsite_spawns: Array[Node3D] = _collect_valid_chipsite_spawns()
+
+	if valid_chipsite_spawns.is_empty():
+		await get_tree().process_frame
+		valid_chipsite_spawns = _collect_valid_chipsite_spawns()
+		if valid_chipsite_spawns.is_empty():
+			push_warning("[Map] ChipsiteSpawn nodes exist but none are inside tree yet. Skipping chipsite spawn.")
+			return
+
+	# Keep global registry clean so future selections don't hit stale references.
+	Global.chipsite_spawns = valid_chipsite_spawns
+
+	var selected_chipsite_spawn: Node3D = valid_chipsite_spawns[randi() % len(valid_chipsite_spawns)]
+	print("[MAP][CHIPSITE SPAWN] ", selected_chipsite_spawn.global_position)
+	var chipsite_spawn_position: Vector3 = selected_chipsite_spawn.global_position
+	if chipsite_spawn_position.is_equal_approx(Vector3.ZERO):
+		push_warning("[Map] ChipsiteSpawn is at world origin. Move the ChipsiteSpawn node in the map scene.")
+
+	if multiplayer.is_server():
+		var chipsite_payload := {
+			"kind": "chipsite",
+			"position": chipsite_spawn_position
+		}
+		var spawned_chipsite := PlayerSpawner.spawn(chipsite_payload)
+		if spawned_chipsite is Node3D:
+			spawned_chipsite.global_position = chipsite_spawn_position
 
 func _on_connection():
 	pass

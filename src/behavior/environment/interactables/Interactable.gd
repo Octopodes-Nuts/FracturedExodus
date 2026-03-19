@@ -29,15 +29,24 @@ func _ui_report():
 func _local_physics_step(_delta):
 	pass
 
+func _is_local_player_body(body: Node) -> bool:
+	if body == null:
+		return false
+	if not body.has_method("_is_local_player"):
+		return false
+	return body._is_local_player()
+
 func _on_interactable_body_entered(body:Node):
-	if not body.is_multiplayer_authority(): return
+	if not _is_local_player_body(body):
+		return
 	if body.has_method('register_interaction'):
 		_add_interaction(body)
 		body.register_interaction(self)
 		Local.HUD.get_child(2).display_text(null, display_text)
 
 func _on_interactable_body_exited(body):
-	if not body.is_multiplayer_authority(): return
+	if not _is_local_player_body(body):
+		return
 	if body.has_method('remove_interaction'):
 		body.remove_interaction(self)
 		_remove_interaction(body)

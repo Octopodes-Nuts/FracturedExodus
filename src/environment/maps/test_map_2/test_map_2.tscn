@@ -256,37 +256,37 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.35678, 36.4629, 197.521)
 [node name="Spawns" type="Node" parent="NavigationRegion3D/Terrain3D" unique_id=897214964]
 
 [node name="Spawn" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=316956274 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -230.458, 7.4808, 49.7773)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -230.458, 8.4664955, 49.7773)
 
 [node name="Spawn2" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=988414263 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 227.597, 6.75896, 19.8544)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 227.597, 7.350082, 19.8544)
 
 [node name="EntenteSpawns" type="Node" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=1951043550]
 
 [node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns/EntenteSpawns" unique_id=1479352653 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 134.60751, 4.8514376, -196.80034)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 133.9272, 6.237226, -196.80034)
 faction = 1
 
 [node name="Spawn6" parent="NavigationRegion3D/Terrain3D/Spawns/EntenteSpawns" unique_id=450104313 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 137.95819, 4.8514376, -196.80034)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 137.95819, 5.692723, -196.80034)
 faction = 1
 
 [node name="Spawn7" parent="NavigationRegion3D/Terrain3D/Spawns/EntenteSpawns" unique_id=1956070949 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 138.84593, 4.2277603, -191.37755)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 138.84593, 5.366111, -191.37755)
 faction = 1
 
 [node name="Spawn8" parent="NavigationRegion3D/Terrain3D/Spawns/EntenteSpawns" unique_id=828159389 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.58823, 4.486186, -191.37755)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.58823, 5.1565022, -191.37755)
 faction = 1
 
 [node name="FreeAgentSpawns" type="Node" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=1824688086]
 
 [node name="Spawn3" parent="NavigationRegion3D/Terrain3D/Spawns/FreeAgentSpawns" unique_id=224702857 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 196.618, 6.4103, 144.90846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 196.618, 7.679627, 144.90846)
 faction = 3
 
 [node name="Spawn4" parent="NavigationRegion3D/Terrain3D/Spawns/FreeAgentSpawns" unique_id=705631738 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 202.91621, 6.4103, 144.90846)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 202.91621, 6.63376, 144.90846)
 faction = 3
 
 [node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns/FreeAgentSpawns" unique_id=1623199168 instance=ExtResource("3_aqnjy")]
@@ -294,25 +294,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 202.91621, 6.4103, 152.63547)
 faction = 3
 
 [node name="Spawn6" parent="NavigationRegion3D/Terrain3D/Spawns/FreeAgentSpawns" unique_id=1411299684 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 197.77507, 5.9244995, 151.25711)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 197.77507, 6.850958, 151.25711)
 faction = 3
 
 [node name="EmpireSpawns" type="Node" parent="NavigationRegion3D/Terrain3D/Spawns" unique_id=681632820]
 
 [node name="Spawn4" parent="NavigationRegion3D/Terrain3D/Spawns/EmpireSpawns" unique_id=703774187 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.5465, 6.01037, 256.895)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.5465, 6.544251, 256.895)
 faction = 2
 
 [node name="Spawn5" parent="NavigationRegion3D/Terrain3D/Spawns/EmpireSpawns" unique_id=1492860271 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.5465, 6.01037, 262.63934)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.5465, 6.123478, 264.48346)
 faction = 2
 
 [node name="Spawn6" parent="NavigationRegion3D/Terrain3D/Spawns/EmpireSpawns" unique_id=898135829 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.214565, 6.01037, 262.63934)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.214565, 6.4159045, 262.63934)
 faction = 2
 
 [node name="Spawn7" parent="NavigationRegion3D/Terrain3D/Spawns/EmpireSpawns" unique_id=1556386126 instance=ExtResource("3_aqnjy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.214565, 6.01037, 258.68857)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.214565, 6.7254815, 258.68857)
 faction = 2
 
 [node name="scanner_site" parent="NavigationRegion3D/Terrain3D" unique_id=616897090 instance=ExtResource("18_ulnwu")]
@@ -336,7 +336,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.8303, 3.7542, 260.524)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.89, 3.84746, -194.362)
 
 [node name="ChipsiteSpawn" parent="." unique_id=1665953061 instance=ExtResource("19_6nkx3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -152.571, 20.0789, 55.1323)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -152.571, 20.145874, 55.1323)
 
 [node name="water" type="MeshInstance3D" parent="." unique_id=635221398]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2335582, 3.3977458, 0.16769123)
@@ -537,7 +537,7 @@ script = SubResource("GDScript_6nkx3")
 [node name="Bullet" type="Node" parent="." unique_id=430538244]
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=952964163]
-_spawnable_scenes = PackedStringArray("uid://yd8x8go2gbvp", "uid://dcudvv4sp7mpc")
+_spawnable_scenes = PackedStringArray("uid://dcudvv4sp7mpc")
 spawn_path = NodePath("../Spawns")
 
 [node name="scanner_site" parent="." unique_id=628423514 instance=ExtResource("18_ulnwu")]

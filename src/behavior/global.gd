@@ -26,6 +26,7 @@ var spawn_parent: Node
 var bullet_spawn: Node
 
 signal character_update(ids: Array)
+
 # Deal with adding and removing chipsites from active list
 # Basically just dealing with addtl context that may become
 # clearer down the line
@@ -33,7 +34,7 @@ func add_chipsite(chipsite: Node3D):
 	chipsites.append(chipsite)
 
 func remove_chipsite(chipsite: Node):
-	pass
+	chipsites.erase(chipsite)
 
 func add_spawn(spawn: Spawn):
 	match spawn.faction:

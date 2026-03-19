@@ -10,6 +10,9 @@ class_name DefaultController
 
 var DEFAULT_LERP = 20.0
 const RECONCILE_DISTANCE_SQUARED = 0.0004
+const REMOTE_POSITION_LERP = 14.0
+const REMOTE_ROTATION_LERP = 18.0
+const REMOTE_EXTRAPOLATION_SEC = 0.03
 
 @onready var WeaponRegister = get_node('/root/WeaponRegister')
 @onready var Settings = get_node('/root/Settings')
@@ -76,6 +79,11 @@ var net_pitch: float = 0.0
 var input_sequence: int = 0
 var last_server_sequence: int = -1
 var pending_inputs: Array = []
+var has_remote_snapshot: bool = false
+var remote_target_position: Vector3 = Vector3.ZERO
+var remote_target_yaw: float = 0.0
+var remote_target_pitch: float = 0.0
+var server_spawn_assigned_by_faction: bool = false
 
 @onready var camera = $neck/camera_head
 @onready var neck = $neck
@@ -86,6 +94,7 @@ var pending_inputs: Array = []
 @onready var ground_check_2 = $ground_check_2
 @onready var ground_check_3 = $ground_check_3
 @onready var ground_check_4 = $ground_check_4
+@onready var multiplayer_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
 
 
 var character: Character
@@ -102,8 +111,34 @@ func _apply_look_rotation(yaw: float, pitch: float) -> void:
 	rotation.y = yaw
 	neck.rotation.x = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
 
+func _update_remote_proxy(dt: float) -> void:
+	if multiplayer.is_server() or not has_remote_snapshot:
+		return
+	var pos_alpha := clampf(REMOTE_POSITION_LERP * dt, 0.0, 1.0)
+	var rot_alpha := clampf(REMOTE_ROTATION_LERP * dt, 0.0, 1.0)
+	global_position = global_position.lerp(remote_target_position, pos_alpha)
+	rotation.y = lerp_angle(rotation.y, remote_target_yaw, rot_alpha)
+	neck.rotation.x = lerp(neck.rotation.x, remote_target_pitch, rot_alpha)
+
 func _enter_tree() -> void:
 	set_multiplayer_authority(1)
+
+func _assign_server_spawn_from_character_faction() -> bool:
+	if not multiplayer.is_server():
+		return false
+	if not Global.character_data.has(name):
+		return false
+	var player_payload: Variant = Global.character_data[name]
+	if not (player_payload is Dictionary):
+		return false
+	if not player_payload.has("faction"):
+		return false
+	var spawn = Global.get_spawn(int(player_payload["faction"]))
+	if spawn == null:
+		return false
+	transform.origin = spawn.transform.origin
+	global_position = spawn.global_position
+	return true
 
 #This should be changed to be more global
 func _ready():
@@ -112,13 +147,17 @@ func _ready():
 	res_sphere.set_player(self)
 	
 	if multiplayer.is_server():
-		var faction: int = Factions.DEFAULT
-		if Global.character_data.has(name) and Global.character_data[name].has("faction"):
-			faction = Global.character_data[name]["faction"]
-		var spawn = Global.get_spawn(faction)
-		if spawn != null:
-			transform.origin = spawn.transform.origin
-			global_position = spawn.global_position
+		server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
+		if not server_spawn_assigned_by_faction:
+			# Keep players out of origin while waiting for authoritative faction payload.
+			var fallback_spawn = Global.get_spawn(Factions.DEFAULT)
+			if fallback_spawn != null:
+				transform.origin = fallback_spawn.transform.origin
+				global_position = fallback_spawn.global_position
+		# Prevent owner transform replication from fighting local prediction.
+		var owner_peer_id := str(name).to_int()
+		if owner_peer_id > 1:
+			multiplayer_sync.set_visibility_for(owner_peer_id, false)
 	
 	if not _is_local_player(): return
 	
@@ -162,6 +201,8 @@ func _set_current_health(updated_health: float):
 func char_serv_update(ids: Array):
 	
 	if name in ids:
+		if multiplayer.is_server() and not server_spawn_assigned_by_faction:
+			server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
 		load_from_payload(Global.character_data[name])
 
 
@@ -201,7 +242,9 @@ func ground_check():
 
 func _process(dt: float):
 	self.delta = dt
-	if not _is_local_player(): return
+	if not _is_local_player():
+		_update_remote_proxy(dt)
+		return
 	# set cycle time ? so that you can't just keep
 	# shifting weapons but maybe not
 	if Input.is_action_just_pressed("primary_weapon") and\
@@ -409,19 +452,25 @@ func reconcile_movement(sequence: int, state: Dictionary):
 		return
 	var authoritative_position: Vector3 = state["position"]
 	var needs_reconcile := global_position.distance_squared_to(authoritative_position) > RECONCILE_DISTANCE_SQUARED
-	_restore_authoritative_state(state)
 	_discard_acknowledged_inputs(sequence)
-	if needs_reconcile and not pending_inputs.is_empty():
+	if not needs_reconcile:
+		return
+	_restore_authoritative_state(state)
+	if not pending_inputs.is_empty():
 		_replay_pending_inputs()
-	elif pending_inputs.is_empty():
-		_apply_input_packet({
-			"move_x": 0.0,
-			"move_y": 0.0,
-			"wants_sprint": false,
-			"jump_pressed": false,
-			"yaw": net_yaw,
-			"pitch": net_pitch,
-		})
+
+@rpc("authority", "unreliable_ordered")
+func receive_remote_snapshot(snapshot_position: Vector3, yaw: float, pitch: float, snapshot_velocity: Vector3):
+	if multiplayer.is_server() or _is_local_player():
+		return
+	remote_target_position = snapshot_position + snapshot_velocity * REMOTE_EXTRAPOLATION_SEC
+	remote_target_yaw = yaw
+	remote_target_pitch = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+	if not has_remote_snapshot:
+		has_remote_snapshot = true
+		global_position = remote_target_position
+		rotation.y = remote_target_yaw
+		neck.rotation.x = remote_target_pitch
 
 enum WALK_STATES {
 	WALK,
@@ -473,6 +522,7 @@ func _physics_process(dt: float):
 		return
 
 	_simulate_movement(dt, true, false)
+	receive_remote_snapshot.rpc(global_position, rotation.y, neck.rotation.x, horizantal_velocity)
 	if not _is_local_player() and last_server_sequence >= 0:
 		reconcile_movement.rpc_id(str(name).to_int(), last_server_sequence, _create_authoritative_state())
 
