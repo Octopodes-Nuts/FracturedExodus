@@ -21,7 +21,9 @@ extends Control
 @onready var account_info_update_timer: Timer = Timer.new()
 @onready var party_update_timer: Timer = Timer.new()
 var account_info_update_interval: float = 5.0
-var party_update_interval: float = 5.0
+var party_update_interval: float = 1.0
+
+var queued = false
 
 # this server code will likely be moved
 var active_register = 1
@@ -34,6 +36,9 @@ func _ready():
 			print("Error getting to file")
 			
 	faction_select.select(0)
+	_on_option_button_item_selected(0)
+	account_api.set_active_character()
+	Local.character_updated.connect(account_api.set_active_character)
 	social_panel.account_api = account_api
 	social_panel.matchmaking_api = matchmaking_api
 	add_child(account_info_update_timer)
@@ -56,9 +61,28 @@ func _ready():
 	social_panel.add_friend_button_pressed.connect(_on_social_panel_add_friend_button_pressed)
 	friend_request_panel.friend_request_ready.connect(_on_friend_request_panel_ready)
 	account_api.get_account_info_update()
+	matchmaking_api.party_faction_updated.connect(_set_current_faction)
  
 	for character in Local.characters.characters.keys():
 		print("Character: ", character, " Def: ", Local.characters.characters[character])
+
+
+func _process(_delta: float) -> void:
+	faction_select.disabled = not Local.party_leader and len(Local.party_members) > 1
+	queue_button.disabled = not Local.party_leader and queued
+
+func _set_current_faction(faction: int):
+	if not Local.party_leader:
+		match faction:
+			Factions.ENTENTE:
+				faction_select.select(0)
+				_on_option_button_item_selected(0)
+			Factions.EMPIRE:
+				faction_select.select(1)
+				_on_option_button_item_selected(1)
+			Factions.FREE_AGENTS:
+				faction_select.select(2)
+				_on_option_button_item_selected(2)
 
 
 func match_found(port: int, ip: String):
@@ -118,6 +142,7 @@ func _on_matchmaking_status_changed(status: String) -> void:
 func _on_ready_button_pressed() -> void:
 	queue_button.disabled = true
 	matchmaking_api.queue_for_match()
+	queued = true
 
 
 func _on_account_api_account_info_updated() -> void:
@@ -143,8 +168,29 @@ func _on_option_button_item_selected(index: int) -> void:
 	match index:
 		0:
 			Local.selected_faction = Factions.ENTENTE
+			if Local.selected_character_def and Local.selected_character_def.Faction != Factions.ENTENTE:
+				if len(Local.entente_characters.characters) != 0:
+					Local.selected_character_def = Local.entente_characters.characters.values()[0]
+					Local.emit_character_updated()
+				else:
+					Local.selected_character_def = null
+				character_display.rendered = false
 		1:
 			Local.selected_faction = Factions.EMPIRE
+			if Local.selected_character_def and Local.selected_character_def.Faction != Factions.EMPIRE:
+				if len(Local.empire_characters.characters) != 0:
+					Local.selected_character_def = Local.empire_characters.characters.values()[0]
+					Local.emit_character_updated()
+				else:
+					Local.selected_character_def = null
+				character_display.rendered = false
 		2:
 			Local.selected_faction = Factions.FREE_AGENTS
+			if Local.selected_character_def and Local.selected_character_def.Faction != Factions.FREE_AGENTS:
+				if len(Local.free_agent_characters.characters) != 0:
+					Local.selected_character_def = Local.free_agent_characters.characters.values()[0]
+					Local.emit_character_updated()
+				else:
+					Local.selected_character_def = null
+				character_display.rendered = false
 	character_select.render()

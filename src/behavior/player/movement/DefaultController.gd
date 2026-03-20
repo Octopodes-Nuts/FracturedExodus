@@ -8,6 +8,10 @@ extends CharacterBody3D
 
 class_name DefaultController
 
+var input_handler = preload("res://behavior/player/movement/DefaultControllerInput.gd").new()
+var movement_handler = preload("res://behavior/player/movement/DefaultControllerMovement.gd").new()
+var health_handler = preload("res://behavior/player/movement/DefaultControllerHealth.gd").new()
+
 var DEFAULT_LERP = 20.0
 const RECONCILE_DISTANCE_SQUARED = 0.0004
 const REMOTE_POSITION_LERP = 14.0
@@ -112,13 +116,7 @@ func _apply_look_rotation(yaw: float, pitch: float) -> void:
 	neck.rotation.x = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
 
 func _update_remote_proxy(dt: float) -> void:
-	if multiplayer.is_server() or not has_remote_snapshot:
-		return
-	var pos_alpha := clampf(REMOTE_POSITION_LERP * dt, 0.0, 1.0)
-	var rot_alpha := clampf(REMOTE_ROTATION_LERP * dt, 0.0, 1.0)
-	global_position = global_position.lerp(remote_target_position, pos_alpha)
-	rotation.y = lerp_angle(rotation.y, remote_target_yaw, rot_alpha)
-	neck.rotation.x = lerp(neck.rotation.x, remote_target_pitch, rot_alpha)
+	movement_handler.update_remote_proxy(self, dt)
 
 func _enter_tree() -> void:
 	set_multiplayer_authority(1)
@@ -140,7 +138,7 @@ func _assign_server_spawn_from_character_faction() -> bool:
 	global_position = spawn.global_position
 	return true
 
-#This should be changed to be more global
+
 func _ready():
 	connect("character_update", Global.emit_character_update)
 	Global.connect("character_update", char_serv_update)
@@ -233,64 +231,10 @@ func _undo_ads(dt: float):
 		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * dt)
 
 func ground_check():
-
-	return ground_check_0.is_colliding() or \
-		   ground_check_1.is_colliding() or \
-		   ground_check_2.is_colliding() or \
-		   ground_check_3.is_colliding() or \
-		   ground_check_4.is_colliding()
+	return movement_handler.ground_check(self)
 
 func _process(dt: float):
-	self.delta = dt
-	if not _is_local_player():
-		_update_remote_proxy(dt)
-		return
-	# set cycle time ? so that you can't just keep
-	# shifting weapons but maybe not
-	if Input.is_action_just_pressed("primary_weapon") and\
-			Local.input_active:
-		swap_equipped_from_index(0, true)
-	elif Input.is_action_just_pressed("secondary_weapon") and\
-			Local.input_active:
-		swap_equipped_from_index(1, true)
-	elif Input.is_action_just_pressed("tertiary_weapon") and\
-			Local.input_active:
-		swap_equipped_from_index(2, true)
-	elif Input.is_action_just_pressed("medpack") and\
-		Local.input_active:
-		swap_equipped_from_index(3, true)
-	elif Input.is_action_just_pressed("equipment_1") and\
-		Local.input_active and character.equipment_1.equipment_instance != null:
-			swap_equipped_from_index(4, true)
-	elif Input.is_action_just_pressed("equipment_2") and\
-		Local.input_active and character.equipment_2.equipment_instance != null:
-			swap_equipped_from_index(5, true)
-	elif Input.is_action_just_pressed("use_scanner") and character.has_scanner:
-		if Local.input_active and character.scanner != null:
-			swap_equipped_from_index(6, true)
-	if Input.is_action_pressed("ads") and\
-			Local.input_active:
-		_ads(dt)
-	else:
-		_undo_ads(dt)
-	if Input.is_action_pressed("ads") and\
-			Local.input_active and\
-			active_equipable is Weapon and\
-			is_on_floor():
-		active_equipable.ads = true
-	if Input.is_action_just_released("ads") and\
-			Local.input_active and\
-			active_equipable is Weapon or not is_on_floor():
-		active_equipable.ads = false
-	if Input.is_action_just_pressed("exit"):
-		if Local.input_active:
-			Local.input_active = false
-			self.add_child(escape_menu)
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		else:
-			Local.input_active = true
-			self.remove_child(escape_menu)
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	input_handler.handle_process(self, dt)
 
 
 # @rpc("call_local", "any_peer")
@@ -338,139 +282,52 @@ func update_equipment():
 	]
 
 func _input(event):
-	if not _is_local_player() or current_health <= 0: return
-	if Local.input_active:
-		if event is InputEventMouseMotion:
-			net_yaw += deg_to_rad(-event.relative.x * mouse_sensitivity)
-			net_pitch += deg_to_rad(-event.relative.y * mouse_sensitivity)
-			net_pitch = clamp(net_pitch, deg_to_rad(-89), deg_to_rad(89))
-			_apply_look_rotation(net_yaw, net_pitch)
+	input_handler.handle_input_event(self, event)
 
 func _set_movement_input(move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float) -> void:
-	net_move_x = clamp(move_x, -1.0, 1.0)
-	net_move_y = clamp(move_y, -1.0, 1.0)
-	net_wants_sprint = wants_sprint
-	if jump_pressed:
-		net_jump_pressed = true
-	net_yaw = yaw
-	net_pitch = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+	movement_handler.set_movement_input(self, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
+
+func _clear_movement_state() -> void:
+	movement_handler.clear_movement_state(self)
+
+func _update_local_health_ui() -> void:
+	health_handler.update_local_health_ui(self)
+
+func _set_local_death_ui(dead: bool) -> void:
+	health_handler.set_local_death_ui(self, dead)
 
 func _build_local_input(dt: float) -> Dictionary:
-	var move_x: float = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	var move_y: float = Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
-	if not Local.input_active:
-		move_x = 0.0
-		move_y = 0.0
-	var wants_sprint: bool = Local.input_active and Input.is_action_pressed("sprint")
-	var jump_pressed: bool = Local.input_active and Input.is_action_just_pressed("jump")
-	return {
-		"seq": input_sequence,
-		"dt": dt,
-		"move_x": move_x,
-		"move_y": move_y,
-		"wants_sprint": wants_sprint,
-		"jump_pressed": jump_pressed,
-		"yaw": net_yaw,
-		"pitch": net_pitch,
-	}
+	return movement_handler.build_local_input(self, dt)
 
 func _apply_input_packet(input_packet: Dictionary) -> void:
-	_set_movement_input(
-		input_packet["move_x"],
-		input_packet["move_y"],
-		input_packet["wants_sprint"],
-		input_packet["jump_pressed"],
-		input_packet["yaw"],
-		input_packet["pitch"]
-	)
+	movement_handler.apply_input_packet(self, input_packet)
 
 func _capture_and_submit_input(dt: float) -> void:
-	var input_packet := _build_local_input(dt)
-	input_sequence += 1
-	input_packet["seq"] = input_sequence
-	_apply_input_packet(input_packet)
-
-	if multiplayer.is_server():
-		last_server_sequence = input_packet["seq"]
-	else:
-		pending_inputs.append(input_packet)
-		submit_movement_input.rpc_id(
-			1,
-			input_packet["seq"],
-			input_packet["move_x"],
-			input_packet["move_y"],
-			input_packet["wants_sprint"],
-			input_packet["jump_pressed"],
-			input_packet["yaw"],
-			input_packet["pitch"]
-		)
+	movement_handler.capture_and_submit_input(self, dt)
 
 @rpc("any_peer", "unreliable_ordered")
 func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float):
-	if not multiplayer.is_server():
-		return
-	var sender_id := multiplayer.get_remote_sender_id()
-	if sender_id != str(name).to_int():
-		return
-	last_server_sequence = seq
-	_set_movement_input(move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
+	movement_handler.apply_network_input(self, seq, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
 
 func _create_authoritative_state() -> Dictionary:
-	return {
-		"position": global_position,
-		"horizontal_velocity": horizantal_velocity,
-		"gravity_direction": gravity_direction,
-		"yaw": rotation.y,
-		"pitch": neck.rotation.x,
-	}
+	return movement_handler.create_authoritative_state(self)
 
 func _restore_authoritative_state(state: Dictionary) -> void:
-	global_position = state["position"]
-	horizantal_velocity = state["horizontal_velocity"]
-	gravity_direction = state["gravity_direction"]
-	net_yaw = state["yaw"]
-	net_pitch = state["pitch"]
-	_apply_look_rotation(net_yaw, net_pitch)
+	movement_handler.restore_authoritative_state(self, state)
 
 func _discard_acknowledged_inputs(sequence: int) -> void:
-	if pending_inputs.is_empty():
-		return
-	var remaining_inputs: Array = []
-	for input_packet in pending_inputs:
-		if input_packet["seq"] > sequence:
-			remaining_inputs.append(input_packet)
-	pending_inputs = remaining_inputs
+	movement_handler.discard_acknowledged_inputs(self, sequence)
 
 func _replay_pending_inputs() -> void:
-	for input_packet in pending_inputs:
-		_apply_input_packet(input_packet)
-		_simulate_movement(input_packet["dt"], false, false)
+	movement_handler.replay_pending_inputs(self)
 
 @rpc("authority", "unreliable_ordered")
 func reconcile_movement(sequence: int, state: Dictionary):
-	if multiplayer.is_server() or not _is_local_player():
-		return
-	var authoritative_position: Vector3 = state["position"]
-	var needs_reconcile := global_position.distance_squared_to(authoritative_position) > RECONCILE_DISTANCE_SQUARED
-	_discard_acknowledged_inputs(sequence)
-	if not needs_reconcile:
-		return
-	_restore_authoritative_state(state)
-	if not pending_inputs.is_empty():
-		_replay_pending_inputs()
+	movement_handler.reconcile(self, sequence, state)
 
 @rpc("authority", "unreliable_ordered")
 func receive_remote_snapshot(snapshot_position: Vector3, yaw: float, pitch: float, snapshot_velocity: Vector3):
-	if multiplayer.is_server() or _is_local_player():
-		return
-	remote_target_position = snapshot_position + snapshot_velocity * REMOTE_EXTRAPOLATION_SEC
-	remote_target_yaw = yaw
-	remote_target_pitch = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
-	if not has_remote_snapshot:
-		has_remote_snapshot = true
-		global_position = remote_target_position
-		rotation.y = remote_target_yaw
-		neck.rotation.x = remote_target_pitch
+	movement_handler.receive_remote_snapshot(self, snapshot_position, yaw, pitch, snapshot_velocity)
 
 enum WALK_STATES {
 	WALK,
@@ -479,129 +336,11 @@ enum WALK_STATES {
 }
 
 func _physics_process(dt: float):
-	if _is_local_player():
-		_capture_and_submit_input(dt)
-		if not multiplayer.is_server():
-			_simulate_movement(dt, false, true)
-
-	if _is_local_player() and current_health > 0:
-		if Input.is_action_pressed("interact") && current_interaction:
-			if current_interaction.has_method("interact"):
-				current_interaction.interact(self)
-				HUD.display_ammo(active_equipable.get_ammo())
-		
-		if  not active_equipable.continuous_usage and\
-			Input.is_action_just_pressed('fire') and\
-			Local.input_active:
-			if active_equipable.has_method("use"):
-				active_equipable.use(self)
-				HUD.display_ammo(active_equipable.get_ammo())
-		
-		if active_equipable.continuous_usage and\
-			Input.is_action_pressed("fire") and\
-			Local.input_active:
-			if not active_equipable.cool_down and\
-			 	active_equipable.has_method("use"):
-				active_equipable.use(self)
-				HUD.display_ammo(active_equipable.get_ammo())
-
-		if Input.is_action_just_pressed('reload') and\
-			Local.input_active:
-			if active_equipable.has_method("_reload"):
-				active_equipable._reload()
-				HUD.display_ammo(active_equipable.get_ammo())
-		
-		if Input.is_action_just_pressed("help"):
-			print("help")
-
-	if _is_local_player() and Input.is_action_just_pressed("help") and\
-		current_health <= 0 and not audio_player.playing:
-			call_help.rpc(name)
-
-	if not multiplayer.is_server():
-		return
-
-	_simulate_movement(dt, true, false)
-	receive_remote_snapshot.rpc(global_position, rotation.y, neck.rotation.x, horizantal_velocity)
-	if not _is_local_player() and last_server_sequence >= 0:
-		reconcile_movement.rpc_id(str(name).to_int(), last_server_sequence, _create_authoritative_state())
+	movement_handler.handle_physics(self, dt)
 
 
 func _simulate_movement(dt: float, replicate_walk_state: bool, play_walk_locally: bool) -> void:
-	var speed = 0.0
-	var accel = DEACCEL
-	var forward = false
-	
-	self.delta = dt
-	_apply_look_rotation(net_yaw, net_pitch)
-
-	direction = Vector3()
-
-	if ground_check():
-		full_contact = true
-	else:
-		full_contact = false
-		
-		
-	if not is_on_floor():
-		gravity_direction += Vector3.DOWN * gravity * dt
-	#elif is_on_floor() and full_contact:
-	#	gravity_direction = -get_floor_normal() * gravity
-	##	gravity_direction = -get_floor_normal()
-	
-	if current_health > 0:
-		if net_jump_pressed and is_on_floor() and full_contact:
-			gravity_direction = Vector3.UP * jump
-			net_jump_pressed = false
-	
-	var walk_state = WALK_STATES.STOP
-
-	if net_move_y < 0.0:
-		direction -= transform.basis.z
-		forward = true
-		walk_state = WALK_STATES.WALK
-	if net_move_y > 0.0:
-		forward = false
-		direction += transform.basis.z
-		walk_state = WALK_STATES.WALK
-	if net_move_x < 0.0:
-		direction -= transform.basis.x
-		walk_state = WALK_STATES.WALK
-	if net_move_x > 0.0:
-		direction += transform.basis.x
-		walk_state = WALK_STATES.WALK
-		
-	if direction != Vector3.ZERO:
-		if net_wants_sprint and forward:
-			speed = MAX_SPRINT
-			accel = SPRINT_ACCEL
-			walk_state = WALK_STATES.RUN
-		else:
-			speed = MAX_SPEED
-			accel = ACCEL
-			walk_state = WALK_STATES.WALK
-	
-	if not is_on_floor():
-		walk_state = WALK_STATES.STOP
-	
-	if replicate_walk_state:
-		play_walk.rpc(name, walk_state)
-	elif play_walk_locally:
-		play_walk(name, walk_state)
-
-	direction = direction.normalized()
-	horizantal_velocity = horizantal_velocity.lerp(
-		direction * speed, accel * dt)
-	movement.z = horizantal_velocity.z + gravity_direction.z
-	movement.x = horizantal_velocity.x + gravity_direction.x
-	movement.y = gravity_direction.y
-	
-	#warning-ignore:return_value_discarded
-	if current_health <= 0:
-		movement = movement * Vector3.UP
-	set_velocity(movement)
-	set_up_direction(Vector3.UP)
-	move_and_slide()
+	movement_handler.simulate(self, dt, replicate_walk_state, play_walk_locally)
 
 @rpc("call_local", "any_peer")
 func call_help(id):
@@ -710,18 +449,19 @@ func play_hit_noise(id):
 		audio_player.play()
 
 func hit(dmg: int):
-	_hit_local.rpc_id(name.to_int(), dmg)
-	play_hit_noise.rpc(name)
+	health_handler.handle_hit(self, dmg)
 
-@rpc("any_peer")
-func _hit_local(dmg: int):
-	current_health -= dmg
-	Local.HUD.health_slider.value = ( current_health / FULL_HEALTH ) * 100
-	if current_health <= 0:
-		Local.HUD.crosshair.visible = false
-		Local.HUD.death_text.visible = true
-		set_res_sphere(true)
-		set_res_sphere.rpc(true)
+
+@rpc("any_peer", "reliable")
+func _request_damage(dmg: int):
+	health_handler.request_damage(self, dmg)
+
+func _apply_authoritative_damage(dmg: int):
+	health_handler.apply_authoritative_damage(self, dmg)
+
+@rpc("authority", "reliable")
+func _sync_damage_feedback(updated_health: float):
+	health_handler.sync_damage_feedback(self, updated_health)
 
 # this will be an RPC
 func extract():
@@ -744,24 +484,11 @@ func notify_extract(objective_left):
 
 @rpc("any_peer", "reliable")
 func res(revive_health: float):
-	if not multiplayer.is_server():
-		return
-
-	current_health = revive_health
-	var revived_peer_id := str(name).to_int()
-	if revived_peer_id == multiplayer.get_unique_id():
-		_res_local(revive_health)
-	else:
-		_res_local.rpc_id(revived_peer_id, revive_health)
+	health_handler.handle_res(self, revive_health)
 
 @rpc("any_peer", "reliable")
 func _res_local(revive_health: float):
-	current_health = revive_health
-	Local.HUD.health_slider.value = ( current_health / FULL_HEALTH ) * 100
-	Local.HUD.crosshair.visible = true
-	Local.HUD.death_text.visible = false
-	set_res_sphere(false)
-	set_res_sphere.rpc(false)
+	health_handler.handle_res_local(self, revive_health)
 
 @rpc("any_peer", "reliable")
 func set_res_sphere(active: bool):

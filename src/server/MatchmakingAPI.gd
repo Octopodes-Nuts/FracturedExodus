@@ -9,6 +9,7 @@ signal in_party_status_changed(party_members: Array[String])
 signal matchmaking_status_changed(status: String)
 signal server_registered
 signal match_ended_reported
+signal party_faction_updated
 
 var queue_request: HTTPRequest = HTTPRequest.new()
 var status_update_request: HTTPRequest = HTTPRequest.new()
@@ -25,7 +26,7 @@ var register_server_request: HTTPRequest = HTTPRequest.new()
 var status_timer: Timer = Timer.new()
 var status_update_interval: float = 1.0
 
-#var server_url = "http://209.38.77.226:8000/"
+# var server_url = "http://209.38.77.226:8000/"
 var server_url = "http://192.168.1.235:8000/"
 
 func _ready() -> void:
@@ -151,6 +152,15 @@ func _on_party_status_request_request_completed(_result, response_code, _headers
 			emit_signal("in_party_status_changed", Local.party_members)
 		if status.has("status"):
 			Local.party_status = status["status"]
+		if status.has("primaryPlayerId"):
+			Local.party_leader_id = status["primaryPlayerId"]
+			if Local.party_leader_id == Local.player_id:
+				Local.party_leader = true
+			else:
+				Local.party_leader = false
+		if status.has("partyFaction"):
+			emit_signal("party_faction_updated", status["partyFaction"])
+			print("[ACTIVE PARTY] ", status["partyFaction"])
 		print("Current party status: %s" % Local.party_status)
 	else:
 		print("Failed to retrieve party status, response code: %d" % response_code)

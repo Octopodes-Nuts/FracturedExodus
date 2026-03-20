@@ -14,6 +14,8 @@ func _process(_delta: float) -> void:
 		if Local.selected_character_def != null:
 			character_name.text = Local.selected_character_def.Name
 			rendered = true
+		else:
+			character_name.text = "Select Character"
 
 func reload(def: CharacterDef):
 	character_name.text = Local.selected_character_def.Name

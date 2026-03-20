@@ -12,12 +12,32 @@ var character_chits = []
 var path_to_firsts = "res://load/Names/first.txt"
 var path_to_lasts = "res://load/Names/last.txt"
 
-var first_names
-var last_names
+const FALLBACK_FIRST_NAMES := ["Alex", "Morgan", "Riley", "Jordan"]
+const FALLBACK_LAST_NAMES := ["Stone", "Vale", "Ash", "Ward"]
+
+var first_names: PackedStringArray = PackedStringArray()
+var last_names: PackedStringArray = PackedStringArray()
 
 func _ready() -> void:
-	first_names = FileAccess.get_file_as_string(path_to_firsts).split(" ")
-	last_names = FileAccess.get_file_as_string(path_to_lasts).split(" ")
+	first_names = _load_name_list(path_to_firsts, FALLBACK_FIRST_NAMES)
+	last_names = _load_name_list(path_to_lasts, FALLBACK_LAST_NAMES)
+
+func _load_name_list(path: String, fallback: Array) -> PackedStringArray:
+	if not FileAccess.file_exists(path):
+		push_warning("Missing name file in build: %s. Using fallback names." % path)
+		return PackedStringArray(fallback)
+
+	var raw := FileAccess.get_file_as_string(path)
+	if raw.is_empty():
+		push_warning("Empty name file: %s. Using fallback names." % path)
+		return PackedStringArray(fallback)
+
+	var normalized := raw.replace("\r", " ").replace("\n", " ").strip_edges()
+	var names := normalized.split(" ", false)
+	if names.is_empty():
+		push_warning("No usable names in file: %s. Using fallback names." % path)
+		return PackedStringArray(fallback)
+	return PackedStringArray(names)
 
 func _conntect_to_pressed(btn: Button):
 	btn.connect("pressed", _new_char_selected)
@@ -27,7 +47,7 @@ func _new_char_selected():
 
 # Make a change here to generating names
 var rendered = false
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not rendered:
 		render()
 
@@ -71,6 +91,10 @@ func render():
 		rendered = true
 
 func _on_new_btn_pressed() -> void:
+	if account_api == null:
+		push_error("AccountAPI not assigned in CharacterSelect")
+		return
+
 	var char_def = CharacterDef.new()
 	char_def.Faction = Local.selected_faction
 	# prevent name collisions here
@@ -83,9 +107,17 @@ func _on_character_created():
 	render()
 	
 func get_name_name():
+	if first_names.is_empty() or last_names.is_empty():
+		return "Rookie " + str(randi_range(1000, 9999))
+
 	var name_name = first_names[randi_range(0, len(first_names) - 1)] + " " +\
 		last_names[randi_range(0, len(last_names) - 1)]
-	while name_name in Local.characters.characters:
+	var attempts := 0
+	while name_name in Local.characters.characters and attempts < 20:
 		name_name = first_names[randi_range(0, len(first_names) - 1)] + " " +\
 			last_names[randi_range(0, len(last_names) - 1)]
+		attempts += 1
+
+	if name_name in Local.characters.characters:
+		name_name = "Rookie " + str(randi_range(1000, 9999))
 	return name_name

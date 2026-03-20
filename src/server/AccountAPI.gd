@@ -13,8 +13,9 @@ signal account_info_updated
 @onready var account_info_update_request: HTTPRequest = HTTPRequest.new()
 @onready var friend_request: HTTPRequest = HTTPRequest.new()
 @onready var accept_friend_req_request: HTTPRequest = HTTPRequest.new()
+@onready var set_active_char_request: HTTPRequest = HTTPRequest.new()
 
-#var server_url: String = "http://209.38.77.226:8000/"
+# var server_url: String = "http://209.38.77.226:8000/"
 var server_url: String = "http://192.168.1.235:8000/"
 
 func _ready():
@@ -28,9 +29,10 @@ func _ready():
 	friend_request.request_completed.connect(_on_send_friend_request_complete)
 	add_child(accept_friend_req_request)
 	accept_friend_req_request.request_completed.connect(_on_accept_friend_request_complete)
+	add_child(set_active_char_request)
+	set_active_char_request.request_completed.connect(_on_set_active_character)
 
 func login(username: String, password: String):
-
 	var request = HTTPRequest.new()
 	add_child(request)
 
@@ -43,7 +45,6 @@ func login(username: String, password: String):
 	var err = request.request(url, headers, HTTPClient.METHOD_POST, json_body)
 	if err != OK:
 		print("Error making login request: ", err)
-
 
 
 func _on_login_request_completed(_result, response_code, _headers, body):
@@ -62,7 +63,6 @@ func _on_login_request_completed(_result, response_code, _headers, body):
 		emit_signal("login_complete")
 	else:
 		print("Login request failed with code: ", response_code)
-
 
 
 func get_characters(token: String):
@@ -108,7 +108,6 @@ func _on_get_characters_request_complete(_result, response_code, _headers, body)
 
 
 func create_character(token: String, character_def: CharacterDef):
-
 	var url = server_url + "player/newCharacter"
 	var body = {
 		"sessionToken": token,
@@ -270,3 +269,21 @@ func _on_accept_friend_request_complete(_result, response_code, _headers, _body)
 		print("Friend request accepted successfully")
 	else:
 		print("Accepting friend request failed with code: ", response_code)
+
+func set_active_character():
+	if Local.selected_character_def == null:
+		return
+	var url = server_url + "player/setActiveCharacter"
+	var body = {"sessionToken": Local.session_token, "characterId": Local.selected_character_def.ID}
+	var json_body = JSON.stringify(body)
+	var headers = ["Content-Type: application/json"]
+	var err = set_active_char_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+	if err != OK:
+		print("Error updating active character")
+
+func _on_set_active_character(_result, response_code, _headers, _body):
+	if response_code >= 200:
+		print("Active character successfully updated")
+	else:
+		print("Updating active friend request failed with code: ", response_code)
+	

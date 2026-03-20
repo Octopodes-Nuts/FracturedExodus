@@ -7,6 +7,8 @@
 # relevent to the server
 extends Node
 
+signal character_updated
+
 # player ID, obtained from server
 var player_id: String
 var session_token: String
@@ -22,6 +24,8 @@ var ip: String
 var party_invites: Array = []
 var party_members: Array = []
 var party_status: String = ""
+var party_leader_id: String = ""
+var party_leader: bool = false
 var in_party: bool = false
 
 var registration_token: String = ""
@@ -58,3 +62,6 @@ func sort_characters():
 				entente_characters.characters[agent_name] = agent
 			Factions.FREE_AGENTS:
 				free_agent_characters.characters[agent_name] = agent
+
+func emit_character_updated():
+	emit_signal("character_updated")
