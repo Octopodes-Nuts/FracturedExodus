@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://be7nd82g8x3l2"]
+
+[ext_resource type="Script" uid="uid://dssy6rchy856m" path="res://behavior/ai/ai_weapons/basic_ai_gun/BasicAIGun.gd" id="1_sryh1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_n2a6v"]
+size = Vector3(0.1, 0.1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_xtijb"]
+size = Vector3(0.1, 0.1, 1)
+
+[node name="BasicAiGun" type="Node3D" unique_id=320876066]
+script = ExtResource("1_sryh1")
+
+[node name="Model" type="CollisionShape3D" parent="." unique_id=956451372]
+shape = SubResource("BoxShape3D_n2a6v")
+disabled = true
+
+[node name="RigidBody" type="MeshInstance3D" parent="." unique_id=1977842683]
+mesh = SubResource("BoxMesh_xtijb")
+
+[node name="GunEnd" type="Node3D" parent="." unique_id=122312224]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.54327965)
+
+[node name="GunFireSound" type="AudioStreamPlayer3D" parent="." unique_id=261230518]

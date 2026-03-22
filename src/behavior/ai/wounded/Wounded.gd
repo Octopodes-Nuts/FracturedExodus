@@ -1,12 +1,10 @@
-###############################################################
-# Copyright (c) 2023 Octopodes Studio
-# Authors: Isaiah Raspet, Minsung Kim
-###############################################################
 extends CharacterBody3D
 
-@onready var navigation: NavigationAgent3D = $navigation
-@onready var enemy_mesh: MeshInstance3D = $enemy_mesh
+@onready var navigation: NavigationAgent3D = $Navigation
+@onready var enemy_mesh: MeshInstance3D = $Model
+@onready var head: Node3D = $Head
 @onready var gun_location: Node3D = self
+@onready var gun: Node = $Head/GunAnchor/AiGun
 
 enum AiState {
 	IDLE,
@@ -18,38 +16,47 @@ enum AiState {
 	RETREAT,
 }
 
-@export var max_health: float = 100.0
-@export var health: float = 100.0
-@export var patrol_speed: float = 2.5
-@export var aware_speed: float = 3.5
-@export var pursuit_speed: float = 4.5
-@export var retreat_speed: float = 4.0
+@export var max_health: float = 70.0
+@export var health: float = 70.0
+@export var patrol_speed: float = 0.9
+@export var aware_speed: float = 1.1
+@export var pursuit_speed: float = 1.5
+@export var retreat_speed: float = 2.3
+@export var reposition_speed: float = 0.8
 @export var gravity: float = 20.0
-@export var patrol_radius: float = 20.0
-@export var patrol_reach_distance: float = 1.5
-@export var aware_reach_distance: float = 2.0
-@export var idle_duration_min: float = 0.75
-@export var idle_duration_max: float = 2.0
-@export var aware_timeout: float = 3.0
-@export var pursuit_timeout: float = 1.75
-@export var noise_chain_window: float = 1.0
-@export var retreat_health_threshold: float = 0.25
-@export var retreat_distance: float = 12.0
-@export var scan_duration: float = 2.5
-@export var vision_range: float = 22.0
+@export var patrol_radius: float = 8.0
+@export var max_home_leash_distance: float = 14.0
+@export var patrol_reach_distance: float = 1.4
+@export var aware_reach_distance: float = 1.8
+@export var idle_duration_min: float = 0.8
+@export var idle_duration_max: float = 2.4
+@export var aware_timeout: float = 4.0
+@export var pursuit_timeout: float = 2.4
+@export var noise_chain_window: float = 1.5
+@export var retreat_health_threshold: float = 0.55
+@export var retreat_distance: float = 11.0
+@export var close_retreat_distance: float = 6.0
+@export var scan_duration: float = 2.8
+@export var vision_range: float = 28.0
 @export var vision_fov: float = 100.0
-@export var vision_eye_height: float = 1.6
-@export var vision_check_interval: float = 0.15
-@export var close_contact_vision_distance: float = 2.4
-@export var turn_speed: float = 10.0
-@export var attack_range: float = 2.2
-@export var attack_cooldown: float = 0.9
+@export var vision_eye_height: float = 1.4
+@export var vision_check_interval: float = 0.2
+@export var close_contact_vision_distance: float = 2.8
+@export var turn_speed: float = 6.0
+@export var attack_range: float = 20.0
+@export var minimum_attack_range: float = 5.5
+@export var attack_cooldown: float = 1.2
+@export var hit_stagger_duration: float = 0.35
+@export var headshot_multiplier: float = 1.75
+@export var head_track_speed: float = 8.0
+@export var head_max_yaw_degrees: float = 60.0
+@export var head_max_pitch_up_degrees: float = 35.0
+@export var head_max_pitch_down_degrees: float = 25.0
+@export var head_aim_height_offset: float = 0.9
 @export var debug_ai: bool = false
 
-@onready var sword: Node = $SwordAnchor/AiSword
-
-var home: Area3D
 var current_state: AiState = AiState.IDLE
+var home: Area3D
 var gravity_velocity: Vector3 = Vector3.ZERO
 var spawn_origin: Vector3 = Vector3.ZERO
 var patrol_anchor: Vector3 = Vector3.ZERO
@@ -68,14 +75,15 @@ var tracked_player: Node3D
 var _vision_timer: float = 0.0
 var _attack_age: float = INF
 var _is_dead: bool = false
+var _hit_stagger_time: float = 0.0
 
-var idle_color: Material = preload('res://debug/materials/debug_teal.tres')
-var patrol_color: Material = preload('res://debug/materials/debug_yellow.tres')
-var aware_color: Material = preload('res://debug/materials/debug_red.tres')
-var scan_color: Material = preload('res://debug/materials/debug_forest_green.tres')
-var pursuit_color: Material = preload('res://debug/materials/debug_blue.tres')
-var attack_color: Material = preload('res://debug/materials/debug_red.tres')
-var retreat_color: Material = preload('res://debug/materials/debug_white.tres')
+var idle_color: Material = preload("res://debug/materials/debug_teal.tres")
+var patrol_color: Material = preload("res://debug/materials/debug_yellow.tres")
+var aware_color: Material = preload("res://debug/materials/debug_red.tres")
+var scan_color: Material = preload("res://debug/materials/debug_forest_green.tres")
+var pursuit_color: Material = preload("res://debug/materials/debug_blue.tres")
+var attack_color: Material = preload("res://debug/materials/debug_red.tres")
+var retreat_color: Material = preload("res://debug/materials/debug_white.tres")
 
 func _ready() -> void:
 	set_multiplayer_authority(1)
@@ -83,22 +91,13 @@ func _ready() -> void:
 	spawn_origin = global_position
 	_refresh_patrol_anchor()
 	_randomize_idle_timer()
-	_equip_sword_if_available()
 	_apply_state_visuals()
-	if debug_ai:
-		print("[AI DEBUG][READY] name=%s peer=%s authority=%s global_position=%s" % [
-			name,
-			multiplayer.get_unique_id(),
-			get_multiplayer_authority(),
-			global_position,
-		])
 
 func noise(source_position: Vector3) -> void:
 	if is_multiplayer_authority():
 		_register_noise(source_position)
 		return
 	_report_noise.rpc_id(1, source_position)
-
 
 @rpc("any_peer", "reliable")
 func _report_noise(source_position: Vector3) -> void:
@@ -107,7 +106,7 @@ func _report_noise(source_position: Vector3) -> void:
 	_register_noise(source_position)
 
 @rpc("authority", "unreliable_ordered")
-func _sync_state(sync_position: Vector3, sync_rotation: Vector3, sync_velocity: Vector3, sync_gravity: Vector3, sync_state: int) -> void:
+func _sync_state(sync_position: Vector3, sync_rotation: Vector3, sync_velocity: Vector3, sync_gravity: Vector3, sync_state: int, sync_head_rotation: Vector3) -> void:
 	if is_multiplayer_authority():
 		return
 	global_position = sync_position
@@ -115,33 +114,39 @@ func _sync_state(sync_position: Vector3, sync_rotation: Vector3, sync_velocity: 
 	velocity = sync_velocity
 	gravity_velocity = sync_gravity
 	current_state = sync_state as AiState
+	if is_instance_valid(head):
+		head.rotation = sync_head_rotation
 	_apply_state_visuals()
 
 func hit(damage: float) -> void:
 	if _is_dead:
 		return
-	print("[AI HIT] CALL: node=%s damage=%.1f current_health=%.1f" % [name, damage, health])
-	health -= damage
-	health = maxf(health, 0.0)
-	print("[AI HIT] AFTER: health=%.1f/%.1f" % [health, max_health])
+	_hit_stagger_time = hit_stagger_duration
+	health = maxf(health - damage, 0.0)
 	last_threat_position = global_position
+	noise_age = 0.0
+	noise_chain_age = 0.0
+	noise_chain_count = maxi(noise_chain_count, 1)
+	if debug_ai:
+		print("[WOUNDED HIT] name=%s dmg=%.1f hp=%.1f/%.1f" % [name, damage, health, max_health])
 	if health <= 0.0:
 		_kill.rpc()
 		return
 	if _should_retreat():
-		print("[AI HIT] RETREAT: entered retreat state")
 		_set_state(AiState.RETREAT)
+
+func headshot(damage: float) -> void:
+	hit(damage * headshot_multiplier)
 
 @rpc("authority", "reliable", "call_local")
 func _kill() -> void:
 	if _is_dead:
 		return
 	_is_dead = true
-	print("[AI HIT] DEAD: disabling and queuing free")
 	set_physics_process(false)
 	set_process(false)
-	if has_node("CollisionShape3D"):
-		$CollisionShape3D.disabled = true
+	if has_node("CollisionShape"):
+		$CollisionShape.disabled = true
 	visible = false
 	call_deferred("queue_free")
 
@@ -150,11 +155,13 @@ func _physics_process(delta: float) -> void:
 		return
 	if not is_multiplayer_authority():
 		return
+
 	_refresh_patrol_anchor()
 	state_time += delta
 	noise_age += delta
 	noise_chain_age += delta
 	_attack_age += delta
+	_hit_stagger_time = maxf(_hit_stagger_time - delta, 0.0)
 	_vision_timer -= delta
 	if _vision_timer <= 0.0:
 		_vision_timer = vision_check_interval
@@ -164,6 +171,7 @@ func _physics_process(delta: float) -> void:
 
 	var desired_velocity := _tick_behavior_tree(delta)
 	_update_facing(delta, desired_velocity)
+	_update_head_tracking(delta)
 
 	if not is_on_floor():
 		gravity_velocity += Vector3.DOWN * gravity * delta
@@ -177,20 +185,15 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	if is_on_floor() and gravity_velocity.y < 0.0:
 		gravity_velocity = Vector3.ZERO
-	_sync_state.rpc(global_position, global_rotation, velocity, gravity_velocity, current_state)
 
-	if debug_ai:
-		pass
-		# print("[AI DEBUG][STATE] name=%s state=%s pos=%s target=%s velocity=%s noise_age=%.2f" % [
-		# 	name,
-		# 	AiState.keys()[current_state],
-		# 	global_position,
-		# 	navigation.target_position,
-		# 	velocity,
-		# 	noise_age,
-		# ])
+	var current_head_rotation := Vector3.ZERO
+	if is_instance_valid(head):
+		current_head_rotation = head.rotation
+	_sync_state.rpc(global_position, global_rotation, velocity, gravity_velocity, current_state, current_head_rotation)
 
-func _tick_behavior_tree(_delta: float) -> Vector3:
+func _tick_behavior_tree(delta: float) -> Vector3:
+	if _is_outside_home_leash():
+		return _tick_return_home()
 	if _should_retreat():
 		return _tick_retreat()
 	if _should_attack():
@@ -203,7 +206,7 @@ func _tick_behavior_tree(_delta: float) -> Vector3:
 		return _tick_aware()
 	if current_state == AiState.PATROL:
 		return _tick_patrol()
-	return _tick_idle(_delta)
+	return _tick_idle(delta)
 
 func _tick_idle(delta: float) -> Vector3:
 	if current_state != AiState.IDLE:
@@ -242,7 +245,7 @@ func _tick_pursuit() -> Vector3:
 		_set_state(AiState.PURSUIT)
 	if is_instance_valid(tracked_player):
 		last_heard_position = tracked_player.global_position
-		if _is_player_in_attack_range(tracked_player.global_position):
+		if _is_player_in_attack_window(tracked_player.global_position) and _can_see_player(tracked_player):
 			_set_state(AiState.ATTACK)
 			return Vector3.ZERO
 	_update_navigation_target(last_heard_position)
@@ -257,12 +260,24 @@ func _tick_attack() -> Vector3:
 	if not is_instance_valid(tracked_player):
 		_set_state(AiState.SCAN)
 		return Vector3.ZERO
+
 	last_heard_position = tracked_player.global_position
-	if _attack_age >= attack_cooldown:
+	if _distance_to_tracked_player() <= close_retreat_distance:
+		_set_state(AiState.RETREAT)
+		return Vector3.ZERO
+
+	if _attack_age >= attack_cooldown and _can_see_player(tracked_player):
 		_attempt_attack()
-	if not _is_player_in_attack_range(tracked_player.global_position):
+
+	if not _is_player_in_attack_window(tracked_player.global_position):
 		_set_state(AiState.PURSUIT)
-	return Vector3.ZERO
+		return Vector3.ZERO
+
+	if _can_see_player(tracked_player):
+		return Vector3.ZERO
+
+	_update_navigation_target(last_heard_position)
+	return _move_toward_navigation(reposition_speed)
 
 func _tick_scan() -> Vector3:
 	if current_state != AiState.SCAN:
@@ -277,10 +292,13 @@ func _tick_retreat() -> Vector3:
 		_set_state(AiState.RETREAT)
 	_update_navigation_target(retreat_target)
 	if _is_near_position(retreat_target, patrol_reach_distance):
+		_set_state(AiState.SCAN)
 		return Vector3.ZERO
 	return _move_toward_navigation(retreat_speed)
 
 func _should_retreat() -> bool:
+	if _distance_to_tracked_player() <= close_retreat_distance:
+		return true
 	if max_health <= 0.0:
 		return false
 	return health <= max_health * retreat_health_threshold
@@ -289,13 +307,13 @@ func _should_pursue() -> bool:
 	return noise_chain_count >= 2 and noise_age <= pursuit_timeout
 
 func _should_attack() -> bool:
-	if _should_retreat():
-		return false
 	if not is_instance_valid(tracked_player):
 		return false
 	if noise_age > pursuit_timeout:
 		return false
-	if not _is_player_in_attack_range(tracked_player.global_position):
+	if not _is_player_in_attack_window(tracked_player.global_position):
+		return false
+	if _distance_to_tracked_player() <= close_retreat_distance:
 		return false
 	if _can_see_player(tracked_player):
 		return true
@@ -373,11 +391,12 @@ func _spot_player(player: Node3D) -> void:
 	noise_age = 0.0
 	noise_chain_age = 0.0
 	noise_chain_count = maxi(noise_chain_count, 2)
-	if not _should_retreat():
-		if _should_attack():
-			_set_state(AiState.ATTACK)
-		else:
-			_set_state(AiState.PURSUIT)
+	if _should_retreat():
+		_set_state(AiState.RETREAT)
+	elif _should_attack():
+		_set_state(AiState.ATTACK)
+	else:
+		_set_state(AiState.PURSUIT)
 
 func _register_noise(source_position: Vector3) -> void:
 	last_heard_position = source_position
@@ -405,7 +424,7 @@ func _randomize_idle_timer() -> void:
 
 func _pick_patrol_target() -> Vector3:
 	var offset_2d := Vector2.RIGHT.rotated(randf() * TAU) * randf_range(patrol_radius * 0.35, patrol_radius)
-	return patrol_anchor + Vector3(offset_2d.x, 0.0, offset_2d.y)
+	return _clamp_to_home_leash(patrol_anchor + Vector3(offset_2d.x, 0.0, offset_2d.y))
 
 func _pick_retreat_target() -> Vector3:
 	var retreat_origin := last_threat_position
@@ -416,38 +435,66 @@ func _pick_retreat_target() -> Vector3:
 		away_2d = Vector2.RIGHT.rotated(randf() * TAU)
 	else:
 		away_2d = away_2d.normalized()
-	return global_position + Vector3(away_2d.x, 0.0, away_2d.y) * retreat_distance
+	return _clamp_to_home_leash(global_position + Vector3(away_2d.x, 0.0, away_2d.y) * retreat_distance)
 
-func _equip_sword_if_available() -> void:
-	if not is_instance_valid(sword):
-		return
-	if sword.has_method("_set_active"):
-		sword.call("_set_active")
+func _is_outside_home_leash() -> bool:
+	if max_home_leash_distance <= 0.0:
+		return false
+	var current_position_2d := Vector2(global_position.x, global_position.z)
+	var anchor_position_2d := Vector2(patrol_anchor.x, patrol_anchor.z)
+	return current_position_2d.distance_to(anchor_position_2d) > max_home_leash_distance
+
+func _tick_return_home() -> Vector3:
+	has_patrol_target = false
+	has_retreat_target = false
+	tracked_player = null
+	noise_age = aware_timeout + 1.0
+	noise_chain_age = noise_chain_window + 1.0
+	noise_chain_count = 0
+	if current_state != AiState.PATROL:
+		_set_state(AiState.PATROL)
+	_update_navigation_target(patrol_anchor)
+	if _is_near_position(patrol_anchor, aware_reach_distance):
+		return Vector3.ZERO
+	return _move_toward_navigation(retreat_speed)
+
+func _clamp_to_home_leash(target_position: Vector3) -> Vector3:
+	if max_home_leash_distance <= 0.0:
+		return target_position
+	var anchor_2d := Vector2(patrol_anchor.x, patrol_anchor.z)
+	var target_2d := Vector2(target_position.x, target_position.z)
+	var offset := target_2d - anchor_2d
+	if offset.length() <= max_home_leash_distance:
+		return target_position
+	var clamped_2d := anchor_2d + offset.normalized() * max_home_leash_distance
+	return Vector3(clamped_2d.x, target_position.y, clamped_2d.y)
 
 func _attempt_attack() -> void:
 	if not is_instance_valid(tracked_player):
 		return
-	if not _is_player_in_attack_range(tracked_player.global_position):
-		return
 	if not _can_see_player(tracked_player):
-		var eye_position := global_position + Vector3.UP * vision_eye_height
-		var target_center := tracked_player.global_position + Vector3.UP * 0.9
-		if eye_position.distance_squared_to(target_center) > close_contact_vision_distance * close_contact_vision_distance:
-			return
-	_attack_age = 0.0
-	_trigger_sword_use()
-	if debug_ai:
-		print("[AI DEBUG][ATTACK] name=%s target=%s swing=true" % [name, tracked_player.name])
-
-func _trigger_sword_use() -> void:
-	if not is_instance_valid(sword):
-		if debug_ai:
-			print("[AI DEBUG][ATTACK] sword reference invalid")
 		return
-	if sword.has_method("use"):
-		sword.call("use", self)
-	elif debug_ai:
-		print("[AI DEBUG][ATTACK] sword has no use() method")
+	_attack_age = 0.0
+	_trigger_gun_use()
+
+func _trigger_gun_use() -> void:
+	if not is_instance_valid(gun):
+		if debug_ai:
+			print("[WOUNDED AI] Missing gun at GunAnchor/AiGun")
+		return
+	if not gun.has_method("use"):
+		if debug_ai:
+			print("[WOUNDED AI] Gun has no use() method")
+		return
+	var use_arg_count := 0
+	for method in gun.get_method_list():
+		if method.get("name", "") == "use":
+			use_arg_count = method.get("args", []).size()
+			break
+	if use_arg_count <= 0:
+		gun.call("use")
+	else:
+		gun.call("use", self)
 
 func _face_tracked_player(delta: float) -> void:
 	if not is_instance_valid(tracked_player):
@@ -467,10 +514,36 @@ func _update_facing(delta: float, desired_velocity: Vector3) -> void:
 		return
 	_face_tracked_player(delta)
 
-func _is_player_in_attack_range(target_position: Vector3) -> bool:
-	var current_position_2d := Vector2(global_position.x, global_position.z)
-	var target_position_2d := Vector2(target_position.x, target_position.z)
-	return current_position_2d.distance_to(target_position_2d) <= attack_range
+func _update_head_tracking(delta: float) -> void:
+	if not is_instance_valid(head):
+		return
+	var target_yaw := 0.0
+	var target_pitch := 0.0
+	if is_instance_valid(tracked_player) and current_state != AiState.IDLE and current_state != AiState.PATROL:
+		var aim_point := tracked_player.global_position + Vector3.UP * head_aim_height_offset
+		var local_target := head.to_local(aim_point)
+		var flat_distance := maxf(Vector2(local_target.x, local_target.z).length(), 0.001)
+		target_yaw = atan2(-local_target.x, -local_target.z)
+		target_pitch = atan2(local_target.y, flat_distance)
+	var max_yaw := deg_to_rad(head_max_yaw_degrees)
+	var max_pitch_up := deg_to_rad(head_max_pitch_up_degrees)
+	var max_pitch_down := deg_to_rad(head_max_pitch_down_degrees)
+	target_yaw = clampf(target_yaw, -max_yaw, max_yaw)
+	target_pitch = clampf(target_pitch, -max_pitch_down, max_pitch_up)
+	head.rotation.y = lerp_angle(head.rotation.y, target_yaw, clampf(delta * head_track_speed, 0.0, 1.0))
+	head.rotation.x = lerp_angle(head.rotation.x, target_pitch, clampf(delta * head_track_speed, 0.0, 1.0))
+	head.rotation.z = 0.0
+
+func _is_player_in_attack_window(target_position: Vector3) -> bool:
+	var distance := Vector2(global_position.x, global_position.z).distance_to(Vector2(target_position.x, target_position.z))
+	return distance <= attack_range and distance >= minimum_attack_range
+
+func _distance_to_tracked_player() -> float:
+	if not is_instance_valid(tracked_player):
+		return INF
+	var self_2d := Vector2(global_position.x, global_position.z)
+	var player_2d := Vector2(tracked_player.global_position.x, tracked_player.global_position.z)
+	return self_2d.distance_to(player_2d)
 
 func _can_see_player(player: Node3D) -> bool:
 	if not is_instance_valid(player):
@@ -503,7 +576,10 @@ func _move_toward_navigation(move_speed: float) -> Vector3:
 	move_direction.y = 0.0
 	if move_direction.length_squared() <= 0.0001:
 		return Vector3.ZERO
-	return move_direction.normalized() * move_speed
+	var adjusted_speed := move_speed
+	if _hit_stagger_time > 0.0:
+		adjusted_speed *= 0.45
+	return move_direction.normalized() * adjusted_speed
 
 func _is_near_position(target_position: Vector3, threshold: float) -> bool:
 	var current_position_2d := Vector2(global_position.x, global_position.z)

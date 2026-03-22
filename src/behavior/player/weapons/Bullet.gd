@@ -52,14 +52,20 @@ func _physics_process(delta):
 	# test if hitting anything
 	if is_colliding():
 		var test = get_collider()
-		print(test)
+		print("[BULLET] Collided with: %s (type: %s)" % [test, test.get_class()])
+		print("[BULLET] Node name: %s" % test.name if test.has_method("get_node") else "N/A")
+		print("[BULLET] has_method('hit'): %s, has_method('headshot'): %s" % [test.has_method("hit"), test.has_method("headshot")])
 
 		if test.has_method("hit"):
+			print("[BULLET] Calling hit() with damage=%s" % _damage)
 			test.hit(_damage)
 			self.queue_free()
 		elif test.has_method("headshot"):
+			print("[BULLET] Calling headshot() with damage=%s" % (_damage * headshot_mult))
 			test.headshot(_damage * headshot_mult)
 			self.queue_free()
+		else:
+			print("[BULLET] Collider has no hit/headshot methods")
 	_lifetime -= delta
 
 	#kill bullet

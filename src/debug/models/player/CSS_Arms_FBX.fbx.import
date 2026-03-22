@@ -1,0 +1,353 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://3anra6pimash"
+path="res://.godot/imported/CSS_Arms_FBX.fbx-a0deb2e79db046c8601ca7dc589b8c5e.scn"
+
+[deps]
+
+source_file="res://debug/models/player/CSS_Arms_FBX.fbx"
+dest_files=["res://.godot/imported/CSS_Arms_FBX.fbx-a0deb2e79db046c8601ca7dc589b8c5e.scn"]
+
+[params]
+
+nodes/root_type=""
+nodes/root_name=""
+nodes/root_script=null
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+nodes/import_as_skeleton_bones=false
+nodes/use_name_suffixes=true
+nodes/use_node_type_suffixes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+meshes/force_disable_compression=false
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+animation/trimming=true
+animation/remove_immutable_tracks=true
+animation/import_rest_as_RESET=false
+import_script/path=""
+materials/extract=0
+materials/extract_format=0
+materials/extract_path=""
+_subresources={
+"meshes": {
+"(1)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/(1).res",
+"save_to_file/path": "uid://deuhf4o7laqq0"
+},
+"(2)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/(2).res",
+"save_to_file/path": "uid://b2h0n44hlvpsa"
+},
+"(3)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/(3).res",
+"save_to_file/path": "uid://de13s1bi0lgrm"
+},
+"(4)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/(4).res",
+"save_to_file/path": "uid://totk4831ubn0"
+},
+"(5)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/(5).res",
+"save_to_file/path": "uid://bvmp5ifc6bsoi"
+},
+"(6)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/(6).res",
+"save_to_file/path": "uid://bx1k2lbfrie1k"
+},
+"(7)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/(7).res",
+"save_to_file/path": "uid://bni38y5y7rt4"
+},
+"(8)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/(8).res",
+"save_to_file/path": "uid://dnblvidc5n1c2"
+},
+"(9)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/(9).res",
+"save_to_file/path": "uid://bex867o6dvfmi"
+},
+"1)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/1).res",
+"save_to_file/path": "uid://dhhku07lu47ps"
+},
+"10)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/10).res",
+"save_to_file/path": "uid://bwksjtm0uorku"
+},
+"11)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/11).res",
+"save_to_file/path": "uid://b8jpqln1vrla1"
+},
+"12)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/12).res",
+"save_to_file/path": "uid://djk83uyyxoal6"
+},
+"13)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/13).res",
+"save_to_file/path": "uid://bf4leq5m7l1oi"
+},
+"14)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/14).res",
+"save_to_file/path": "uid://cg74lt446y5yp"
+},
+"2)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/2).res",
+"save_to_file/path": "uid://dg73xgpgrh7l0"
+},
+"3)": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/3).res",
+"save_to_file/path": "uid://bi53glfya27qp"
+},
+"F1a": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F1a.res",
+"save_to_file/path": "uid://dgu2g30r3xsy5"
+},
+"F1b": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F1b.res",
+"save_to_file/path": "uid://7w32cer8dl3v"
+},
+"F2a": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F2a.res",
+"save_to_file/path": "uid://dkk1bbw035qr6"
+},
+"F2b": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F2b.res",
+"save_to_file/path": "uid://cbytawkuwlwdu"
+},
+"F2c": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F2c.res",
+"save_to_file/path": "uid://cwg2e0exqapcj"
+},
+"F3a": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F3a.res",
+"save_to_file/path": "uid://s5ufqi1cdjfc"
+},
+"F3b": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F3b.res",
+"save_to_file/path": "uid://dfmn4w8hw5f1a"
+},
+"F3c": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F3c.res",
+"save_to_file/path": "uid://bwlylhqf5jv8x"
+},
+"F4a": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F4a.res",
+"save_to_file/path": "uid://dm24l087d7j2l"
+},
+"F4b": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F4b.res",
+"save_to_file/path": "uid://paas2dhkbsw1"
+},
+"F4c": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F4c.res",
+"save_to_file/path": "uid://dkkkw624143ww"
+},
+"F5a": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F5a.res",
+"save_to_file/path": "uid://cnvakrapjrlgp"
+},
+"F5b": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F5b.res",
+"save_to_file/path": "uid://bgvxie01817fn"
+},
+"F5c": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/F5c.res",
+"save_to_file/path": "uid://c45rx1qdmerry"
+},
+"H1": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/H1.res",
+"save_to_file/path": "uid://c5qttu0oghcwk"
+},
+"H2": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/H2.res",
+"save_to_file/path": "uid://cgle2ui2uxx8e"
+},
+"UA": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 20.0,
+"save_to_file/enabled": true,
+"save_to_file/fallback_path": "res://debug/models/player/hands/UA.res",
+"save_to_file/path": "uid://bd67bl5w5n6o"
+}
+}
+}
+fbx/importer=0
+fbx/allow_geometry_helper_nodes=false
+fbx/embedded_image_handling=1
+fbx/naming_version=2

@@ -220,7 +220,7 @@ func leave_match():
 func joined_match():
 	var url = server_url + "matchmaking/joined"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token})
+	var body = JSON.stringify({"sessionToken": Local.session_token, "ticketId": Local.matchmaking_ticket})
 	joined_match_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func _on_joined_match_request_request_completed(_result, response_code, _headers, _body) -> void:

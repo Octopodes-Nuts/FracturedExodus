@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://v0wrxx37082n"]
+
+[ext_resource type="Script" uid="uid://dvy24n1obwdr6" path="res://behavior/ai/wounded/Wounded.gd" id="1_bidlm"]
+[ext_resource type="PackedScene" uid="uid://be7nd82g8x3l2" path="res://behavior/ai/ai_weapons/basic_ai_gun/BasicAIGun.tscn" id="2_0vt7c"]
+[ext_resource type="Script" uid="uid://ccjcgvibb2hpq" path="res://behavior/ai/wounded/WoundedHead.gd" id="3_whea1"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7uxqs"]
+radius = 0.25
+height = 1.5
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_xe1wl"]
+radius = 0.3
+height = 1.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7uxqs"]
+size = Vector3(0.3, 0.3, 0.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_xe1wl"]
+size = Vector3(0.3, 0.3, 0.3)
+
+[node name="Wounded" type="CharacterBody3D" unique_id=1866137742]
+collision_layer = 10
+script = ExtResource("1_bidlm")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="." unique_id=301787531]
+shape = SubResource("CapsuleShape3D_7uxqs")
+
+[node name="Model" type="MeshInstance3D" parent="." unique_id=1889274112]
+mesh = SubResource("CapsuleMesh_xe1wl")
+
+[node name="Navigation" type="NavigationAgent3D" parent="." unique_id=289521151]
+
+[node name="enemy_ground_check" type="RayCast3D" parent="." unique_id=547358726]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.113872, 0)
+
+[node name="Head" type="Area3D" parent="." unique_id=185458197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9663499, 0)
+collision_layer = 10
+script = ExtResource("3_whea1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Head" unique_id=341300822]
+shape = SubResource("BoxShape3D_7uxqs")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head" unique_id=397843851]
+mesh = SubResource("BoxMesh_xe1wl")
+
+[node name="GunAnchor" type="Node3D" parent="Head" unique_id=1888300759]
+transform = Transform3D(0.99862957, 0, 0.052335955, 0, 1, 0, -0.052335955, 0, 0.99862957, -0.11376661, -0.3865555, -0.7938808)
+
+[node name="AiGun" parent="Head/GunAnchor" unique_id=1898349047 instance=ExtResource("2_0vt7c")]

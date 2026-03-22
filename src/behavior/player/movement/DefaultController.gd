@@ -140,6 +140,7 @@ func _assign_server_spawn_from_character_faction() -> bool:
 
 
 func _ready():
+	add_to_group("players")
 	connect("character_update", Global.emit_character_update)
 	Global.connect("character_update", char_serv_update)
 	res_sphere.set_player(self)
@@ -459,9 +460,20 @@ func _request_damage(dmg: int):
 func _apply_authoritative_damage(dmg: int):
 	health_handler.apply_authoritative_damage(self, dmg)
 
+@rpc("any_peer", "reliable")
+func _request_heal(requested_heal: float):
+	health_handler.request_heal(self, requested_heal)
+
+func _apply_authoritative_heal(requested_heal: float):
+	health_handler.apply_authoritative_heal(self, requested_heal)
+
 @rpc("authority", "reliable")
 func _sync_damage_feedback(updated_health: float):
 	health_handler.sync_damage_feedback(self, updated_health)
+
+@rpc("authority", "reliable")
+func _sync_heal_feedback(updated_health: float, updated_pool: float):
+	health_handler.sync_heal_feedback(self, updated_health, updated_pool)
 
 # this will be an RPC
 func extract():

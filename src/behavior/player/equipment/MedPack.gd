@@ -13,22 +13,19 @@ class_name  MedPack
 func _init():
 	continuous_usage = true
 
-func use(player: DefaultController):
-	if player.current_health != player.FULL_HEALTH and health_pool != 0:
-		var heal_amount: float = heal_rate * player.delta
-		
-		# Do not heal past maximum health or more than available in health pool
-		if player.current_health + heal_amount > player.FULL_HEALTH:
-			heal_amount = player.FULL_HEALTH - player.current_health
-		if heal_amount > health_pool:
-			heal_amount = health_pool
-			
-		player._set_current_health(player.current_health + heal_amount)
-		health_pool -= heal_amount
-			
-		print('healed ' + str(heal_amount) + ' to: '\
-		 	+ str(player.current_health))
-		print('health available: ' + str(health_pool))
+func use(controller: DefaultController):
+	if controller.current_health >= controller.FULL_HEALTH or health_pool <= 0:
+		return
+
+	var requested_heal: float = heal_rate * controller.delta
+	if requested_heal <= 0.0:
+		return
+
+	if controller.multiplayer.is_server():
+		controller._apply_authoritative_heal(requested_heal)
+		controller._sync_heal_feedback(controller.current_health, health_pool)
+	else:
+		controller._request_heal.rpc_id(1, requested_heal)
 
 func get_ammo():
 	return [int(health_pool), 0]

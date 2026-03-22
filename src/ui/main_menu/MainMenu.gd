@@ -60,7 +60,6 @@ func _ready():
 
 	social_panel.add_friend_button_pressed.connect(_on_social_panel_add_friend_button_pressed)
 	friend_request_panel.friend_request_ready.connect(_on_friend_request_panel_ready)
-	account_api.get_account_info_update()
 	matchmaking_api.party_faction_updated.connect(_set_current_faction)
  
 	for character in Local.characters.characters.keys():
@@ -68,8 +67,8 @@ func _ready():
 
 
 func _process(_delta: float) -> void:
-	faction_select.disabled = not Local.party_leader and len(Local.party_members) > 1
-	queue_button.disabled = not Local.party_leader and queued
+	faction_select.disabled = (not Local.party_leader and len(Local.party_members) > 1) or queued
+	queue_button.disabled = (not Local.party_leader and len(Local.party_members) > 1) or queued
 
 func _set_current_faction(faction: int):
 	if not Local.party_leader:
