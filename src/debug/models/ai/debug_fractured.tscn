@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://co43limjfcye6"]
+
+[ext_resource type="PackedScene" uid="uid://bbwxi448gj8vd" path="res://debug/models/ai/debug_fractured.blend" id="1_houfi"]
+[ext_resource type="Script" uid="uid://q83sukqdv5ne" path="res://debug/models/ai/debug_fractured_animations.gd" id="2_juxkg"]
+[ext_resource type="PackedScene" uid="uid://7gaxokyt6yoo" path="res://debug/models/ai/aisword.tscn" id="3_juxkg"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_juxkg"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_y63hn"]
+radius = 0.3
+
+[node name="debug_fractured" unique_id=377594431 instance=ExtResource("1_houfi")]
+script = ExtResource("2_juxkg")
+
+[node name="Skeleton3D" parent="Armature" parent_id_path=PackedInt32Array(1743990016) index="0" unique_id=1893872138]
+bones/1/position = Vector3(1.4553053e-23, 2.1136918, -8.881784e-16)
+bones/2/rotation = Quaternion(-0.0141773075, -0.14532596, -0.2343332, 0.96112823)
+bones/4/rotation = Quaternion(2.8897682e-08, -3.1476124e-09, 0.24103914, 0.9705154)
+bones/7/rotation = Quaternion(-0.61889356, 0.011378649, 0.014889166, 0.7852513)
+bones/8/rotation = Quaternion(-0.007919762, 0.0027652318, -0.21546887, 0.97647476)
+bones/9/position = Vector3(0.8166822, -1.16699, -1.1951228)
+bones/9/rotation = Quaternion(0.8989725, -0.43508956, -0.04541428, -0.021979846)
+bones/10/rotation = Quaternion(-0.05801297, 0.81630504, 0.5732546, -0.04073997)
+bones/12/rotation = Quaternion(-0.535907, 0.20135814, 0.21896689, 0.7901342)
+bones/13/rotation = Quaternion(0.027589725, 0.012084527, 0.57767695, 0.8157096)
+bones/14/position = Vector3(1.8900628, 0.60204816, 1.0556965)
+bones/15/rotation = Quaternion(-0.7607845, -0.10614607, 0.6343905, 0.086536825)
+bones/16/rotation = Quaternion(0.2577825, -0.6445046, -0.03297475, 0.719079)
+bones/17/position = Vector3(-0.6558079, -1.9998577, -0.5510286)
+bones/18/rotation = Quaternion(0.63439065, -0.08653726, -0.7607845, 0.106145374)
+bones/19/rotation = Quaternion(0.25778115, 0.64450496, 0.032974448, 0.7190793)
+bones/20/position = Vector3(-0.655808, -1.9998579, 0.55102867)
+
+[node name="BoneAttachment3D" type="BoneAttachment3D" parent="Armature/Skeleton3D" index="1" unique_id=784574649]
+transform = Transform3D(-0.24113989, -0.24964672, 0.9378314, 0.85972357, -0.5032803, 0.08708534, 0.45025167, 0.8272757, 0.33598825, 1.5758325, 3.1275203, -1.3282236)
+bone_name = "hand_ik.R"
+bone_idx = 14
+use_external_skeleton = true
+external_skeleton = NodePath("..")
+
+[node name="aisword" parent="Armature/Skeleton3D/BoneAttachment3D" index="0" unique_id=1354367685 instance=ExtResource("3_juxkg")]
+transform = Transform3D(-0.11489537, 0.8651875, -0.48810875, 0.90874046, 0.2900098, 0.30014414, 0.40123698, -0.40907878, -0.8195514, 0.01689303, -0.20827413, -0.05109811)
+damage = 50.0
+
+[node name="PhysicalBoneSimulator3D" type="PhysicalBoneSimulator3D" parent="Armature/Skeleton3D" index="2" unique_id=1871259062]
+active = false
+
+[node name="Chest" type="PhysicalBone3D" parent="Armature/Skeleton3D/PhysicalBoneSimulator3D" index="0" unique_id=44868801]
+transform = Transform3D(0.28599814, 0.040856905, 0.95735884, -0.14142099, 0.9899495, -1.4358584e-07, -0.94773686, -0.13539058, 0.28890178, 1.1615473e-15, 2.7988183, 0.23957753)
+body_offset = Transform3D(1, -2.5331974e-07, 2.9802322e-08, 2.5331974e-07, 1.0000001, -1.8626451e-08, 0, 0, 1.0000001, 0, 0, 0)
+bone_name = "Chest"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Armature/Skeleton3D/PhysicalBoneSimulator3D/Chest" index="0" unique_id=287219015]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 1, -0.06562072, 0.45934606, -6.7055225e-08)
+shape = SubResource("SphereShape3D_juxkg")
+
+[node name="Hip" type="PhysicalBone3D" parent="Armature/Skeleton3D/PhysicalBoneSimulator3D" index="1" unique_id=1419594582]
+transform = Transform3D(1.735818e-08, -1.0637344e-11, 1, 0.33008415, 0.94395155, -5.719619e-09, -0.9439515, 0.33008415, 1.638879e-08, -8.881784e-16, 2.1136916, -1.4553053e-23)
+body_offset = Transform3D(1, 5.9604645e-08, 0, 0, 1.0000001, 1.0636825e-11, 0, -1.0638601e-11, 1, 0, 0, 0)
+bone_name = "Hip"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Armature/Skeleton3D/PhysicalBoneSimulator3D/Hip" index="0" unique_id=922729613]
+transform = Transform3D(1, 0, 1.7763568e-15, 0, 1, -5.5067062e-14, 0, 5.5067062e-14, 1, 0.11494285, 0.32870555, -1.994847e-09)
+shape = SubResource("SphereShape3D_y63hn")

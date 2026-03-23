@@ -2,14 +2,15 @@
 
 [ext_resource type="Material" path="res://debug/materials/debug_red.tres" id="1"]
 [ext_resource type="Script" uid="uid://caku43dp742sm" path="res://behavior/ai/basic_enemy/BasicEnemy.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://dhfj8i883dk8v" path="res://behavior/ai/ai_weapons/sword/AiSword.tscn" id="3_y1erf"]
+[ext_resource type="PackedScene" uid="uid://co43limjfcye6" path="res://debug/models/ai/debug_fractured.tscn" id="3_nt57i"]
 
 [sub_resource type="CapsuleMesh" id="1"]
 material = ExtResource("1")
 radius = 0.4
 
 [sub_resource type="CapsuleShape3D" id="2"]
-radius = 0.4
+radius = 0.34
+height = 1.8513672
 
 [node name="basic_enemy" type="CharacterBody3D" unique_id=1539581069]
 collision_layer = 10
@@ -17,9 +18,11 @@ script = ExtResource("2")
 debug_ai = true
 
 [node name="enemy_mesh" type="MeshInstance3D" parent="." unique_id=1350682020]
+visible = false
 mesh = SubResource("1")
 
 [node name="enemy_collision" type="CollisionShape3D" parent="." unique_id=179654301]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.91558033, 0)
 shape = SubResource("2")
 
 [node name="enemy_ground_check" type="RayCast3D" parent="." unique_id=1287885231]
@@ -28,11 +31,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.113872, 0)
 [node name="navigation" type="NavigationAgent3D" parent="." unique_id=211783728]
 target_desired_distance = 0.1
 
-[node name="SwordAnchor" type="Node3D" parent="." unique_id=337603674]
-transform = Transform3D(-0.99916553, 0, -0.040846657, 0, 1, 0, 0.040846657, 0, -0.99916553, 0.4135878, 0, -0.32693356)
-
-[node name="AiSword" parent="SwordAnchor" unique_id=106765665 instance=ExtResource("3_y1erf")]
-transform = Transform3D(1, 0, 0, 0, 0.9851725, 0.17156804, 0, -0.1715681, 0.9851722, 0, 0, 0)
-collision_mask = 8
-damage = 50.0
-model_yaw_offset_degrees = 0.0
+[node name="debug_fractured" parent="." unique_id=462416108 instance=ExtResource("3_nt57i")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.0029499233, 0, 0.0014638901)

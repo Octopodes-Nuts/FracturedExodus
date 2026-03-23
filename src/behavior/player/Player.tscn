@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dcudvv4sp7mpc"]
+[gd_scene format=3 uid="uid://dcudvv4sp7mpc"]
 
 [ext_resource type="Script" uid="uid://p561hd5ejgpe" path="res://behavior/player/movement/DefaultController.gd" id="1"]
 [ext_resource type="Script" uid="uid://dbotvawysdgfa" path="res://behavior/player/movement/SoundSphere.gd" id="3_6l03r"]
@@ -26,82 +26,82 @@ size = Vector3(0.3, 0.3, 0.3)
 [sub_resource type="BoxShape3D" id="BoxShape3D_6yuvp"]
 size = Vector3(0.2994995, 0.30334473, 0.29882813)
 
-[node name="player_body" type="CharacterBody3D"]
+[node name="player_body" type="CharacterBody3D" unique_id=404869370]
 collision_layer = 10
 script = ExtResource("1")
 MAX_SPEED = 4.0
 MAX_SPRINT = 7.0
 jump = 7.0
 
-[node name="player_mesh" type="MeshInstance3D" parent="."]
+[node name="player_mesh" type="MeshInstance3D" parent="." unique_id=1470333164]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.36986238, 0)
 mesh = SubResource("2")
 
-[node name="player_main_collider" type="CollisionShape3D" parent="."]
+[node name="player_main_collider" type="CollisionShape3D" parent="." unique_id=904595751]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.36547852, 0)
 shape = SubResource("1")
 
-[node name="ground_check_0" type="RayCast3D" parent="."]
+[node name="ground_check_0" type="RayCast3D" parent="." unique_id=313440129]
 target_position = Vector3(0, -2, 0)
 
-[node name="ground_check_1" type="RayCast3D" parent="."]
+[node name="ground_check_1" type="RayCast3D" parent="." unique_id=1301382526]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
 target_position = Vector3(0, -2, 0)
 
-[node name="ground_check_2" type="RayCast3D" parent="."]
+[node name="ground_check_2" type="RayCast3D" parent="." unique_id=233258993]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.3)
 target_position = Vector3(0, -2, 0)
 
-[node name="ground_check_3" type="RayCast3D" parent="."]
+[node name="ground_check_3" type="RayCast3D" parent="." unique_id=47088122]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0, 0)
 target_position = Vector3(0, -2, 0)
 
-[node name="ground_check_4" type="RayCast3D" parent="."]
+[node name="ground_check_4" type="RayCast3D" parent="." unique_id=795753062]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, 0)
 target_position = Vector3(0, -2, 0)
 
-[node name="sound_sphere" type="Area3D" parent="."]
+[node name="sound_sphere" type="Area3D" parent="." unique_id=1726100916]
 collision_layer = 4
 collision_mask = 4
 input_ray_pickable = false
 script = ExtResource("3_6l03r")
 
-[node name="collision" type="CollisionShape3D" parent="sound_sphere"]
+[node name="collision" type="CollisionShape3D" parent="sound_sphere" unique_id=1198258829]
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
 shape = SubResource("SphereShape3D_4ucha")
 
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=929095401]
 replication_config = SubResource("SceneReplicationConfig_psm2p")
 
-[node name="res_sphere" parent="." instance=ExtResource("3_6yuvp")]
+[node name="res_sphere" parent="." unique_id=1522033896 instance=ExtResource("3_6yuvp")]
 input_ray_pickable = false
 
-[node name="neck" type="Area3D" parent="."]
+[node name="neck" type="Area3D" parent="." unique_id=843563024]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36387455, 0)
 collision_layer = 8
 collision_mask = 8
 script = ExtResource("4_xn1ii")
 
-[node name="head" type="MeshInstance3D" parent="neck"]
+[node name="head" type="MeshInstance3D" parent="neck" unique_id=508676862]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17458147, 0)
 layers = 2
 mesh = SubResource("BoxMesh_6yuvp")
 skeleton = NodePath("../..")
 
-[node name="head_collision" type="CollisionShape3D" parent="neck"]
+[node name="head_collision" type="CollisionShape3D" parent="neck" unique_id=1366611763]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00021362305, 0.16973877, -0.0029296875)
 shape = SubResource("BoxShape3D_6yuvp")
 
-[node name="camera_head" type="Camera3D" parent="neck"]
+[node name="camera_head" type="Camera3D" parent="neck" unique_id=1552021269]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17458147, 0)
 
-[node name="gun_location" type="Node3D" parent="neck/camera_head"]
+[node name="gun_location" type="Node3D" parent="neck/camera_head" unique_id=1181246444]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)
 
-[node name="audio_player" type="AudioStreamPlayer3D" parent="."]
+[node name="audio_player" type="AudioStreamPlayer3D" parent="." unique_id=184064540]
 max_distance = 50.58
 
-[node name="footsteps" type="AudioStreamPlayer3D" parent="."]
+[node name="footsteps" type="AudioStreamPlayer3D" parent="." unique_id=794843996]
 max_distance = 179.5
 
 [connection signal="body_entered" from="sound_sphere" to="sound_sphere" method="_on_body_entered"]

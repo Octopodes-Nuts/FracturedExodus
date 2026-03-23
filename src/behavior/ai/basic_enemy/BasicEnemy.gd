@@ -7,6 +7,7 @@ extends CharacterBody3D
 @onready var navigation: NavigationAgent3D = $navigation
 @onready var enemy_mesh: MeshInstance3D = $enemy_mesh
 @onready var gun_location: Node3D = self
+@onready var debug_fractured_model: Node = get_node_or_null("debug_fractured")
 
 enum AiState {
 	IDLE,
@@ -45,9 +46,11 @@ enum AiState {
 @export var attack_range: float = 2.2
 @export var attack_cooldown: float = 0.9
 @export var debug_ai: bool = false
+@export var enable_ragdoll_on_death: bool = true
+@export var ragdoll_simulator_path: NodePath = NodePath("debug_fractured/Armature/Skeleton3D/PhysicalBoneSimulator3D")
+@export var corpse_lifetime_seconds: float = 20.0
 
-@onready var sword: Node = $SwordAnchor/AiSword
-
+var sword: Node = null
 var home: Area3D
 var current_state: AiState = AiState.IDLE
 var gravity_velocity: Vector3 = Vector3.ZERO
@@ -79,15 +82,27 @@ var retreat_color: Material = preload('res://debug/materials/debug_white.tres')
 
 func _ready() -> void:
 	set_multiplayer_authority(1)
+	set_physics_process(false)
+	if debug_ai:
+		print("[AI DEBUG][READY_ENTER] name=%s id=%s peer=%s authority=%s global_position=%s" % [
+			name,
+			get_instance_id(),
+			multiplayer.get_unique_id(),
+			get_multiplayer_authority(),
+			global_position,
+		])
+	_equip_sword_if_available()
+	await get_tree().physics_frame
 	max_health = maxf(max_health, health)
 	spawn_origin = global_position
 	_refresh_patrol_anchor()
 	_randomize_idle_timer()
-	_equip_sword_if_available()
 	_apply_state_visuals()
+	set_physics_process(true)
 	if debug_ai:
-		print("[AI DEBUG][READY] name=%s peer=%s authority=%s global_position=%s" % [
+		print("[AI DEBUG][READY_COMPLETE] name=%s id=%s peer=%s authority=%s global_position=%s" % [
 			name,
+			get_instance_id(),
 			multiplayer.get_unique_id(),
 			get_multiplayer_authority(),
 			global_position,
@@ -117,6 +132,12 @@ func _sync_state(sync_position: Vector3, sync_rotation: Vector3, sync_velocity: 
 	current_state = sync_state as AiState
 	_apply_state_visuals()
 
+@rpc("authority", "unreliable_ordered")
+func _sync_attack_swing() -> void:
+	if is_multiplayer_authority():
+		return
+	_play_debug_animation(&"swing", true)
+
 func hit(damage: float) -> void:
 	if _is_dead:
 		return
@@ -137,13 +158,87 @@ func _kill() -> void:
 	if _is_dead:
 		return
 	_is_dead = true
-	print("[AI HIT] DEAD: disabling and queuing free")
+	print("[AI HIT] DEAD: disabling controller")
 	set_physics_process(false)
 	set_process(false)
 	if has_node("CollisionShape3D"):
 		$CollisionShape3D.disabled = true
+	if enable_ragdoll_on_death and _activate_ragdoll_on_death():
+		_schedule_corpse_cleanup()
+		return
 	visible = false
 	call_deferred("queue_free")
+
+func _activate_ragdoll_on_death() -> bool:
+	if is_instance_valid(debug_fractured_model):
+		var animation_tree: AnimationTree = debug_fractured_model.get_node_or_null("AnimationTree")
+		if animation_tree != null:
+			animation_tree.active = false
+		var animation_player: AnimationPlayer = debug_fractured_model.get_node_or_null("AnimationPlayer")
+		if animation_player != null:
+			animation_player.stop()
+
+	var simulator := _resolve_ragdoll_simulator()
+	if simulator == null:
+		if debug_ai:
+			print("[AI DEBUG][DEATH] No PhysicalBoneSimulator3D found at path=%s; falling back to despawn." % [ragdoll_simulator_path])
+		return false
+
+	var physical_bone_count := _count_physical_bones_recursive(simulator.get_parent())
+	if physical_bone_count <= 0:
+		if debug_ai:
+			print("[AI DEBUG][DEATH] PhysicalBoneSimulator3D found but no PhysicalBone3D nodes are present; ragdoll cannot simulate.")
+		return false
+
+	simulator.active = true
+
+	if simulator.has_method("physical_bones_start_simulation"):
+		simulator.call("physical_bones_start_simulation")
+	elif simulator.has_method("start_simulation"):
+		simulator.call("start_simulation")
+	else:
+		if debug_ai:
+			print("[AI DEBUG][DEATH] Ragdoll simulator found but has no start simulation method.")
+		return false
+
+	if debug_ai:
+		print("[AI DEBUG][DEATH] Ragdoll activated (physical_bones=%d)" % [physical_bone_count])
+	return true
+
+func _resolve_ragdoll_simulator() -> PhysicalBoneSimulator3D:
+	var by_path := get_node_or_null(ragdoll_simulator_path)
+	if by_path is PhysicalBoneSimulator3D:
+		return by_path as PhysicalBoneSimulator3D
+	return _find_physical_bone_simulator_recursive(self)
+
+func _find_physical_bone_simulator_recursive(node: Node) -> PhysicalBoneSimulator3D:
+	if node is PhysicalBoneSimulator3D:
+		return node as PhysicalBoneSimulator3D
+	for child in node.get_children():
+		var match := _find_physical_bone_simulator_recursive(child)
+		if match != null:
+			return match
+	return null
+
+func _count_physical_bones_recursive(node: Node) -> int:
+	if node == null:
+		return 0
+	var count := 0
+	if node is PhysicalBone3D:
+		count += 1
+	for child in node.get_children():
+		count += _count_physical_bones_recursive(child)
+	return count
+
+func _schedule_corpse_cleanup() -> void:
+	if corpse_lifetime_seconds <= 0.0:
+		return
+	var timer := get_tree().create_timer(corpse_lifetime_seconds)
+	timer.timeout.connect(_on_corpse_cleanup_timeout)
+
+func _on_corpse_cleanup_timeout() -> void:
+	if is_inside_tree():
+		queue_free()
 
 func _physics_process(delta: float) -> void:
 	if _is_dead:
@@ -327,6 +422,7 @@ func _set_state(next_state: AiState) -> void:
 	_apply_state_visuals()
 
 func _apply_state_visuals() -> void:
+	_sync_debug_animation_with_state()
 	if not is_instance_valid(enemy_mesh):
 		return
 	var mesh = enemy_mesh.get_mesh()
@@ -347,6 +443,27 @@ func _apply_state_visuals() -> void:
 			enemy_mesh.set_surface_override_material(0, attack_color)
 		AiState.RETREAT:
 			enemy_mesh.set_surface_override_material(0, retreat_color)
+
+func _sync_debug_animation_with_state() -> void:
+	match current_state:
+		AiState.IDLE, AiState.SCAN:
+			_play_debug_animation(&"idle")
+		AiState.PATROL, AiState.AWARE:
+			_play_debug_animation(&"walk")
+		AiState.PURSUIT, AiState.RETREAT:
+			_play_debug_animation(&"run")
+		AiState.ATTACK:
+			_play_debug_animation(&"swing", true)
+
+func _play_debug_animation(method_name: StringName, force_restart: bool = false) -> void:
+	if not is_instance_valid(debug_fractured_model):
+		return
+	if not force_restart:
+		var ap: AnimationPlayer = debug_fractured_model.get_node_or_null("AnimationPlayer")
+		if ap != null and ap.is_playing() and ap.current_animation.to_lower() == String(method_name):
+			return
+	if debug_fractured_model.has_method(method_name):
+		debug_fractured_model.call(method_name)
 
 func _cast_vision_cone() -> void:
 	var eye_position := global_position + Vector3.UP * vision_eye_height
@@ -419,6 +536,9 @@ func _pick_retreat_target() -> Vector3:
 	return global_position + Vector3(away_2d.x, 0.0, away_2d.y) * retreat_distance
 
 func _equip_sword_if_available() -> void:
+	sword = get_node_or_null("SwordAnchor/AiSword")
+	if sword == null:
+		sword = find_child("aisword", true, false)
 	if not is_instance_valid(sword):
 		return
 	if sword.has_method("_set_active"):
@@ -435,6 +555,8 @@ func _attempt_attack() -> void:
 		if eye_position.distance_squared_to(target_center) > close_contact_vision_distance * close_contact_vision_distance:
 			return
 	_attack_age = 0.0
+	_play_debug_animation(&"swing", true)
+	_sync_attack_swing.rpc()
 	_trigger_sword_use()
 	if debug_ai:
 		print("[AI DEBUG][ATTACK] name=%s target=%s swing=true" % [name, tracked_player.name])

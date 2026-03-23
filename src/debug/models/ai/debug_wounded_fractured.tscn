@@ -1,0 +1,96 @@
+[gd_scene format=3 uid="uid://dqic3ygbkpmgj"]
+
+[ext_resource type="PackedScene" uid="uid://bbwxi448gj8vd" path="res://debug/models/ai/debug_fractured.blend" id="1_2vmn8"]
+[ext_resource type="PackedScene" uid="uid://be7nd82g8x3l2" path="res://behavior/ai/ai_weapons/basic_ai_gun/BasicAIGun.tscn" id="2_2auug"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mx48c"]
+animation = &"HoldingGun"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_q1ahv"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:clav.L", "Armature/Skeleton3D:clav.R", "Armature/Skeleton3D:forearm.L", "Armature/Skeleton3D:forearm.R", "Armature/Skeleton3D:hand.L", "Armature/Skeleton3D:hand.R", "Armature/Skeleton3D:upperarm.L", "Armature/Skeleton3D:upperarm.R"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2vmn8"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2auug"]
+animation = &"Run"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3h4it"]
+animation = &"Walk"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_q8ua1"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w6nvc"]
+advance_mode = 2
+advance_expression = "is_walking == true"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mp7hn"]
+advance_mode = 2
+advance_expression = "is_running == true"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w8rek"]
+advance_mode = 2
+advance_expression = "is_walking == false"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cjnyd"]
+advance_mode = 2
+advance_expression = "is_idle == true"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_mx48c"]
+states/Idle/node = SubResource("AnimationNodeAnimation_2vmn8")
+states/Idle/position = Vector2(345, 100)
+states/Run/node = SubResource("AnimationNodeAnimation_2auug")
+states/Run/position = Vector2(735, 100)
+states/Walk/node = SubResource("AnimationNodeAnimation_3h4it")
+states/Walk/position = Vector2(542, 100)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_q8ua1"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_w6nvc"), "Walk", "Run", SubResource("AnimationNodeStateMachineTransition_mp7hn"), "Run", "Walk", SubResource("AnimationNodeStateMachineTransition_w8rek"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_cjnyd")]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_q1ahv"]
+graph_offset = Vector2(-580.8449, -63.371944)
+nodes/StateMachine/node = SubResource("AnimationNodeStateMachine_mx48c")
+nodes/StateMachine/position = Vector2(-340, 40)
+nodes/Blend2/node = SubResource("AnimationNodeBlend2_q1ahv")
+nodes/Blend2/position = Vector2(60, 140)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_mx48c")
+nodes/Animation/position = Vector2(-280, 260)
+node_connections = [&"output", 0, &"Blend2", &"Blend2", 0, &"StateMachine", &"Blend2", 1, &"Animation"]
+
+[node name="debug_fractured" unique_id=743685147 instance=ExtResource("1_2vmn8")]
+
+[node name="Skeleton3D" parent="Armature" parent_id_path=PackedInt32Array(1743990016) index="0" unique_id=1893872138]
+bones/1/position = Vector3(1.4553053e-23, 2.1136918, -8.881784e-16)
+bones/2/rotation = Quaternion(4.9818425e-08, -5.9563565e-08, -0.23687194, 0.971541)
+bones/4/rotation = Quaternion(3.0131577e-08, -1.0604378e-08, 0.24103914, 0.9705154)
+bones/7/rotation = Quaternion(-0.65012074, 0.057662524, -0.29119012, 0.6994473)
+bones/8/rotation = Quaternion(-0.02692091, 0.0019265483, -0.732422, 0.6803158)
+bones/9/position = Vector3(0.8166821, -1.16699, -1.1951228)
+bones/9/rotation = Quaternion(0.8989725, -0.43508956, -0.045414284, -0.02197985)
+bones/10/rotation = Quaternion(-0.058012974, 0.81630504, 0.5732546, -0.04073996)
+bones/12/rotation = Quaternion(-0.63199514, -0.24224761, 0.058581363, 0.7338028)
+bones/13/rotation = Quaternion(-0.03246827, -0.0013241814, 0.8833443, 0.467597)
+bones/14/position = Vector3(0.8166821, -1.1669898, 1.1951231)
+bones/15/rotation = Quaternion(-0.7607845, -0.10614607, 0.6343905, 0.086536825)
+bones/16/rotation = Quaternion(0.2577825, -0.6445046, -0.03297475, 0.719079)
+bones/17/position = Vector3(-0.6558079, -1.9998577, -0.5510286)
+bones/18/rotation = Quaternion(0.63439065, -0.08653726, -0.7607845, 0.106145374)
+bones/19/rotation = Quaternion(0.25778115, 0.64450496, 0.032974448, 0.7190793)
+bones/20/position = Vector3(-0.655808, -1.9998579, 0.55102867)
+bones/24/position = Vector3(-0.43122864, 2.540652, -0.91257757)
+bones/24/rotation = Quaternion(0.74071836, -0.6646749, -0.0936892, -0.027677428)
+
+[node name="ModifierBoneTarget3D" type="ModifierBoneTarget3D" parent="Armature/Skeleton3D" index="1" unique_id=1308909449]
+transform = Transform3D(-0.100778975, -1.8176766e-07, 0.99490875, 0.85972357, -0.5032803, 0.087085344, 0.5007181, 0.864123, 0.05072024, 1.195123, 1.5280613, -0.4038592)
+bone_name = "hand_ik.R"
+bone = 14
+
+[node name="BasicAiGun" parent="Armature/Skeleton3D/ModifierBoneTarget3D" index="0" unique_id=320876066 instance=ExtResource("2_2auug")]
+transform = Transform3D(-0.11640861, 0.8597241, 0.49731702, -0.027058555, -0.5032805, 0.8636997, 0.9928329, 0.08708535, 0.08184904, 0.93892217, -1.2700441, -0.98776007)
+
+[node name="PhysicalBoneSimulator3D" type="PhysicalBoneSimulator3D" parent="Armature/Skeleton3D" index="2" unique_id=1037862870]
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="2" unique_id=1409702038]
+tree_root = SubResource("AnimationNodeBlendTree_q1ahv")
+anim_player = NodePath("../AnimationPlayer")
+parameters/Blend2/blend_amount = 1.0
