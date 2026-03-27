@@ -13,7 +13,7 @@ var movement_handler = preload("res://behavior/player/movement/DefaultController
 var health_handler = preload("res://behavior/player/movement/DefaultControllerHealth.gd").new()
 
 var DEFAULT_LERP = 20.0
-const RECONCILE_DISTANCE_SQUARED = 0.0004
+const RECONCILE_DISTANCE_SQUARED = 0.0025
 const REMOTE_POSITION_LERP = 14.0
 const REMOTE_ROTATION_LERP = 18.0
 const REMOTE_EXTRAPOLATION_SEC = 0.03
@@ -160,10 +160,10 @@ func _ready():
 	
 	if not _is_local_player(): return
 	
-	Local.input_active = true
+	Local.set_state("input_active", true)
 	camera.make_current()
-	if Local.terrain:
-		Local.terrain.set_camera(camera)
+	if Local.get_state("terrain"):
+		Local.get_state("terrain").set_camera(camera)
 	add_child(HUD)
 	var health_slider = HUD.get_node("health_slider")
 	health_slider.max_value = FULL_HEALTH
@@ -171,7 +171,7 @@ func _ready():
 	
 	# set up default character
 	character = Character.new()
-	character.load_from_character(Local.selected_character_def)
+	character.load_from_character(Local.get_state("selected_character_def"))
 	# character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	# character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
@@ -180,14 +180,15 @@ func _ready():
 	# end default character
 	swap_equipped(character.primary_weapon)
 	# load from character 
-	Local.player = self
-	Local.HUD = HUD
+	Local.set_state("player", self)
+	Local.set_hud(HUD)
 	net_yaw = rotation.y
 	net_pitch = neck.rotation.x
 	send_character_data.rpc_id(1, _character_payload())
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 func _set_current_health(updated_health: float):
+	if not _is_local_player(): return
 	if updated_health <= 0:
 		current_health = 0
 	elif updated_health >= FULL_HEALTH:
@@ -198,7 +199,7 @@ func _set_current_health(updated_health: float):
 	HUD.get_node("health_slider").value = current_health
 
 func char_serv_update(ids: Array):
-	
+	if not _is_local_player(): return
 	if name in ids:
 		if multiplayer.is_server() and not server_spawn_assigned_by_faction:
 			server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
@@ -218,7 +219,9 @@ func _ads(dt: float):
 				active_equipable.ADS_LERP * dt)
 		camera.fov = lerp(camera.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * dt)
 		if _is_local_player():
-			Local.HUD.set_visible(false)
+			var hud: Control = Local.get_hud()
+			if hud != null:
+				hud.set_visible(false)
 
 func _undo_ads(dt: float):
 	if active_equipable is Weapon:
@@ -227,7 +230,9 @@ func _undo_ads(dt: float):
 				active_equipable.ADS_LERP * dt)
 		camera.fov = lerp(camera.fov, float(Settings.FOV), active_equipable.ADS_LERP * dt)
 		if _is_local_player():
-			Local.HUD.set_visible(true)
+			var hud: Control = Local.get_hud()
+			if hud != null:
+				hud.set_visible(true)
 	elif camera.fov != float(Settings.FOV):
 		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * dt)
 
@@ -405,13 +410,13 @@ func _character_payload() -> Dictionary:
 	
 	return {
 		"active": current_equipped_index,
-		"name": Local.selected_character_def.Name,
-		"wep1": Local.selected_character_def.Weapon1,
-		"wep2": Local.selected_character_def.Weapon2,
-		"wep3": Local.selected_character_def.Weapon3,
-		"eq1": Local.selected_character_def.Equipment1,
-		"eq2": Local.selected_character_def.Equipment2,
-		"faction": Local.selected_character_def.Faction,
+		"name": Local.get_state("selected_character_def").Name,
+		"wep1": Local.get_state("selected_character_def").Weapon1,
+		"wep2": Local.get_state("selected_character_def").Weapon2,
+		"wep3": Local.get_state("selected_character_def").Weapon3,
+		"eq1": Local.get_state("selected_character_def").Equipment1,
+		"eq2": Local.get_state("selected_character_def").Equipment2,
+		"faction": Local.get_state("selected_character_def").Faction,
 		"scanner": character.has_scanner,
 		"obj": character.has_objective
 	}
@@ -483,16 +488,18 @@ func extract():
 	notify_extract(character.has_objective)
 	#Send RPC to server to remove node from scene
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	Local.input_active = false
+	Local.set_state("input_active", false)
 	multiplayer.multiplayer_peer = null
-	Local.has_objective = character.has_objective
+	Local.set_state("has_objective", character.has_objective)
 	if not get_tree().change_scene_to_file("res://ui/extraction/Extraction.tscn") == OK:
 		print("Error getting to file")
 	print('extract successful')
 
 func notify_extract(objective_left):
-	if objective_left and not Local.host:
-		Local.HUD.notify.rpc("Objective has left the mission area", 3.0)
+	if objective_left and not Local.get_state("host"):
+		var hud: Control = Local.get_hud()
+		if hud != null:
+			hud.notify.rpc("Objective has left the mission area", 3.0)
 
 @rpc("any_peer", "reliable")
 func res(revive_health: float):

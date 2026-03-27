@@ -28,6 +28,7 @@ Types="*res://behavior/types.gd"
 WeaponRegister="*res://behavior/weapon_register.gd"
 Local="*res://behavior/local.gd"
 ClassRegister="*res://behavior/class_register.gd"
+EquipmentRegister="*uid://2lfwy3jn5wvd"
 
 [display]
 

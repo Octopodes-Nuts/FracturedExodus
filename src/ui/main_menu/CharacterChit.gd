@@ -16,5 +16,5 @@ func render():
 
 func _pressed() -> void:
 	if _def != null:
-		Local.selected_character_def = _def
+		Local.set_state("selected_character_def", _def)
 		Local.emit_character_updated()

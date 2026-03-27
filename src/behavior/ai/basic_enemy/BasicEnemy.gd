@@ -4,6 +4,17 @@
 ###############################################################
 extends CharacterBody3D
 
+const PERF_REPORT_INTERVAL_MS := 1000
+
+static var _perf_last_report_ms: int = 0
+static var _perf_active_ai: int = 0
+static var _perf_physics_calls: int = 0
+static var _perf_physics_us_total: int = 0
+static var _perf_bt_us_total: int = 0
+static var _perf_move_us_total: int = 0
+static var _perf_sync_rpcs: int = 0
+static var _perf_vision_checks: int = 0
+
 @onready var navigation: NavigationAgent3D = $navigation
 @onready var enemy_mesh: MeshInstance3D = $enemy_mesh
 @onready var gun_location: Node3D = self
@@ -40,7 +51,9 @@ enum AiState {
 @export var vision_range: float = 22.0
 @export var vision_fov: float = 100.0
 @export var vision_eye_height: float = 1.6
-@export var vision_check_interval: float = 0.15
+@export var vision_check_interval: float = 0.25
+@export var behavior_tick_interval: float = 0.12
+@export var sync_interval: float = 0.12
 @export var close_contact_vision_distance: float = 2.4
 @export var turn_speed: float = 10.0
 @export var attack_range: float = 2.2
@@ -71,6 +84,25 @@ var tracked_player: Node3D
 var _vision_timer: float = 0.0
 var _attack_age: float = INF
 var _is_dead: bool = false
+var _ragdoll_visual_scale: Vector3 = Vector3.ONE
+var _behavior_tick_timer: float = 0.0
+var _sync_timer: float = 0.0
+var _cached_desired_velocity: Vector3 = Vector3.ZERO
+var _cached_players: Array = []
+var _player_cache_timer: float = 0.0
+const _PLAYER_CACHE_INTERVAL: float = 0.5
+var _can_see_tracked_player: bool = false
+var _last_nav_target: Vector3 = Vector3(INF, INF, INF)
+
+const REMOTE_POSITION_LERP: float = 12.0
+const REMOTE_ROTATION_LERP: float = 16.0
+const REMOTE_EXTRAPOLATION_SEC: float = 0.05
+var _has_remote_snapshot: bool = false
+var _remote_target_position: Vector3 = Vector3.ZERO
+var _remote_target_rotation_y: float = 0.0
+var _stuck_timer: float = 0.0
+const _STUCK_VELOCITY_SQ: float = 0.1
+const _STUCK_TIMEOUT: float = 2.0
 
 var idle_color: Material = preload('res://debug/materials/debug_teal.tres')
 var patrol_color: Material = preload('res://debug/materials/debug_yellow.tres')
@@ -83,6 +115,8 @@ var retreat_color: Material = preload('res://debug/materials/debug_white.tres')
 func _ready() -> void:
 	set_multiplayer_authority(1)
 	set_physics_process(false)
+	if multiplayer.is_server():
+		_perf_active_ai += 1
 	if debug_ai:
 		print("[AI DEBUG][READY_ENTER] name=%s id=%s peer=%s authority=%s global_position=%s" % [
 			name,
@@ -107,6 +141,7 @@ func _ready() -> void:
 			get_multiplayer_authority(),
 			global_position,
 		])
+	_cache_ragdoll_visual_scale()
 
 func noise(source_position: Vector3) -> void:
 	if is_multiplayer_authority():
@@ -125,12 +160,17 @@ func _report_noise(source_position: Vector3) -> void:
 func _sync_state(sync_position: Vector3, sync_rotation: Vector3, sync_velocity: Vector3, sync_gravity: Vector3, sync_state: int) -> void:
 	if is_multiplayer_authority():
 		return
-	global_position = sync_position
-	global_rotation = sync_rotation
+	var flat_velocity := Vector3(sync_velocity.x, 0.0, sync_velocity.z)
+	_remote_target_position = sync_position + flat_velocity * REMOTE_EXTRAPOLATION_SEC
+	_remote_target_rotation_y = sync_rotation.y
+	_has_remote_snapshot = true
 	velocity = sync_velocity
 	gravity_velocity = sync_gravity
-	current_state = sync_state as AiState
-	_apply_state_visuals()
+	var new_state := sync_state as AiState
+	var state_changed := new_state != current_state
+	current_state = new_state
+	if state_changed:
+		_apply_state_visuals()
 
 @rpc("authority", "unreliable_ordered")
 func _sync_attack_swing() -> void:
@@ -158,6 +198,8 @@ func _kill() -> void:
 	if _is_dead:
 		return
 	_is_dead = true
+	if multiplayer.is_server():
+		_perf_active_ai = maxi(0, _perf_active_ai - 1)
 	print("[AI HIT] DEAD: disabling controller")
 	set_physics_process(false)
 	set_process(false)
@@ -190,6 +232,8 @@ func _activate_ragdoll_on_death() -> bool:
 			print("[AI DEBUG][DEATH] PhysicalBoneSimulator3D found but no PhysicalBone3D nodes are present; ragdoll cannot simulate.")
 		return false
 
+	_cache_ragdoll_visual_scale()
+
 	simulator.active = true
 
 	if simulator.has_method("physical_bones_start_simulation"):
@@ -201,9 +245,32 @@ func _activate_ragdoll_on_death() -> bool:
 			print("[AI DEBUG][DEATH] Ragdoll simulator found but has no start simulation method.")
 		return false
 
+	_stabilize_ragdoll_scale()
+
 	if debug_ai:
 		print("[AI DEBUG][DEATH] Ragdoll activated (physical_bones=%d)" % [physical_bone_count])
 	return true
+
+func _cache_ragdoll_visual_scale() -> void:
+	if is_instance_valid(debug_fractured_model) and debug_fractured_model is Node3D:
+		_ragdoll_visual_scale = (debug_fractured_model as Node3D).global_transform.basis.get_scale()
+
+func _stabilize_ragdoll_scale() -> void:
+	if not is_instance_valid(debug_fractured_model) or not (debug_fractured_model is Node3D):
+		return
+	var model := debug_fractured_model as Node3D
+	var model_transform := model.global_transform
+	var orthonormal_basis := model_transform.basis.orthonormalized()
+	model.global_transform = Transform3D(orthonormal_basis.scaled(_ragdoll_visual_scale), model_transform.origin)
+	call_deferred("_stabilize_ragdoll_scale_deferred")
+
+func _stabilize_ragdoll_scale_deferred() -> void:
+	if not is_instance_valid(debug_fractured_model) or not (debug_fractured_model is Node3D):
+		return
+	var model := debug_fractured_model as Node3D
+	var model_transform := model.global_transform
+	var orthonormal_basis := model_transform.basis.orthonormalized()
+	model.global_transform = Transform3D(orthonormal_basis.scaled(_ragdoll_visual_scale), model_transform.origin)
 
 func _resolve_ragdoll_simulator() -> PhysicalBoneSimulator3D:
 	var by_path := get_node_or_null(ragdoll_simulator_path)
@@ -244,22 +311,39 @@ func _physics_process(delta: float) -> void:
 	if _is_dead:
 		return
 	if not is_multiplayer_authority():
+		_interpolate_remote(delta)
 		return
-	_refresh_patrol_anchor()
+	var physics_start_us := Time.get_ticks_usec()
 	state_time += delta
 	noise_age += delta
 	noise_chain_age += delta
 	_attack_age += delta
 	_vision_timer -= delta
+	_behavior_tick_timer -= delta
+	_sync_timer -= delta
+	_player_cache_timer -= delta
+	if _player_cache_timer <= 0.0:
+		_player_cache_timer = _PLAYER_CACHE_INTERVAL
+		_cached_players = get_tree().get_nodes_in_group("players")
 	if _vision_timer <= 0.0:
 		_vision_timer = vision_check_interval
+		_perf_vision_checks += 1
 		_cast_vision_cone()
 	if not is_instance_valid(tracked_player) and noise_age > aware_timeout:
 		tracked_player = null
 
-	var desired_velocity := _tick_behavior_tree(delta)
+	var desired_velocity := _cached_desired_velocity
+	if _behavior_tick_timer <= 0.0:
+		_behavior_tick_timer = behavior_tick_interval
+		_refresh_patrol_anchor()
+		var bt_start_us := Time.get_ticks_usec()
+		desired_velocity = _tick_behavior_tree(delta)
+		_perf_bt_us_total += Time.get_ticks_usec() - bt_start_us
+		_cached_desired_velocity = desired_velocity
+		_check_stuck(desired_velocity)
 	_update_facing(delta, desired_velocity)
 
+	var move_start_us := Time.get_ticks_usec()
 	if not is_on_floor():
 		gravity_velocity += Vector3.DOWN * gravity * delta
 	else:
@@ -270,9 +354,44 @@ func _physics_process(delta: float) -> void:
 	velocity.y = gravity_velocity.y
 	set_up_direction(Vector3.UP)
 	move_and_slide()
+	_perf_move_us_total += Time.get_ticks_usec() - move_start_us
 	if is_on_floor() and gravity_velocity.y < 0.0:
 		gravity_velocity = Vector3.ZERO
-	_sync_state.rpc(global_position, global_rotation, velocity, gravity_velocity, current_state)
+	if _sync_timer <= 0.0:
+		_sync_timer = sync_interval
+		_sync_state.rpc(global_position, global_rotation, velocity, gravity_velocity, current_state)
+		_perf_sync_rpcs += 1
+
+	_perf_physics_calls += 1
+	_perf_physics_us_total += Time.get_ticks_usec() - physics_start_us
+
+	var now_ms := Time.get_ticks_msec()
+	if _perf_last_report_ms == 0:
+		_perf_last_report_ms = now_ms
+	elif now_ms - _perf_last_report_ms >= PERF_REPORT_INTERVAL_MS:
+		var avg_ai_ms := 0.0
+		var avg_bt_ms := 0.0
+		var avg_move_ms := 0.0
+		if _perf_physics_calls > 0:
+			avg_ai_ms = float(_perf_physics_us_total) / float(_perf_physics_calls) / 1000.0
+			avg_bt_ms = float(_perf_bt_us_total) / float(_perf_physics_calls) / 1000.0
+			avg_move_ms = float(_perf_move_us_total) / float(_perf_physics_calls) / 1000.0
+		print("[AI PROF][SERVER] active_ai=%d ticks=%d avg_ai_ms=%.3f avg_bt_ms=%.3f avg_move_ms=%.3f sync_rpcs=%d vision_checks=%d" % [
+			_perf_active_ai,
+			_perf_physics_calls,
+			avg_ai_ms,
+			avg_bt_ms,
+			avg_move_ms,
+			_perf_sync_rpcs,
+			_perf_vision_checks,
+		])
+		_perf_last_report_ms = now_ms
+		_perf_physics_calls = 0
+		_perf_physics_us_total = 0
+		_perf_bt_us_total = 0
+		_perf_move_us_total = 0
+		_perf_sync_rpcs = 0
+		_perf_vision_checks = 0
 
 	if debug_ai:
 		pass
@@ -392,7 +511,7 @@ func _should_attack() -> bool:
 		return false
 	if not _is_player_in_attack_range(tracked_player.global_position):
 		return false
-	if _can_see_player(tracked_player):
+	if _can_see_tracked_player:
 		return true
 	var eye_position := global_position + Vector3.UP * vision_eye_height
 	var target_center := tracked_player.global_position + Vector3.UP * 0.9
@@ -412,6 +531,7 @@ func _set_state(next_state: AiState) -> void:
 		return
 	current_state = next_state
 	state_time = 0.0
+	_last_nav_target = Vector3(INF, INF, INF)
 	if current_state == AiState.IDLE:
 		has_patrol_target = false
 		has_retreat_target = false
@@ -465,11 +585,33 @@ func _play_debug_animation(method_name: StringName, force_restart: bool = false)
 	if debug_fractured_model.has_method(method_name):
 		debug_fractured_model.call(method_name)
 
+func _check_stuck(desired_velocity: Vector3) -> void:
+	var is_movement_state := current_state in [AiState.PATROL, AiState.AWARE, AiState.PURSUIT, AiState.RETREAT]
+	if not is_movement_state:
+		_stuck_timer = 0.0
+		return
+	if Vector2(desired_velocity.x, desired_velocity.z).length_squared() >= _STUCK_VELOCITY_SQ:
+		_stuck_timer = 0.0
+		return
+	_stuck_timer += behavior_tick_interval
+	_play_debug_animation(&"idle")
+	if _stuck_timer >= _STUCK_TIMEOUT:
+		_stuck_timer = 0.0
+		has_patrol_target = false
+		_set_state(AiState.IDLE)
+
+func _interpolate_remote(delta: float) -> void:
+	if not _has_remote_snapshot:
+		return
+	global_position = global_position.lerp(_remote_target_position, REMOTE_POSITION_LERP * delta)
+	global_rotation.y = lerp_angle(global_rotation.y, _remote_target_rotation_y, REMOTE_ROTATION_LERP * delta)
+
 func _cast_vision_cone() -> void:
+	_can_see_tracked_player = false
 	var eye_position := global_position + Vector3.UP * vision_eye_height
 	var half_fov_rad := deg_to_rad(vision_fov * 0.5)
 	var forward := -global_transform.basis.z
-	for candidate in get_tree().get_nodes_in_group("players"):
+	for candidate in _cached_players:
 		if not is_instance_valid(candidate) or not (candidate is Node3D):
 			continue
 		var player := candidate as Node3D
@@ -482,6 +624,8 @@ func _cast_vision_cone() -> void:
 			continue
 		if _can_see_player(player):
 			_spot_player(player)
+			if player == tracked_player:
+				_can_see_tracked_player = true
 
 func _spot_player(player: Node3D) -> void:
 	tracked_player = player
@@ -617,7 +761,11 @@ func _can_see_player(player: Node3D) -> bool:
 	return false
 
 func _update_navigation_target(target_position: Vector3) -> void:
-	navigation.target_position = Vector3(target_position.x, global_position.y, target_position.z)
+	var flat_target := Vector3(target_position.x, global_position.y, target_position.z)
+	if flat_target.distance_squared_to(_last_nav_target) < 0.25:
+		return
+	_last_nav_target = flat_target
+	navigation.target_position = flat_target
 
 func _move_toward_navigation(move_speed: float) -> Vector3:
 	var next_path_position := navigation.get_next_path_position()

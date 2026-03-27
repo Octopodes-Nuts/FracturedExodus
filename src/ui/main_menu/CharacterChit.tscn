@@ -1,16 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://jebyod4rmvpm"]
+[gd_scene format=3 uid="uid://jebyod4rmvpm"]
 
 [ext_resource type="Script" uid="uid://cfhwf3ev5v2xy" path="res://ui/main_menu/CharacterChit.gd" id="1_2gbfb"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_7wtgf"]
 
-[node name="character_chit" type="Button"]
+[node name="character_chit" type="Button" unique_id=1992695755]
 custom_minimum_size = Vector2(180, 180)
 offset_right = 138.0
 offset_bottom = 138.0
 script = ExtResource("1_2gbfb")
 
-[node name="name" type="Label" parent="."]
+[node name="name" type="Label" parent="." unique_id=1283504492]
 layout_mode = 0
 offset_left = 20.0
 offset_right = 157.0
@@ -18,7 +18,7 @@ offset_bottom = 29.0
 text = "name"
 horizontal_alignment = 1
 
-[node name="img" type="TextureRect" parent="."]
+[node name="img" type="TextureRect" parent="." unique_id=2012676847]
 layout_mode = 0
 offset_left = 15.0
 offset_top = 31.0

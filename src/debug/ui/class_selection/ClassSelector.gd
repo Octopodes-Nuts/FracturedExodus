@@ -17,7 +17,7 @@ func _ready():
 	entente_classes    = ClassRegister.entente_classes
 	empire_classes     = ClassRegister.empire_classes
 	free_agent_classes = ClassRegister.free_agent_classes
-	player = Local.player
+	player = Local.get_state("player")
 	generate_buttons(entente_classes, 0)
 	generate_buttons(empire_classes, 1)
 	generate_buttons(free_agent_classes, 2)
@@ -41,10 +41,10 @@ func generate_buttons(classes: Dictionary, row: int):
 
 func load_script(class_scene):
 	# set player class
-	Local.player.queue_free()
+	Local.get_state("player").queue_free()
 	var new_player =  class_scene.instantiate()
 	Global.map_root.add_child(new_player)
 	new_player.transform.origin = Vector3(0, 2, 0)
-	Local.player = new_player
+	Local.set_state("player", new_player)
 	queue_free()
 	get_parent().queue_free()

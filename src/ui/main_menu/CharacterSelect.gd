@@ -1,4 +1,6 @@
-extends Node
+extends Panel
+
+@export var new_character_dialogue: NewCharacterDialogue
 
 @onready var block = $scroll_container/block
 var account_api: AccountAPI
@@ -21,6 +23,8 @@ var last_names: PackedStringArray = PackedStringArray()
 func _ready() -> void:
 	first_names = _load_name_list(path_to_firsts, FALLBACK_FIRST_NAMES)
 	last_names = _load_name_list(path_to_lasts, FALLBACK_LAST_NAMES)
+	new_character_dialogue.create_character.connect(_on_new_character_dialogue_character_created)
+	Local.state_changed.connect(_on_local_state_changed)
 
 func _load_name_list(path: String, fallback: Array) -> PackedStringArray:
 	if not FileAccess.file_exists(path):
@@ -39,17 +43,8 @@ func _load_name_list(path: String, fallback: Array) -> PackedStringArray:
 		return PackedStringArray(fallback)
 	return PackedStringArray(names)
 
-func _conntect_to_pressed(btn: Button):
-	btn.connect("pressed", _new_char_selected)
-	
-func _new_char_selected():
-	emit_signal("new_char_selected")
-
-# Make a change here to generating names
-var rendered = false
 func _process(_delta: float) -> void:
-	if not rendered:
-		render()
+	pass
 
 func get_characters() -> Dictionary[String, CharacterDef]:
 	var d: Dictionary[String, CharacterDef] = {}
@@ -64,16 +59,16 @@ func render():
 
 	var characters_to_render: CharactersResource
 
-	if Local.selected_faction == Factions.ENTENTE:
-		characters_to_render = Local.entente_characters
-	elif Local.selected_faction == Factions.EMPIRE:
-		characters_to_render = Local.empire_characters
-	elif Local.selected_faction == Factions.FREE_AGENTS:
-		characters_to_render = Local.free_agent_characters
+	if Local.get_state("selected_faction") == Factions.ENTENTE:
+		characters_to_render = Local.get_state("entente_characters")
+	elif Local.get_state("selected_faction") == Factions.EMPIRE:
+		characters_to_render = Local.get_state("empire_characters")
+	elif Local.get_state("selected_faction") == Factions.FREE_AGENTS:
+		characters_to_render = Local.get_state("free_agent_characters")
 	else:
-		characters_to_render = Local.characters
+		characters_to_render = Local.get_state("characters")
 
-	if Local.selected_character_def and characters_to_render != null:
+	if Local.get_state("selected_character_def") and characters_to_render != null:
 		var pos = 0
 		for chr in characters_to_render.characters.keys():
 			# Skip empty character names
@@ -86,21 +81,26 @@ func render():
 			chit._def = characters_to_render.characters[chr]
 			chit.pos = pos
 			chit.render()
-			_conntect_to_pressed(chit)
 			pos += 1
-		rendered = true
 
 func _on_new_btn_pressed() -> void:
+	new_character_dialogue.show()
+
+func _on_local_state_changed(state: String, value: Variant):
+	if state == "selected_character_def":
+		hide()
+
+func _on_new_character_dialogue_character_created(character_name: String, class_type: int):
+	
 	if account_api == null:
 		push_error("AccountAPI not assigned in CharacterSelect")
 		return
-
+	
 	var char_def = CharacterDef.new()
-	char_def.Faction = Local.selected_faction
-	# prevent name collisions here
-	char_def.Name = get_name_name()
-	account_api.create_character(Local.session_token, char_def)
-	# ID needs to be saved here
+	char_def.Faction = Local.get_state("selected_faction")
+	char_def.Name = character_name
+	char_def.ClassType = class_type
+	account_api.create_character(Local.get_state("session_token"), char_def)
 	emit_signal("new_char_created")
 
 func _on_character_created():
@@ -113,11 +113,11 @@ func get_name_name():
 	var name_name = first_names[randi_range(0, len(first_names) - 1)] + " " +\
 		last_names[randi_range(0, len(last_names) - 1)]
 	var attempts := 0
-	while name_name in Local.characters.characters and attempts < 20:
+	while name_name in Local.get_state("characters").characters and attempts < 20:
 		name_name = first_names[randi_range(0, len(first_names) - 1)] + " " +\
 			last_names[randi_range(0, len(last_names) - 1)]
 		attempts += 1
 
-	if name_name in Local.characters.characters:
+	if name_name in Local.get_state("characters").characters:
 		name_name = "Rookie " + str(randi_range(1000, 9999))
 	return name_name

@@ -27,16 +27,22 @@ func interact(other):
 			_extract_chip.rpc()
 			other.get_objective()
 			_refresh(other)
-		Local.HUD.get_child(1).set_time_value((obtain_time / OBTAIN_TIME_TARGET) * 100)
+		var hud := Local.get_hud()
+		if hud != null:
+			hud.set_progress_percent((obtain_time / OBTAIN_TIME_TARGET) * 100)
 			
 
 func _add_interaction(_node: Node):
 	if not extracted:
-		Local.HUD.get_child(1).set_time_value((obtain_time / OBTAIN_TIME_TARGET) * 100)
-		Local.HUD.get_child(1).set_visible(true)
+		var hud := Local.get_hud()
+		if hud != null:
+			hud.set_progress_percent((obtain_time / OBTAIN_TIME_TARGET) * 100)
+			hud.set_progress_visible(true)
 
 func _remove_interaction(_node: Node):
-	Local.HUD.get_child(1).set_visible(false)
+	var hud := Local.get_hud()
+	if hud != null:
+		hud.set_progress_visible(false)
 
 @rpc("call_local")
 func _extract_chip():

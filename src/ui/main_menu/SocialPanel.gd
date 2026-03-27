@@ -1,5 +1,7 @@
 extends Panel
 
+@export var weapon_select: WeaponSelect
+
 @onready var FriendCodeLabel = $FriendCode
 @onready var FriendVBox = $FriendsContainer/VBoxContainer
 @onready var RequestsVBox = $RequestsContainer/VBoxContainer
@@ -20,13 +22,15 @@ var InviteChits: Dictionary = {}
 signal add_friend_button_pressed
 
 func _ready():
-	FriendCodeLabel.text = Local.player_id
+	FriendCodeLabel.text = Local.get_state("player_id")
 	AddFriendButton.pressed.connect(_add_friend_button_pressed)
+	weapon_select.opened.connect(hide)
+	weapon_select.closed.connect(show)
 
 func set_friend_chits():
 
 	var new_friends = {}
-	for friend in Local.friends:
+	for friend in Local.get_state("friends"):
 		new_friends[friend] = true
 		if not friend in FriendChits.keys():
 			var chit = FriendChitScene.instantiate()
@@ -50,7 +54,7 @@ func set_friend_chits():
 func set_request_chits():
 	var new_requests = {}
 
-	for request in Local.friend_requests:
+	for request in Local.get_state("friend_requests"):
 		new_requests[request] = true
 		print("[Request]: ", request)
 		if not request in RequestChits.keys():
@@ -72,7 +76,7 @@ func set_request_chits():
 
 func set_invite_chits():
 	var new_invites = {}
-	for invite in Local.party_invites:
+	for invite in Local.get_state("party_invites"):
 		var invite_id = invite["inviteId"]
 		new_invites[invite_id] = true
 		print("[Invite]: ", invite)

@@ -1,15 +1,14 @@
 extends RefCounted
 
 func update_local_health_ui(controller) -> void:
-	if not controller._is_local_player() or controller.Local.HUD == null:
+	if not controller._is_local_player() or not controller.Local.has_hud():
 		return
-	controller.Local.HUD.health_slider.value = (controller.current_health / controller.FULL_HEALTH) * 100
+	controller.Local.get_hud().set_health_percent((controller.current_health / controller.FULL_HEALTH) * 100)
 
 func set_local_death_ui(controller, dead: bool) -> void:
-	if not controller._is_local_player() or controller.Local.HUD == null:
+	if not controller._is_local_player() or not controller.Local.has_hud():
 		return
-	controller.Local.HUD.crosshair.visible = not dead
-	controller.Local.HUD.death_text.visible = dead
+	controller.Local.get_hud().set_dead_state(dead)
 
 func handle_hit(controller, dmg: int) -> void:
 	if controller.multiplayer.is_server():
@@ -92,8 +91,8 @@ func sync_heal_feedback(controller, updated_health: float, updated_pool: float) 
 		controller.active_equipable.health_pool = updated_pool
 	update_local_health_ui(controller)
 	set_local_death_ui(controller, false)
-	if controller._is_local_player() and controller.Local.HUD != null:
-		controller.Local.HUD.display_ammo(controller.active_equipable.get_ammo())
+	if controller._is_local_player() and controller.Local.has_hud():
+		controller.Local.get_hud().display_ammo(controller.active_equipable.get_ammo())
 
 func handle_res(controller, revive_health: float) -> void:
 	if not controller.multiplayer.is_server():

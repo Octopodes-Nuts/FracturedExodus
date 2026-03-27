@@ -1,0 +1,111 @@
+[gd_scene format=3 uid="uid://0nl6w8jibxr0"]
+
+[ext_resource type="Script" uid="uid://clmsu5t1ybnno" path="res://ui/main_menu/NewCharacterDialogue.gd" id="1_sdxi5"]
+
+[sub_resource type="ImageTexture" id="ImageTexture_tou15"]
+
+[node name="NewCharacterDialogue" type="Panel" unique_id=1621235896]
+custom_minimum_size = Vector2(20, 20)
+anchors_preset = -1
+anchor_right = 0.386
+anchor_bottom = 0.42200002
+offset_right = -0.11999512
+offset_bottom = 0.23999023
+script = ExtResource("1_sdxi5")
+
+[node name="InfantryButton" type="Button" parent="." unique_id=461785383]
+layout_mode = 0
+offset_left = 55.0
+offset_top = 344.0
+offset_right = 161.0
+offset_bottom = 375.0
+text = "Infantry"
+
+[node name="MedicButton" type="Button" parent="." unique_id=205739034]
+layout_mode = 0
+offset_left = 222.0
+offset_top = 344.0
+offset_right = 328.0
+offset_bottom = 375.0
+text = "Medic"
+
+[node name="SpecialButton" type="Button" parent="." unique_id=1303343939]
+layout_mode = 0
+offset_left = 54.0
+offset_top = 397.0
+offset_right = 160.0
+offset_bottom = 428.0
+text = "Special"
+
+[node name="OfficerButton" type="Button" parent="." unique_id=1247750599]
+layout_mode = 0
+offset_left = 222.0
+offset_top = 397.0
+offset_right = 328.0
+offset_bottom = 428.0
+text = "Officer"
+
+[node name="CharacterPanel" type="Panel" parent="." unique_id=1624400617]
+layout_mode = 0
+offset_left = 434.0
+offset_top = 30.0
+offset_right = 724.0
+offset_bottom = 441.0
+
+[node name="CharacterNameLabel" type="Label" parent="CharacterPanel" unique_id=2091399849]
+layout_mode = 0
+offset_left = 68.0
+offset_top = 348.0
+offset_right = 224.0
+offset_bottom = 382.0
+text = "Character Name"
+horizontal_alignment = 1
+
+[node name="CancelButton" type="Button" parent="CharacterPanel" unique_id=1898471606]
+layout_mode = 0
+offset_left = 167.0
+offset_top = 377.0
+offset_right = 243.0
+offset_bottom = 408.0
+text = "Cancel"
+
+[node name="DeployButton" type="Button" parent="CharacterPanel" unique_id=1703457090]
+layout_mode = 0
+offset_left = 55.0
+offset_top = 376.0
+offset_right = 129.0
+offset_bottom = 407.0
+text = "Deploy"
+
+[node name="CharacterPortrait" type="TextureRect" parent="CharacterPanel" unique_id=346352727]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 7.0
+offset_right = 279.0
+offset_bottom = 345.0
+texture = SubResource("ImageTexture_tou15")
+
+[node name="ClassNameLabel" type="Label" parent="." unique_id=190490103]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 33.0
+offset_right = 113.0
+offset_bottom = 56.0
+text = "Class Name"
+autowrap_mode = 3
+
+[node name="ClassSummary" type="Label" parent="." unique_id=681341696]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 62.0
+offset_right = 410.0
+offset_bottom = 335.0
+text = "Lorem Ipsum"
+autowrap_mode = 3
+
+[connection signal="pressed" from="InfantryButton" to="." method="_on_infantry_button_pressed"]
+[connection signal="pressed" from="MedicButton" to="." method="_on_medic_button_pressed"]
+[connection signal="pressed" from="SpecialButton" to="." method="_on_special_button_pressed"]
+[connection signal="pressed" from="OfficerButton" to="." method="_on_officer_button_pressed"]
+[connection signal="pressed" from="CharacterPanel/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="CharacterPanel/DeployButton" to="." method="_on_deploy_button_pressed"]

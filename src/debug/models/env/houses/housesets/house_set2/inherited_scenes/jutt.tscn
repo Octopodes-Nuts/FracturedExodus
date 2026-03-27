@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bj613cwjksuen"]
+
+[ext_resource type="PackedScene" uid="uid://csym5mqdjf83e" path="res://debug/models/env/houses/housesets/house_set2/Jutt.blend" id="1_j1mqt"]
+
+[node name="Jutt" unique_id=1982453737 instance=ExtResource("1_j1mqt")]

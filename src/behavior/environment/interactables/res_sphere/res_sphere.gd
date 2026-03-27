@@ -19,12 +19,18 @@ func interact(other: Node):
 		else:
 			player.res.rpc_id(1, 50.0)
 		_refresh(other)
-	Local.HUD.get_child(1).set_time_value((current_res / RES_TIME) * 100)
+	var hud := Local.get_hud()
+	if hud != null:
+		hud.set_progress_percent((current_res / RES_TIME) * 100)
 
 func _add_interaction(_node: Node):
 	current_res = 0.0
-	Local.HUD.get_child(1).set_time_value((current_res / RES_TIME) * 100)
-	Local.HUD.get_child(1).set_visible(true)
+	var hud := Local.get_hud()
+	if hud != null:
+		hud.set_progress_percent((current_res / RES_TIME) * 100)
+		hud.set_progress_visible(true)
 
 func _remove_interaction(_other: Node):
-	Local.HUD.get_child(1).set_visible(false)
+	var hud := Local.get_hud()
+	if hud != null:
+		hud.set_progress_visible(false)

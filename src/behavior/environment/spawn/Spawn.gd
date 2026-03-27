@@ -4,7 +4,7 @@ class_name Spawn
 
 enum Faction {
 	DEFAULT,
-	ENTETNE,
+	ENTENTE,
 	EMPIRE,
 	FREE_AGENTS
 }

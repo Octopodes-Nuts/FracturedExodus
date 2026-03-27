@@ -40,7 +40,7 @@ func add_spawn(spawn: Spawn):
 	match spawn.faction:
 		Spawn.Faction.DEFAULT:
 			spawns.append(spawn)
-		Spawn.Faction.ENTETNE:
+		Spawn.Faction.ENTENTE:
 			entente_spawns.append(spawn)
 		Spawn.Faction.EMPIRE:
 			empire_spawns.append(spawn)

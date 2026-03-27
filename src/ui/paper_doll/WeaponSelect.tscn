@@ -1,11 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://fm55cmw02ao2"]
+[gd_scene format=3 uid="uid://fm55cmw02ao2"]
 
 [ext_resource type="PackedScene" uid="uid://bv066jxlvrrcm" path="res://ui/paper_doll/ListItem.tscn" id="1_bstu5"]
 [ext_resource type="Script" uid="uid://baq3rjsnxjl0r" path="res://ui/paper_doll/WeaponSelect.gd" id="1_vq13a"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_fx5rf"]
 
-[node name="weapon_select" type="Panel"]
+[node name="weapon_select" type="Panel" unique_id=839458866]
 custom_minimum_size = Vector2(10, 10)
 anchors_preset = -1
 anchor_top = 0.051
@@ -15,25 +15,44 @@ offset_top = -0.0800018
 offset_right = 0.559998
 script = ExtResource("1_vq13a")
 
-[node name="search" type="TextEdit" parent="."]
+[node name="search" type="TextEdit" parent="." unique_id=612028107]
 layout_mode = 0
 offset_left = 54.0
 offset_top = 4.0
 offset_right = 486.0
 offset_bottom = 42.0
 
-[node name="search_graphic" type="TextureRect" parent="."]
+[node name="search_graphic" type="TextureRect" parent="." unique_id=791712600]
 layout_mode = 0
-offset_left = 11.0
-offset_top = 4.0
-offset_right = 49.0
-offset_bottom = 43.0
+offset_left = 9.0
+offset_top = 3.0000038
+offset_right = 47.0
+offset_bottom = 42.000004
 texture = SubResource("CanvasTexture_fx5rf")
 
-[node name="list_item" parent="." instance=ExtResource("1_bstu5")]
-visible = false
+[node name="scroll_container" type="ScrollContainer" parent="." unique_id=1508818555]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 52.0
-offset_right = 485.0
-offset_bottom = 171.0
+offset_left = 10.0
+offset_top = 55.000004
+offset_right = 482.0
+offset_bottom = 906.0
+
+[node name="v_box_container" type="VBoxContainer" parent="scroll_container" unique_id=245451281]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="list_item" parent="scroll_container/v_box_container" unique_id=1050465984 instance=ExtResource("1_bstu5")]
+visible = false
+clip_contents = true
+layout_mode = 2
+
+[node name="cancel_button" type="Button" parent="." unique_id=489476168]
+layout_mode = 0
+offset_left = 204.0
+offset_top = 922.0
+offset_right = 305.0
+offset_bottom = 956.0
+text = "Cancel"
+
+[connection signal="pressed" from="cancel_button" to="." method="_on_cancel_button_pressed"]

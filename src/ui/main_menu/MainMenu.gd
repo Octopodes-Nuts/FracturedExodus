@@ -7,6 +7,8 @@
 
 extends Control
 
+class_name MainMenu
+
 @onready var paper_doll = $paper_doll
 @onready var character_display = $character_display
 @onready var character_select = $character_select
@@ -28,17 +30,20 @@ var queued = false
 # this server code will likely be moved
 var active_register = 1
 
+signal reload_ui
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
-		Local.host = true
+		Local.set_state("host", true)
 		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 			print("Error getting to file")
 			
 	faction_select.select(0)
 	_on_option_button_item_selected(0)
+	load_first_character()
 	account_api.set_active_character()
-	Local.character_updated.connect(account_api.set_active_character)
+	Local.connect("character_updated", account_api.set_active_character)
 	social_panel.account_api = account_api
 	social_panel.matchmaking_api = matchmaking_api
 	add_child(account_info_update_timer)
@@ -62,16 +67,16 @@ func _ready():
 	friend_request_panel.friend_request_ready.connect(_on_friend_request_panel_ready)
 	matchmaking_api.party_faction_updated.connect(_set_current_faction)
  
-	for character in Local.characters.characters.keys():
-		print("Character: ", character, " Def: ", Local.characters.characters[character])
+	for character in Local.get_state("characters").characters.keys():
+		print("Character: ", character, " Def: ", Local.get_state("characters").characters[character])
 
 
 func _process(_delta: float) -> void:
-	faction_select.disabled = (not Local.party_leader and len(Local.party_members) > 1) or queued
-	queue_button.disabled = (not Local.party_leader and len(Local.party_members) > 1) or queued
+	faction_select.disabled = (not Local.get_state("party_leader") and len(Local.get_state("party_members")) > 1) or queued
+	queue_button.disabled = (not Local.get_state("party_leader") and len(Local.get_state("party_members")) > 1) or queued
 
 func _set_current_faction(faction: int):
-	if not Local.party_leader:
+	if not Local.get_state("party_leader"):
 		match faction:
 			Factions.ENTENTE:
 				faction_select.select(0)
@@ -83,10 +88,13 @@ func _set_current_faction(faction: int):
 				faction_select.select(2)
 				_on_option_button_item_selected(2)
 
+func load_first_character():
+	if len(Local.entente_characters.characters) > 0:
+		Local.set_state("selected_character_def", Local.get_state("entente_characters").characters.values()[0])
 
 func match_found(port: int, ip: String):
-	Local.port = port
-	Local.ip = ip
+	Local.set_state("port", port)
+	Local.set_state("ip", ip)
 	get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn")
 
 
@@ -106,10 +114,6 @@ func _on_quit_pressed() -> void:
 func _on_character_display_character_select() -> void:
 	character_select.visible = true
 
-func _on_character_select_new_char_selected() -> void:
-	character_select.visible = false
-	character_display.reload(Local.selected_character_def)
-
 func _on_paper_doll_weapon_change(register: int) -> void:
 	active_register = register
 	weapon_select.visible = true
@@ -117,20 +121,25 @@ func _on_paper_doll_weapon_change(register: int) -> void:
 
 func _on_weapon_select_weapon_selected(id: String) -> void:
 	weapon_select.visible = false
+	print("[MainMenu] weapon selected id=%s register=%d" % [id, active_register])
 	if active_register == 1:
-		Local.selected_character_def.Weapon1 = id
+		Local.get_state("selected_character_def").Weapon1 = id
 	if active_register == 2:
-		Local.selected_character_def.Weapon2 = id
-	
-	account_api.update_character(Local.session_token, Local.selected_character_def)
-	
-	if ResourceSaver.save(Local.characters, "res://load/Characters.res", ResourceSaver.FLAG_NONE) == OK:
-		character_display.reload(Local.selected_character_def)
+		Local.get_state("selected_character_def").Weapon2 = id
+	if active_register == 3:
+		Local.get_state("selected_character_def").Weapon3 = id
+	print("[MainMenu] character def after update: W1=%s W2=%s W3=%s" % [
+		Local.get_state("selected_character_def").Weapon1,
+		Local.get_state("selected_character_def").Weapon2,
+		Local.get_state("selected_character_def").Weapon3
+	])
+	Local.emit_character_updated()
+	account_api.update_character(Local.get_state("session_token"), Local.get_state("selected_character_def"))
 
 
 func _on_character_select_new_char_created() -> void:
-	# if ResourceSaver.save(Local.characters, "res://load/Characters.res", ResourceSaver.FLAG_NONE) == OK:
-	#	character_display.reload(Local.selected_character_def)
+	# if ResourceSaver.save(Local.get_state("characters"), "res://load/Characters.res", ResourceSaver.FLAG_NONE) == OK:
+	#	character_display.reload(Local.get_state("selected_character_def"))
 	pass
 
 
@@ -166,30 +175,30 @@ func _on_leave_party_btn_pressed() -> void:
 func _on_option_button_item_selected(index: int) -> void:
 	match index:
 		0:
-			Local.selected_faction = Factions.ENTENTE
-			if Local.selected_character_def and Local.selected_character_def.Faction != Factions.ENTENTE:
-				if len(Local.entente_characters.characters) != 0:
-					Local.selected_character_def = Local.entente_characters.characters.values()[0]
-					Local.emit_character_updated()
+			if Local.get_state("selected_faction") != Factions.ENTENTE:
+				Local.set_state("selected_faction", Factions.ENTENTE)
+				if len(Local.get_state("entente_characters").characters) != 0:
+					Local.set_state("selected_character_def", Local.get_state("entente_characters").characters.values()[0])
 				else:
-					Local.selected_character_def = null
-				character_display.rendered = false
+					Local.set_state("selected_character_def", null)
 		1:
-			Local.selected_faction = Factions.EMPIRE
-			if Local.selected_character_def and Local.selected_character_def.Faction != Factions.EMPIRE:
-				if len(Local.empire_characters.characters) != 0:
-					Local.selected_character_def = Local.empire_characters.characters.values()[0]
-					Local.emit_character_updated()
+			if Local.get_state("selected_faction") != Factions.EMPIRE:
+				Local.set_state("selected_faction", Factions.EMPIRE)
+				if len(Local.get_state("empire_characters").characters) != 0:
+					Local.set_state("selected_character_def", Local.get_state("empire_characters").characters.values()[0])
 				else:
-					Local.selected_character_def = null
-				character_display.rendered = false
+					Local.set_state("selected_character_def", null)
 		2:
-			Local.selected_faction = Factions.FREE_AGENTS
-			if Local.selected_character_def and Local.selected_character_def.Faction != Factions.FREE_AGENTS:
-				if len(Local.free_agent_characters.characters) != 0:
-					Local.selected_character_def = Local.free_agent_characters.characters.values()[0]
-					Local.emit_character_updated()
+			if Local.get_state("selected_faction") != Factions.FREE_AGENTS:
+				Local.set_state("selected_faction", Factions.FREE_AGENTS)
+				if len(Local.get_state("free_agent_characters").characters) != 0:
+					Local.set_state("selected_character_def", Local.get_state("free_agent_characters").characters.values()[0])
 				else:
-					Local.selected_character_def = null
-				character_display.rendered = false
+					Local.set_state("selected_character_def", null)
+
+	reload()
 	character_select.render()
+
+func reload():
+	weapon_select.hide()
+	emit_signal("reload_ui")

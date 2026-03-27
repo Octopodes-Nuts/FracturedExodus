@@ -8,8 +8,12 @@
 extends Node
 
 signal character_updated
+signal hud_changed(hud: Control)
+signal state_changed(key: StringName, value: Variant)
 
 # player ID, obtained from server
+var server_ip: String = "192.168.1.238"
+var server_port: String = "8000"
 var player_id: String
 var session_token: String
 var friends: Array
@@ -49,6 +53,29 @@ var has_objective = false
 
 func _ready():
 	pass
+
+func get_state(key: StringName) -> Variant:
+	return get(String(key))
+
+func set_state(key: StringName, value: Variant) -> void:
+	set(String(key), value)
+	emit_signal("state_changed", key, value)
+
+func set_hud(hud: Control) -> void:
+	if HUD == hud:
+		return
+	HUD = hud
+	emit_signal("state_changed", &"HUD", HUD)
+	emit_signal("hud_changed", HUD)
+
+func clear_hud() -> void:
+	set_hud(null)
+
+func get_hud() -> Control:
+	return HUD
+
+func has_hud() -> bool:
+	return HUD != null
 
 
 func sort_characters():

@@ -11,26 +11,26 @@ extends Node
 func _ready() -> void:
 
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
-		Local.server_name = OS.get_environment("MM_SERVER_NAME")
-		Local.registration_token = OS.get_environment("MM_SERVER_REGISTRATION_KEY")
-		Local.host = true
+		Local.set_state("server_name", OS.get_environment("MM_SERVER_NAME"))
+		Local.set_state("registration_token", OS.get_environment("MM_SERVER_REGISTRATION_KEY"))
+		Local.set_state("host", true)
 			# If no registration token is provided, we assume this is a local dedicated server for testing
-		if Local.registration_token == "":
+		if Local.get_state("registration_token") == "":
 			print("No registration token provided, assuming local dedicated server for testing")
 			_enter_dedicated_server_map()
 			return
 		else:
 			print("Registration token provided, attempting to register server with matchmaking service")
-			MatchmakingAPI.register_server(Local.server_name, Local.registration_token)
+			MatchmakingAPI.register_server(Local.get_state("server_name"), Local.get_state("registration_token"))
 				# If registration fails, we fall back to local dedicated server mode
 		MatchmakingAPI.server_registered.connect(func(): call_deferred("_enter_dedicated_server_map"))
 		return
 	else:
 	# set up pipeline
-		Local.selected_faction = Factions.ENTENTE
+		Local.set_state("selected_faction", Factions.ENTENTE)
 		AccountAPI.connect("login_complete", get_characters)
 		AccountAPI.connect("characters_received", get_account_info)
-		AccountAPI.characters_received.connect(Local.sort_characters)
+		AccountAPI.characters_received.connect(Callable(Local, "sort_characters"))
 		AccountAPI.account_info_received.connect(enter_main_menu)
 		AccountAPI.login_complete.connect(MatchmakingAPI.party_leave)
 
@@ -58,10 +58,10 @@ func _ready() -> void:
 	# load and enter main menu
 
 func get_characters():
-	AccountAPI.get_characters(Local.session_token)
+	AccountAPI.get_characters(Local.get_state("session_token"))
 
 func get_account_info():
-	AccountAPI.get_account_info(Local.session_token, Local.player_id)
+	AccountAPI.get_account_info(Local.get_state("session_token"), Local.get_state("player_id"))
 
 func enter_main_menu():
 	get_tree().change_scene_to_file("res://ui/main_menu/MainMenu.tscn")

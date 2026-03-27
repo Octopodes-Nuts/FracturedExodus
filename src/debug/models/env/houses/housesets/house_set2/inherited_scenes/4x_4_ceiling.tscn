@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://ks7cjv0ma8qe"]
+
+[ext_resource type="PackedScene" uid="uid://cpl1w6osb2wi8" path="res://debug/models/env/houses/housesets/house_set2/4x4Ceiling.blend" id="1_50c2x"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_08h6k"]
+size = Vector3(4, 0.16, 4)
+
+[node name="4x4Ceiling" unique_id=940620180 instance=ExtResource("1_50c2x")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1" unique_id=173983686]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0" unique_id=237111506]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2.68, -2)
+shape = SubResource("BoxShape3D_08h6k")

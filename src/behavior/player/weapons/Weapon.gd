@@ -23,10 +23,14 @@ enum WeaponType {
 
 var type: int = WeaponType.NONE
 var faction: int = Types.Factions.FACTION_DEFAULT
-var classes: Array[Types.Classes] = [Types.Classes.CLASS_DEFAULT]
+var classes: Array[ClassRegister.Classes] = [ClassRegister.Classes.DEFAULT]
 
 var slots: Dictionary = {
-	Types.Classes.CLASS_DEFAULT: [1, 2]
+	ClassRegister.Classes.DEFAULT: [],
+	ClassRegister.Classes.INFANTRY: [],
+	ClassRegister.Classes.MEDIC: [],
+	ClassRegister.Classes.SPECIAL: [],
+	ClassRegister.Classes.OFFICER: [],
 }
 
 # perform action specified by weapon

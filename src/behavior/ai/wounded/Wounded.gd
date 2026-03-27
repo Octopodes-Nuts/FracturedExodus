@@ -81,6 +81,7 @@ var _attack_age: float = INF
 var _is_dead: bool = false
 var _hit_stagger_time: float = 0.0
 var _current_debug_animation_state: StringName = &""
+var _ragdoll_visual_scale: Vector3 = Vector3.ONE
 
 var idle_color: Material = preload("res://debug/materials/debug_teal.tres")
 var patrol_color: Material = preload("res://debug/materials/debug_yellow.tres")
@@ -98,6 +99,7 @@ func _ready() -> void:
 	_refresh_patrol_anchor()
 	_randomize_idle_timer()
 	_apply_state_visuals()
+	_cache_ragdoll_visual_scale()
 
 func noise(source_position: Vector3) -> void:
 	if is_multiplayer_authority():
@@ -192,6 +194,8 @@ func _activate_ragdoll_on_death() -> bool:
 			print("[WOUNDED AI] PhysicalBoneSimulator3D found but no PhysicalBone3D nodes are present; ragdoll cannot simulate.")
 		return false
 
+	_cache_ragdoll_visual_scale()
+
 	simulator.active = true
 
 	if simulator.has_method("physical_bones_start_simulation"):
@@ -203,9 +207,32 @@ func _activate_ragdoll_on_death() -> bool:
 			print("[WOUNDED AI] Ragdoll simulator found but has no start simulation method.")
 		return false
 
+	_stabilize_ragdoll_scale()
+
 	if debug_ai:
 		print("[WOUNDED AI] Ragdoll activated (physical_bones=%d)" % [physical_bone_count])
 	return true
+
+func _cache_ragdoll_visual_scale() -> void:
+	if is_instance_valid(debug_fractured_model) and debug_fractured_model is Node3D:
+		_ragdoll_visual_scale = (debug_fractured_model as Node3D).global_transform.basis.get_scale()
+
+func _stabilize_ragdoll_scale() -> void:
+	if not is_instance_valid(debug_fractured_model) or not (debug_fractured_model is Node3D):
+		return
+	var model := debug_fractured_model as Node3D
+	var model_transform := model.global_transform
+	var orthonormal_basis := model_transform.basis.orthonormalized()
+	model.global_transform = Transform3D(orthonormal_basis.scaled(_ragdoll_visual_scale), model_transform.origin)
+	call_deferred("_stabilize_ragdoll_scale_deferred")
+
+func _stabilize_ragdoll_scale_deferred() -> void:
+	if not is_instance_valid(debug_fractured_model) or not (debug_fractured_model is Node3D):
+		return
+	var model := debug_fractured_model as Node3D
+	var model_transform := model.global_transform
+	var orthonormal_basis := model_transform.basis.orthonormalized()
+	model.global_transform = Transform3D(orthonormal_basis.scaled(_ragdoll_visual_scale), model_transform.origin)
 
 func _resolve_ragdoll_simulator() -> PhysicalBoneSimulator3D:
 	var by_path := get_node_or_null(ragdoll_simulator_path)

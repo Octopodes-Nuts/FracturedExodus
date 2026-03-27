@@ -42,7 +42,9 @@ func _on_interactable_body_entered(body:Node):
 	if body.has_method('register_interaction'):
 		_add_interaction(body)
 		body.register_interaction(self)
-		Local.HUD.get_child(2).display_text(null, display_text)
+		var hud := Local.get_hud()
+		if hud != null:
+			hud.set_interaction_text(display_text)
 
 func _on_interactable_body_exited(body):
 	if not _is_local_player_body(body):
@@ -50,7 +52,9 @@ func _on_interactable_body_exited(body):
 	if body.has_method('remove_interaction'):
 		body.remove_interaction(self)
 		_remove_interaction(body)
-		Local.HUD.get_child(2).clear()
+		var hud := Local.get_hud()
+		if hud != null:
+			hud.clear_interaction_text()
 
 func _refresh(body: Node):
 	_on_interactable_body_entered(body)

@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://cx8wrsam0j5j5"]
+[gd_scene format=3 uid="uid://cx8wrsam0j5j5"]
 
 [ext_resource type="Script" uid="uid://xw0vgnkaduua" path="res://ui/paper_doll/PaperDoll.gd" id="1_a1apq"]
 [ext_resource type="PackedScene" uid="uid://bv066jxlvrrcm" path="res://ui/paper_doll/ListItem.tscn" id="1_vdvxg"]
 
-[node name="paper_doll" type="Panel"]
+[node name="paper_doll" type="Panel" unique_id=506299648]
 anchors_preset = -1
 anchor_right = 0.263
 anchor_bottom = 0.386
@@ -11,35 +11,35 @@ offset_right = 0.039978
 offset_bottom = 0.119995
 script = ExtResource("1_a1apq")
 
-[node name="primary_weapon" parent="." instance=ExtResource("1_vdvxg")]
+[node name="primary_weapon" parent="." unique_id=1763961910 instance=ExtResource("1_vdvxg")]
 layout_mode = 0
 offset_left = 13.0
 offset_top = 10.0
 offset_right = 490.0
 offset_bottom = 129.0
 
-[node name="secondary_weapon" parent="." instance=ExtResource("1_vdvxg")]
+[node name="secondary_weapon" parent="." unique_id=94723111 instance=ExtResource("1_vdvxg")]
 layout_mode = 0
 offset_left = 12.0
 offset_top = 144.0
 offset_right = 489.0
 offset_bottom = 263.0
 
-[node name="melee_weapon" parent="." instance=ExtResource("1_vdvxg")]
+[node name="melee_weapon" parent="." unique_id=1413413442 instance=ExtResource("1_vdvxg")]
 layout_mode = 0
 offset_left = 21.0
 offset_top = 277.0
 offset_right = 156.0
 offset_bottom = 396.0
 
-[node name="eq_1" parent="." instance=ExtResource("1_vdvxg")]
+[node name="eq_1" parent="." unique_id=1743176720 instance=ExtResource("1_vdvxg")]
 layout_mode = 0
 offset_left = 181.0
 offset_top = 279.0
 offset_right = 320.0
 offset_bottom = 398.0
 
-[node name="eq_2" parent="." instance=ExtResource("1_vdvxg")]
+[node name="eq_2" parent="." unique_id=298074502 instance=ExtResource("1_vdvxg")]
 layout_mode = 0
 offset_left = 349.0
 offset_top = 278.0

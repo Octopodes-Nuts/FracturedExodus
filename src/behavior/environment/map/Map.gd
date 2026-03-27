@@ -71,27 +71,27 @@ func _ready():
 	connect("character_update", Global.emit_character_update)
 	match_left.connect(_on_match_left)
 
-	if Local.host:
+	if Local.get_state("host"):
 		_setup_as_server(" (host mode)")
 	
 	else:
 		multiplayer.connected_to_server.connect(_on_connection)
 		multiplayer.connection_failed.connect(_on_connection_failed)
 		#enet_peer.create_client("34.55.251.69", PORT)
-		print("Attempting to connect to server at %s:%d" % [Local.ip, Local.port])
-		# var client_err = enet_peer.create_client("209.38.77.226", Local.port)
-		var  client_err = enet_peer.create_client("192.168.1.235", Local.port)
+		print("Attempting to connect to server at %s:%d" % [Local.get_state("ip"), Local.get_state("port")])
+		var client_err = enet_peer.create_client(Local.get_state("server_ip"), int(Local.get_state("port")))
+		# var  client_err = enet_peer.create_client("192.168.1.238", int(Local.get_state("port")))
 		if client_err == OK:
 			multiplayer.multiplayer_peer = enet_peer
 			MatchmakingAPI.joined_match()
-			print("[Map] Client connection request sent to localhost:%d" % [Local.port])
+			print("[Map] Client connection request sent to localhost:%d" % [Local.get_state("port")])
 			heartbeat_timer.wait_time = heartbeat_interval
 			heartbeat_timer.timeout.connect(_send_heartbeat)
 			add_child(heartbeat_timer)
 			heartbeat_timer.start()
 			return
 		else:
-			push_error("[Map] Failed to create client for localhost:%d (error=%d). Falling back to server setup." % [Local.port, client_err])
+			push_error("[Map] Failed to create client for localhost:%d (error=%d). Falling back to server setup." % [Local.get_state("port"), client_err])
 			_setup_as_server(" (client creation fallback)")
 			
 	
@@ -155,20 +155,9 @@ func remove_player(peer_id):
 	player_count -= 1
 	if player_count == 0:
 		end_match()
-		
-@rpc("any_peer")
-func spawn_box(position):
-	var mesh = BoxMesh.new()
-	mesh.size = Vector3(1, 1, 1)
-	
-	var mi = MeshInstance3D.new()
-	mi.mesh = mesh
-	add_child(mi)
-	print(mi)
-	mi.global_transform.origin = position
 
 func end_match():
-	if Local.host:
+	if Local.get_state("host"):
 		MatchmakingAPI.match_ended()
 		MatchmakingAPI.match_ended_reported.connect(func(): get_tree().quit())
 	else:
@@ -181,7 +170,7 @@ func report_match_left(reason: String = ""):
 	emit_signal("match_left", reason)
 
 func _on_match_left(reason: String) -> void:
-	if Local.host:
+	if Local.get_state("host"):
 		return
 	if MatchmakingAPI != null:
 		MatchmakingAPI.leave_match()
