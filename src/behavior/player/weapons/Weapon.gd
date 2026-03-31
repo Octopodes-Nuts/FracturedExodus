@@ -14,6 +14,7 @@ class_name Weapon
 @export var ads_fov: float = 50.0
 
 var muzzle_end: Node3D
+var _use_parent: DefaultController
 
 enum WeaponType {
 	NONE,
@@ -21,11 +22,11 @@ enum WeaponType {
 	MELEE
 }
 
-var type: int = WeaponType.NONE
-var faction: int = Types.Factions.FACTION_DEFAULT
-var classes: Array[ClassRegister.Classes] = [ClassRegister.Classes.DEFAULT]
+@export var type: WeaponRegister.GunType = WeaponRegister.GunType.RIFLE
+@export var faction: Factions.Enum = Factions.Enum.DEFAULT
+@export var classes: Array[ClassRegister.Classes] = [ClassRegister.Classes.DEFAULT]
 
-var slots: Dictionary = {
+@export var slots: Dictionary[ClassRegister.Classes, Array] = {
 	ClassRegister.Classes.DEFAULT: [],
 	ClassRegister.Classes.INFANTRY: [],
 	ClassRegister.Classes.MEDIC: [],
@@ -36,6 +37,7 @@ var slots: Dictionary = {
 # perform action specified by weapon
 func use(parent: DefaultController):
 	muzzle_end = parent.gun_location
+	_use_parent = parent
 	if active:
 		_use()
 

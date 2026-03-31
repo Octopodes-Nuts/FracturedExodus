@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://n5n4cgb8wpco"]
+
+[ext_resource type="Script" uid="uid://bwwjyshsepevt" path="res://behavior/player/movement/empire/sanitater/SanitaterController.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://dcudvv4sp7mpc" path="res://behavior/player/Player.tscn" id="1_w7c2j"]
+
+[node name="Sanitater" type="Node3D" unique_id=303126955]
+
+[node name="player_body" parent="." unique_id=404869370 instance=ExtResource("1_w7c2j")]
+script = ExtResource("1")
+res_buff = 1.2
+medic_res = true

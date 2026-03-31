@@ -27,7 +27,7 @@ func _ready() -> void:
 		return
 	else:
 	# set up pipeline
-		Local.set_state("selected_faction", Factions.ENTENTE)
+		Local.set_state("selected_faction", Factions.Enum.ENTENTE)
 		AccountAPI.connect("login_complete", get_characters)
 		AccountAPI.connect("characters_received", get_account_info)
 		AccountAPI.characters_received.connect(Callable(Local, "sort_characters"))

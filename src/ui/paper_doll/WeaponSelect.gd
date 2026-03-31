@@ -39,7 +39,7 @@ func render_out(register: int, dict: Dictionary, restrictions: Dictionary):
 			item, weapon.faction, typeof(weapon.faction), weapon.slots
 		])
 		if not weapon.faction == char_def.Faction and \
-			not weapon.faction == Factions.DEFAULT:
+			not weapon.faction == Factions.Enum.DEFAULT:
 				print("[WeaponSelect]   SKIP %s — faction mismatch" % item)
 				weapon.queue_free()
 				continue

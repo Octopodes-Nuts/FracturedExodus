@@ -1,1 +1,1 @@
-extends DefaultController
+extends OfficerController

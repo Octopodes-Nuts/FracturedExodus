@@ -53,16 +53,16 @@ func load_from_character(character: CharacterDef):
 			primary_weapon = instances[character.Weapon1]
 	if character.Weapon2:
 		if character.Weapon2 in instances.keys():
-			primary_weapon = instances[character.Weapon2]
+			secondary_weapon = instances[character.Weapon2]
 		else:
 			instances[character.Weapon2] = WeaponRegister.gun_register[character.Weapon2].instantiate()
-			primary_weapon = instances[character.Weapon2]
+			secondary_weapon = instances[character.Weapon2]
 	if character.Weapon3:
 		if character.Weapon3 in instances.keys():
-			primary_weapon = instances[character.Weapon3]
+			tertiary_weapon = instances[character.Weapon3]
 		else:
 			instances[character.Weapon3] = WeaponRegister.gun_register[character.Weapon3].instantiate()
-			primary_weapon = instances[character.Weapon3]
+			tertiary_weapon = instances[character.Weapon3]
 
 func load_from_payload(pd: Dictionary):
 	if pd["wep1"]:

@@ -14,6 +14,7 @@ signal account_info_updated
 @onready var friend_request: HTTPRequest = HTTPRequest.new()
 @onready var accept_friend_req_request: HTTPRequest = HTTPRequest.new()
 @onready var set_active_char_request: HTTPRequest = HTTPRequest.new()
+@onready var grant_xp_request: HTTPRequest = HTTPRequest.new()
 
 
 var server_url: String = "http://" + Local.server_ip + ":" + Local.server_port + "/"
@@ -33,6 +34,8 @@ func _ready():
 	accept_friend_req_request.request_completed.connect(_on_accept_friend_request_complete)
 	add_child(set_active_char_request)
 	set_active_char_request.request_completed.connect(_on_set_active_character)
+	add_child(grant_xp_request)
+	grant_xp_request.request_completed.connect(_on_grant_xp_request_complete)
 
 func login(username: String, password: String):
 	var request = HTTPRequest.new()
@@ -288,4 +291,25 @@ func _on_set_active_character(_result, response_code, _headers, _body):
 		print("Active character successfully updated")
 	else:
 		print("Updating active friend request failed with code: ", response_code)
-	
+
+func submit_pending_xp(token: String) -> void:
+	var xp: int = Local.get_state("pending_xp")
+	if xp <= 0:
+		return
+	var url = server_url + "player/grantXP"
+	var headers = ["Content-Type: application/json"]
+	var body = JSON.stringify({"sessionToken": token, "xp": xp})
+	var err = grant_xp_request.request(url, headers, HTTPClient.METHOD_POST, body)
+	if err == OK:
+		Local.set_state("pending_xp", 0)
+
+func _on_grant_xp_request_complete(_result, response_code, _headers, body) -> void:
+	if response_code >= 200 and response_code < 300:
+		var parsed = JSON.parse_string(body.get_string_from_utf8())
+		if parsed and parsed.has("experience"):
+			Local.set_state("player_xp", parsed["experience"])
+		if parsed and parsed.has("accountLevel"):
+			Local.set_state("player_level", parsed["accountLevel"])
+	else:
+		push_warning("[AccountAPI] Failed to submit XP, response_code=%d" % response_code)
+

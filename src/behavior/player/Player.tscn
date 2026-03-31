@@ -94,6 +94,7 @@ shape = SubResource("BoxShape3D_6yuvp")
 
 [node name="camera_head" type="Camera3D" parent="neck" unique_id=1552021269]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17458147, 0)
+near = 0.001
 
 [node name="gun_location" type="Node3D" parent="neck/camera_head" unique_id=1181246444]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)

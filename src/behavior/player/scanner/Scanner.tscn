@@ -9,7 +9,7 @@
 
 [node name="scanner" type="StaticBody3D"]
 script = ExtResource("1_hckro")
-default_position = Vector3(0, 0, -1)
+default_position = Vector3(0, -0.175, -1)
 
 [node name="collision" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.3, 0, 0, 0)

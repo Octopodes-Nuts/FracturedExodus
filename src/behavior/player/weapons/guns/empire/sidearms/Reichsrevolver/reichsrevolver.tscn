@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://cxjvdn2ahdxue"]
+
+[ext_resource type="PackedScene" uid="uid://bak172cpjt7x5" path="res://debug/models/weapons/reichsrevolver/reichsrevolver.blend" id="1_g510i"]
+[ext_resource type="Script" uid="uid://s647xfw7x7oc" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/Reichsrevolver.gd" id="1_nqb6u"]
+[ext_resource type="AudioStream" uid="uid://bneh7opew0s8w" path="res://behavior/player/weapons/guns/default_pistol/DefaultPistolShot.mp3" id="2_6xkq4"]
+
+[node name="Reichsrevolver" type="Node3D" unique_id=479227364 node_paths=PackedStringArray("player")]
+script = ExtResource("1_nqb6u")
+clip_size = 6
+ammo_pool = 18
+gun_type = 4
+fire_sound = ExtResource("2_6xkq4")
+player = NodePath("AnimationPlayer")
+bullet_damage = 55.0
+bullet_speed = 340.0
+bullet_lifetime = 5.0
+bullet_spread = 7.0
+ads_position = Vector3(0, 0, -0.3)
+type = 4
+faction = 2
+slots = Dictionary[int, Array]({
+0: [1, 2],
+1: [],
+2: [],
+3: [],
+4: []
+})
+default_position = Vector3(0.1, -0.1, -0.2)
+
+[node name="reichsrevolver" parent="." unique_id=1563747988 instance=ExtResource("1_g510i")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1961750088]

@@ -49,16 +49,16 @@ func add_spawn(spawn: Spawn):
 
 func _get_spawn_pool_for_faction(faction: int) -> Array:
 	match faction:
-		Factions.ENTENTE:
+		Factions.Enum.ENTENTE:
 			return entente_spawns
-		Factions.EMPIRE:
+		Factions.Enum.EMPIRE:
 			return empire_spawns
-		Factions.FREE_AGENTS:
+		Factions.Enum.FREE_AGENTS:
 			return free_agent_spawns
 		_:
 			return spawns
 
-func get_spawn(faction: int = Factions.DEFAULT):
+func get_spawn(faction: int = Factions.Enum.DEFAULT):
 	var pool: Array = _get_spawn_pool_for_faction(faction)
 	if pool.is_empty():
 		pool = spawns

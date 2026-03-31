@@ -8,7 +8,7 @@ extends Gun
 class_name DefaultGun
 
 func _init():
-	faction = Factions.DEFAULT
+	faction = Factions.Enum.DEFAULT
 	slots[ClassRegister.Classes.DEFAULT] =  [1]
 	key = "DefaultGun"
 

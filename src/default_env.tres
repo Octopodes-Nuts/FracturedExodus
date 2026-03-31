@@ -1,4 +1,4 @@
-[gd_resource type="Environment" load_steps=4 format=3 uid="uid://bpsr8wpuo8pbl"]
+[gd_resource type="Environment" format=3 uid="uid://bpsr8wpuo8pbl"]
 
 [ext_resource type="Texture2D" uid="uid://b21iyxulpini8" path="res://environment/maps/test_map/skybox/sky.webp" id="1_ooua1"]
 

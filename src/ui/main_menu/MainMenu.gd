@@ -25,6 +25,8 @@ class_name MainMenu
 var account_info_update_interval: float = 5.0
 var party_update_interval: float = 1.0
 
+@export var click_sound: AudioStreamPlayer2D
+
 var queued = false
 
 # this server code will likely be moved
@@ -39,10 +41,12 @@ func _ready():
 		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 			print("Error getting to file")
 			
+	_connect_buttons_recursive(self)
 	faction_select.select(0)
 	_on_option_button_item_selected(0)
 	load_first_character()
 	account_api.set_active_character()
+	account_api.submit_pending_xp(Local.get_state("session_token"))
 	Local.connect("character_updated", account_api.set_active_character)
 	social_panel.account_api = account_api
 	social_panel.matchmaking_api = matchmaking_api
@@ -57,6 +61,7 @@ func _ready():
 	party_update_timer.start()
 
 	character_select.account_api = account_api
+	character_select.click_sound = click_sound
 	account_api.character_created.connect(character_select._on_character_created)
 	matchmaking_api.match_found.connect(match_found)
 	matchmaking_api.matchmaking_status_changed.connect(_on_matchmaking_status_changed)
@@ -78,13 +83,13 @@ func _process(_delta: float) -> void:
 func _set_current_faction(faction: int):
 	if not Local.get_state("party_leader"):
 		match faction:
-			Factions.ENTENTE:
+			Factions.Enum.ENTENTE:
 				faction_select.select(0)
 				_on_option_button_item_selected(0)
-			Factions.EMPIRE:
+			Factions.Enum.EMPIRE:
 				faction_select.select(1)
 				_on_option_button_item_selected(1)
-			Factions.FREE_AGENTS:
+			Factions.Enum.FREE_AGENTS:
 				faction_select.select(2)
 				_on_option_button_item_selected(2)
 
@@ -117,7 +122,13 @@ func _on_character_display_character_select() -> void:
 func _on_paper_doll_weapon_change(register: int) -> void:
 	active_register = register
 	weapon_select.visible = true
-	weapon_select.render_out(register, WeaponRegister.display_gun_register, WeaponRegister.gun_register)
+	if register < 3:
+		weapon_select.render_out(register, WeaponRegister.display_gun_register, WeaponRegister.gun_register)
+	elif register < 4:
+		weapon_select.render_out(register, WeaponRegister.display_melee_register, WeaponRegister.melee_register)
+		print("Melee Register Activated")
+	else:
+		pass
 
 func _on_weapon_select_weapon_selected(id: String) -> void:
 	weapon_select.visible = false
@@ -175,22 +186,22 @@ func _on_leave_party_btn_pressed() -> void:
 func _on_option_button_item_selected(index: int) -> void:
 	match index:
 		0:
-			if Local.get_state("selected_faction") != Factions.ENTENTE:
-				Local.set_state("selected_faction", Factions.ENTENTE)
+			if Local.get_state("selected_faction") != Factions.Enum.ENTENTE:
+				Local.set_state("selected_faction", Factions.Enum.ENTENTE)
 				if len(Local.get_state("entente_characters").characters) != 0:
 					Local.set_state("selected_character_def", Local.get_state("entente_characters").characters.values()[0])
 				else:
 					Local.set_state("selected_character_def", null)
 		1:
-			if Local.get_state("selected_faction") != Factions.EMPIRE:
-				Local.set_state("selected_faction", Factions.EMPIRE)
+			if Local.get_state("selected_faction") != Factions.Enum.EMPIRE:
+				Local.set_state("selected_faction", Factions.Enum.EMPIRE)
 				if len(Local.get_state("empire_characters").characters) != 0:
 					Local.set_state("selected_character_def", Local.get_state("empire_characters").characters.values()[0])
 				else:
 					Local.set_state("selected_character_def", null)
 		2:
-			if Local.get_state("selected_faction") != Factions.FREE_AGENTS:
-				Local.set_state("selected_faction", Factions.FREE_AGENTS)
+			if Local.get_state("selected_faction") != Factions.Enum.FREE_AGENTS:
+				Local.set_state("selected_faction", Factions.Enum.FREE_AGENTS)
 				if len(Local.get_state("free_agent_characters").characters) != 0:
 					Local.set_state("selected_character_def", Local.get_state("free_agent_characters").characters.values()[0])
 				else:
@@ -202,3 +213,10 @@ func _on_option_button_item_selected(index: int) -> void:
 func reload():
 	weapon_select.hide()
 	emit_signal("reload_ui")
+
+func _connect_buttons_recursive(node: Node) -> void:
+	if node is Button and click_sound != null:
+		if not node.pressed.is_connected(click_sound.play):
+			node.pressed.connect(click_sound.play)
+	for child in node.get_children():
+		_connect_buttons_recursive(child)

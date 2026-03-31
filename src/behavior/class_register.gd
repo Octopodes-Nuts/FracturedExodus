@@ -14,10 +14,10 @@ enum Classes {
 }
 
 @onready var empire_classes = {
-	"Fusilier": load('res://behavior/player/movement/empire/fusilier/Fusilier.tscn'),
-	"Jaeger": load('res://behavior/player/movement/empire/jaeger/Jaeger.tscn'),
-	"Leutnant": load('res://behavior/player/movement/empire/leutnant/Leutnant.tscn'),
-	"Sanitäter": load('res://behavior/player/movement/empire/medzin/Medzin.tscn')	
+	Classes.INFANTRY: load('res://behavior/player/movement/empire/fusilier/Fusilier.tscn'),
+	Classes.SPECIAL: load('res://behavior/player/movement/empire/jaeger/Jaeger.tscn'),
+	Classes.OFFICER: load('res://behavior/player/movement/empire/leutnant/Leutnant.tscn'),
+	Classes.MEDIC: load('res://behavior/player/movement/empire/sanitater/Sanitater.tscn')	
 }
 
 @onready var empire_class_name_map = {
@@ -28,10 +28,10 @@ enum Classes {
 }
 
 @onready var entente_classes = {
-	"Rifleman": load('res://behavior/player/movement/entente/rifleman/Rifleman.tscn'),
-	"Chasseur": load('res://behavior/player/movement/entente/chasseur/Chasseur.tscn'),
-	"Medic": load('res://behavior/player/movement/entente/medic/Medic.tscn'),
-	"Lieutenant": load('res://behavior/player/movement/entente/lieutenant/Lieutenant.tscn')
+	Classes.INFANTRY: load('res://behavior/player/movement/entente/rifleman/Rifleman.tscn'),
+	Classes.SPECIAL: load('res://behavior/player/movement/entente/chasseur/Chasseur.tscn'),
+	Classes.MEDIC: load('res://behavior/player/movement/entente/medic/Medic.tscn'),
+	Classes.OFFICER: load('res://behavior/player/movement/entente/lieutenant/Lieutenant.tscn')
 }
 
 @onready var entente_class_name_map = {
@@ -42,10 +42,10 @@ enum Classes {
 }
 
 @onready var free_agent_classes = {
-	"Captain": load('res://behavior/player/movement/free_agent/captain/Captain.tscn'),
-	"Bulwark": load('res://behavior/player/movement/free_agent/bulwark/Bulwark.tscn'),
-	"Sharpshooter": load('res://behavior/player/movement/free_agent/sharpshooter/Sharpshooter.tscn'),
-	"Recruit": load('res://behavior/player/movement/free_agent/recruit/Recruit.tscn')
+	Classes.OFFICER: load('res://behavior/player/movement/free_agent/captain/Captain.tscn'),
+	Classes.MEDIC: load('res://behavior/player/movement/free_agent/bulwark/BulwarkController.gd'),
+	Classes.SPECIAL: load('res://behavior/player/movement/free_agent/sharpshooter/Sharpshooter.tscn'),
+	Classes.INFANTRY: load('res://behavior/player/movement/free_agent/recruit/Recruit.tscn')
 }
 
 @onready var free_agent_class_name_map = {
@@ -57,11 +57,11 @@ enum Classes {
 
 func get_class_name(faction: int, class_type: int) -> String:
 	match faction:
-		Factions.ENTENTE:
+		Factions.Enum.ENTENTE:
 			return entente_class_name_map.get(class_type, "Unknown")
-		Factions.EMPIRE:
+		Factions.Enum.EMPIRE:
 			return empire_class_name_map.get(class_type, "Unknown")
-		Factions.FREE_AGENTS:
+		Factions.Enum.FREE_AGENTS:
 			return free_agent_class_name_map.get(class_type, "Unknown")
 	return "Unknown"
 
@@ -95,7 +95,7 @@ var free_agent_class_summaries = {
 
 func get_class_summary(faction: int, class_type: int) -> String:
 	match faction:
-		Factions.ENTENTE:
+		Factions.Enum.ENTENTE:
 			match class_type:
 				Classes.INFANTRY:
 					return entente_summary + "\n" + entente_class_summaries.get(class_type, "Unknown")
@@ -105,7 +105,7 @@ func get_class_summary(faction: int, class_type: int) -> String:
 					return entente_summary + "\n" + entente_class_summaries.get(class_type, "Unknown")
 				Classes.SPECIAL:
 					return entente_summary + "\n" + entente_class_summaries.get(class_type, "Unknown")
-		Factions.EMPIRE:
+		Factions.Enum.EMPIRE:
 			match class_type:
 				Classes.INFANTRY:
 					return empire_summary + "\n" + empire_class_summaries.get(class_type, "Unknown")
@@ -115,7 +115,7 @@ func get_class_summary(faction: int, class_type: int) -> String:
 					return empire_summary + "\n" + empire_class_summaries.get(class_type, "Unknown")
 				Classes.SPECIAL:
 					return empire_summary + "\n" + empire_class_summaries.get(class_type, "Unknown")
-		Factions.FREE_AGENTS:
+		Factions.Enum.FREE_AGENTS:
 			match class_type:
 				Classes.INFANTRY:
 					return free_agents_summary + "\n" + free_agent_class_summaries.get(class_type, "Unknown")

@@ -12,8 +12,11 @@ class_name Bullet
 var _speed: float
 var _damage: float
 var _lifetime: float = 1.0 # set to non zero number so bullet is not immediately killed
+var _type: WeaponRegister.GunType
+var _origin: Vector3
 var normal_direction_ray: Vector3 = Vector3()
 var headshot_mult = 2.0
+var _shooter_id: int = 0
 
 func _ready():
 	enabled = true
@@ -28,8 +31,12 @@ func set_properties(
 		angle: Vector3,
 		lifetime: float,
 		ads: bool = false,
-		spread: float = 0.0):
+		spread: float = 0.0,
+		type: WeaponRegister.GunType = WeaponRegister.GunType.RIFLE,
+		shooter_id: int = 0
+	):
 	_speed = speed
+	_origin = origin
 	global_transform.origin = origin
 	_damage = damage
 	global_rotation = angle
@@ -41,6 +48,8 @@ func set_properties(
 			randf_range(-spread, spread)
 		)
 	_lifetime = lifetime
+	_type = type
+	_shooter_id = shooter_id
 	set_target_position(Vector3.FORWARD * 10)
 	set_norm_ray()
 
@@ -52,17 +61,28 @@ func _physics_process(delta):
 	# test if hitting anything
 	if is_colliding():
 		var test = get_collider()
-		print("[BULLET] Collided with: %s (type: %s)" % [test, test.get_class()])
-		print("[BULLET] Node name: %s" % test.name if test.has_method("get_node") else "N/A")
-		print("[BULLET] has_method('hit'): %s, has_method('headshot'): %s" % [test.has_method("hit"), test.has_method("headshot")])
+		# lookup damage multiplier based on distance and gun type
+		# smooth transition between thresholds
+		var distance = _origin.distance_to(get_collision_point())
+		var damage_multiplier = 1.0
+		var index = 0
+		for dist_threshold in WeaponRegister.damage_lookup[_type].keys():
+			if distance <= dist_threshold:
+				var actual_mult = lerp(
+					WeaponRegister.damage_lookup[_type][dist_threshold],
+					WeaponRegister.damage_lookup[_type].values()[index - 1] if index > 1 else 1.0,
+					(distance - WeaponRegister.damage_lookup[_type].keys()[index - 1] if index > 1 else 0) / (dist_threshold - (WeaponRegister.damage_lookup[_type].keys()[index - 2] if index > 1 else 0))
+				)
+				damage_multiplier = actual_mult
+				break
+			index += 1
+		_damage *= damage_multiplier
 
 		if test.has_method("hit"):
-			print("[BULLET] Calling hit() with damage=%s" % _damage)
-			test.hit(_damage)
+			test.hit(_damage, _shooter_id)
 			self.queue_free()
 		elif test.has_method("headshot"):
-			print("[BULLET] Calling headshot() with damage=%s" % (_damage * headshot_mult))
-			test.headshot(_damage * headshot_mult)
+			test.headshot(_damage * headshot_mult, _shooter_id)
 			self.queue_free()
 		else:
 			print("[BULLET] Collider has no hit/headshot methods")

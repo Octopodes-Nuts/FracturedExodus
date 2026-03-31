@@ -10,6 +10,7 @@ signal new_char_created
 
 var Chit: = preload("res://ui/main_menu/CharacterChit.tscn")
 var character_chits = []
+var click_sound: AudioStreamPlayer2D
 
 var path_to_firsts = "res://load/Names/first.txt"
 var path_to_lasts = "res://load/Names/last.txt"
@@ -59,11 +60,11 @@ func render():
 
 	var characters_to_render: CharactersResource
 
-	if Local.get_state("selected_faction") == Factions.ENTENTE:
+	if Local.get_state("selected_faction") == Factions.Enum.ENTENTE:
 		characters_to_render = Local.get_state("entente_characters")
-	elif Local.get_state("selected_faction") == Factions.EMPIRE:
+	elif Local.get_state("selected_faction") == Factions.Enum.EMPIRE:
 		characters_to_render = Local.get_state("empire_characters")
-	elif Local.get_state("selected_faction") == Factions.FREE_AGENTS:
+	elif Local.get_state("selected_faction") == Factions.Enum.FREE_AGENTS:
 		characters_to_render = Local.get_state("free_agent_characters")
 	else:
 		characters_to_render = Local.get_state("characters")
@@ -81,6 +82,8 @@ func render():
 			chit._def = characters_to_render.characters[chr]
 			chit.pos = pos
 			chit.render()
+			if click_sound != null:
+				chit.pressed.connect(click_sound.play)
 			pos += 1
 
 func _on_new_btn_pressed() -> void:
@@ -118,6 +121,6 @@ func get_name_name():
 			last_names[randi_range(0, len(last_names) - 1)]
 		attempts += 1
 
-	if name_name in Local.get_state("characters").characters:
+	while name_name in Local.get_state("characters").characters:
 		name_name = "Rookie " + str(randi_range(1000, 9999))
 	return name_name

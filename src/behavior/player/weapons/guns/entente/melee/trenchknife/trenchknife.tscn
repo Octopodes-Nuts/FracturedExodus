@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://ome5ds7h0wfe"]
+
+[ext_resource type="PackedScene" uid="uid://cx2d82ae8gwm8" path="res://debug/models/weapons/britishtrenchknife/britishtrenchknife.blend" id="1_50qjx"]
+[ext_resource type="Script" uid="uid://bv0wevpogqggo" path="res://behavior/player/weapons/Melee.gd" id="1_gs273"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gs273"]
+size = Vector3(0.015071869, 0.020102024, 0.1335144)
+
+[node name="Trenchknife" type="Node3D" unique_id=423724437]
+script = ExtResource("1_gs273")
+faction = 1
+slots = Dictionary[int, Array]({
+0: [3],
+1: [],
+2: [],
+3: [],
+4: []
+})
+
+[node name="britishtrenchknife" parent="." unique_id=960216436 instance=ExtResource("1_50qjx")]
+
+[node name="Area3D" type="Area3D" parent="britishtrenchknife" unique_id=257085039]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="britishtrenchknife/Area3D" unique_id=713013703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0980835e-05, 0.002039671, -0.10307312)
+shape = SubResource("BoxShape3D_gs273")

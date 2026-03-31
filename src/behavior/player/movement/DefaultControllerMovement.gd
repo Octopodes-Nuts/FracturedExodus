@@ -1,14 +1,15 @@
 extends RefCounted
 
-const PERF_REPORT_INTERVAL_MS := 1000
 const SERVER_SNAPSHOT_INTERVAL := 1.0 / 15.0
 
-static var _perf_last_report_ms: int = 0
-static var _perf_sim_calls: int = 0
-static var _perf_sim_us_total: int = 0
-static var _perf_input_packets_received: int = 0
-static var _perf_snapshots_sent: int = 0
-static var _perf_player_ticks: int = 0
+# NET PROF disabled
+# const PERF_REPORT_INTERVAL_MS := 1000
+# static var _perf_last_report_ms: int = 0
+# static var _perf_sim_calls: int = 0
+# static var _perf_sim_us_total: int = 0
+# static var _perf_input_packets_received: int = 0
+# static var _perf_snapshots_sent: int = 0
+# static var _perf_player_ticks: int = 0
 static var _snapshot_accumulator_by_player: Dictionary = {}
 
 func update_remote_proxy(controller, dt: float) -> void:
@@ -100,9 +101,8 @@ func apply_network_input(controller, seq: int, move_x: float, move_y: float, wan
 	if not controller.multiplayer.is_server():
 		return
 	var sender_id: int = controller.multiplayer.get_remote_sender_id()
-	if sender_id != str(controller.name).to_int():
+	if sender_id != controller._get_peer_id_string().to_int():
 		return
-	_perf_input_packets_received += 1
 	controller.last_server_sequence = seq
 	set_movement_input(controller, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
 
@@ -197,43 +197,39 @@ func handle_physics(controller, dt: float) -> void:
 	if not controller.multiplayer.is_server():
 		return
 
-	_perf_player_ticks += 1
 	simulate(controller, dt, true, false)
-	var player_key := str(controller.name)
+	var player_key = controller._get_peer_id_string()
 	var snapshot_accumulator := float(_snapshot_accumulator_by_player.get(player_key, 0.0)) + dt
 	if snapshot_accumulator >= SERVER_SNAPSHOT_INTERVAL:
 		snapshot_accumulator = 0.0
 		controller.receive_remote_snapshot.rpc(controller.global_position, controller.rotation.y, controller.neck.rotation.x, controller.horizantal_velocity)
-		_perf_snapshots_sent += 1
 		if not controller._is_local_player() and controller.last_server_sequence >= 0:
-			controller.reconcile_movement.rpc_id(str(controller.name).to_int(), controller.last_server_sequence, create_authoritative_state(controller))
+			controller.reconcile_movement.rpc_id(controller._get_peer_id_string().to_int(), controller.last_server_sequence, create_authoritative_state(controller))
 	_snapshot_accumulator_by_player[player_key] = snapshot_accumulator
 
-	var now_ms := Time.get_ticks_msec()
-	if _perf_last_report_ms == 0:
-		_perf_last_report_ms = now_ms
-	elif now_ms - _perf_last_report_ms >= PERF_REPORT_INTERVAL_MS:
-		var avg_sim_ms := 0.0
-		if _perf_sim_calls > 0:
-			avg_sim_ms = float(_perf_sim_us_total) / float(_perf_sim_calls) / 1000.0
-		print("[NET PROF][SERVER] player_ticks=%d input_packets=%d snapshots=%d sim_calls=%d avg_sim_ms=%.3f" % [
-			_perf_player_ticks,
-			_perf_input_packets_received,
-			_perf_snapshots_sent,
-			_perf_sim_calls,
-			avg_sim_ms,
-		])
-		_perf_last_report_ms = now_ms
-		_perf_player_ticks = 0
-		_perf_input_packets_received = 0
-		_perf_snapshots_sent = 0
-		_perf_sim_calls = 0
-		_perf_sim_us_total = 0
+	# NET PROF disabled
+	# var now_ms := Time.get_ticks_msec()
+	# if _perf_last_report_ms == 0:
+	# 	_perf_last_report_ms = now_ms
+	# elif now_ms - _perf_last_report_ms >= PERF_REPORT_INTERVAL_MS:
+	# 	var avg_sim_ms := 0.0
+	# 	if _perf_sim_calls > 0:
+	# 		avg_sim_ms = float(_perf_sim_us_total) / float(_perf_sim_calls) / 1000.0
+	# 	print("[NET PROF][SERVER] player_ticks=%d input_packets=%d snapshots=%d sim_calls=%d avg_sim_ms=%.3f" % [
+	# 		_perf_player_ticks,
+	# 		_perf_input_packets_received,
+	# 		_perf_snapshots_sent,
+	# 		_perf_sim_calls,
+	# 		avg_sim_ms,
+	# 	])
+	# 	_perf_last_report_ms = now_ms
+	# 	_perf_player_ticks = 0
+	# 	_perf_input_packets_received = 0
+	# 	_perf_snapshots_sent = 0
+	# 	_perf_sim_calls = 0
+	# 	_perf_sim_us_total = 0
 
 func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_locally: bool) -> void:
-	var sim_start_us := 0
-	if controller.multiplayer.is_server():
-		sim_start_us = Time.get_ticks_usec()
 	var speed = 0.0
 	var accel = controller.DEACCEL
 	var forward = false
@@ -281,6 +277,15 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 			accel = controller.ACCEL
 			walk_state = controller.WALK_STATES.WALK
 
+		# Infantry buff: faster when tertiary (melee/light) weapon is out
+		if controller is InfantryController and controller.current_equipped_index == 2:
+			speed *= controller.stowed_speed_buff
+		# Special ADS penalty: extra slowdown when aiming down sights
+		elif controller is SpecialController and controller.active_equipable.ads:
+			speed /= controller.ads_movement_penalty
+		# Officer aura (and other received officer buffs)
+		speed *= controller.officer_speed_buff
+
 	if not controller.is_on_floor():
 		walk_state = controller.WALK_STATES.STOP
 
@@ -298,7 +303,3 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 	controller.set_velocity(controller.movement)
 	controller.set_up_direction(Vector3.UP)
 	controller.move_and_slide()
-
-	if controller.multiplayer.is_server():
-		_perf_sim_calls += 1
-		_perf_sim_us_total += Time.get_ticks_usec() - sim_start_us

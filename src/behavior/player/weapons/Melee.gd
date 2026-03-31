@@ -12,7 +12,8 @@ class_name Melee
 @export var damage: float = 105
 
 func _init():
-	type = WeaponType.MELEE
+	# type = WeaponType.MELEE
+	pass
 
 var _stab := false
 

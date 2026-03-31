@@ -5,33 +5,90 @@
 
 extends Node
 
-# All weapons must be registeed here so that they can be loaded
-# This just references preset scenes
+enum GunType {
+	RIFLE,
+	CARBINE,
+	PISTOL,
+	SHOTGUN,
+	REVOLVER,
+}
+
+@onready var damage_lookup = {
+	GunType.RIFLE: {
+		0: 1.0,
+		30: 1.0,
+		80: 0.8,
+		200: 0.5,
+		700: 0.2,
+		2000: 0.0	
+	},
+	GunType.CARBINE: {
+		0: 1.0,
+		20: 1.0,
+		60: 0.8,
+		150: 0.5,
+		500: 0.2,
+		2000: 0.0
+	},
+	GunType.PISTOL: {
+		0: 1.0,
+		15: 1.0,
+		40: 0.8,
+		100: 0.5,
+		300: 0.2,
+		2000: 0.0
+	},
+	GunType.SHOTGUN: {
+		0: 1.0,
+		10: 1.0,
+		15: 0.8,
+		40: 0.2,
+		150: 0.1,
+		500: 0.0,
+		2000: 0.0
+	},
+	GunType.REVOLVER: {
+		0: 1.0,
+		20: 1.0,
+		60: 0.8,
+		150: 0.5,
+		300: 0.2,
+		2000: 0.0
+	}
+}
 
 @onready var gun_register = {
-	"DefaultGun": load("res://behavior/player/weapons/guns/default_gun/DefaultGun.tscn"),
-	"DefaultPistol": load("res://behavior/player/weapons/guns/default_pistol/DefaultPistol.tscn"),
-	"DefaultShotgun": load("res://behavior/player/weapons/guns/default_shotgun/DefaultShotgun.tscn"),
+	"Kar98k": load("res://behavior/player/weapons/guns/empire/longarms/Kar98a/Kar98k.tscn"),
+	"Gewehr 98": load("res://behavior/player/weapons/guns/empire/longarms/Gewehr98/Gewehr98.tscn"),
+	"Reichsrevolver": load("res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/reichsrevolver.tscn"),
 }
 
 @onready var display_gun_register = {
-	"DefaultGun": {
-		"name": "Default Gun",
-		"image": "",
-		"stats": "" # this will be a path to weapon stats?
-	},
-	"DefaultPistol": {
-		"name": "Default Pistol",
+	"Kar98k": {
+		"name": "Kar98k",
 		"image": "",
 		"stats": ""
 	},
-	"DefaultShotgun": {
-		"name": "Default Shotgun",
+	"Gewehr 98": {
+		"name": "Gewehr 98",
+		"image": "",
+		"stats": ""
+	},
+	"Reichsrevolver": {
+		"name": "Reichsrevolver",
 		"image": "",
 		"stats": ""
 	}
 }
 
 @onready var melee_register = {
-	
+	"britishtrenchknife": load("res://behavior/player/weapons/guns/entente/melee/trenchknife/trenchknife.tscn"),
+}
+
+@onready var display_melee_register = {
+	"britishtrenchknife": {
+		"name": "British Trench Knife",
+		"image": "",
+		"stats": ""
+	}
 }

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://0xrgpjf5xic6" path="res://ui/main_menu/SocialPanel.gd" id="1_jvl1h"]
 
-[node name="social_panel" type="Panel" unique_id=846758153]
+[node name="social_panel" type="Panel" unique_id=846758153 groups=["UI"]]
 anchors_preset = -1
 anchor_left = 0.99700004
 anchor_top = 0.104
@@ -14,7 +14,7 @@ offset_right = -0.2401123
 offset_bottom = -1.0
 script = ExtResource("1_jvl1h")
 
-[node name="RequestsContainer" type="ScrollContainer" parent="." unique_id=1225341197]
+[node name="RequestsContainer" type="ScrollContainer" parent="." unique_id=1225341197 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.78900003
@@ -25,12 +25,12 @@ offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="RequestsContainer" unique_id=1376303215]
+[node name="VBoxContainer" type="VBoxContainer" parent="RequestsContainer" unique_id=1376303215 groups=["UI"]]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="SocialLabel" type="Label" parent="." unique_id=924862426]
+[node name="SocialLabel" type="Label" parent="." unique_id=924862426 groups=["UI"]]
 layout_mode = 0
 offset_right = 306.0
 offset_bottom = 42.0
@@ -38,7 +38,7 @@ text = "Social"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="FriendsLabel" type="Label" parent="." unique_id=2085123490]
+[node name="FriendsLabel" type="Label" parent="." unique_id=2085123490 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.279
@@ -49,7 +49,7 @@ offset_right = 80.0
 offset_bottom = -0.33102417
 text = "Friends"
 
-[node name="RequestsLabel" type="Label" parent="." unique_id=607149835]
+[node name="RequestsLabel" type="Label" parent="." unique_id=607149835 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.768
@@ -60,7 +60,7 @@ offset_right = 76.0
 offset_bottom = -0.26000977
 text = "Requests"
 
-[node name="FriendsContainer" type="ScrollContainer" parent="." unique_id=514754292]
+[node name="FriendsContainer" type="ScrollContainer" parent="." unique_id=514754292 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.013
@@ -72,17 +72,17 @@ offset_top = -0.1000061
 offset_right = 0.07998657
 offset_bottom = -0.30603027
 
-[node name="VBoxContainer" type="VBoxContainer" parent="FriendsContainer" unique_id=1129978758]
+[node name="VBoxContainer" type="VBoxContainer" parent="FriendsContainer" unique_id=1129978758 groups=["UI"]]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="AddFriendButton" type="Button" parent="FriendsContainer/VBoxContainer" unique_id=2048759532]
+[node name="AddFriendButton" type="Button" parent="FriendsContainer/VBoxContainer" unique_id=2048759532 groups=["UI"]]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 text = "+"
 
-[node name="FriendCode" type="Label" parent="." unique_id=1117848741]
+[node name="FriendCode" type="Label" parent="." unique_id=1117848741 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.032
@@ -91,7 +91,7 @@ offset_top = 0.05599785
 offset_right = 306.0
 offset_bottom = -0.15200043
 
-[node name="InvitesLabel" type="Label" parent="." unique_id=655437378]
+[node name="InvitesLabel" type="Label" parent="." unique_id=655437378 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.068
@@ -102,7 +102,7 @@ offset_right = 57.0
 offset_bottom = 0.035995483
 text = "Invites"
 
-[node name="InvitesContainer" type="ScrollContainer" parent="." unique_id=1856647595]
+[node name="InvitesContainer" type="ScrollContainer" parent="." unique_id=1856647595 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.095000006
@@ -113,7 +113,7 @@ offset_top = 0.1349945
 offset_right = -1.0
 offset_bottom = 0.61299133
 
-[node name="VBoxContainer" type="VBoxContainer" parent="InvitesContainer" unique_id=993471569]
+[node name="VBoxContainer" type="VBoxContainer" parent="InvitesContainer" unique_id=993471569 groups=["UI"]]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

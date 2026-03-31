@@ -1087,7 +1087,7 @@ script = SubResource("GDScript_6nkx3")
 [node name="Bullet" type="Node" parent="." unique_id=430538244]
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=952964163]
-_spawnable_scenes = PackedStringArray("uid://dcudvv4sp7mpc")
+_spawnable_scenes = PackedStringArray("uid://dcudvv4sp7mpc", "uid://btf6aonf7y67e", "uid://be0t6gsv0th0s", "uid://s1j4ipo5itkm", "uid://cstn4ux30eskv", "uid://d2eq5a7qwmb6h", "uid://mv1x75b3ckaw", "uid://n5n4cgb8wpco", "uid://bqvo8bvf83n53", "uid://buijb6ychbgsc", "uid://65n6woxa44d4", "uid://dtabx04myk1rb", "uid://c4h0haht7xv5j")
 spawn_path = NodePath("../Spawns")
 
 [node name="scanner_site" parent="." unique_id=628423514 instance=ExtResource("18_ulnwu")]

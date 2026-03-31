@@ -178,15 +178,15 @@ func _sync_attack_swing() -> void:
 		return
 	_play_debug_animation(&"swing", true)
 
-func hit(damage: float) -> void:
+func hit(damage: float, shooter_id: int = 0) -> void:
 	if _is_dead:
 		return
-	print("[AI HIT] CALL: node=%s damage=%.1f current_health=%.1f" % [name, damage, health])
 	health -= damage
 	health = maxf(health, 0.0)
-	print("[AI HIT] AFTER: health=%.1f/%.1f" % [health, max_health])
 	last_threat_position = global_position
 	if health <= 0.0:
+		if shooter_id != 0 and multiplayer.is_server():
+			Global.map_root.record_ai_kill(shooter_id)
 		_kill.rpc()
 		return
 	if _should_retreat():
@@ -365,33 +365,15 @@ func _physics_process(delta: float) -> void:
 	_perf_physics_calls += 1
 	_perf_physics_us_total += Time.get_ticks_usec() - physics_start_us
 
-	var now_ms := Time.get_ticks_msec()
-	if _perf_last_report_ms == 0:
-		_perf_last_report_ms = now_ms
-	elif now_ms - _perf_last_report_ms >= PERF_REPORT_INTERVAL_MS:
-		var avg_ai_ms := 0.0
-		var avg_bt_ms := 0.0
-		var avg_move_ms := 0.0
-		if _perf_physics_calls > 0:
-			avg_ai_ms = float(_perf_physics_us_total) / float(_perf_physics_calls) / 1000.0
-			avg_bt_ms = float(_perf_bt_us_total) / float(_perf_physics_calls) / 1000.0
-			avg_move_ms = float(_perf_move_us_total) / float(_perf_physics_calls) / 1000.0
-		print("[AI PROF][SERVER] active_ai=%d ticks=%d avg_ai_ms=%.3f avg_bt_ms=%.3f avg_move_ms=%.3f sync_rpcs=%d vision_checks=%d" % [
-			_perf_active_ai,
-			_perf_physics_calls,
-			avg_ai_ms,
-			avg_bt_ms,
-			avg_move_ms,
-			_perf_sync_rpcs,
-			_perf_vision_checks,
-		])
-		_perf_last_report_ms = now_ms
-		_perf_physics_calls = 0
-		_perf_physics_us_total = 0
-		_perf_bt_us_total = 0
-		_perf_move_us_total = 0
-		_perf_sync_rpcs = 0
-		_perf_vision_checks = 0
+	# AI PROF disabled
+	# var now_ms := Time.get_ticks_msec()
+	# if _perf_last_report_ms == 0:
+	# 	_perf_last_report_ms = now_ms
+	# elif now_ms - _perf_last_report_ms >= PERF_REPORT_INTERVAL_MS:
+	# 	...print("[AI PROF][SERVER] ...")
+	# 	_perf_last_report_ms = now_ms
+	# 	_perf_physics_calls = 0
+	# 	...reset counters...
 
 	if debug_ai:
 		pass

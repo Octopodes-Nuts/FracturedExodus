@@ -33,6 +33,7 @@ func _use() -> void:
 		"lifetime": bullet_lifetime,
 		"ads": false,
 		"spread": bullet_spread,
+		"type": WeaponRegister.GunType.RIFLE
 	}
 
 	if is_multiplayer_authority():
@@ -53,5 +54,6 @@ func _spawn_bullet(dict: Dictionary) -> void:
 		dict["ang"],
 		dict["lifetime"],
 		dict["ads"],
-		dict["spread"]
+		dict["spread"],
+		dict["type"]
 	)

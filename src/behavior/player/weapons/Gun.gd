@@ -17,14 +17,16 @@ var current_clip: int
 @export var ammo_pool: int = 10
 var current_reserve: int = ammo_pool
 
+@export var gun_type: WeaponRegister.GunType = WeaponRegister.GunType.RIFLE
+
 @export var model: Mesh
-var fire_sound: AudioStreamMP3
-var bolt_pull_sound: AudioStreamMP3
+@export var fire_sound: AudioStream
+@export var bolt_pull_sound: AudioStream
 @export var ads_animation: String = "none"
 @export var fire_animation: String = "none"
 @export var cock_animation: String = "none"
 @export var reload_animation: String = "none"
-var player: AnimationPlayer = AnimationPlayer.new()
+@export var player: AnimationPlayer
 @export var cycle_time: float = 0.7
 
 @export var bullet_damage: float
@@ -42,7 +44,6 @@ func _ready():
 	current_clip = clip_size
 	self.add_child(audio_player)
 	self.add_child(bolt_pull_stream)
-	type = WeaponType.GUN
 	_local_ready()
 	
 func _local_ready():
@@ -74,7 +75,9 @@ func _use():
 			"ang": muzzle_end.global_rotation,
 			"lifetime": bullet_lifetime,
 			"ads": ads,
-			"spread": bullet_spread
+			"spread": bullet_spread,
+			"type": gun_type,
+			"shooter": multiplayer.get_unique_id()
 		})
 
 		# spawn a bullet
@@ -106,7 +109,9 @@ func _spawn_bullet(dict: Dictionary):
 		dict["ang"],
 		dict["lifetime"],
 		dict["ads"],
-		dict["spread"]
+		dict["spread"],
+		dict["type"],
+		dict.get("shooter", 0)
 	)
 
 func _reload():

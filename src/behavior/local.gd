@@ -21,6 +21,7 @@ var friend_requests: Array
 var pending_friend_requests: Array
 var player_level: int
 var player_xp: int
+var pending_xp: int = 0
 var matchmaking_ticket: String = ""
 var matchmaking_status: String = ""
 var port: int
@@ -46,7 +47,7 @@ var entente_characters: CharactersResource = CharactersResource.new()
 var empire_characters: CharactersResource = CharactersResource.new()
 var free_agent_characters: CharactersResource = CharactersResource.new()
 var selected_character_def: CharacterDef
-var selected_faction: int = Factions.DEFAULT
+var selected_faction: int = Factions.Enum.DEFAULT
 var char_id: String
 var host: bool = false
 var has_objective = false
@@ -83,11 +84,11 @@ func sort_characters():
 		var agent = characters.characters[agent_name]
 
 		match agent.Faction:
-			Factions.EMPIRE:
+			Factions.Enum.EMPIRE:
 				empire_characters.characters[agent_name] = agent
-			Factions.ENTENTE:
+			Factions.Enum.ENTENTE:
 				entente_characters.characters[agent_name] = agent
-			Factions.FREE_AGENTS:
+			Factions.Enum.FREE_AGENTS:
 				free_agent_characters.characters[agent_name] = agent
 
 func emit_character_updated():

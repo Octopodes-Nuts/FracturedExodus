@@ -5,11 +5,21 @@
 [sub_resource type="CanvasTexture" id="CanvasTexture_xkvgi"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_iylui"]
+font_color = Color(0, 0, 0, 1)
 
 [node name="list_item" type="Button" unique_id=611484991]
 custom_minimum_size = Vector2(0, 115)
 offset_right = 477.0
 offset_bottom = 119.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0, 0, 0, 1)
 script = ExtResource("1_nv8je")
 
 [node name="img" type="TextureRect" parent="." unique_id=880975953]

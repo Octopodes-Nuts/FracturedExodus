@@ -51,17 +51,17 @@ func _on_deploy_button_pressed() -> void:
 
 func render_names():
 	match Local.get_state("selected_faction"):
-		Factions.ENTENTE:
+		Factions.Enum.ENTENTE:
 			infantry_button.text = ClassRegister.entente_class_name_map[ClassRegister.Classes.INFANTRY]
 			medic_button.text = ClassRegister.entente_class_name_map[ClassRegister.Classes.MEDIC]
 			special_button.text = ClassRegister.entente_class_name_map[ClassRegister.Classes.SPECIAL]
 			officer_button.text = ClassRegister.entente_class_name_map[ClassRegister.Classes.OFFICER]
-		Factions.EMPIRE:
+		Factions.Enum.EMPIRE:
 			infantry_button.text = ClassRegister.empire_class_name_map[ClassRegister.Classes.INFANTRY]
 			medic_button.text = ClassRegister.empire_class_name_map[ClassRegister.Classes.MEDIC]
 			special_button.text = ClassRegister.empire_class_name_map[ClassRegister.Classes.SPECIAL]
 			officer_button.text = ClassRegister.empire_class_name_map[ClassRegister.Classes.OFFICER]
-		Factions.FREE_AGENTS:
+		Factions.Enum.FREE_AGENTS:
 			infantry_button.text = ClassRegister.free_agent_class_name_map[ClassRegister.Classes.INFANTRY]
 			medic_button.text = ClassRegister.free_agent_class_name_map[ClassRegister.Classes.MEDIC]
 			special_button.text = ClassRegister.free_agent_class_name_map[ClassRegister.Classes.SPECIAL]
