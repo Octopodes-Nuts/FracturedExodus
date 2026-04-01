@@ -61,6 +61,10 @@ enum GunType {
 	"Kar98k": load("res://behavior/player/weapons/guns/empire/longarms/Kar98a/Kar98k.tscn"),
 	"Gewehr 98": load("res://behavior/player/weapons/guns/empire/longarms/Gewehr98/Gewehr98.tscn"),
 	"Reichsrevolver": load("res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/reichsrevolver.tscn"),
+	"LeeEnfield": load("res://behavior/player/weapons/guns/entente/longarms/leeenfield/leeenfield.tscn"),
+	"Webley": load("res://behavior/player/weapons/guns/entente/sidearms/webley/webley.tscn"),
+	"LebelCarbine": load("res://behavior/player/weapons/guns/entente/longarms/lebelcarbine/lebelcarbine.tscn"),
+	"CarbineRepeater": load("res://behavior/player/weapons/guns/free_agents/longarms/carbinerepeater/carbinerepeater.tscn")
 }
 
 @onready var display_gun_register = {
@@ -78,6 +82,26 @@ enum GunType {
 		"name": "Reichsrevolver",
 		"image": "",
 		"stats": ""
+	},
+	"LeeEnfield": {
+		"name": "Lee Enfield",
+		"image": "",
+		"stats": ""
+	},
+	"Webley": {
+		"name": "Webley Revolver",
+		"image": "",
+		"stats": ""
+	},
+	"LebelCarbine": {
+		"name": "Lebel M1886 M93-R35 Carbine",
+		"image": "",
+		"stats": ""
+	},
+	"CarbineRepeater": {
+		"name": "M1873 Carbine Repeater",
+		"image": "",
+		"stats": ""
 	}
 }
 
@@ -87,7 +111,7 @@ enum GunType {
 
 @onready var display_melee_register = {
 	"britishtrenchknife": {
-		"name": "British Trench Knife",
+		"name": "Trench Knife",
 		"image": "",
 		"stats": ""
 	}

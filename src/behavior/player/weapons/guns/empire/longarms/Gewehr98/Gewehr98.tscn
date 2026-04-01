@@ -13,14 +13,14 @@ tracks/0/enabled = true
 tracks/0/path = NodePath("gewehr98")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.1, 1, 0, 0, 0.04, 0.23333333, 1, 0, 0, 0.04, 0.46666667, 1, 0, 0, 0)
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.1, 1, 0, 0, 0.10313386, 0.2, 1, 0, 0, 0.11026883, 0.46666667, 1, 0, 0, 0)
 tracks/1/type = "rotation_3d"
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/path = NodePath("gewehr98")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
-tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.1, 1, 0, 0, 0, 1, 0.23333333, 1, 0.011902865, 0, 0, 0.99992913, 0.46666667, 1, 0, 0, 0, 1)
+tracks/1/keys = PackedFloat32Array()
 
 [sub_resource type="Animation" id="Animation_4p3pj"]
 length = 0.001
@@ -46,7 +46,7 @@ player = NodePath("AnimationPlayer")
 bullet_damage = 74.0
 bullet_speed = 410.0
 bullet_lifetime = 5.0
-bullet_spread = 2.0
+bullet_spread = 0.01
 ads_position = Vector3(0, 0, 0.3)
 faction = 2
 classes = Array[int]([1, 3])

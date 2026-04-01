@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://cot1ff62jhh3p"]
+
+[ext_resource type="PackedScene" uid="uid://c4y050b2w2sdn" path="res://debug/models/weapons/lebelcarbine/lebelcarbine.blend" id="1_ewkl7"]
+[ext_resource type="Script" uid="uid://iuogwiwcu6b" path="res://behavior/player/weapons/Gun.gd" id="1_mvll6"]
+[ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_j6bu2"]
+
+[sub_resource type="Animation" id="Animation_djxx8"]
+resource_name = "Fire"
+length = 0.5
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("lebelcarbine")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.06666667, 1, 0, 0, 0.091390416, 0.16666667, 1, 0, 0, 0.104706004, 0.46666667, 1, 0, 0, 0)
+
+[sub_resource type="Animation" id="Animation_iqdhh"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("lebelcarbine")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_xlctf"]
+_data = {
+&"Fire": SubResource("Animation_djxx8"),
+&"RESET": SubResource("Animation_iqdhh")
+}
+
+[node name="Lebelcarbine" type="Node3D" unique_id=23219951 node_paths=PackedStringArray("player")]
+script = ExtResource("1_mvll6")
+fire_sound = ExtResource("2_j6bu2")
+fire_animation = "Fire"
+player = NodePath("AnimationPlayer")
+bullet_damage = 62.0
+bullet_speed = 600.0
+bullet_lifetime = 5.0
+bullet_spread = 0.02
+ads_position = Vector3(0, 0, 0.2)
+type = 1
+faction = 1
+slots = Dictionary[int, Array]({
+0: [1],
+1: [],
+2: [],
+3: [],
+4: []
+})
+default_position = Vector3(0.1, -0.1, 0.3)
+
+[node name="lebelcarbine" parent="." unique_id=436132749 instance=ExtResource("1_ewkl7")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1306884769]
+libraries/ = SubResource("AnimationLibrary_xlctf")

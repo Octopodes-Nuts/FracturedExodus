@@ -2,7 +2,41 @@
 
 [ext_resource type="PackedScene" uid="uid://bak172cpjt7x5" path="res://debug/models/weapons/reichsrevolver/reichsrevolver.blend" id="1_g510i"]
 [ext_resource type="Script" uid="uid://s647xfw7x7oc" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/Reichsrevolver.gd" id="1_nqb6u"]
-[ext_resource type="AudioStream" uid="uid://bneh7opew0s8w" path="res://behavior/player/weapons/guns/default_pistol/DefaultPistolShot.mp3" id="2_6xkq4"]
+[ext_resource type="AudioStream" uid="uid://diqd1kyumq8s1" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/reiche revolver.wav" id="2_6xkq4"]
+
+[sub_resource type="Animation" id="Animation_6xkq4"]
+resource_name = "Fire"
+length = 0.7
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("reichsrevolver")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.033333335, 1, 0, 0, 0.007066533, 0.16666667, 1, 0, 0.008395746, 0.020119712, 0.6333333, 1, 0, 0.008, 0)
+tracks/1/type = "rotation_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("reichsrevolver")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.033333335, 1, 0.1190365, 0, 0, 0.9928899, 0.16666667, 1, 0.19669913, 0, 0, 0.98046386, 0.6333333, 1, 0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_awyv2"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("reichsrevolver")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_apku6"]
+_data = {
+&"Fire": SubResource("Animation_6xkq4"),
+&"RESET": SubResource("Animation_awyv2")
+}
 
 [node name="Reichsrevolver" type="Node3D" unique_id=479227364 node_paths=PackedStringArray("player")]
 script = ExtResource("1_nqb6u")
@@ -10,6 +44,7 @@ clip_size = 6
 ammo_pool = 18
 gun_type = 4
 fire_sound = ExtResource("2_6xkq4")
+fire_animation = "Fire"
 player = NodePath("AnimationPlayer")
 bullet_damage = 55.0
 bullet_speed = 340.0
@@ -28,5 +63,7 @@ slots = Dictionary[int, Array]({
 default_position = Vector3(0.1, -0.1, -0.2)
 
 [node name="reichsrevolver" parent="." unique_id=1563747988 instance=ExtResource("1_g510i")]
+transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1961750088]
+libraries/ = SubResource("AnimationLibrary_apku6")

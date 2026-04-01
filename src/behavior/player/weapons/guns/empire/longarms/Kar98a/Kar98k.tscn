@@ -13,14 +13,14 @@ tracks/0/enabled = true
 tracks/0/path = NodePath("kar98k")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.1, 1, 0, 0, 0.034018874, 0.26666668, 1, 0, 0, 0.041627705, 0.53333336, 1, 0, 0, 0)
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.16666667, 1, 0, 0, 0.12480059, 0.26666668, 1, 0, 0, 0.12825233, 0.5, 1, 0, 0, 0)
 tracks/1/type = "rotation_3d"
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/path = NodePath("kar98k")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
-tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.1, 1, 0, 0, 0, 1, 0.2, 1, 0, 0, 0, 1, 0.3, 1, 0.019860541, 0, 0, 0.99980277, 0.53333336, 1, 0, 0, 0, 1)
+tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.13333334, 1, 0, 0, 0, 1, 0.26666668, 1, 0, 0, 0, 1, 0.5, 1, 0, 0, 0, 1)
 
 [sub_resource type="Animation" id="Animation_1s1b8"]
 length = 0.001
@@ -47,7 +47,7 @@ player = NodePath("AnimationPlayer")
 bullet_damage = 60.0
 bullet_speed = 370.0
 bullet_lifetime = 5.0
-bullet_spread = 2.0
+bullet_spread = 0.02
 ads_position = Vector3(0, 0, 0.3)
 type = 1
 faction = 2

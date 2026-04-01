@@ -61,7 +61,7 @@ func load_from_character(character: CharacterDef):
 		if character.Weapon3 in instances.keys():
 			tertiary_weapon = instances[character.Weapon3]
 		else:
-			instances[character.Weapon3] = WeaponRegister.gun_register[character.Weapon3].instantiate()
+			instances[character.Weapon3] = WeaponRegister.melee_register[character.Weapon3].instantiate()
 			tertiary_weapon = instances[character.Weapon3]
 
 func load_from_payload(pd: Dictionary):

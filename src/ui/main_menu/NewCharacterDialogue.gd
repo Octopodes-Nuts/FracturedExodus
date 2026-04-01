@@ -8,7 +8,7 @@ var _character_name: String
 @export var main_menu: MainMenu
 
 @onready var class_name_label = $ClassNameLabel
-@onready var class_summary = $ClassSummary
+@onready var class_summary = $ScrollContainer/VBoxContainer/ClassSummary
 
 @onready var infantry_button = $InfantryButton
 @onready var medic_button = $MedicButton
