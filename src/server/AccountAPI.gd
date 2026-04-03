@@ -8,7 +8,6 @@ signal character_created
 signal account_info_received
 signal account_info_updated
 
-@onready var newCharacterRequest: HTTPRequest = HTTPRequest.new()
 @onready var update_character_request: HTTPRequest = HTTPRequest.new()
 @onready var account_info_update_request: HTTPRequest = HTTPRequest.new()
 @onready var friend_request: HTTPRequest = HTTPRequest.new()
@@ -22,8 +21,6 @@ var server_url: String = "http://" + Local.server_ip + ":" + Local.server_port +
 # var server_url: String = "http://192.168.1.238:8000/"
 
 func _ready():
-	add_child(newCharacterRequest)
-	newCharacterRequest.request_completed.connect(_on_create_character_request_complete)
 	add_child(update_character_request)
 	update_character_request.request_completed.connect(_on_update_character_request_completed)
 	add_child(account_info_update_request)
@@ -60,6 +57,7 @@ func _on_login_request_completed(_result, response_code, _headers, body):
 		
 		Local.set_state("player_id", response["accountId"])
 		Local.set_state("session_token", response["sessionToken"])
+		Local.set_state("friend_code", response["friendCode"])
 
 		if "error" in response.keys():
 			print("Login failed: ", response["error"])
@@ -127,25 +125,26 @@ func create_character(token: String, character_def: CharacterDef):
 	}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
-	var err = newCharacterRequest.request(url, headers, HTTPClient.METHOD_POST, json_body)
+	var request = HTTPRequest.new()
+	add_child(request)
+	var err = request.request(url, headers, HTTPClient.METHOD_POST, json_body)
 	if err != OK:
 		print("Error making create_character request: ", err)
 	else:
 		Local.get_state("characters").characters[character_def.Name] = character_def
-		Local.set_state("selected_character_def", character_def)
-
-func _on_create_character_request_complete(_result, response_code, _headers, body):
-	if response_code == 200:
-		var response = JSON.parse_string(body.get_string_from_utf8())
-		
-		for character in Local.get_state("characters").characters.keys():
-			if Local.get_state("characters").characters[character].ID == "":
-				Local.get_state("characters").characters[character].ID = response["characterId"]
-				Local.sort_characters()
-		
-		emit_signal("character_created")
-	else:
-		print("Create character request failed with code: ", response_code)
+	request.request_completed.connect(
+		func(_result, response_code, _headers, response_body):
+			if response_code == 200:
+				var response = JSON.parse_string(response_body.get_string_from_utf8())
+				character_def.ID = response["characterId"]
+				Local.get_state("characters").characters[character_def.ID] = character_def
+				print("Character created with ID: ", character_def.ID)
+				emit_signal("character_created")
+				Local.set_state("selected_character_def", character_def)
+				request.queue_free()
+			else:
+				print("Create character request failed with code: ", response_code)
+	)
 		
 
 func update_character(token: String, character: CharacterDef):
@@ -243,7 +242,7 @@ func _on_get_account_info_update_request_complete(_result, response_code, _heade
 
 func send_friend_request(friend_id: String):
 	var url = server_url + "player/friendRequest"
-	var body = {"sessionToken": Local.get_state("session_token"), "playerId": friend_id}
+	var body = {"sessionToken": Local.get_state("session_token"), "friendCode": friend_id}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
 	friend_request.request_completed.connect(_on_send_friend_request_complete)
@@ -276,10 +275,11 @@ func _on_accept_friend_request_complete(_result, response_code, _headers, _body)
 		print("Accepting friend request failed with code: ", response_code)
 
 func set_active_character():
-	if Local.get_state("selected_character_def") == null:
-		return
+	var char_id: String = ""
+	if not Local.get_state("selected_character_def") == null:
+		char_id = Local.get_state("selected_character_def").ID
 	var url = server_url + "player/setActiveCharacter"
-	var body = {"sessionToken": Local.get_state("session_token"), "characterId": Local.get_state("selected_character_def").ID}
+	var body = {"sessionToken": Local.get_state("session_token"), "characterId": char_id}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
 	var err = set_active_char_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
@@ -312,4 +312,3 @@ func _on_grant_xp_request_complete(_result, response_code, _headers, body) -> vo
 			Local.set_state("player_level", parsed["accountLevel"])
 	else:
 		push_warning("[AccountAPI] Failed to submit XP, response_code=%d" % response_code)
-

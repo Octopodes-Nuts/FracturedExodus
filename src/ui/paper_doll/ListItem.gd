@@ -10,7 +10,7 @@ signal weapon_selected(id: String)
 #switch this to also load image
 func load_from(id: String, dict: Dictionary):
 	if dict.has(id):
-		_name.text = dict[id]["name"]
+		_name.text = dict[id].name
 		_id = id
 	else:
 		_name.text = "unnassigned"

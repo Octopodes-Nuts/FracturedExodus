@@ -12,7 +12,8 @@ signal hud_changed(hud: Control)
 signal state_changed(key: StringName, value: Variant)
 
 # player ID, obtained from server
-var server_ip: String = "192.168.1.238"
+# var server_ip: String = "192.168.1.238"
+var server_ip: String = "127.0.0.1"
 var server_port: String = "8000"
 var player_id: String
 var session_token: String
@@ -32,6 +33,8 @@ var party_status: String = ""
 var party_leader_id: String = ""
 var party_leader: bool = false
 var in_party: bool = false
+var all_party_members_have_character: bool = false
+var friend_code: String = ""
 
 var registration_token: String = ""
 var server_name: String = ""

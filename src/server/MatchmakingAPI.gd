@@ -7,6 +7,7 @@ var queued: bool = false
 signal match_found(port: int, ip: String)
 signal in_party_status_changed(party_members: Array[String])
 signal matchmaking_status_changed(status: String)
+signal party_status_updated
 signal server_registered
 signal match_ended_reported
 signal party_faction_updated
@@ -162,6 +163,10 @@ func _on_party_status_request_request_completed(_result, response_code, _headers
 		if status.has("partyFaction"):
 			emit_signal("party_faction_updated", status["partyFaction"])
 			print("[ACTIVE PARTY] ", status["partyFaction"])
+		if status.has("allMembersHaveActiveCharacter"):
+			Local.set_state("all_party_members_have_character", status["allMembersHaveActiveCharacter"])
+
+		emit_signal("party_status_updated")
 		print("Current party status: %s" % Local.get_state("party_status"))
 	else:
 		print("Failed to retrieve party status, response code: %d" % response_code)

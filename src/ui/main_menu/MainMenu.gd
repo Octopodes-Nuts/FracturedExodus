@@ -15,7 +15,7 @@ class_name MainMenu
 @onready var weapon_select = $weapon_select
 @onready var account_api = $AccountApi
 @onready var queue_button = $ready_button
-@onready var matchmaking_api = $MatchmakingApi
+@onready var matchmaking_api: MatchmakingAPI = $MatchmakingApi
 @onready var social_panel = $social_panel
 @onready var friend_request_panel = $add_friend_panel
 @onready var faction_select = $FactionSelect
@@ -40,6 +40,8 @@ func _ready():
 		Local.set_state("host", true)
 		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 			print("Error getting to file")
+
+	Local.state_changed.connect(_on_local_state_updated)
 			
 	_connect_buttons_recursive(self)
 	faction_select.select(0)
@@ -47,9 +49,11 @@ func _ready():
 	load_first_character()
 	account_api.set_active_character()
 	account_api.submit_pending_xp(Local.get_state("session_token"))
-	Local.connect("character_updated", account_api.set_active_character)
+	# Local.connect("character_updated", account_api.set_active_character)
 	social_panel.account_api = account_api
 	social_panel.matchmaking_api = matchmaking_api
+	matchmaking_api.in_party_status_changed.connect(_determine_faction_select_state)
+	matchmaking_api.in_party_status_changed.connect(_determine_queue_button_state)
 	add_child(account_info_update_timer)
 	add_child(party_update_timer)
 	account_info_update_timer.wait_time = account_info_update_interval
@@ -77,11 +81,23 @@ func _ready():
 
 
 func _process(_delta: float) -> void:
-	faction_select.disabled = (not Local.get_state("party_leader") and len(Local.get_state("party_members")) > 1) or queued
-	queue_button.disabled = (not Local.get_state("party_leader") and len(Local.get_state("party_members")) > 1) or queued
+	pass
+	
+func _determine_faction_select_state(_input):
+	faction_select.disabled = Local.get_state("in_party") and (not Local.get_state("party_leader") and len(Local.get_state("party_members")) > 1) or queued
+
+func _determine_queue_button_state(_input):
+	queue_button.disabled = Local.get_state("in_party") and not Local.get_state("all_party_members_have_character") or (not Local.get_state("party_leader") and len(Local.get_state("party_members")) > 1) or queued or \
+		Local.get_state("selected_character_def") == null
+	pass
+
+var _faction = Factions.Enum.DEFAULT
 
 func _set_current_faction(faction: int):
 	if not Local.get_state("party_leader"):
+		if _faction == faction:
+			return
+		_faction = faction
 		match faction:
 			Factions.Enum.ENTENTE:
 				faction_select.select(0)
@@ -122,11 +138,8 @@ func _on_character_display_character_select() -> void:
 func _on_paper_doll_weapon_change(register: int) -> void:
 	active_register = register
 	weapon_select.visible = true
-	if register < 3:
-		weapon_select.render_out(register, WeaponRegister.display_gun_register, WeaponRegister.gun_register)
-	elif register < 4:
-		weapon_select.render_out(register, WeaponRegister.display_melee_register, WeaponRegister.melee_register)
-		print("Melee Register Activated")
+	if register < 4:
+		weapon_select.render_out(register, WeaponRegister.weapons.Definitions)
 	else:
 		pass
 
@@ -209,6 +222,15 @@ func _on_option_button_item_selected(index: int) -> void:
 
 	reload()
 	character_select.render()
+
+func _on_local_state_updated(state: String, value: Variant):
+	if state == "selected_character_def":
+		if value != null:
+			_determine_queue_button_state(null)
+		else:
+			print("Queue Button Should disable")
+			queue_button.disabled = true
+		account_api.set_active_character()
 
 func reload():
 	weapon_select.hide()

@@ -35,8 +35,8 @@ const REMOTE_EXTRAPOLATION_SEC = 0.03
 @export var DEACCEL: float = 10.0
 
 @export var mouse_sensitivity: float = 0.03
-@export var gravity: float = 15.0
-@export var jump: float = 10.0
+@export var gravity: float = 9.8
+@export var jump: float = 2.0
 
 @export var step_sound: String
 @export var step_volume: float

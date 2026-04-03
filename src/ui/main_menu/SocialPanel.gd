@@ -22,33 +22,33 @@ var InviteChits: Dictionary = {}
 signal add_friend_button_pressed
 
 func _ready():
-	FriendCodeLabel.text = Local.get_state("player_id")
+	FriendCodeLabel.text = Local.get_state("friend_code")
 	AddFriendButton.pressed.connect(_add_friend_button_pressed)
 	weapon_select.opened.connect(hide)
 	weapon_select.closed.connect(show)
 
 func set_friend_chits():
-
 	var new_friends = {}
 	for friend in Local.get_state("friends"):
-		new_friends[friend] = true
-		if not friend in FriendChits.keys():
+		var friend_id: String = friend["accountId"]
+		new_friends[friend_id] = true
+		if not friend_id in FriendChits.keys():
 			var chit = FriendChitScene.instantiate()
-			chit.set_id(friend)
+			chit.set_friend(friend_id, friend["username"])
 			chit.set_api(account_api)
 			chit.matchmaking_api = matchmaking_api
 			FriendVBox.add_child(chit)
-			FriendChits[friend] = chit
+			FriendChits[friend_id] = chit
 
 	var chits_to_remove = []
-	for friend in FriendChits.keys():
-		if not friend in new_friends.keys():
-			chits_to_remove.append(friend)
+	for friend_id in FriendChits.keys():
+		if not friend_id in new_friends.keys():
+			chits_to_remove.append(friend_id)
 
-	for friend in chits_to_remove:
-		FriendVBox.remove_child(FriendChits[friend])
-		FriendChits[friend].queue_free()
-		FriendChits.erase(friend)
+	for friend_id in chits_to_remove:
+		FriendVBox.remove_child(FriendChits[friend_id])
+		FriendChits[friend_id].queue_free()
+		FriendChits.erase(friend_id)
 		
 
 func set_request_chits():

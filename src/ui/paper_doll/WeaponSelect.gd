@@ -22,7 +22,7 @@ func _ready():
 				emit_signal("closed")
 	)
 	
-func render_out(register: int, dict: Dictionary, restrictions: Dictionary):
+func render_out(register: int, definitions: Dictionary):
 	if not Local.get_state("selected_character_def"):
 		print("[WeaponSelect] selected_character_def is null, aborting render")
 		return
@@ -33,31 +33,28 @@ func render_out(register: int, dict: Dictionary, restrictions: Dictionary):
 		char_def.ClassType, typeof(char_def.ClassType)
 	])
 	emit_signal("clear")
-	for item in dict.keys():
-		var weapon = restrictions[item].instantiate()
+	for item in definitions.keys():
+		var weapon_def: WeaponDefinition = definitions[item]
 		print("[WeaponSelect] checking weapon=%s faction=%s(%s) slots=%s" % [
-			item, weapon.faction, typeof(weapon.faction), weapon.slots
+			item, weapon_def.faction, typeof(weapon_def.faction), weapon_def.slots
 		])
-		if not weapon.faction == char_def.Faction and \
-			not weapon.faction == Factions.Enum.DEFAULT:
+		if not char_def.Faction in weapon_def.faction and \
+			not Factions.Enum.DEFAULT in weapon_def.faction:
 				print("[WeaponSelect]   SKIP %s — faction mismatch" % item)
-				weapon.queue_free()
 				continue
-		if not register in weapon.slots[ClassRegister.Classes.DEFAULT] and \
-		   not register in weapon.slots[char_def.ClassType]:
+		if not register in weapon_def.slots[ClassRegister.Classes.DEFAULT] and \
+		   not register in weapon_def.slots[char_def.ClassType]:
 			print("[WeaponSelect]   SKIP %s — slot mismatch (DEFAULT slots=%s, class slots=%s)" % [
 				item,
-				weapon.slots.get(ClassRegister.Classes.DEFAULT, "KEY MISSING"),
-				weapon.slots.get(char_def.ClassType, "KEY MISSING")
+				weapon_def.slots.get(ClassRegister.Classes.DEFAULT, "KEY MISSING"),
+				weapon_def.slots.get(char_def.ClassType, "KEY MISSING")
 			])
-			weapon.queue_free()
 			continue
 		print("[WeaponSelect]   PASS %s" % item)
-		weapon.queue_free()
 		var li = ListItem.instantiate()
 		connect("clear", li.queue_free)
 		scroll_container.add_child(li)
-		li.load_from(item, dict)
+		li.load_from(item, definitions)
 		li.connect("weapon_selected", emit_weapon_selected)
 
 

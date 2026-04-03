@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" format=3 uid="uid://dsmu232ivn4r7"]
+
+[ext_resource type="PackedScene" uid="uid://cot1ff62jhh3p" path="res://behavior/player/weapons/guns/entente/longarms/lebelcarbine/lebelcarbine.tscn" id="1_mry2r"]
+[ext_resource type="Script" uid="uid://crnbtxd7k7s5n" path="res://behavior/player/weapons/WeaponDefinition.gd" id="2_0fyft"]
+
+[resource]
+script = ExtResource("2_0fyft")
+name = "Lebel M1896 M93-R35 Carbine"
+key = "LebelCarbine"
+scene = ExtResource("1_mry2r")
+metadata/_custom_type_script = "uid://crnbtxd7k7s5n"

@@ -49,19 +49,19 @@ func load_from_character(character: CharacterDef):
 		if character.Weapon1 in instances.keys():
 			primary_weapon = instances[character.Weapon1]
 		else:
-			instances[character.Weapon1] = WeaponRegister.gun_register[character.Weapon1].instantiate()
+			instances[character.Weapon1] = WeaponRegister.weapons.Definitions[character.Weapon1].scene.instantiate()
 			primary_weapon = instances[character.Weapon1]
 	if character.Weapon2:
 		if character.Weapon2 in instances.keys():
 			secondary_weapon = instances[character.Weapon2]
 		else:
-			instances[character.Weapon2] = WeaponRegister.gun_register[character.Weapon2].instantiate()
+			instances[character.Weapon2] = WeaponRegister.weapons.Definitions[character.Weapon2].scene.instantiate()
 			secondary_weapon = instances[character.Weapon2]
 	if character.Weapon3:
 		if character.Weapon3 in instances.keys():
 			tertiary_weapon = instances[character.Weapon3]
 		else:
-			instances[character.Weapon3] = WeaponRegister.melee_register[character.Weapon3].instantiate()
+			instances[character.Weapon3] = WeaponRegister.weapons.Definitions[character.Weapon3].scene.instantiate()
 			tertiary_weapon = instances[character.Weapon3]
 
 func load_from_payload(pd: Dictionary):
@@ -69,19 +69,19 @@ func load_from_payload(pd: Dictionary):
 		if pd["wep1"] in instances.keys():
 			primary_weapon = instances[pd["wep1"]]
 		else:
-			instances[pd["wep1"]] = WeaponRegister.gun_register[pd["wep1"]].instantiate()
+			instances[pd["wep1"]] = WeaponRegister.weapons.Definitions[pd["wep1"]].scene.instantiate()
 			primary_weapon = instances[pd["wep1"]]
 	if pd["wep2"]:
 		if pd["wep2"] in instances.keys():
 			secondary_weapon = instances[pd["wep2"]]
 		else:
-			instances[pd["wep2"]] = WeaponRegister.gun_register[pd["wep2"]].instantiate()
+			instances[pd["wep2"]] = WeaponRegister.weapons.Definitions[pd["wep2"]].scene.instantiate()
 			secondary_weapon = instances[pd["wep2"]]
 	if pd["wep3"]:
 		if pd["wep3"] in instances.keys():
 			tertiary_weapon = instances[pd["wep3"]]
 		else:
-			instances[pd["wep3"]] = WeaponRegister.gun_register[pd["wep3"]].instantiate()
+			instances[pd["wep3"]] = WeaponRegister.weapons.Definitions[pd["wep3"]].scene.instantiate()
 			tertiary_weapon = instances[pd["wep3"]]
 	has_scanner = pd["scanner"]
 	# TODO: Update when we have an equipment register

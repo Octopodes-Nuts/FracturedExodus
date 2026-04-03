@@ -10,8 +10,8 @@ var friend_id: String
 func _init():
 	pass
 	
-func set_id(id: String):
-	text = id
+func set_friend(id: String, username: String):
+	text = username
 	friend_id = id
 
 func set_api(acc_api: AccountAPI):

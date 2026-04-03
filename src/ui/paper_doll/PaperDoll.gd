@@ -46,9 +46,9 @@ func reload(def: CharacterDef):
 		eq_2.set_null()
 		return
 
-	primary_weapon.load_from(def.Weapon1, WeaponRegister.display_gun_register)
-	secondary_weapon.load_from(def.Weapon2, WeaponRegister.display_gun_register)
-	melee_weapon.load_from(def.Weapon3, WeaponRegister.display_melee_register)
+	primary_weapon.load_from(def.Weapon1, WeaponRegister.weapons.Definitions)
+	secondary_weapon.load_from(def.Weapon2, WeaponRegister.weapons.Definitions)
+	melee_weapon.load_from(def.Weapon3, WeaponRegister.weapons.Definitions)
 	eq_1.load_from(def.Equipment1, EquipmentRegister.display_equipment_register)
 	eq_2.load_from(def.Equipment2, EquipmentRegister.display_equipment_register)
 	

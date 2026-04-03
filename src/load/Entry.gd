@@ -13,6 +13,12 @@ func _ready() -> void:
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
 		Local.set_state("server_name", OS.get_environment("MM_SERVER_NAME"))
 		Local.set_state("registration_token", OS.get_environment("MM_SERVER_REGISTRATION_KEY"))
+		var ip = OS.get_environment("HOST_GATEWAY_IP")
+		if ip != "":
+			Local.set_state("server_ip", ip)
+			print("Server IP set to ", Local.server_ip)
+		else:
+			print("No HOST_GATEWAY_IP environment variable set, using default")
 		Local.set_state("host", true)
 			# If no registration token is provided, we assume this is a local dedicated server for testing
 		if Local.get_state("registration_token") == "":
@@ -42,10 +48,10 @@ func _ready() -> void:
 			print(cli_credentials.user, cli_credentials.password)
 			return
 
-		if not ResourceLoader.exists("res://load/AccountInfo.res"):
+		if not ResourceLoader.exists("user://load/AccountInfo.res"):
 			ViewPanel.show()
 		else:
-			var account_info = ResourceLoader.load("res://load/AccountInfo.res")
+			var account_info = ResourceLoader.load("user://load/AccountInfo.res")
 			AccountAPI.login(account_info.AccountName, account_info.Password)
 	
 	
@@ -114,7 +120,7 @@ func _on_SubmitButton_pressed():
 	account_info.AccountName = Userfield.text
 	account_info.Password = Passfield.text
 	
-	ResourceSaver.save(account_info, "res://load/AccountInfo.res")
+	ResourceSaver.save(account_info, "user://load/AccountInfo.res")
 	AccountAPI.login(account_info.AccountName, account_info.Password)
 
 func _enter_dedicated_server_map() -> void:
