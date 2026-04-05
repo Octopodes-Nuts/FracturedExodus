@@ -9,6 +9,7 @@ name = "Lee Enfield"
 key = "LeeEnfield"
 scene = ExtResource("1_56qww")
 type = 1
+base_damage = 72.0
 faction = Array[int]([1])
 slots = Dictionary[int, Array]({
 0: [],

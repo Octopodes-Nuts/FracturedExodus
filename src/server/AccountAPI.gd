@@ -79,6 +79,7 @@ func get_characters(token: String):
 		print("Error making get_characters request: ", err)
 
 func _on_get_characters_request_complete(_result, response_code, _headers, body):
+	print("[AccountAPI] get_characters response_code=%d body=%s" % [response_code, body.get_string_from_utf8()])
 	if response_code == 200:
 		var response = JSON.parse_string(body.get_string_from_utf8())
 		var previous_selected: CharacterDef = Local.get_state("selected_character_def")
@@ -144,6 +145,7 @@ func create_character(token: String, character_def: CharacterDef):
 		Local.get_state("characters").characters[character_def.Name] = character_def
 	request.request_completed.connect(
 		func(_result, response_code, _headers, response_body):
+			print("[AccountAPI] create_character response_code=%d body=%s" % [response_code, response_body.get_string_from_utf8()])
 			if response_code == 200:
 				var response = JSON.parse_string(response_body.get_string_from_utf8())
 				character_def.ID = response["characterId"]

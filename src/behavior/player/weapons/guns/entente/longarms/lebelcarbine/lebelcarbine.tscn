@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://c4y050b2w2sdn" path="res://debug/models/weapons/lebelcarbine/lebelcarbine.blend" id="1_ewkl7"]
 [ext_resource type="Script" uid="uid://iuogwiwcu6b" path="res://behavior/player/weapons/Gun.gd" id="1_mvll6"]
 [ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_j6bu2"]
+[ext_resource type="Resource" uid="uid://dsmu232ivn4r7" path="res://behavior/player/weapons/guns/entente/longarms/lebelcarbine/LebelCarbine.tres" id="3_j6bu2"]
 
 [sub_resource type="Animation" id="Animation_djxx8"]
 resource_name = "Fire"
@@ -41,6 +42,7 @@ bullet_speed = 600.0
 bullet_lifetime = 5.0
 bullet_spread = 0.02
 ads_position = Vector3(0, 0, 0.2)
+definition = ExtResource("3_j6bu2")
 type = 1
 faction = 1
 slots = Dictionary[int, Array]({

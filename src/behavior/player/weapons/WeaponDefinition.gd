@@ -13,6 +13,8 @@ enum Type {
 @export var texture: Texture2D
 
 @export var type: Type
+@export var gun_type: WeaponRegister.GunType
+@export var base_damage: float
 @export var faction: Array[Factions.Enum]
 
 @export var slots: Dictionary[ClassRegister.Classes, Array] = {

@@ -22,6 +22,8 @@ enum WeaponType {
 	MELEE
 }
 
+@export var definition: WeaponDefinition
+
 @export var type: WeaponRegister.GunType = WeaponRegister.GunType.RIFLE
 @export var faction: Factions.Enum = Factions.Enum.DEFAULT
 @export var classes: Array[ClassRegister.Classes] = [ClassRegister.Classes.DEFAULT]

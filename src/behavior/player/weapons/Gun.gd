@@ -71,7 +71,7 @@ func _use():
 		_spawn_bullet.rpc_id(1, {
 			"speed": bullet_speed,
 			"origin": muzzle_end.global_transform.origin,
-			"dmg": bullet_damage,
+			"dmg": definition.base_damage,
 			"ang": muzzle_end.global_rotation,
 			"lifetime": bullet_lifetime,
 			"ads": ads,

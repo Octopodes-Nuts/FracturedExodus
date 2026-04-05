@@ -9,6 +9,8 @@ name = "Reichsrevolver"
 key = "Reichsrevolver"
 scene = ExtResource("1_f7ruo")
 type = 1
+gun_type = 4
+base_damage = 55.0
 faction = Array[int]([2])
 slots = Dictionary[int, Array]({
 0: [1, 2],

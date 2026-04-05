@@ -9,6 +9,8 @@ name = "Lebel M1896 M93-R35 Carbine"
 key = "LebelCarbine"
 scene = ExtResource("1_mry2r")
 type = 1
+gun_type = 1
+base_damage = 62.0
 faction = Array[int]([1])
 slots = Dictionary[int, Array]({
 0: [1],
