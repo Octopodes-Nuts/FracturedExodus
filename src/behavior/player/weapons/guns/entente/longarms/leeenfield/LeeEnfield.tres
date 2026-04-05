@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_8ugti")
-name = "LeeEnfield"
+name = "Lee Enfield"
 key = "LeeEnfield"
 scene = ExtResource("1_56qww")
 type = 1

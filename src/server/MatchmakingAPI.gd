@@ -3,6 +3,7 @@ extends Node
 class_name MatchmakingAPI
 
 var queued: bool = false
+var _pending_shutdown_requests: int = 0
 
 signal match_found(port: int, ip: String)
 signal in_party_status_changed(party_members: Array[String])
@@ -238,8 +239,60 @@ func _on_joined_match_request_request_completed(_result, response_code, _headers
 func match_ended():
 	var url = server_url + "matchmaking/match/ended"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"serverToken": Local.get_state("server_token")})
-	match_ended_request.request(url, headers, HTTPClient.METHOD_POST, body)
+	var server_token = Local.get_state("server_token")
+	var body = JSON.stringify({"serverToken": server_token})
+	print("[MatchmakingAPI] match_ended url=%s server_token=%s" % [url, server_token])
+	_pending_shutdown_requests += 1
+	var req := HTTPRequest.new()
+	get_tree().root.add_child(req)
+	req.request_completed.connect(func(result, response_code, _headers, _body):
+		if response_code >= 200 and response_code < 300:
+			print("Match ended reported successfully")
+		else:
+			print("Failed to report match ended, result=%d response_code=%d" % [result, response_code])
+		req.queue_free()
+		_pending_shutdown_requests -= 1
+		if _pending_shutdown_requests <= 0:
+			emit_signal("match_ended_reported")
+	)
+	var err = req.request(url, headers, HTTPClient.METHOD_POST, body)
+	if err != OK:
+		push_warning("[MatchmakingAPI] Failed to submit match ended request, err=%d" % err)
+		_pending_shutdown_requests -= 1
+
+func delete_character_forfeit(character_id: String) -> void:
+	if character_id.is_empty():
+		return
+	var url = server_url + "player/character/delete"
+	var headers = ["Content-Type: application/json"]
+	var server_token = Local.get_state("server_token")
+	var body: Dictionary = {"characterId": character_id}
+	if server_token != "":
+		body["serverToken"] = server_token
+	else:
+		push_warning("[MatchmakingAPI] No token available to delete character for forfeit")
+		return
+	print("[MatchmakingAPI] delete_character_forfeit url=%s server_token=%s character_id=%s" % [url, server_token, character_id])
+
+	_pending_shutdown_requests += 1
+	var req := HTTPRequest.new()
+	get_tree().root.add_child(req)
+	req.request_completed.connect(func(result, response_code, _headers, _body):
+		if response_code >= 200 and response_code < 300:
+			print("[MatchmakingAPI] Forfeit delete succeeded for character_id=%s" % character_id)
+		else:
+			print("[MatchmakingAPI] Forfeit delete failed for character_id=%s result=%d code=%d" % [character_id, result, response_code])
+		req.queue_free()
+		_pending_shutdown_requests -= 1
+		if _pending_shutdown_requests <= 0:
+			emit_signal("match_ended_reported")
+	)
+	var err = req.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(body))
+	if err != OK:
+		push_warning("[MatchmakingAPI] Failed to submit forfeit delete request err=%d" % err)
+		_pending_shutdown_requests -= 1
+		if _pending_shutdown_requests <= 0:
+			emit_signal("match_ended_reported")
 
 func _on_match_ended_request_request_completed(_result, response_code, _headers, _body) -> void:
 	if response_code >= 200 and response_code < 300:

@@ -13,12 +13,12 @@ func _ready() -> void:
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
 		Local.set_state("server_name", OS.get_environment("MM_SERVER_NAME"))
 		Local.set_state("registration_token", OS.get_environment("MM_SERVER_REGISTRATION_KEY"))
-		var ip = OS.get_environment("HOST_GATEWAY_IP")
-		if ip != "":
-			Local.set_state("server_ip", ip)
-			print("Server IP set to ", Local.server_ip)
-		else:
-			print("No HOST_GATEWAY_IP environment variable set, using default")
+		# var ip = OS.get_environment("HOST_GATEWAY_IP")
+		# if ip != "":
+		# 	Local.set_state("server_ip", ip)
+		# 	print("Server IP set to ", Local.server_ip)
+		# else:
+		# 	print("No HOST_GATEWAY_IP environment variable set, using default")
 		Local.set_state("host", true)
 			# If no registration token is provided, we assume this is a local dedicated server for testing
 		if Local.get_state("registration_token") == "":

@@ -50,6 +50,9 @@ var current_health: float = 100
 var full_contact = false
 var health = FULL_HEALTH
 
+var character_id: String = ""
+var down_count: int = 0
+
 #sounds
 var hits = [preload("res://behavior/player/sounds/hit1.wav"),
 			preload("res://behavior/player/sounds/hit2wav.wav"),
@@ -198,6 +201,9 @@ func _ready():
 	# set up default character
 	character = Character.new()
 	character.load_from_character(Local.get_state("selected_character_def"))
+	var selected_character_def: CharacterDef = Local.get_state("selected_character_def")
+	if selected_character_def != null:
+		character_id = String(selected_character_def.ID)
 	# character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	# character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
@@ -233,6 +239,8 @@ func char_serv_update(ids: Array):
 
 
 func load_from_payload(payload: Dictionary):
+	if payload.has("character_id"):
+		character_id = String(payload["character_id"])
 	if character == null:
 		character = Character.new()
 	character.load_from_payload(payload)
@@ -446,6 +454,7 @@ func _character_payload() -> Dictionary:
 	print("[PAYLOAD] faction=%s class_type=%s" % [char_def.Faction, char_def.ClassType])
 	return {
 		"active": current_equipped_index,
+		"character_id": character_id,
 		"name": char_def.Name,
 		"wep1": char_def.Weapon1,
 		"wep2": char_def.Weapon2,
@@ -522,6 +531,8 @@ func _sync_heal_feedback(updated_health: float, updated_pool: float):
 # this will be an RPC
 func extract():
 	if not _is_local_player(): return
+	if Global.map_root != null and Global.map_root.has_method("notify_player_extracted"):
+		Global.map_root.notify_player_extracted.rpc_id(1, character_id)
 	if Global.map_root != null and Global.map_root.has_method("report_match_left"):
 		Global.map_root.report_match_left("extract")
 	notify_extract(character.has_objective)
@@ -540,9 +551,31 @@ func notify_extract(objective_left):
 		if hud != null:
 			hud.notify.rpc("Objective has left the mission area", 3.0)
 
+const BLEED_OUT_TIME: float = 60.0
+
+@rpc("authority", "reliable")
+func _sync_down_state(new_down_count: int, new_full_health: float) -> void:
+	down_count = new_down_count
+	FULL_HEALTH = new_full_health
+
+func start_bleed_out_timer() -> void:
+	if not multiplayer.is_server():
+		return
+	var timer := Timer.new()
+	timer.wait_time = BLEED_OUT_TIME
+	timer.one_shot = true
+	timer.timeout.connect(func():
+		var peer_id := _get_peer_id_string().to_int()
+		if Global.map_root != null:
+			Global.map_root.remove_player(peer_id)
+		timer.queue_free()
+	)
+	add_child(timer)
+	timer.start()
+
 @rpc("any_peer", "reliable")
-func res(revive_health: float):
-	health_handler.handle_res(self, revive_health)
+func res(revive_health: float, resurrector_is_medic: bool = false):
+	health_handler.handle_res(self, revive_health, resurrector_is_medic)
 
 @rpc("any_peer", "reliable")
 func _res_local(revive_health: float):

@@ -8,10 +8,13 @@ class_name CharacterChit
 
 var _def: CharacterDef
 var pos: int
+var account_api: AccountAPI
+
+signal character_selected
 
 func _init(def: CharacterDef = null):
 	_def = def
-	
+
 func render():
 	_name.text = _def.Name
 	var map: Dictionary = {}
@@ -26,5 +29,5 @@ func render():
 
 func _pressed() -> void:
 	if _def != null:
-		Local.set_state("selected_character_def", _def)
-		Local.emit_character_updated()
+		account_api.set_active_character(_def)
+		emit_signal("character_selected")

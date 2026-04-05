@@ -44,9 +44,17 @@ func request_damage(controller, dmg: int, shooter_id: int = 0) -> void:
 func apply_authoritative_damage(controller, dmg: int, shooter_id: int = 0) -> void:
 	controller._set_current_health(controller.current_health - dmg)
 	if controller.current_health <= 0:
+		controller.down_count += 1
+		if controller.down_count >= 1:
+			controller.FULL_HEALTH = 50.0
 		controller._clear_movement_state()
 		controller.set_res_sphere(true)
 		controller.set_res_sphere.rpc(true)
+		var downed_peer_id = controller._get_peer_id_string().to_int()
+		if downed_peer_id == controller.multiplayer.get_unique_id():
+			controller._sync_down_state(controller.down_count, controller.FULL_HEALTH)
+		else:
+			controller._sync_down_state.rpc_id(downed_peer_id, controller.down_count, controller.FULL_HEALTH)
 		if shooter_id != 0:
 			Global.map_root.record_kill(shooter_id, controller._get_peer_id_string().to_int())
 
@@ -91,7 +99,10 @@ func sync_damage_feedback(controller, updated_health: float) -> void:
 	print("[HIT] sync_damage_feedback node=%s health=%s is_local=%s" % [controller.name, updated_health, controller._is_local_player()])
 	controller._set_current_health(updated_health)
 	update_local_health_ui(controller)
-	set_local_death_ui(controller, controller.current_health <= 0)
+	var is_dead: bool = controller.current_health <= 0
+	set_local_death_ui(controller, is_dead)
+	if is_dead and controller._is_local_player():
+		controller.Local.set_state("input_active", false)
 
 func sync_heal_feedback(controller, updated_health: float, updated_pool: float) -> void:
 	controller._set_current_health(updated_health)
@@ -102,8 +113,10 @@ func sync_heal_feedback(controller, updated_health: float, updated_pool: float) 
 	if controller._is_local_player() and controller.Local.has_hud():
 		controller.Local.get_hud().display_ammo(controller.active_equipable.get_ammo())
 
-func handle_res(controller, revive_health: float) -> void:
+func handle_res(controller, revive_health: float, resurrector_is_medic: bool = false) -> void:
 	if not controller.multiplayer.is_server():
+		return
+	if controller.down_count >= 2 and not resurrector_is_medic:
 		return
 
 	controller._set_current_health(revive_health)
@@ -119,3 +132,5 @@ func handle_res_local(controller, revive_health: float) -> void:
 	set_local_death_ui(controller, false)
 	controller.set_res_sphere(false)
 	controller.set_res_sphere.rpc(false)
+	if controller._is_local_player():
+		controller.Local.set_state("input_active", true)

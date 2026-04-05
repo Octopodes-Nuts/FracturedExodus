@@ -14,10 +14,11 @@ func set_player(node: Node):
 func interact(other: Node):
 	current_res += other.delta
 	if current_res >= RES_TIME:
+		var is_medic: bool = other.medic_res if "medic_res" in other else false
 		if multiplayer.is_server():
-			player.res(50.0)
+			player.res(50.0, is_medic)
 		else:
-			player.res.rpc_id(1, 50.0)
+			player.res.rpc_id(1, 50.0, is_medic)
 		_refresh(other)
 	var hud := Local.get_hud()
 	if hud != null:

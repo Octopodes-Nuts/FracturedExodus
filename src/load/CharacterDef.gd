@@ -24,3 +24,7 @@ func _init(first: String = "", last: String = ""):
 @export var ClassType: ClassRegister.Classes = ClassRegister.Classes.DEFAULT
 
 @export var Faction: int = 0
+
+@export var XP: int = 0
+
+@export var Devotion: int = 0

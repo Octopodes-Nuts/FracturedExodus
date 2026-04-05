@@ -8,4 +8,13 @@ script = ExtResource("2_0fyft")
 name = "Lebel M1896 M93-R35 Carbine"
 key = "LebelCarbine"
 scene = ExtResource("1_mry2r")
+type = 1
+faction = Array[int]([1])
+slots = Dictionary[int, Array]({
+0: [1],
+1: [],
+2: [],
+3: [],
+4: []
+})
 metadata/_custom_type_script = "uid://crnbtxd7k7s5n"
