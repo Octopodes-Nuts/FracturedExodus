@@ -2,14 +2,13 @@
 
 [ext_resource type="PackedScene" uid="uid://cx2d82ae8gwm8" path="res://debug/models/weapons/britishtrenchknife/britishtrenchknife.blend" id="1_50qjx"]
 [ext_resource type="Script" uid="uid://bv0wevpogqggo" path="res://behavior/player/weapons/Melee.gd" id="1_gs273"]
-[ext_resource type="Resource" uid="uid://bh0pg11mxp0sg" path="res://behavior/player/weapons/guns/entente/melee/trenchknife/TrenchKnife.res" id="2_4xkax"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_gs273"]
 size = Vector3(0.015071869, 0.020102024, 0.1335144)
 
 [node name="Trenchknife" type="Node3D" unique_id=423724437]
 script = ExtResource("1_gs273")
-definition = ExtResource("2_4xkax")
+definition_path = "res://behavior/player/weapons/guns/entente/melee/trenchknife/TrenchKnife.res"
 faction = 1
 slots = Dictionary[int, Array]({
 0: [3],

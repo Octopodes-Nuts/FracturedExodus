@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://iuogwiwcu6b" path="res://behavior/player/weapons/Gun.gd" id="1_abknl"]
 [ext_resource type="PackedScene" uid="uid://dy7plboxee7hu" path="res://debug/models/weapons/webley/WebleyRevolver.blend" id="2_m58y2"]
 [ext_resource type="AudioStream" uid="uid://bneh7opew0s8w" path="res://behavior/player/weapons/guns/default_pistol/DefaultPistolShot.mp3" id="2_pc14l"]
-[ext_resource type="Resource" uid="uid://byjh0uvbpfnef" path="res://behavior/player/weapons/guns/entente/sidearms/webley/Webley.res" id="3_pc14l"]
 
 [sub_resource type="Animation" id="Animation_abknl"]
 resource_name = "Fire"
@@ -53,7 +52,7 @@ bullet_speed = 310.0
 bullet_lifetime = 5.0
 bullet_spread = 0.04
 ads_position = Vector3(0, 0, -0.2)
-definition = ExtResource("3_pc14l")
+definition_path = "res://behavior/player/weapons/guns/entente/sidearms/webley/Webley.res"
 type = 4
 faction = 1
 slots = Dictionary[int, Array]({

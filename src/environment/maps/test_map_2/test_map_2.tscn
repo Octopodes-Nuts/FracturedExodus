@@ -40,6 +40,8 @@
 [ext_resource type="PackedScene" uid="uid://b7debegyyf7rg" path="res://debug/models/env/houses/house3.tscn" id="29_tk16t"]
 [ext_resource type="PackedScene" uid="uid://cxj13kr66ri02" path="res://debug/models/env/houses/house4.tscn" id="29_yg4fi"]
 [ext_resource type="PackedScene" uid="uid://dmrb2g6lve0sh" path="res://debug/models/env/props/fences/PartiallyBrokenFence1.tscn" id="39_1g8m1"]
+[ext_resource type="Material" uid="uid://b0p8vuq4k2gmw" path="res://environment/shaders/shader.tres" id="41_dmac0"]
+[ext_resource type="Script" uid="uid://cfnij864ner7t" path="res://environment/shaders/WorldShader.gd" id="42_mou33"]
 
 [sub_resource type="Gradient" id="Gradient_un54m"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -105,13 +107,13 @@ render_priority = 0
 shader = ExtResource("5_dmac0")
 shader_parameter/texture_albedo = ExtResource("3_lio7l")
 shader_parameter/wave_speed = 1.42800006457012
-shader_parameter/wave_strength = 0.26000001235
+shader_parameter/wave_strength = 0.1470000069825
 shader_parameter/wave_frequency = 4.42800020707012
 shader_parameter/wind_direction = Vector2(1, 0.3)
 shader_parameter/height_mask_power = 2.0
 
 [sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_a4cet"]
-name = "d"
+name = "dead grass"
 id = 1
 generated_type = 1
 height_offset = 0.5
@@ -174,13 +176,20 @@ shader_parameter/height_mask_power = 2.0
 [sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_6yoq6"]
 name = "twoflower"
 id = 4
-enabled = false
 generated_type = 1
 height_offset = 0.5
 material_override = SubResource("ShaderMaterial_itemv")
 last_lod = 0
 last_shadow_lod = 0
 lod0_range = 128.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_mou33"]
+name = "tree_1"
+id = 5
+scene_file = ExtResource("22_ulnwu")
+last_lod = 1
+last_shadow_lod = 1
+lod1_range = 128.0
 
 [sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_6yoq6"]
 name = "grasstex"
@@ -207,7 +216,7 @@ normal_texture = ExtResource("14_i71pw")
 uv_scale = 0.35
 
 [sub_resource type="Terrain3DAssets" id="Terrain3DAssets_qhi0f"]
-mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_16h54"), SubResource("Terrain3DMeshAsset_a4cet"), SubResource("Terrain3DMeshAsset_rtqky"), SubResource("Terrain3DMeshAsset_yu704"), SubResource("Terrain3DMeshAsset_6yoq6")])
+mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_16h54"), SubResource("Terrain3DMeshAsset_a4cet"), SubResource("Terrain3DMeshAsset_rtqky"), SubResource("Terrain3DMeshAsset_yu704"), SubResource("Terrain3DMeshAsset_6yoq6"), SubResource("Terrain3DMeshAsset_mou33")])
 texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_6yoq6"), SubResource("Terrain3DTextureAsset_pdrnk"), SubResource("Terrain3DTextureAsset_hd782"), SubResource("Terrain3DTextureAsset_6nkx3")])
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_k2gh6"]
@@ -371,7 +380,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.89, 3.84746, -194.362)
 transform = Transform3D(0.27399284, 0, 0.96173173, 0, 1, 0, -0.96173173, 0, 0.27399284, 1.7465038, 36.946312, -0.2581072)
 
 [node name="tree2" parent="NavigationRegion3D/Terrain3D/environment/tree" unique_id=386313559 instance=ExtResource("22_ulnwu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.014412, 38.576107, 18.03193)
+transform = Transform3D(0.8746028, 0, 0.48484015, 0, 1, 0, -0.48484015, 0, 0.8746028, 20.014412, 38.576107, 18.03193)
 
 [node name="tree3" parent="NavigationRegion3D/Terrain3D/environment/tree" unique_id=1559827454 instance=ExtResource("22_ulnwu")]
 transform = Transform3D(0.9085228, 0, 0.41783535, 0, 1, 0, -0.41783535, 0, 0.9085228, -23.64849, 34.1712, 0)
@@ -380,7 +389,7 @@ transform = Transform3D(0.9085228, 0, 0.41783535, 0, 1, 0, -0.41783535, 0, 0.908
 transform = Transform3D(0.6733441, -0.011257136, 0.7392435, 0.0075804065, 0.99993664, 0.008322292, -0.73929036, 0, 0.67338675, -32.042698, 31.189247, 26.696564)
 
 [node name="tree5" parent="NavigationRegion3D/Terrain3D/environment/tree" unique_id=2102767282 instance=ExtResource("22_ulnwu")]
-transform = Transform3D(0.92204565, 0, 0.38708112, 0, 1, 0, -0.38708112, 0, 0.92204565, 29.36081, 39.71163, 21.133709)
+transform = Transform3D(-0.16903986, 0, 0.9856093, 0, 1, 0, -0.9856093, 0, -0.16903986, 29.36081, 39.71163, 21.133709)
 
 [node name="tree6" parent="NavigationRegion3D/Terrain3D/environment/tree" unique_id=1979929689 instance=ExtResource("23_7nqin")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.036865, 30.352219, 11.906934)
@@ -491,7 +500,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.543785, 30.076864, -22.203
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.07784, 29.769514, 14.6592655)
 
 [node name="tree42" parent="NavigationRegion3D/Terrain3D/environment/tree" unique_id=1164770726 instance=ExtResource("22_ulnwu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68.14477, 29.036343, 36.788353)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68.144035, 29.241766, 36.788353)
 
 [node name="tree43" parent="NavigationRegion3D/Terrain3D/environment/tree" unique_id=2128065456 instance=ExtResource("22_ulnwu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56.231, 40.231613, 81.22231)
@@ -875,10 +884,10 @@ transform = Transform3D(0.7768383, 0, 0.6297001, 0, 1, 0, -0.6297001, 0, 0.77683
 [node name="House5" parent="NavigationRegion3D/Terrain3D/Props/MediumHouses" unique_id=829838504 instance=ExtResource("29_tk16t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.9678557, 19.823853, -237.13748)
 
-[node name="House4" parent="NavigationRegion3D/Terrain3D/Props/MediumHouses" unique_id=1757144566 instance=ExtResource("29_yg4fi")]
+[node name="House4" parent="NavigationRegion3D/Terrain3D/Props/MediumHouses" unique_id=992753360 instance=ExtResource("29_yg4fi")]
 transform = Transform3D(0.96161705, 0, -0.27439564, 0, 1, 0, 0.27439564, 0, 0.96161705, 62.044777, 29.829624, -42.524464)
 
-[node name="House3" parent="NavigationRegion3D/Terrain3D/Props/MediumHouses" unique_id=1814619470 instance=ExtResource("29_tk16t")]
+[node name="House3" parent="NavigationRegion3D/Terrain3D/Props/MediumHouses" unique_id=1034454671 instance=ExtResource("29_tk16t")]
 transform = Transform3D(-0.77551776, 0, -0.6313258, 0, 1, 0, 0.6313258, 0, -0.77551776, 34.541546, 29.824984, -55.889473)
 
 [node name="ChipsiteSpawn" parent="." unique_id=1665953061 instance=ExtResource("19_6nkx3")]
@@ -1067,9 +1076,9 @@ transform = Transform3D(0.995865, 0, 0.0908583, 0, 1, 0, -0.0908583, 0, 0.995865
 shape = SubResource("BoxShape3D_ulnwu")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2088182189]
-transform = Transform3D(0.9013332, 0.43128452, 0.039904695, -0.13584478, 0.19400637, 0.9715489, 0.4112725, -0.88110995, 0.23345208, 0, 170.534, 0)
+transform = Transform3D(0.22972217, -0.37979874, 0.8960916, -0.51420355, 0.7343585, 0.44307107, -0.8263309, -0.56255674, -0.026595416, 0, 170.534, 0)
 light_color = Color(1, 1, 0.9019608, 1)
-light_energy = 0.745
+light_energy = 0.254
 shadow_enabled = true
 
 [node name="Spawns" type="Node" parent="." unique_id=529043171]
@@ -1090,6 +1099,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -196.547, 20.4796, 75.1885)
 
 [node name="tree1" parent="." unique_id=1967643687 instance=ExtResource("22_ulnwu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.882778, 19.62213, -234.07607)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=554964373]
+
+[node name="ShaderRect" type="ColorRect" parent="CanvasLayer" unique_id=1468592912 node_paths=PackedStringArray("sun")]
+visible = false
+material = ExtResource("41_dmac0")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource("42_mou33")
+sun = NodePath("../../DirectionalLight3D")
+
+[node name="FogVolume" type="FogVolume" parent="." unique_id=284955269]
 
 [connection signal="child_entered_tree" from="Spawns" to="Spawns" method="_on_child_entered_tree"]
 [connection signal="spawned" from="PlayerSpawner" to="Spawns" method="_on_player_spawner_spawned"]

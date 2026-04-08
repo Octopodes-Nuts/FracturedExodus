@@ -27,8 +27,11 @@ func _physics_process(delta: float) -> void:
 
 func _apply_aura() -> void:
 	var max_nearby_sprint := MAX_SPRINT
+	var my_faction: int = _get_faction()
 	for node in get_tree().get_nodes_in_group("players"):
 		if node == self or not node is DefaultController:
+			continue
+		if node._get_faction() != my_faction:
 			continue
 		var dist: float = global_position.distance_to(node.global_position)
 		if dist > speed_buff_radius:

@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://iuogwiwcu6b" path="res://behavior/player/weapons/Gun.gd" id="1_asra4"]
 [ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_nd644"]
 [ext_resource type="PackedScene" uid="uid://v2k3x373pr54" path="res://debug/models/weapons/leeenfield/leeenfield.blend" id="2_saojg"]
-[ext_resource type="Resource" uid="uid://civcj5mcrckxk" path="res://behavior/player/weapons/guns/entente/longarms/leeenfield/LeeEnfield.tres" id="3_nd644"]
 
 [sub_resource type="Animation" id="Animation_fkuq6"]
 resource_name = "Fire"
@@ -42,7 +41,7 @@ bullet_speed = 410.0
 bullet_lifetime = 5.0
 bullet_spread = 0.01
 ads_position = Vector3(0, 0, 0.3)
-definition = ExtResource("3_nd644")
+definition_path = "res://behavior/player/weapons/guns/entente/longarms/leeenfield/LeeEnfield.tres"
 faction = 1
 classes = Array[int]([1, 3])
 slots = Dictionary[int, Array]({

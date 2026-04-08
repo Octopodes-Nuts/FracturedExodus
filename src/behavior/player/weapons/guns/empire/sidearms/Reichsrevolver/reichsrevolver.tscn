@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://bak172cpjt7x5" path="res://debug/models/weapons/reichsrevolver/reichsrevolver.blend" id="1_g510i"]
 [ext_resource type="Script" uid="uid://s647xfw7x7oc" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/Reichsrevolver.gd" id="1_nqb6u"]
 [ext_resource type="AudioStream" uid="uid://diqd1kyumq8s1" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/reiche revolver.wav" id="2_6xkq4"]
-[ext_resource type="Resource" uid="uid://ml01t70alois" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/Reichsrevolver.tres" id="3_awyv2"]
 
 [sub_resource type="Animation" id="Animation_6xkq4"]
 resource_name = "Fire"
@@ -52,7 +51,7 @@ bullet_speed = 340.0
 bullet_lifetime = 5.0
 bullet_spread = 7.0
 ads_position = Vector3(0, 0, -0.3)
-definition = ExtResource("3_awyv2")
+definition_path = "res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/Reichsrevolver.tres"
 type = 4
 faction = 2
 slots = Dictionary[int, Array]({

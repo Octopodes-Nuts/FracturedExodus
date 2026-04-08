@@ -3,7 +3,29 @@
 [ext_resource type="Script" uid="uid://iuogwiwcu6b" path="res://behavior/player/weapons/Gun.gd" id="1_i3t1y"]
 [ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_ka5y8"]
 [ext_resource type="PackedScene" uid="uid://c8ykr74ck6t3k" path="res://debug/models/weapons/carbine-repeater/carbinerepeater.blend" id="2_v8esx"]
-[ext_resource type="Resource" uid="uid://cqabwxvp7qrwm" path="res://behavior/player/weapons/guns/free_agents/longarms/carbinerepeater/CarbineRepeater.res" id="3_ka5y8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v8esx"]
+albedo_color = Color(0.21410304, 0.21410304, 0.21410301, 1)
+
+[sub_resource type="Gradient" id="Gradient_smoke"]
+colors = PackedColorArray(0.75, 0.75, 0.75, 0.6, 0.4, 0.4, 0.4, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_smoke"]
+gradient = SubResource("Gradient_smoke")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_smoke"]
+direction = Vector3(0, 1, 0)
+spread = 20.0
+initial_velocity_min = 0.5
+initial_velocity_max = 2.0
+gravity = Vector3(0, 0.3, 0)
+damping_min = 3.0
+damping_max = 6.0
+scale_min = 0.05
+scale_max = 0.12
+color_ramp = SubResource("GradientTexture1D_smoke")
+
+[sub_resource type="SphereMesh" id="SphereMesh_v8esx"]
 
 [sub_resource type="Animation" id="Animation_m832t"]
 resource_name = "Fire"
@@ -45,7 +67,7 @@ bullet_speed = 310.0
 bullet_lifetime = 5.0
 bullet_spread = 0.02
 ads_position = Vector3(0, 0, 0.3)
-definition = ExtResource("3_ka5y8")
+definition_path = "res://behavior/player/weapons/guns/free_agents/longarms/carbinerepeater/CarbineRepeater.res"
 type = 1
 faction = 3
 slots = Dictionary[int, Array]({
@@ -56,6 +78,17 @@ slots = Dictionary[int, Array]({
 4: []
 })
 default_position = Vector3(0.1, -0.1, 0.2)
+
+[node name="MuzzleSmoke" type="GPUParticles3D" parent="." unique_id=441230244]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.9860208)
+material_override = SubResource("StandardMaterial3D_v8esx")
+transparency = 0.45
+emitting = false
+one_shot = true
+explosiveness = 0.75
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_smoke")
+draw_pass_1 = SubResource("SphereMesh_v8esx")
 
 [node name="carbinerepeater" parent="." unique_id=45588144 instance=ExtResource("2_v8esx")]
 

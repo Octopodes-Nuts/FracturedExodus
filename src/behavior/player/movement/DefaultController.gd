@@ -553,6 +553,12 @@ func notify_extract(objective_left):
 
 const BLEED_OUT_TIME: float = 60.0
 
+func _get_faction() -> int:
+	var peer_id_str := _get_peer_id_string()
+	if Global.character_data.has(peer_id_str):
+		return int(Global.character_data[peer_id_str].get("faction", -1))
+	return -1
+
 @rpc("authority", "reliable")
 func _sync_down_state(new_down_count: int, new_full_health: float) -> void:
 	down_count = new_down_count

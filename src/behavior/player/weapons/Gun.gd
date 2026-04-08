@@ -35,8 +35,10 @@ var current_reserve: int = ammo_pool
 @export var bullet_spread: float # the hipfire spread for this gun
 
 var current_cycle: float = 0.0
+var muzzle_smoke: GPUParticles3D
 
 func _ready():
+	super._ready()
 	# set up envrionment
 	audio_player.max_distance = 1200
 	audio_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
@@ -44,6 +46,7 @@ func _ready():
 	current_clip = clip_size
 	self.add_child(audio_player)
 	self.add_child(bolt_pull_stream)
+	muzzle_smoke = get_node_or_null("MuzzleSmoke")
 	_local_ready()
 	
 func _local_ready():
@@ -66,6 +69,9 @@ func _use():
 	if current_clip > 0 and current_cycle <= 0:
 
 		play_sounds_and_anims.rpc()
+		if muzzle_smoke:
+			muzzle_smoke.restart()
+			muzzle_smoke.emitting = true
 		current_cycle = cycle_time
 
 		_spawn_bullet.rpc_id(1, {

@@ -14,7 +14,7 @@ signal state_changed(key: StringName, value: Variant)
 # player ID, obtained from server
 # var server_ip: String = "192.168.1.238"
 # var server_ip: String = "127.0.0.1"
-var server_ip: String = "172.20.10.4"
+var server_ip: String = "192.168.1.50"
 var server_port: String = "8000"
 var player_id: String
 var session_token: String

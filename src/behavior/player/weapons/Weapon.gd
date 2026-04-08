@@ -22,7 +22,12 @@ enum WeaponType {
 	MELEE
 }
 
-@export var definition: WeaponDefinition
+@export var definition_path: String = ""
+var definition: WeaponDefinition
+
+func _ready() -> void:
+	if definition_path != "":
+		definition = load(definition_path)
 
 @export var type: WeaponRegister.GunType = WeaponRegister.GunType.RIFLE
 @export var faction: Factions.Enum = Factions.Enum.DEFAULT

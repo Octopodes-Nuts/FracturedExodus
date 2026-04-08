@@ -131,7 +131,7 @@ func _on_characters_refreshed() -> void:
 	Local.sort_characters()
 	_ensure_selected_character_is_valid()
 	character_select.render()
-	if not character_select.visible and not character_select.new_character_dialogue.visible:
+	if not character_select.visible and not character_select.new_character_dialogue.visible and not weapon_select.visible:
 		reload()
 
 func _ensure_selected_character_is_valid() -> void:
