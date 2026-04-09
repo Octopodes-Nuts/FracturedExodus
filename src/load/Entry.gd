@@ -1,10 +1,10 @@
 extends Node
 
 @onready var AccountAPI = $AccountApi
-@onready var Userfield = $Control/Panel/UserField
-@onready var Passfield = $Control/Panel/PassField
-@onready var ViewPanel = $Control/Panel
-@onready var LoginButton = $Control/Panel/SubmitButton
+@onready var Userfield = $Control/LoginPanel/UserField
+@onready var Passfield = $Control/LoginPanel/PassField
+@onready var ViewPanel = $Control/LoginPanel
+@onready var LoginButton = $Control/LoginPanel/SubmitButton
 @onready var MatchmakingAPI = $MatchmakingApi
 
 # Called when the node enters the scene tree for the first time.
@@ -127,3 +127,15 @@ func _enter_dedicated_server_map() -> void:
 	var err = get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn")
 	if err != OK:
 		push_error("[Entry] Failed to enter dedicated server map (error=%d)" % [err])
+
+
+func _on_user_field_text_changed() -> void:
+	if "\n" in Userfield.text:
+		Userfield.text = Userfield.text.substr(0, Userfield.text.length() - 1)
+		Passfield.grab_focus()
+
+
+func _on_pass_field_text_changed() -> void:
+	if "\n" in Passfield.text:
+		Passfield.text = Passfield.text.substr(0, Passfield.text.length() - 1)
+		_on_SubmitButton_pressed()

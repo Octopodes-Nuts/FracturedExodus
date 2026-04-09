@@ -8,4 +8,15 @@ script = ExtResource("1_j7jhr")
 name = "Reichsrevolver"
 key = "Reichsrevolver"
 scene = ExtResource("1_f7ruo")
+type = 1
+gun_type = 4
+base_damage = 55.0
+faction = Array[int]([2])
+slots = Dictionary[int, Array]({
+0: [1, 2],
+1: [],
+2: [],
+3: [],
+4: []
+})
 metadata/_custom_type_script = "uid://crnbtxd7k7s5n"

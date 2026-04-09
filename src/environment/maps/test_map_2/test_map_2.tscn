@@ -253,6 +253,20 @@ script = ExtResource("2_qhi0f")
 
 [node name="Game" parent="." unique_id=169425246 instance=ExtResource("3_ulnwu")]
 
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=554964373]
+
+[node name="ShaderRect" type="ColorRect" parent="CanvasLayer" unique_id=1468592912 node_paths=PackedStringArray("sun")]
+material = ExtResource("41_dmac0")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource("42_mou33")
+sun = NodePath("../../DirectionalLight3D")
+
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=26450132]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0051374435, 0, -0.055610657)
 navigation_mesh = ExtResource("4_8hgit")
@@ -1099,21 +1113,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -196.547, 20.4796, 75.1885)
 
 [node name="tree1" parent="." unique_id=1967643687 instance=ExtResource("22_ulnwu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.882778, 19.62213, -234.07607)
-
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=554964373]
-
-[node name="ShaderRect" type="ColorRect" parent="CanvasLayer" unique_id=1468592912 node_paths=PackedStringArray("sun")]
-visible = false
-material = ExtResource("41_dmac0")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 6
-size_flags_vertical = 6
-script = ExtResource("42_mou33")
-sun = NodePath("../../DirectionalLight3D")
 
 [node name="FogVolume" type="FogVolume" parent="." unique_id=284955269]
 

@@ -37,6 +37,8 @@ var current_reserve: int = ammo_pool
 var current_cycle: float = 0.0
 var muzzle_smoke: GPUParticles3D
 
+signal recoil(vertical: float, horizontal: float)
+
 func _ready():
 	super._ready()
 	# set up envrionment
@@ -99,6 +101,8 @@ func _use():
 		# 	bullet_spread
 		# )
 		current_clip -= 1
+		if definition != null:
+			recoil.emit(float(definition.vertical_recoil), float(definition.horizantal_recoil))
 
 	else:
 		# player play weapon click

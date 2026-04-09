@@ -94,10 +94,13 @@ func capture_and_submit_input(controller, dt: float) -> void:
 			input_packet["wants_sprint"],
 			input_packet["jump_pressed"],
 			input_packet["yaw"],
-			input_packet["pitch"]
+			input_packet["pitch"],
+			input_packet["dt"]
 		)
 
-func apply_network_input(controller, seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float) -> void:
+var _pending_client_dt: Dictionary = {}
+
+func apply_network_input(controller, seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float) -> void:
 	if not controller.multiplayer.is_server():
 		return
 	var sender_id: int = controller.multiplayer.get_remote_sender_id()
@@ -105,6 +108,7 @@ func apply_network_input(controller, seq: int, move_x: float, move_y: float, wan
 		return
 	controller.last_server_sequence = seq
 	set_movement_input(controller, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
+	_pending_client_dt[controller._get_peer_id_string()] = client_dt
 
 func create_authoritative_state(controller) -> Dictionary:
 	return {
@@ -197,8 +201,12 @@ func handle_physics(controller, dt: float) -> void:
 	if not controller.multiplayer.is_server():
 		return
 
-	simulate(controller, dt, true, false)
 	var player_key = controller._get_peer_id_string()
+	var sim_dt := float(_pending_client_dt.get(player_key, dt))
+	_pending_client_dt.erase(player_key)
+	if sim_dt <= 0.0:
+		sim_dt = dt
+	simulate(controller, sim_dt, true, false)
 	var snapshot_accumulator := float(_snapshot_accumulator_by_player.get(player_key, 0.0)) + dt
 	if snapshot_accumulator >= SERVER_SNAPSHOT_INTERVAL:
 		snapshot_accumulator = 0.0
@@ -240,7 +248,10 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 
 	controller.full_contact = ground_check(controller)
 
-	if not controller.is_on_floor():
+	if controller.is_on_floor():
+		if controller.gravity_direction.y < 0.0:
+			controller.gravity_direction.y = 0.0
+	else:
 		controller.gravity_direction += Vector3.DOWN * controller.gravity * dt
 
 	if controller.current_health > 0:

@@ -13,7 +13,7 @@ var movement_handler = preload("res://behavior/player/movement/DefaultController
 var health_handler = preload("res://behavior/player/movement/DefaultControllerHealth.gd").new()
 
 var DEFAULT_LERP = 20.0
-const RECONCILE_DISTANCE_SQUARED = 0.0025
+const RECONCILE_DISTANCE_SQUARED = 0.04
 const REMOTE_POSITION_LERP = 14.0
 const REMOTE_ROTATION_LERP = 18.0
 const REMOTE_EXTRAPOLATION_SEC = 0.03
@@ -35,8 +35,8 @@ const REMOTE_EXTRAPOLATION_SEC = 0.03
 @export var DEACCEL: float = 10.0
 
 @export var mouse_sensitivity: float = 0.03
-@export var gravity: float = 9.8
-@export var jump: float = 2.0
+@export var gravity: float = 25.0
+@export var jump: float = 6.0
 
 @export var step_sound: String
 @export var step_volume: float
@@ -128,6 +128,12 @@ func _is_local_player() -> bool:
 func _apply_look_rotation(yaw: float, pitch: float) -> void:
 	rotation.y = yaw
 	neck.rotation.x = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+
+func _apply_recoil(vertical_deg: float, horizontal_deg: float) -> void:
+	net_pitch += deg_to_rad(vertical_deg)
+	net_pitch = clamp(net_pitch, deg_to_rad(-89), deg_to_rad(89))
+	net_yaw += deg_to_rad(randf_range(-horizontal_deg, horizontal_deg))
+	_apply_look_rotation(net_yaw, net_pitch)
 
 func _update_remote_proxy(dt: float) -> void:
 	movement_handler.update_remote_proxy(self, dt)
@@ -285,6 +291,8 @@ func swap_equipped(equipable: Equipable):
 		var remaining_cycle := 0.0
 		if active_equipable is Gun:
 			remaining_cycle = active_equipable.current_cycle
+			if _is_local_player() and active_equipable.recoil.is_connected(_apply_recoil):
+				active_equipable.recoil.disconnect(_apply_recoil)
 		active_equipable._set_inactive()
 		# play stow animation
 		active_equipable = equipable
@@ -292,6 +300,8 @@ func swap_equipped(equipable: Equipable):
 		if equipable is Gun and remaining_cycle > 0.0:
 			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
 		equipable._set_active()
+		if equipable is Gun and _is_local_player():
+			equipable.recoil.connect(_apply_recoil)
 		camera.add_child(equipable)
 		equipable.transform.origin = equipable.default_position
 		current_eqipped_key = equipable.key
@@ -304,6 +314,8 @@ func swap_equipped_from_index(id: int, call_rpc: bool):
 		var remaining_cycle := 0.0
 		if active_equipable is Gun:
 			remaining_cycle = active_equipable.current_cycle
+			if _is_local_player() and active_equipable.recoil.is_connected(_apply_recoil):
+				active_equipable.recoil.disconnect(_apply_recoil)
 		active_equipable._set_inactive()
 		# play stow animation
 		active_equipable = equipable
@@ -311,6 +323,8 @@ func swap_equipped_from_index(id: int, call_rpc: bool):
 		if equipable is Gun and remaining_cycle > 0.0:
 			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
 		equipable._set_active()
+		if equipable is Gun and _is_local_player():
+			equipable.recoil.connect(_apply_recoil)
 		camera.add_child(equipable)
 		equipable.transform.origin = equipable.default_position
 		current_equipped_index = id
@@ -355,8 +369,8 @@ func _capture_and_submit_input(dt: float) -> void:
 	movement_handler.capture_and_submit_input(self, dt)
 
 @rpc("any_peer", "unreliable_ordered")
-func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float):
-	movement_handler.apply_network_input(self, seq, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
+func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float = 0.0):
+	movement_handler.apply_network_input(self, seq, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch, client_dt)
 
 func _create_authoritative_state() -> Dictionary:
 	return movement_handler.create_authoritative_state(self)

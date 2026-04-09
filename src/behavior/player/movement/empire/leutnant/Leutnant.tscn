@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://mv1x75b3ckaw"]
 
+[ext_resource type="Script" uid="uid://c2mgbe2r5trh8" path="res://behavior/player/movement/empire/leutnant/LeutnantController.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://dcudvv4sp7mpc" path="res://behavior/player/Player.tscn" id="1_3372h"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1ikn4"]
@@ -8,6 +9,7 @@ radius = 10.0
 [node name="Leutnant" type="Node3D" unique_id=1783696308]
 
 [node name="player_body" parent="." unique_id=404869370 instance=ExtResource("1_3372h")]
+script = ExtResource("1_script")
 
 [node name="influence" type="Area3D" parent="player_body" unique_id=1430838731]
 

@@ -43,7 +43,7 @@ enum Classes {
 
 @onready var free_agent_classes = {
 	Classes.OFFICER: load('res://behavior/player/movement/free_agent/captain/Captain.tscn'),
-	Classes.MEDIC: load('res://behavior/player/movement/free_agent/bulwark/BulwarkController.gd'),
+	Classes.MEDIC: load('res://behavior/player/movement/free_agent/bulwark/Bulwark.tscn'),
 	Classes.SPECIAL: load('res://behavior/player/movement/free_agent/sharpshooter/Sharpshooter.tscn'),
 	Classes.INFANTRY: load('res://behavior/player/movement/free_agent/recruit/Recruit.tscn')
 }

@@ -2,7 +2,13 @@ extends ColorRect
 
 @export var sun: DirectionalLight3D
 
+func _ready() -> void:
+	mouse_filter = MOUSE_FILTER_IGNORE
+
 func _process(_delta: float) -> void:
+	visible = Local.get_state("input_active")
+	if Local.host:
+		return
 	if sun == null:
 		return
 	var camera := get_viewport().get_camera_3d()
