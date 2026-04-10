@@ -24,7 +24,7 @@ const REMOTE_EXTRAPOLATION_SEC = 0.03
 @onready var HUD = preload('res://ui/hud/Hud.tscn').instantiate()
 
 @onready var escape_menu = preload(
-	'res://debug/ui/debug_escape_menu/DebugEscapeMenu.tscn').instantiate()
+	'res://ui/escape_menu/EscapeMenu.tscn').instantiate()
 
 @export var MAX_SPEED: float = 6.0
 @export var MAX_SPRINT: float = 12.0
@@ -173,6 +173,10 @@ func _assign_server_spawn_from_character_faction() -> bool:
 
 
 func _ready():
+	escape_menu.leave_button_pressed.connect(
+		func():
+			Global.map_root.leave_game()
+	)
 	add_to_group("players")
 	connect("character_update", Global.emit_character_update)
 	Global.connect("character_update", char_serv_update)

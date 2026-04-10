@@ -90,6 +90,11 @@ func _setup_as_server(context: String = ""):
 	set_multiplayer_authority(1)
 	print("[Map] Server started%s on port %d" % [context, PORT])
 	return true
+	
+func leave_game():
+	report_match_left("leave_game")
+	multiplayer.multiplayer_peer = null
+	get_tree().change_scene_to_file.call_deferred("res://ui/main_menu/MainMenu.tscn")
 
 # When tree is entered, set as the map root
 func _ready():
