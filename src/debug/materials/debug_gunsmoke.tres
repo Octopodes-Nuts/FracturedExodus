@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://7tfikjdwj628"]
+
+[ext_resource type="Shader" uid="uid://b783t12fr726l" path="res://debug/materials/gunsmoke.gdshader" id="1_q17ob"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_q17ob")
+shader_parameter/noise_scale = 18.598000835905
+shader_parameter/wisp_sharpness = 0.582000003895
+shader_parameter/edge_softness = 0.55
+shader_parameter/drift_speed = 0.12

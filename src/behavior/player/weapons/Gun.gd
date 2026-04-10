@@ -36,6 +36,7 @@ var current_reserve: int = ammo_pool
 
 var current_cycle: float = 0.0
 var muzzle_smoke: GPUParticles3D
+var muzzle_blast: GPUParticles3D
 
 signal recoil(vertical: float, horizontal: float)
 
@@ -49,6 +50,7 @@ func _ready():
 	self.add_child(audio_player)
 	self.add_child(bolt_pull_stream)
 	muzzle_smoke = get_node_or_null("MuzzleSmoke")
+	muzzle_blast = get_node_or_null("MuzzleBlast")
 	_local_ready()
 	
 func _local_ready():
@@ -74,6 +76,9 @@ func _use():
 		if muzzle_smoke:
 			muzzle_smoke.restart()
 			muzzle_smoke.emitting = true
+		if muzzle_blast:
+			muzzle_blast.restart()
+			muzzle_blast.emitting = true
 		current_cycle = cycle_time
 
 		_spawn_bullet.rpc_id(1, {

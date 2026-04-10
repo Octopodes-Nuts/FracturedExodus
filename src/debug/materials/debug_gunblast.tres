@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dy1781jh8exjs"]
+
+[ext_resource type="Shader" uid="uid://dm7nq62ag5wc6" path="res://debug/materials/gunblast.gdshader" id="1_ixbdr"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ixbdr")
+shader_parameter/noise_scale = 6.0
+shader_parameter/edge_jaggedness = 2.8
+shader_parameter/core_size = 0.35
+shader_parameter/core_color = Color(1, 0.95, 0.6, 1)
+shader_parameter/mid_color = Color(1, 0.45, 0.05, 1)
+shader_parameter/outer_color = Color(0.6, 0.1, 0, 1)
