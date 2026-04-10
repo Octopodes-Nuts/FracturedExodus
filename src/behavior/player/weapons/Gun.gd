@@ -15,7 +15,7 @@ var bolt_pull_stream: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 @export var clip_size: int = 4
 var current_clip: int
 @export var ammo_pool: int = 10
-var current_reserve: int = ammo_pool
+var current_reserve: int
 
 @export var gun_type: WeaponRegister.GunType = WeaponRegister.GunType.RIFLE
 
@@ -47,6 +47,7 @@ func _ready():
 	audio_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
 	bolt_pull_stream.max_distance = 10
 	current_clip = clip_size
+	current_reserve = ammo_pool
 	self.add_child(audio_player)
 	self.add_child(bolt_pull_stream)
 	muzzle_smoke = get_node_or_null("MuzzleSmoke")
@@ -133,7 +134,13 @@ func _reload():
 	player.play(reload_animation)
 	# increase weapon inside animation, but that is too 
 	# involved for this point
-	current_clip = clip_size
+	if (clip_size - current_clip) > current_reserve:
+		current_clip = current_reserve + current_clip
+		current_reserve = 0
+	else:
+		current_reserve -= (clip_size - current_clip)
+		current_clip = clip_size
+		
 	
 func get_ammo():
 	return [current_clip, current_reserve]
