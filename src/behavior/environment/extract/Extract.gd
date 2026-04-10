@@ -20,7 +20,9 @@ func _local_physics_step(delta):
 	for node in extracts.keys():
 		if extracts[node] > 0:
 			extracts[node] -= delta
-			Local.HUD.get_child(1).set_time_value((extracts[node] / EXTRACT_TIME) * 100)
+			var hud := Local.get_hud()
+			if hud != null:
+				hud.set_progress_percent((extracts[node] / EXTRACT_TIME) * 100)
 		else:
 			node.extract()
 			#warning-ignore:return_value_discarded
@@ -32,10 +34,14 @@ func _interact(node: Node):
 	#print(extracts)
 
 func _add_interaction(_node: Node):
-	Local.HUD.get_child(1).set_visible(true)
+	var hud := Local.get_hud()
+	if hud != null:
+		hud.set_progress_visible(true)
 
 func _remove_interaction(node: Node):
 	#warning-ignore:return_value_discarded
 	extracts.erase(node)
-	Local.HUD.get_child(1).set_visible(false)
+	var hud := Local.get_hud()
+	if hud != null:
+		hud.set_progress_visible(false)
 	

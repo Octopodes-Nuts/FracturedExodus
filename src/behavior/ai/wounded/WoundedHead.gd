@@ -8,10 +8,10 @@ func _get_owner_wounded() -> Node:
 		owner_node = get_parent()
 	return owner_node
 
-func headshot(damage: float) -> void:
+func headshot(damage: float, shooter_id: int = 0) -> void:
 	var owner_node := _get_owner_wounded()
 	if owner_node != null and owner_node.has_method("headshot"):
-		owner_node.call("headshot", damage)
+		owner_node.call("headshot", damage, shooter_id)
 		return
 	if owner_node != null and owner_node.has_method("hit"):
-		owner_node.call("hit", damage)
+		owner_node.call("hit", damage, shooter_id)

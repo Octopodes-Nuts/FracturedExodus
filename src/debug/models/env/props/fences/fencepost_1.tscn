@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dk3hijq8bqv4i"]
+
+[ext_resource type="PackedScene" uid="uid://dwf6e2ppn1c0u" path="res://debug/models/env/fencepost1.blend" id="1_yseyv"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_88tfc"]
+size = Vector3(0.22595215, 1.9230652, 0.25927734)
+
+[node name="fencepost1" unique_id=12899251 instance=ExtResource("1_yseyv")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="4" unique_id=1496386816]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0" unique_id=1692569521]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.007019043, 0.9304962, -0.052001953)
+shape = SubResource("BoxShape3D_88tfc")

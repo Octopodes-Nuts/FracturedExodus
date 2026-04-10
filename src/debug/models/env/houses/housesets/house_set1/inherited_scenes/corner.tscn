@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cvm2h46eem2pt"]
+
+[ext_resource type="PackedScene" uid="uid://b7tyush7q5qwu" path="res://debug/models/env/houses/housesets/house_set1/blend_files/corner.blend" id="1_r0n04"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qiifj"]
+size = Vector3(0.16, 2.4, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hn4nn"]
+size = Vector3(1, 2.4, 0.16)
+
+[node name="corner2" unique_id=629726295 instance=ExtResource("1_r0n04")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1" unique_id=1264831184]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0" unique_id=1921620839]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 1.2, -0.5)
+shape = SubResource("BoxShape3D_qiifj")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D" index="1" unique_id=1910212335]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.2, -0.92)
+shape = SubResource("BoxShape3D_hn4nn")

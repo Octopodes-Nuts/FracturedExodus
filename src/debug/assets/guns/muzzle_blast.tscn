@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://cbkx434s8wdjv"]
+
+[ext_resource type="Shader" uid="uid://dm7nq62ag5wc6" path="res://debug/materials/gunblast.gdshader" id="1_x5hqh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_blast"]
+render_priority = 0
+shader = ExtResource("1_x5hqh")
+shader_parameter/noise_scale = 6.0
+shader_parameter/edge_jaggedness = 2.8
+shader_parameter/core_size = 0.35
+shader_parameter/core_color = Color(1, 0.95, 0.6, 1)
+shader_parameter/mid_color = Color(1, 0.45, 0.05, 1)
+shader_parameter/outer_color = Color(0.6, 0.1, 0, 1)
+
+[sub_resource type="Gradient" id="Gradient_blast"]
+offsets = PackedFloat32Array(0, 0.3, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.6, 0.1, 0.8, 1, 0.3, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_blast"]
+gradient = SubResource("Gradient_blast")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_blast"]
+angle_min = -180.0
+angle_max = 180.0
+direction = Vector3(0, 0, -1)
+spread = 15.0
+initial_velocity_min = 2.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
+damping_min = 8.0
+damping_max = 14.0
+scale_min = 0.8
+scale_max = 1.4
+color_ramp = SubResource("GradientTexture1D_blast")
+
+[sub_resource type="QuadMesh" id="QuadMesh_blast"]
+size = Vector2(0.25, 0.25)
+
+[node name="MuzzleBlast" type="GPUParticles3D" unique_id=2098191403]
+material_override = SubResource("ShaderMaterial_blast")
+emitting = false
+amount = 12
+lifetime = 0.12
+one_shot = true
+explosiveness = 0.95
+process_material = SubResource("ParticleProcessMaterial_blast")
+draw_pass_1 = SubResource("QuadMesh_blast")

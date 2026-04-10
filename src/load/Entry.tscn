@@ -17,8 +17,7 @@ anchors_preset = 0
 offset_right = 1916.0
 offset_bottom = 1088.0
 
-[node name="Panel" type="Panel" parent="Control" unique_id=1750668303]
-visible = false
+[node name="LoginPanel" type="Panel" parent="Control" unique_id=1750668303]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.326
@@ -30,21 +29,21 @@ offset_top = 83.72
 offset_right = 609.384
 offset_bottom = 381.72
 
-[node name="UserField" type="TextEdit" parent="Control/Panel" unique_id=2009720960]
+[node name="UserField" type="TextEdit" parent="Control/LoginPanel" unique_id=2009720960]
 layout_mode = 1
 offset_left = 218.0
 offset_top = 51.0
 offset_right = 558.0
 offset_bottom = 100.0
 
-[node name="PassField" type="TextEdit" parent="Control/Panel" unique_id=1119894156]
+[node name="PassField" type="TextEdit" parent="Control/LoginPanel" unique_id=1119894156]
 layout_mode = 1
 offset_left = 219.0
 offset_top = 122.0
 offset_right = 559.0
 offset_bottom = 171.0
 
-[node name="UserLabel" type="Label" parent="Control/Panel" unique_id=1350657113]
+[node name="UserLabel" type="Label" parent="Control/LoginPanel" unique_id=1350657113]
 layout_mode = 0
 offset_left = 12.0
 offset_top = 49.0
@@ -54,7 +53,7 @@ text = "Username:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PassLabel" type="Label" parent="Control/Panel" unique_id=1350744418]
+[node name="PassLabel" type="Label" parent="Control/LoginPanel" unique_id=1350744418]
 layout_mode = 0
 offset_left = 16.0
 offset_top = 118.0
@@ -64,10 +63,13 @@ text = "Password:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SubmitButton" type="Button" parent="Control/Panel" unique_id=1443190271]
+[node name="SubmitButton" type="Button" parent="Control/LoginPanel" unique_id=1443190271]
 layout_mode = 0
 offset_left = 114.0
 offset_top = 224.0
 offset_right = 479.0
 offset_bottom = 272.0
 text = "Log In"
+
+[connection signal="text_changed" from="Control/LoginPanel/UserField" to="." method="_on_user_field_text_changed"]
+[connection signal="text_changed" from="Control/LoginPanel/PassField" to="." method="_on_pass_field_text_changed"]

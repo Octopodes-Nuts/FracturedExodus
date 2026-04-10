@@ -6,24 +6,41 @@
 
 [node name="character_display" type="Panel" unique_id=677567741]
 offset_right = 357.0
-offset_bottom = 521.0
+offset_bottom = 548.0
 script = ExtResource("1_4g70r")
 
-[node name="select_btn" type="Button" parent="." unique_id=1497138427]
-layout_mode = 0
-offset_left = 15.0
-offset_top = 465.0
-offset_right = 341.0
-offset_bottom = 506.0
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=531003973]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -172.5
+offset_top = -66.0
+offset_right = 171.5
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="XPLabel" type="Label" parent="VBoxContainer" unique_id=626960716]
+layout_mode = 2
+size_flags_vertical = 6
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=186587404]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="select_btn" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1497138427]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Select"
 
-[node name="character_render" type="TextureRect" parent="." unique_id=999364686]
-layout_mode = 0
-offset_left = 14.0
-offset_top = 49.0
-offset_right = 342.0
-offset_bottom = 450.0
-texture = SubResource("CanvasTexture_552ua")
+[node name="dismiss_btn" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=256115469]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Dismiss"
 
 [node name="character_name" type="Label" parent="." unique_id=1796307221]
 layout_mode = 0
@@ -35,4 +52,13 @@ text = "Character Name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="pressed" from="select_btn" to="." method="_on_select_btn_pressed"]
+[node name="character_render" type="TextureRect" parent="." unique_id=999364686]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 49.0
+offset_right = 342.0
+offset_bottom = 450.0
+texture = SubResource("CanvasTexture_552ua")
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/select_btn" to="." method="_on_select_btn_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/dismiss_btn" to="." method="_on_dismiss_btn_pressed"]

@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b0p8vuq4k2gmw"]
+
+[ext_resource type="Shader" uid="uid://ji1b2e0yhn6j" path="res://environment/shaders/world_shader.gdshader" id="1_3q6om"]
+
+[resource]
+shader = ExtResource("1_3q6om")
+shader_parameter/vignette_strength = 0.6
+shader_parameter/vignette_radius = 0.75
+shader_parameter/kuwahara_radius = 2
+shader_parameter/grain_strength = 0.03
+shader_parameter/desaturation = 0.03600000171
+shader_parameter/chromatic_strength = 0.002
+shader_parameter/sun_uv = Vector2(0.5, 0.3)
+shader_parameter/ray_exposure = 0.5
+shader_parameter/ray_decay = 0.97
+shader_parameter/ray_density = 0.5
+shader_parameter/ray_weight = 0.4
+shader_parameter/ray_samples = 60
+shader_parameter/ray_color = Color(1, 0.95, 0.8, 1)

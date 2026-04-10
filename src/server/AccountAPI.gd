@@ -8,19 +8,18 @@ signal character_created
 signal account_info_received
 signal account_info_updated
 
-@onready var newCharacterRequest: HTTPRequest = HTTPRequest.new()
 @onready var update_character_request: HTTPRequest = HTTPRequest.new()
 @onready var account_info_update_request: HTTPRequest = HTTPRequest.new()
 @onready var friend_request: HTTPRequest = HTTPRequest.new()
 @onready var accept_friend_req_request: HTTPRequest = HTTPRequest.new()
-@onready var set_active_char_request: HTTPRequest = HTTPRequest.new()
 
+
+
+var server_url: String = "http://" + Local.server_ip + ":" + Local.server_port + "/"
 # var server_url: String = "http://209.38.77.226:8000/"
-var server_url: String = "http://192.168.1.235:8000/"
+# var server_url: String = "http://192.168.1.238:8000/"
 
 func _ready():
-	add_child(newCharacterRequest)
-	newCharacterRequest.request_completed.connect(_on_create_character_request_complete)
 	add_child(update_character_request)
 	update_character_request.request_completed.connect(_on_update_character_request_completed)
 	add_child(account_info_update_request)
@@ -29,8 +28,7 @@ func _ready():
 	friend_request.request_completed.connect(_on_send_friend_request_complete)
 	add_child(accept_friend_req_request)
 	accept_friend_req_request.request_completed.connect(_on_accept_friend_request_complete)
-	add_child(set_active_char_request)
-	set_active_char_request.request_completed.connect(_on_set_active_character)
+
 
 func login(username: String, password: String):
 	var request = HTTPRequest.new()
@@ -53,8 +51,9 @@ func _on_login_request_completed(_result, response_code, _headers, body):
 
 		print("Login response: ", response)
 		
-		Local.player_id = response["accountId"]
-		Local.session_token = response["sessionToken"]
+		Local.set_state("player_id", response["accountId"])
+		Local.set_state("session_token", response["sessionToken"])
+		Local.set_state("friend_code", response["friendCode"])
 
 		if "error" in response.keys():
 			print("Login failed: ", response["error"])
@@ -80,8 +79,15 @@ func get_characters(token: String):
 		print("Error making get_characters request: ", err)
 
 func _on_get_characters_request_complete(_result, response_code, _headers, body):
+	print("[AccountAPI] get_characters response_code=%d body=%s" % [response_code, body.get_string_from_utf8()])
 	if response_code == 200:
 		var response = JSON.parse_string(body.get_string_from_utf8())
+		var previous_selected: CharacterDef = Local.get_state("selected_character_def")
+		var previous_selected_id: String = ""
+		if previous_selected != null:
+			previous_selected_id = String(previous_selected.ID)
+
+		Local.get_state("characters").characters.clear()
 		
 		for character in response["characters"]:
 			var char_def = CharacterDef.new()
@@ -94,21 +100,42 @@ func _on_get_characters_request_complete(_result, response_code, _headers, body)
 			char_def.Equipment2 = character["equipment2"]
 			char_def.ClassType = character["classType"]
 			char_def.Faction = character["faction"]
+			char_def.XP = character["xp"]
+			char_def.Devotion = character["devotion"]
 			
-			Local.characters.characters[char_def.Name] = char_def
+			Local.get_state("characters").characters[char_def.ID] = char_def
 
-		if len(Local.characters.characters) > 0:
-			Local.char_id = Local.characters.characters.keys()[0]
-			Local.selected_character_def = Local.characters.characters[Local.char_id]
+		if len(Local.get_state("characters").characters) > 0:
+			var selected_id: String = ""
+			# Restore previously selected character if it still exists
+			if previous_selected_id != "" and Local.get_state("characters").characters.has(previous_selected_id):
+				selected_id = previous_selected_id
+			# Otherwise fall back to the first character matching the current faction
+			if selected_id == "":
+				var current_faction: int = Local.get_state("selected_faction")
+				for id in Local.get_state("characters").characters.keys():
+					var c = Local.get_state("characters").characters[id]
+					if c.Faction == current_faction:
+						selected_id = id
+						break
+			if selected_id != "":
+				Local.set_state("char_id", selected_id)
+				Local.set_state("selected_character_def", Local.get_state("characters").characters[selected_id])
+			else:
+				Local.set_state("char_id", "")
+				Local.set_state("selected_character_def", null)
+		else:
+			Local.set_state("char_id", "")
+			Local.set_state("selected_character_def", null)
 		
-		print("Characters received: ", Local.characters.characters)
+		print("Characters received: ", Local.get_state("characters").characters)
 		emit_signal("characters_received")
 	else:
 		print("Characters request failed with code: ", response_code)
 
 
 func create_character(token: String, character_def: CharacterDef):
-	var url = server_url + "player/newCharacter"
+	var url = server_url + "player/character/new"
 	var body = {
 		"sessionToken": token,
 		"name": character_def.Name,
@@ -122,29 +149,32 @@ func create_character(token: String, character_def: CharacterDef):
 	}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
-	var err = newCharacterRequest.request(url, headers, HTTPClient.METHOD_POST, json_body)
+	var request = HTTPRequest.new()
+	add_child(request)
+	var err = request.request(url, headers, HTTPClient.METHOD_POST, json_body)
 	if err != OK:
 		print("Error making create_character request: ", err)
 	else:
-		Local.characters.characters[character_def.Name] = character_def
-		Local.selected_character_def = character_def
-
-func _on_create_character_request_complete(_result, response_code, _headers, body):
-	if response_code == 200:
-		var response = JSON.parse_string(body.get_string_from_utf8())
-		
-		for character in Local.characters.characters.keys():
-			if Local.characters.characters[character].ID == "":
-				Local.characters.characters[character].ID = response["characterId"]
-				Local.sort_characters()
-		
-		emit_signal("character_created")
-	else:
-		print("Create character request failed with code: ", response_code)
+		Local.get_state("characters").characters[character_def.Name] = character_def
+	request.request_completed.connect(
+		func(_result, response_code, _headers, response_body):
+			print("[AccountAPI] create_character response_code=%d body=%s" % [response_code, response_body.get_string_from_utf8()])
+			if response_code == 200:
+				var response = JSON.parse_string(response_body.get_string_from_utf8())
+				character_def.ID = response["characterId"]
+				Local.get_state("characters").characters.erase(character_def.Name)
+				Local.get_state("characters").characters[character_def.ID] = character_def
+				print("Character created with ID: ", character_def.ID)
+				emit_signal("character_created")
+				set_active_character(character_def)
+			else:
+				print("Create character request failed with code: ", response_code)
+			request.queue_free()
+	)
 		
 
 func update_character(token: String, character: CharacterDef):
-	var url = server_url + "player/updateCharacter"
+	var url = server_url + "player/character/update"
 	var body = {
 		"sessionToken": token,
 		"characterId": character.ID,
@@ -176,7 +206,7 @@ func get_account_info(token: String, player_id: String):
 
 	print("Getting account info with token: ", token)
 
-	var url = server_url + "player/accountInfo"
+	var url = server_url + "player/account/info"
 	var body = {"sessionToken": token, "playerId": player_id}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
@@ -189,18 +219,17 @@ func _on_get_account_info_request_complete(_result, response_code, _headers, bod
 	print("Account info response code: ", response_code)
 	if response_code == 200:
 		var response = JSON.parse_string(body.get_string_from_utf8())
-		Local.player_level = response["accountLevel"]
-		Local.player_xp = response["experience"]
-		Local.friends = response["friends"]
-		Local.friend_requests = response["friendRequests"]
-		Local.pending_friend_requests = response["pendingFriendRequests"]
+		Local.set_state("player_level", response["accountLevel"])
+		Local.set_state("friends", response["friends"])
+		Local.set_state("friend_requests", response["friendRequests"])
+		Local.set_state("pending_friend_requests", response["pendingFriendRequests"])
 
 		# print account info
-		print("Account Level: ", Local.player_level)
-		print("Player XP: ", Local.player_xp)
-		print("Friends: ", Local.friends)
-		print("Friend Requests: ", Local.friend_requests)
-		print("Pending Friend Requests: ", Local.pending_friend_requests)
+		print("Account Level: ", Local.get_state("player_level"))
+		print("Player XP: ", Local.get_state("player_xp"))
+		print("Friends: ", Local.get_state("friends"))
+		print("Friend Requests: ", Local.get_state("friend_requests"))
+		print("Pending Friend Requests: ", Local.get_state("pending_friend_requests"))
 
 		emit_signal("account_info_received")
 		print("Account info received")
@@ -208,8 +237,8 @@ func _on_get_account_info_request_complete(_result, response_code, _headers, bod
 		print("Account info request failed with code: ", response_code)
 
 func get_account_info_update():
-	var url = server_url + "player/accountInfo"
-	var body = {"sessionToken": Local.session_token, "playerId": Local.player_id}
+	var url = server_url + "player/account/info"
+	var body = {"sessionToken": Local.get_state("session_token"), "playerId": Local.get_state("player_id")}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
 	var err = account_info_update_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
@@ -221,15 +250,15 @@ func _on_get_account_info_update_request_complete(_result, response_code, _heade
 	if response_code == 200:
 		var response = JSON.parse_string(body.get_string_from_utf8())
 		# ignore level and xp, this will be tracked locally and updated after each match
-		Local.friends = response["friends"]
-		Local.friend_requests = response["friendRequests"]
-		Local.pending_friend_requests = response["pendingFriendRequests"]
+		Local.set_state("friends", response["friends"])
+		Local.set_state("friend_requests", response["friendRequests"])
+		Local.set_state("pending_friend_requests", response["pendingFriendRequests"])
 
 		# print account info
 		print("[Account Info Update]")
-		print("Friends: ", Local.friends)
-		print("Friend Requests: ", Local.friend_requests)
-		print("Pending Friend Requests: ", Local.pending_friend_requests)
+		print("Friends: ", Local.get_state("friends"))
+		print("Friend Requests: ", Local.get_state("friend_requests"))
+		print("Pending Friend Requests: ", Local.get_state("pending_friend_requests"))
 		emit_signal("account_info_updated")
 
 	else:
@@ -237,11 +266,10 @@ func _on_get_account_info_update_request_complete(_result, response_code, _heade
 
 
 func send_friend_request(friend_id: String):
-	var url = server_url + "player/friendRequest"
-	var body = {"sessionToken": Local.session_token, "playerId": friend_id}
+	var url = server_url + "player/friend/request"
+	var body = {"sessionToken": Local.get_state("session_token"), "friendCode": friend_id}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
-	friend_request.request_completed.connect(_on_send_friend_request_complete)
 	var err = friend_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
 	if err != OK:
 		print("Error sending friend request: ", err)
@@ -253,8 +281,8 @@ func _on_send_friend_request_complete(_result, response_code, _headers, _body):
 		print("Friend request failed with code: ", response_code)
 
 func accept_friend_request(friend_id: String):
-	var url = server_url + "player/acceptRejectFriendRequest"
-	var body = {"sessionToken": Local.session_token, "playerId": friend_id, "accept": true}
+	var url = server_url + "player/friend/respond"
+	var body = {"sessionToken": Local.get_state("session_token"), "playerId": friend_id, "accept": true}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
 	var request = HTTPRequest.new()
@@ -270,20 +298,47 @@ func _on_accept_friend_request_complete(_result, response_code, _headers, _body)
 	else:
 		print("Accepting friend request failed with code: ", response_code)
 
-func set_active_character():
-	if Local.selected_character_def == null:
+func set_active_character(char_def: CharacterDef) -> void:
+	if char_def == null:
+		Local.set_state("selected_character_def", null)
 		return
-	var url = server_url + "player/setActiveCharacter"
-	var body = {"sessionToken": Local.session_token, "characterId": Local.selected_character_def.ID}
+	var url = server_url + "player/character/set"
+	var body = {"sessionToken": Local.get_state("session_token"), "characterId": char_def.ID}
 	var json_body = JSON.stringify(body)
 	var headers = ["Content-Type: application/json"]
-	var err = set_active_char_request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+	var req := HTTPRequest.new()
+	add_child(req)
+	req.request_completed.connect(func(_result, response_code, _headers, _body):
+		if response_code >= 200 and response_code < 300:
+			print("Active character successfully updated")
+			Local.set_state("selected_character_def", char_def)
+		else:
+			print("Updating active character failed with code: ", response_code)
+		req.queue_free()
+	)
+	var err = req.request(url, headers, HTTPClient.METHOD_POST, json_body)
 	if err != OK:
 		print("Error updating active character")
+		req.queue_free()
 
-func _on_set_active_character(_result, response_code, _headers, _body):
-	if response_code >= 200:
-		print("Active character successfully updated")
-	else:
-		print("Updating active friend request failed with code: ", response_code)
-	
+func delete_character(token: String, character_id: String):
+	var url = server_url + "player/character/delete"
+	var body = {"sessionToken": token, "characterId": character_id}
+	var json_body = JSON.stringify(body)
+	var headers = ["Content-Type: application/json"]
+	var request = HTTPRequest.new()
+	add_child(request)
+	request.request_completed.connect(
+		func(_result, response_code, _headers, _body):
+			if response_code == 200:
+				print("Character deleted successfully")
+				Local.get_state("characters").characters.erase(character_id)
+				if Local.get_state("selected_character_def") and Local.get_state("selected_character_def").ID == character_id:
+					Local.set_state("selected_character_def", null)
+			else:
+				print("Delete character request failed with code: ", response_code)
+			request.queue_free()
+	)
+	var err = request.request(url, headers, HTTPClient.METHOD_POST, json_body)
+	if err != OK:
+		print("Error making delete_character request: ", err)

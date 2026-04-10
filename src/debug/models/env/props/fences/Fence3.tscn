@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cu4cxl7u3x0tt"]
+
+[ext_resource type="PackedScene" uid="uid://dwf6e2ppn1c0u" path="res://debug/models/env/fencepost1.blend" id="2_xysq5"]
+[ext_resource type="PackedScene" uid="uid://cm55vbuhj27ca" path="res://debug/models/env/fencestrut1.blend" id="3_xysq5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sh762"]
+size = Vector3(0.2084961, 1.5229797, 2.7139893)
+
+[node name="Fence1" type="StaticBody3D" unique_id=1356559203]
+
+[node name="fencepost1" parent="." unique_id=12899251 instance=ExtResource("2_xysq5")]
+
+[node name="fencestrut1" parent="." unique_id=5079771 instance=ExtResource("3_xysq5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4068781, -1.2360485)
+
+[node name="fencestrut2" parent="." unique_id=214021763 instance=ExtResource("3_xysq5")]
+transform = Transform3D(0.999892, -0.013700252, -0.005323142, -0.013700446, -0.9999061, 0, -0.0053229034, 7.29328e-05, -0.9999858, 0, 0.7674825, -1.2360485)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1125217602]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.012207031, 0.77867126, -1.2879028)
+shape = SubResource("BoxShape3D_sh762")

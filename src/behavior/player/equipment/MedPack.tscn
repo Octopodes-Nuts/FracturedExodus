@@ -11,7 +11,7 @@ viewport_path = NodePath("SubViewport")
 [node name="MedPack" type="Node3D"]
 transform = Transform3D(0.469749, 0, 0.8828, 0, 1, 0, -0.8828, 0, 0.469749, 0, 0, 0)
 script = ExtResource("1_in6q0")
-default_position = Vector3(-1, 0.2, -1)
+default_position = Vector3(-1, 0.025, -1)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_x3p8j")

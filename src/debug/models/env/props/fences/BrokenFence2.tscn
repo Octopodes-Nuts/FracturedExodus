@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://cc0uk412bcmtd"]
+
+[ext_resource type="PackedScene" uid="uid://dwf6e2ppn1c0u" path="res://debug/models/env/fencepost1.blend" id="1_latln"]
+[ext_resource type="PackedScene" uid="uid://cm55vbuhj27ca" path="res://debug/models/env/fencestrut1.blend" id="2_ffcc5"]
+[ext_resource type="PackedScene" uid="uid://y6guwft7no2j" path="res://debug/models/env/fencestrut2.blend" id="3_fy2tq"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_esxai"]
+size = Vector3(0.31640625, 0.47351074, 2.703186)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_j1hl8"]
+size = Vector3(0.21136475, 1.9815521, 1.029419)
+
+[node name="BrokenFence2" type="StaticBody3D" unique_id=1367886314]
+
+[node name="fencepost1" parent="." unique_id=12899251 instance=ExtResource("1_latln")]
+
+[node name="fencestrut1" parent="." unique_id=5079771 instance=ExtResource("2_ffcc5")]
+transform = Transform3D(1, 0, 0, 0, 0.78269506, 0.62240535, 0, -0.62240535, 0.78269506, 0.0027135909, 0.777866, -0.99767303)
+
+[node name="fencestrut2" parent="." unique_id=521213886 instance=ExtResource("3_fy2tq")]
+transform = Transform3D(0.98491675, 0.050662875, -0.16544533, 0.011978653, 0.93391466, 0.357295, 0.17261344, -0.35388777, 0.9192215, 0.18338287, 0.43858194, -1.2215676)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1918182678]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.048828125, 0.26324463, -1.2245789)
+shape = SubResource("BoxShape3D_esxai")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=854784185]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.014007568, 0.9079819, -0.41351318)
+shape = SubResource("BoxShape3D_j1hl8")
+debug_fill = false

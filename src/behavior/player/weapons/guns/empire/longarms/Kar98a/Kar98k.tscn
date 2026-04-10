@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://bbswnogtcowdm"]
+
+[ext_resource type="Script" uid="uid://32usuqbxjy4e" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/Kar98a.gd" id="1_0udev"]
+[ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_0hngi"]
+[ext_resource type="PackedScene" uid="uid://mrn3jwdve6v5" path="res://debug/models/weapons/kar98k/kar98k.blend" id="2_jhjtq"]
+
+[sub_resource type="Animation" id="Animation_0hngi"]
+resource_name = "Fire"
+length = 0.53333336
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("kar98k")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.16666667, 1, 0, 0, 0.12480059, 0.26666668, 1, 0, 0, 0.12825233, 0.5, 1, 0, 0, 0)
+tracks/1/type = "rotation_3d"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("kar98k")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = PackedFloat32Array(0, 1, 0, 0, 0, 1, 0.13333334, 1, 0, 0, 0, 1, 0.26666668, 1, 0, 0, 0, 1, 0.5, 1, 0, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_1s1b8"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("kar98k")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rhxrv"]
+_data = {
+&"Fire": SubResource("Animation_0hngi"),
+&"RESET": SubResource("Animation_1s1b8")
+}
+
+[node name="Kar98k" type="Node3D" unique_id=2004871969 node_paths=PackedStringArray("player")]
+script = ExtResource("1_0udev")
+gun_type = 1
+fire_sound = ExtResource("2_0hngi")
+fire_animation = "Fire"
+player = NodePath("AnimationPlayer")
+bullet_damage = 60.0
+bullet_speed = 370.0
+bullet_lifetime = 5.0
+bullet_spread = 0.02
+ads_position = Vector3(0, 0, 0.3)
+definition_path = "res://behavior/player/weapons/guns/empire/longarms/Kar98a/Kar98k.res"
+type = 1
+faction = 2
+slots = Dictionary[int, Array]({
+0: [1],
+1: [],
+2: [],
+3: [],
+4: []
+})
+default_position = Vector3(0.1, -0.1, 0.3)
+
+[node name="kar98k" parent="." unique_id=1791415609 instance=ExtResource("2_jhjtq")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1307642189]
+libraries/ = SubResource("AnimationLibrary_rhxrv")

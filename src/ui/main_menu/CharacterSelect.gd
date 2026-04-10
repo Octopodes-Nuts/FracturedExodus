@@ -1,6 +1,9 @@
-extends Node
+extends Panel
+
+@export var new_character_dialogue: NewCharacterDialogue
 
 @onready var block = $scroll_container/block
+@onready var new_btn: Button = $scroll_container/block/new_btn
 var account_api: AccountAPI
 
 signal new_char_selected
@@ -8,6 +11,7 @@ signal new_char_created
 
 var Chit: = preload("res://ui/main_menu/CharacterChit.tscn")
 var character_chits = []
+var click_sound: AudioStreamPlayer2D
 
 var path_to_firsts = "res://load/Names/first.txt"
 var path_to_lasts = "res://load/Names/last.txt"
@@ -21,6 +25,7 @@ var last_names: PackedStringArray = PackedStringArray()
 func _ready() -> void:
 	first_names = _load_name_list(path_to_firsts, FALLBACK_FIRST_NAMES)
 	last_names = _load_name_list(path_to_lasts, FALLBACK_LAST_NAMES)
+	new_character_dialogue.create_character.connect(_on_new_character_dialogue_character_created)
 
 func _load_name_list(path: String, fallback: Array) -> PackedStringArray:
 	if not FileAccess.file_exists(path):
@@ -39,17 +44,8 @@ func _load_name_list(path: String, fallback: Array) -> PackedStringArray:
 		return PackedStringArray(fallback)
 	return PackedStringArray(names)
 
-func _conntect_to_pressed(btn: Button):
-	btn.connect("pressed", _new_char_selected)
-	
-func _new_char_selected():
-	emit_signal("new_char_selected")
-
-# Make a change here to generating names
-var rendered = false
 func _process(_delta: float) -> void:
-	if not rendered:
-		render()
+	pass
 
 func get_characters() -> Dictionary[String, CharacterDef]:
 	var d: Dictionary[String, CharacterDef] = {}
@@ -57,23 +53,26 @@ func get_characters() -> Dictionary[String, CharacterDef]:
 		d[chit._def.Name] = chit._def
 	return d
 
+const MAX_CHARACTERS_PER_FACTION: int = 5
+
+func _get_faction_bucket() -> CharactersResource:
+	match Local.get_state("selected_faction"):
+		Factions.Enum.ENTENTE:
+			return Local.get_state("entente_characters")
+		Factions.Enum.EMPIRE:
+			return Local.get_state("empire_characters")
+		Factions.Enum.FREE_AGENTS:
+			return Local.get_state("free_agent_characters")
+	return Local.get_state("characters")
+
 func render():
 	for chit in character_chits:
 		chit.queue_free()
 	character_chits.clear()
 
-	var characters_to_render: CharactersResource
+	var characters_to_render: CharactersResource = _get_faction_bucket()
 
-	if Local.selected_faction == Factions.ENTENTE:
-		characters_to_render = Local.entente_characters
-	elif Local.selected_faction == Factions.EMPIRE:
-		characters_to_render = Local.empire_characters
-	elif Local.selected_faction == Factions.FREE_AGENTS:
-		characters_to_render = Local.free_agent_characters
-	else:
-		characters_to_render = Local.characters
-
-	if Local.selected_character_def and characters_to_render != null:
+	if characters_to_render != null:
 		var pos = 0
 		for chr in characters_to_render.characters.keys():
 			# Skip empty character names
@@ -85,25 +84,37 @@ func render():
 			block.add_child(chit)
 			chit._def = characters_to_render.characters[chr]
 			chit.pos = pos
+			chit.account_api = account_api
 			chit.render()
-			_conntect_to_pressed(chit)
+			chit.character_selected.connect(hide)
+			if click_sound != null:
+				chit.pressed.connect(click_sound.play)
 			pos += 1
-		rendered = true
+
+	var at_cap: bool = _get_faction_bucket() != null and \
+		_get_faction_bucket().characters.size() >= MAX_CHARACTERS_PER_FACTION
+	new_btn.disabled = at_cap
 
 func _on_new_btn_pressed() -> void:
+	new_character_dialogue.show()
+	hide()
+
+
+func _on_new_character_dialogue_character_created(character_name: String, class_type: int):
+	
 	if account_api == null:
 		push_error("AccountAPI not assigned in CharacterSelect")
 		return
-
+	
 	var char_def = CharacterDef.new()
-	char_def.Faction = Local.selected_faction
-	# prevent name collisions here
-	char_def.Name = get_name_name()
-	account_api.create_character(Local.session_token, char_def)
-	# ID needs to be saved here
+	char_def.Faction = Local.get_state("selected_faction")
+	char_def.Name = character_name
+	char_def.ClassType = class_type
+	account_api.create_character(Local.get_state("session_token"), char_def)
 	emit_signal("new_char_created")
 
 func _on_character_created():
+	Local.sort_characters()
 	render()
 	
 func get_name_name():
@@ -113,11 +124,11 @@ func get_name_name():
 	var name_name = first_names[randi_range(0, len(first_names) - 1)] + " " +\
 		last_names[randi_range(0, len(last_names) - 1)]
 	var attempts := 0
-	while name_name in Local.characters.characters and attempts < 20:
+	while name_name in Local.get_state("characters").characters and attempts < 20:
 		name_name = first_names[randi_range(0, len(first_names) - 1)] + " " +\
 			last_names[randi_range(0, len(last_names) - 1)]
 		attempts += 1
 
-	if name_name in Local.characters.characters:
+	while name_name in Local.get_state("characters").characters:
 		name_name = "Rookie " + str(randi_range(1000, 9999))
 	return name_name

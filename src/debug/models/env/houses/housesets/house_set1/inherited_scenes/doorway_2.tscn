@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://cintxet0r7vh8"]
+
+[ext_resource type="PackedScene" uid="uid://cf7ki8a70y3k2" path="res://debug/models/env/houses/housesets/house_set1/blend_files/doorway.blend" id="1_m0cxg"]
+
+[node name="doorway2" unique_id=1972164894 instance=ExtResource("1_m0cxg")]

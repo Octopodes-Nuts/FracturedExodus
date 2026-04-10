@@ -3,10 +3,12 @@ extends Node
 class_name MatchmakingAPI
 
 var queued: bool = false
+var _pending_shutdown_requests: int = 0
 
 signal match_found(port: int, ip: String)
 signal in_party_status_changed(party_members: Array[String])
 signal matchmaking_status_changed(status: String)
+signal party_status_updated
 signal server_registered
 signal match_ended_reported
 signal party_faction_updated
@@ -26,8 +28,9 @@ var register_server_request: HTTPRequest = HTTPRequest.new()
 var status_timer: Timer = Timer.new()
 var status_update_interval: float = 1.0
 
+var server_url: String = "http://" + Local.server_ip + ":" + Local.server_port + "/"
 # var server_url = "http://209.38.77.226:8000/"
-var server_url = "http://192.168.1.235:8000/"
+# var server_url = "http://192.168.1.238:8000/"
 
 func _ready() -> void:
 	add_child(queue_request)
@@ -72,7 +75,7 @@ func queue_for_match():
 		var url = server_url + "matchmaking/queue"
 		
 		var headers = ["Content-Type: application/json"]
-		var body = JSON.stringify({"sessionToken": Local.session_token})
+		var body = JSON.stringify({"sessionToken": Local.get_state("session_token")})
 		queue_request.request(url, headers, HTTPClient.METHOD_POST, body)
 	else:
 		print("Already queued for match")
@@ -85,18 +88,18 @@ func _on_queue_request_request_completed(_result, response_code, _headers, _body
 		status_timer.start()
 		emit_signal("matchmaking_status_changed", "searching")
 		print("Response from queue request: %s" % json_response)
-		Local.matchmaking_ticket = json_response["ticketId"]
+		Local.set_state("matchmaking_ticket", json_response["ticketId"])
 	else:
 		print("Failed to queue for match, response code: %d" % response_code)
 
 func _on_status_update_request_request_completed(_result, response_code, _headers, _body) -> void:
 	if response_code >= 200 and response_code < 300:
 		var status = JSON.parse_string(_body.get_string_from_utf8())
-		if Local.matchmaking_status != status["status"]:
+		if Local.get_state("matchmaking_status") != status["status"]:
 			emit_signal("matchmaking_status_changed", status["status"])
-		Local.matchmaking_status = status["status"]
-		print("Current matchmaking status: %s" % Local.matchmaking_status)
-		if Local.matchmaking_status == "matched":
+		Local.set_state("matchmaking_status", status["status"])
+		print("Current matchmaking status: %s" % Local.get_state("matchmaking_status"))
+		if Local.get_state("matchmaking_status") == "matched":
 			status_timer.stop()
 			queued = false
 			var port = int(status["port"])
@@ -110,13 +113,13 @@ func _on_status_update_request_request_completed(_result, response_code, _header
 func _on_status_timer_timeout() -> void:
 	var url = server_url + "matchmaking/status"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token, "ticketId": Local.matchmaking_ticket})
+	var body = JSON.stringify({"sessionToken": Local.get_state("session_token"), "ticketId": Local.get_state("matchmaking_ticket")})
 	status_update_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func party_invite(player_id: String):
 	var url = server_url + "matchmaking/party/invite"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token, "playerId": player_id})
+	var body = JSON.stringify({"sessionToken": Local.get_state("session_token"), "playerId": player_id})
 	party_invite_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func _on_party_invite_request_request_completed(_result, response_code, _headers, _body) -> void:
@@ -126,7 +129,7 @@ func _on_party_invite_request_request_completed(_result, response_code, _headers
 		print("Failed to send party invite, response code: %d" % response_code)
 
 func party_status():
-	var encoded_session_token = Local.session_token.uri_encode()
+	var encoded_session_token = String(Local.get_state("session_token")).uri_encode()
 	var url = server_url + "matchmaking/party/status?sessionToken=" + encoded_session_token
 	party_status_request.request(url, [], HTTPClient.METHOD_GET)
 
@@ -136,39 +139,43 @@ func _on_party_status_request_request_completed(_result, response_code, _headers
 
 		if status.has("inboundInvites"):
 			print(status["inboundInvites"])
-			Local.party_invites = status["inboundInvites"]
+			Local.set_state("party_invites", status["inboundInvites"])
 		if status.has("members"):
 			print("[Party Members] ", status["members"])
 			if len(status["members"]) > 0:
-				Local.in_party = true
+				Local.set_state("in_party", true)
 				if status_timer.is_stopped():
 					status_timer.start()
 			else:
-				Local.in_party = false
-			Local.party_members = status["members"]
+				Local.set_state("in_party", false)
+			Local.set_state("party_members", status["members"])
 			var party_member_names = []
-			for member in Local.party_members:
+			for member in Local.get_state("party_members"):
 				party_member_names.append(member["username"])
-			emit_signal("in_party_status_changed", Local.party_members)
+			emit_signal("in_party_status_changed", Local.get_state("party_members"))
 		if status.has("status"):
-			Local.party_status = status["status"]
+			Local.set_state("party_status", status["status"])
 		if status.has("primaryPlayerId"):
-			Local.party_leader_id = status["primaryPlayerId"]
-			if Local.party_leader_id == Local.player_id:
-				Local.party_leader = true
+			Local.set_state("party_leader_id", status["primaryPlayerId"])
+			if Local.get_state("party_leader_id") == Local.get_state("player_id"):
+				Local.set_state("party_leader", true)
 			else:
-				Local.party_leader = false
+				Local.set_state("party_leader", false)
 		if status.has("partyFaction"):
 			emit_signal("party_faction_updated", status["partyFaction"])
 			print("[ACTIVE PARTY] ", status["partyFaction"])
-		print("Current party status: %s" % Local.party_status)
+		if status.has("allMembersHaveActiveCharacter"):
+			Local.set_state("all_party_members_have_character", status["allMembersHaveActiveCharacter"])
+
+		emit_signal("party_status_updated")
+		print("Current party status: %s" % Local.get_state("party_status"))
 	else:
 		print("Failed to retrieve party status, response code: %d" % response_code)
 
 func party_leave():
 	var url = server_url + "matchmaking/party/leave"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token})
+	var body = JSON.stringify({"sessionToken": Local.get_state("session_token")})
 	party_leave_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func _on_party_leave_request_request_completed(_result, response_code, _headers, _body) -> void:
@@ -180,7 +187,7 @@ func _on_party_leave_request_request_completed(_result, response_code, _headers,
 func party_response(invite_id: String, accept: bool):
 	var url = server_url + "matchmaking/party/respond"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token, "inviteId": invite_id, "accept": accept})
+	var body = JSON.stringify({"sessionToken": Local.get_state("session_token"), "inviteId": invite_id, "accept": accept})
 	party_response_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func _on_party_response_request_request_completed(_result, response_code, _headers, _body) -> void:
@@ -192,7 +199,7 @@ func _on_party_response_request_request_completed(_result, response_code, _heade
 func send_match_heartbeat():
 	var url = server_url + "matchmaking/heartbeat"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token})
+	var body = JSON.stringify({"sessionToken": Local.get_state("session_token")})
 	match_heartbeat_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func _on_match_heartbeat_request_request_completed(_result, response_code, _headers, _body) -> void:
@@ -204,7 +211,7 @@ func _on_match_heartbeat_request_request_completed(_result, response_code, _head
 func leave_match():
 	var url = server_url + "matchmaking/left"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token})
+	var body = JSON.stringify({"sessionToken": Local.get_state("session_token")})
 	# Attach to root so the request survives scene changes (e.g. _exit_tree or change_scene_to_file)
 	var req := HTTPRequest.new()
 	get_tree().root.add_child(req)
@@ -220,7 +227,7 @@ func leave_match():
 func joined_match():
 	var url = server_url + "matchmaking/joined"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token, "ticketId": Local.matchmaking_ticket})
+	var body = JSON.stringify({"sessionToken": Local.get_state("session_token"), "ticketId": Local.get_state("matchmaking_ticket")})
 	joined_match_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func _on_joined_match_request_request_completed(_result, response_code, _headers, _body) -> void:
@@ -232,8 +239,60 @@ func _on_joined_match_request_request_completed(_result, response_code, _headers
 func match_ended():
 	var url = server_url + "matchmaking/match/ended"
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"serverToken": Local.server_token})
-	match_ended_request.request(url, headers, HTTPClient.METHOD_POST, body)
+	var server_token = Local.get_state("server_token")
+	var body = JSON.stringify({"serverToken": server_token})
+	print("[MatchmakingAPI] match_ended url=%s server_token=%s" % [url, server_token])
+	_pending_shutdown_requests += 1
+	var req := HTTPRequest.new()
+	get_tree().root.add_child(req)
+	req.request_completed.connect(func(result, response_code, _headers, _body):
+		if response_code >= 200 and response_code < 300:
+			print("Match ended reported successfully")
+		else:
+			print("Failed to report match ended, result=%d response_code=%d" % [result, response_code])
+		req.queue_free()
+		_pending_shutdown_requests -= 1
+		if _pending_shutdown_requests <= 0:
+			emit_signal("match_ended_reported")
+	)
+	var err = req.request(url, headers, HTTPClient.METHOD_POST, body)
+	if err != OK:
+		push_warning("[MatchmakingAPI] Failed to submit match ended request, err=%d" % err)
+		_pending_shutdown_requests -= 1
+
+func delete_character_forfeit(character_id: String) -> void:
+	if character_id.is_empty():
+		return
+	var url = server_url + "player/character/delete"
+	var headers = ["Content-Type: application/json"]
+	var server_token = Local.get_state("server_token")
+	var body: Dictionary = {"characterId": character_id}
+	if server_token != "":
+		body["serverToken"] = server_token
+	else:
+		push_warning("[MatchmakingAPI] No token available to delete character for forfeit")
+		return
+	print("[MatchmakingAPI] delete_character_forfeit url=%s server_token=%s character_id=%s" % [url, server_token, character_id])
+
+	_pending_shutdown_requests += 1
+	var req := HTTPRequest.new()
+	get_tree().root.add_child(req)
+	req.request_completed.connect(func(result, response_code, _headers, _body):
+		if response_code >= 200 and response_code < 300:
+			print("[MatchmakingAPI] Forfeit delete succeeded for character_id=%s" % character_id)
+		else:
+			print("[MatchmakingAPI] Forfeit delete failed for character_id=%s result=%d code=%d" % [character_id, result, response_code])
+		req.queue_free()
+		_pending_shutdown_requests -= 1
+		if _pending_shutdown_requests <= 0:
+			emit_signal("match_ended_reported")
+	)
+	var err = req.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify(body))
+	if err != OK:
+		push_warning("[MatchmakingAPI] Failed to submit forfeit delete request err=%d" % err)
+		_pending_shutdown_requests -= 1
+		if _pending_shutdown_requests <= 0:
+			emit_signal("match_ended_reported")
 
 func _on_match_ended_request_request_completed(_result, response_code, _headers, _body) -> void:
 	if response_code >= 200 and response_code < 300:
@@ -246,14 +305,14 @@ func register_server(server_name: String, registration_token: String):
 	var url = server_url + "matchmaking/server/register"
 	print("[SERVER] URL for server registration: ", url)
 	var headers = ["Content-Type: application/json"]
-	var body = JSON.stringify({"sessionToken": Local.session_token, "serverName": server_name, "registrationKey": registration_token})
+	var body = JSON.stringify({"sessionToken": Local.get_state("session_token"), "serverName": server_name, "registrationKey": registration_token})
 	register_server_request.request(url, headers, HTTPClient.METHOD_POST, body)
 
 func _on_register_server_request_request_completed(_result, response_code, _headers, _body) -> void:
 	if response_code >= 200 and response_code < 300:
 		print("Server registered successfully")
-		Local.server_token = JSON.parse_string(_body.get_string_from_utf8())["serverToken"]
-		Local.server_token_id = JSON.parse_string(_body.get_string_from_utf8())["tokenId"]
+		Local.set_state("server_token", JSON.parse_string(_body.get_string_from_utf8())["serverToken"])
+		Local.set_state("server_token_id", JSON.parse_string(_body.get_string_from_utf8())["tokenId"])
 		emit_signal("server_registered")
 	else:
 		print("Failed to register server, response code: %d" % response_code)

@@ -1,51 +1,13 @@
-extends CharacterBody3D
+extends BaseAI
 
-@onready var navigation: NavigationAgent3D = $Navigation
-@onready var enemy_mesh: MeshInstance3D = $Model
 @onready var head: Node3D = $Head
 @onready var gun_location: Node3D = self
-@onready var gun: Node = $Head/GunAnchor/AiGun
+@onready var gun: Node = $debug_fractured/Armature/Skeleton3D/ModifierBoneTarget3D/BasicAiGun
 
-enum AiState {
-	IDLE,
-	PATROL,
-	AWARE,
-	SCAN,
-	PURSUIT,
-	ATTACK,
-	RETREAT,
-}
-
-@export var max_health: float = 70.0
-@export var health: float = 70.0
-@export var patrol_speed: float = 0.9
-@export var aware_speed: float = 1.1
-@export var pursuit_speed: float = 1.5
-@export var retreat_speed: float = 2.3
 @export var reposition_speed: float = 0.8
-@export var gravity: float = 20.0
-@export var patrol_radius: float = 8.0
 @export var max_home_leash_distance: float = 14.0
-@export var patrol_reach_distance: float = 1.4
-@export var aware_reach_distance: float = 1.8
-@export var idle_duration_min: float = 0.8
-@export var idle_duration_max: float = 2.4
-@export var aware_timeout: float = 4.0
-@export var pursuit_timeout: float = 2.4
-@export var noise_chain_window: float = 1.5
-@export var retreat_health_threshold: float = 0.55
-@export var retreat_distance: float = 11.0
-@export var close_retreat_distance: float = 6.0
-@export var scan_duration: float = 2.8
-@export var vision_range: float = 28.0
-@export var vision_fov: float = 100.0
-@export var vision_eye_height: float = 1.4
-@export var vision_check_interval: float = 0.2
-@export var close_contact_vision_distance: float = 2.8
-@export var turn_speed: float = 6.0
-@export var attack_range: float = 20.0
 @export var minimum_attack_range: float = 5.5
-@export var attack_cooldown: float = 1.2
+@export var close_retreat_distance: float = 6.0
 @export var hit_stagger_duration: float = 0.35
 @export var headshot_multiplier: float = 1.75
 @export var head_track_speed: float = 8.0
@@ -53,57 +15,42 @@ enum AiState {
 @export var head_max_pitch_up_degrees: float = 35.0
 @export var head_max_pitch_down_degrees: float = 25.0
 @export var head_aim_height_offset: float = 0.9
-@export var debug_ai: bool = false
 
-var current_state: AiState = AiState.IDLE
-var home: Area3D
-var gravity_velocity: Vector3 = Vector3.ZERO
-var spawn_origin: Vector3 = Vector3.ZERO
-var patrol_anchor: Vector3 = Vector3.ZERO
-var patrol_target: Vector3 = Vector3.ZERO
-var retreat_target: Vector3 = Vector3.ZERO
-var last_heard_position: Vector3 = Vector3.ZERO
-var last_threat_position: Vector3 = Vector3.ZERO
-var idle_time_remaining: float = 0.0
-var state_time: float = 0.0
-var noise_age: float = INF
-var noise_chain_age: float = INF
-var noise_chain_count: int = 0
-var has_patrol_target: bool = false
-var has_retreat_target: bool = false
-var tracked_player: Node3D
-var _vision_timer: float = 0.0
-var _attack_age: float = INF
-var _is_dead: bool = false
 var _hit_stagger_time: float = 0.0
-
-var idle_color: Material = preload("res://debug/materials/debug_teal.tres")
-var patrol_color: Material = preload("res://debug/materials/debug_yellow.tres")
-var aware_color: Material = preload("res://debug/materials/debug_red.tres")
-var scan_color: Material = preload("res://debug/materials/debug_forest_green.tres")
-var pursuit_color: Material = preload("res://debug/materials/debug_blue.tres")
-var attack_color: Material = preload("res://debug/materials/debug_red.tres")
-var retreat_color: Material = preload("res://debug/materials/debug_white.tres")
+var _current_debug_animation_state: StringName = &""
 
 func _ready() -> void:
+	navigation = $Navigation
+	enemy_mesh = $Model
 	set_multiplayer_authority(1)
+	_configure_debug_animation_loops()
 	max_health = maxf(max_health, health)
 	spawn_origin = global_position
 	_refresh_patrol_anchor()
 	_randomize_idle_timer()
 	_apply_state_visuals()
+	_cache_ragdoll_visual_scale()
 
-func noise(source_position: Vector3) -> void:
+func _on_hit(_damage: float) -> void:
+	_hit_stagger_time = hit_stagger_duration
+	last_threat_position = global_position
+	noise_age = 0.0
+	noise_chain_age = 0.0
+	noise_chain_count = maxi(noise_chain_count, 1)
+
+func headshot(damage: float, shooter_id: int = 0) -> void:
+	hit(damage * headshot_multiplier, shooter_id)
+
+func _set_state(next_state: AiState) -> void:
+	if current_state == next_state:
+		return
+	super._set_state(next_state)
 	if is_multiplayer_authority():
-		_register_noise(source_position)
-		return
-	_report_noise.rpc_id(1, source_position)
+		_sync_animation_state.rpc(int(current_state))
 
-@rpc("any_peer", "reliable")
-func _report_noise(source_position: Vector3) -> void:
-	if not is_multiplayer_authority():
-		return
-	_register_noise(source_position)
+func _apply_state_visuals() -> void:
+	_sync_debug_animation_with_state()
+	super._apply_state_visuals()
 
 @rpc("authority", "unreliable_ordered")
 func _sync_state(sync_position: Vector3, sync_rotation: Vector3, sync_velocity: Vector3, sync_gravity: Vector3, sync_state: int, sync_head_rotation: Vector3) -> void:
@@ -113,42 +60,22 @@ func _sync_state(sync_position: Vector3, sync_rotation: Vector3, sync_velocity: 
 	global_rotation = sync_rotation
 	velocity = sync_velocity
 	gravity_velocity = sync_gravity
-	current_state = sync_state as AiState
+	var incoming_state := sync_state as AiState
+	if current_state != incoming_state:
+		current_state = incoming_state
+		_apply_state_visuals()
 	if is_instance_valid(head):
 		head.rotation = sync_head_rotation
+
+@rpc("authority", "reliable")
+func _sync_animation_state(sync_state: int) -> void:
+	if is_multiplayer_authority():
+		return
+	var incoming_state := sync_state as AiState
+	if current_state == incoming_state:
+		return
+	current_state = incoming_state
 	_apply_state_visuals()
-
-func hit(damage: float) -> void:
-	if _is_dead:
-		return
-	_hit_stagger_time = hit_stagger_duration
-	health = maxf(health - damage, 0.0)
-	last_threat_position = global_position
-	noise_age = 0.0
-	noise_chain_age = 0.0
-	noise_chain_count = maxi(noise_chain_count, 1)
-	if debug_ai:
-		print("[WOUNDED HIT] name=%s dmg=%.1f hp=%.1f/%.1f" % [name, damage, health, max_health])
-	if health <= 0.0:
-		_kill.rpc()
-		return
-	if _should_retreat():
-		_set_state(AiState.RETREAT)
-
-func headshot(damage: float) -> void:
-	hit(damage * headshot_multiplier)
-
-@rpc("authority", "reliable", "call_local")
-func _kill() -> void:
-	if _is_dead:
-		return
-	_is_dead = true
-	set_physics_process(false)
-	set_process(false)
-	if has_node("CollisionShape"):
-		$CollisionShape.disabled = true
-	visible = false
-	call_deferred("queue_free")
 
 func _physics_process(delta: float) -> void:
 	if _is_dead:
@@ -208,38 +135,6 @@ func _tick_behavior_tree(delta: float) -> Vector3:
 		return _tick_patrol()
 	return _tick_idle(delta)
 
-func _tick_idle(delta: float) -> Vector3:
-	if current_state != AiState.IDLE:
-		_set_state(AiState.IDLE)
-	idle_time_remaining -= delta
-	if idle_time_remaining <= 0.0 and _can_patrol():
-		_set_state(AiState.PATROL)
-	return Vector3.ZERO
-
-func _tick_patrol() -> Vector3:
-	if current_state != AiState.PATROL:
-		_set_state(AiState.PATROL)
-	if not has_patrol_target:
-		patrol_target = _pick_patrol_target()
-		has_patrol_target = true
-	_update_navigation_target(patrol_target)
-	if _is_near_position(patrol_target, patrol_reach_distance):
-		has_patrol_target = false
-		_randomize_idle_timer()
-		_set_state(AiState.IDLE)
-		return Vector3.ZERO
-	return _move_toward_navigation(patrol_speed)
-
-func _tick_aware() -> Vector3:
-	if current_state != AiState.AWARE:
-		_set_state(AiState.AWARE)
-	_update_navigation_target(last_heard_position)
-	if _is_near_position(last_heard_position, aware_reach_distance) or state_time >= aware_timeout:
-		noise_chain_count = 0
-		_set_state(AiState.SCAN)
-		return Vector3.ZERO
-	return _move_toward_navigation(aware_speed)
-
 func _tick_pursuit() -> Vector3:
 	if current_state != AiState.PURSUIT:
 		_set_state(AiState.PURSUIT)
@@ -279,14 +174,6 @@ func _tick_attack() -> Vector3:
 	_update_navigation_target(last_heard_position)
 	return _move_toward_navigation(reposition_speed)
 
-func _tick_scan() -> Vector3:
-	if current_state != AiState.SCAN:
-		_set_state(AiState.SCAN)
-	if state_time >= scan_duration:
-		_randomize_idle_timer()
-		_set_state(AiState.IDLE)
-	return Vector3.ZERO
-
 func _tick_retreat() -> Vector3:
 	if current_state != AiState.RETREAT or not has_retreat_target:
 		_set_state(AiState.RETREAT)
@@ -303,9 +190,6 @@ func _should_retreat() -> bool:
 		return false
 	return health <= max_health * retreat_health_threshold
 
-func _should_pursue() -> bool:
-	return noise_chain_count >= 2 and noise_age <= pursuit_timeout
-
 func _should_attack() -> bool:
 	if not is_instance_valid(tracked_player):
 		return false
@@ -321,106 +205,16 @@ func _should_attack() -> bool:
 	var target_center := tracked_player.global_position + Vector3.UP * 0.9
 	return eye_position.distance_squared_to(target_center) <= close_contact_vision_distance * close_contact_vision_distance
 
-func _should_scan() -> bool:
-	return current_state == AiState.SCAN and state_time < scan_duration
-
-func _should_investigate() -> bool:
-	return noise_age <= aware_timeout
-
-func _can_patrol() -> bool:
-	return patrol_radius > 0.0
-
-func _set_state(next_state: AiState) -> void:
-	if current_state == next_state:
-		return
-	current_state = next_state
-	state_time = 0.0
-	if current_state == AiState.IDLE:
-		has_patrol_target = false
-		has_retreat_target = false
-		_randomize_idle_timer()
-	elif current_state == AiState.RETREAT:
-		retreat_target = _pick_retreat_target()
-		has_retreat_target = true
-	_apply_state_visuals()
-
-func _apply_state_visuals() -> void:
-	if not is_instance_valid(enemy_mesh):
-		return
-	var mesh = enemy_mesh.get_mesh()
-	if not is_instance_valid(mesh) or mesh.get_surface_count() == 0:
-		return
-	match current_state:
-		AiState.IDLE:
-			enemy_mesh.set_surface_override_material(0, idle_color)
-		AiState.PATROL:
-			enemy_mesh.set_surface_override_material(0, patrol_color)
-		AiState.AWARE:
-			enemy_mesh.set_surface_override_material(0, aware_color)
-		AiState.SCAN:
-			enemy_mesh.set_surface_override_material(0, scan_color)
-		AiState.PURSUIT:
-			enemy_mesh.set_surface_override_material(0, pursuit_color)
-		AiState.ATTACK:
-			enemy_mesh.set_surface_override_material(0, attack_color)
-		AiState.RETREAT:
-			enemy_mesh.set_surface_override_material(0, retreat_color)
-
-func _cast_vision_cone() -> void:
-	var eye_position := global_position + Vector3.UP * vision_eye_height
-	var half_fov_rad := deg_to_rad(vision_fov * 0.5)
-	var forward := -global_transform.basis.z
-	for candidate in get_tree().get_nodes_in_group("players"):
-		if not is_instance_valid(candidate) or not (candidate is Node3D):
-			continue
-		var player := candidate as Node3D
-		var target_center: Vector3 = player.global_position + Vector3.UP * 0.9
-		var to_target: Vector3 = target_center - eye_position
-		var distance_sq := to_target.length_squared()
-		if distance_sq > vision_range * vision_range:
-			continue
-		if forward.angle_to(to_target.normalized()) > half_fov_rad and distance_sq > close_contact_vision_distance * close_contact_vision_distance:
-			continue
-		if _can_see_player(player):
-			_spot_player(player)
-
-func _spot_player(player: Node3D) -> void:
-	tracked_player = player
-	last_heard_position = player.global_position
-	last_threat_position = player.global_position
-	noise_age = 0.0
-	noise_chain_age = 0.0
-	noise_chain_count = maxi(noise_chain_count, 2)
-	if _should_retreat():
-		_set_state(AiState.RETREAT)
-	elif _should_attack():
-		_set_state(AiState.ATTACK)
-	else:
-		_set_state(AiState.PURSUIT)
-
-func _register_noise(source_position: Vector3) -> void:
-	last_heard_position = source_position
-	last_threat_position = source_position
-	if noise_chain_age > noise_chain_window:
-		noise_chain_count = 0
-	noise_chain_count += 1
-	noise_age = 0.0
-	noise_chain_age = 0.0
-	if _should_retreat():
-		_set_state(AiState.RETREAT)
-	elif noise_chain_count >= 2:
-		_set_state(AiState.PURSUIT)
-	else:
-		_set_state(AiState.AWARE)
-
-func _refresh_patrol_anchor() -> void:
-	if is_instance_valid(home):
-		patrol_anchor = home.global_position
-	else:
-		patrol_anchor = spawn_origin
-
-func _randomize_idle_timer() -> void:
-	idle_time_remaining = randf_range(idle_duration_min, idle_duration_max)
+func _move_toward_navigation(move_speed: float) -> Vector3:
+	var next_path_position := navigation.get_next_path_position()
+	var move_direction := next_path_position - global_position
+	move_direction.y = 0.0
+	if move_direction.length_squared() <= 0.0001:
+		return Vector3.ZERO
+	var adjusted_speed := move_speed
+	if _hit_stagger_time > 0.0:
+		adjusted_speed *= 0.45
+	return move_direction.normalized() * adjusted_speed
 
 func _pick_patrol_target() -> Vector3:
 	var offset_2d := Vector2.RIGHT.rotated(randf() * TAU) * randf_range(patrol_radius * 0.35, patrol_radius)
@@ -496,24 +290,6 @@ func _trigger_gun_use() -> void:
 	else:
 		gun.call("use", self)
 
-func _face_tracked_player(delta: float) -> void:
-	if not is_instance_valid(tracked_player):
-		return
-	var target_flat := Vector3(tracked_player.global_position.x, global_position.y, tracked_player.global_position.z)
-	if target_flat.distance_squared_to(global_position) <= 0.0001:
-		return
-	var desired_transform := global_transform.looking_at(target_flat, Vector3.UP)
-	var desired_yaw := desired_transform.basis.get_euler().y
-	global_rotation.y = lerp_angle(global_rotation.y, desired_yaw, clampf(delta * turn_speed, 0.0, 1.0))
-
-func _update_facing(delta: float, desired_velocity: Vector3) -> void:
-	var move_direction := Vector3(desired_velocity.x, 0.0, desired_velocity.z)
-	if move_direction.length_squared() > 0.0001:
-		var desired_yaw := atan2(-move_direction.x, -move_direction.z)
-		global_rotation.y = lerp_angle(global_rotation.y, desired_yaw, clampf(delta * turn_speed, 0.0, 1.0))
-		return
-	_face_tracked_player(delta)
-
 func _update_head_tracking(delta: float) -> void:
 	if not is_instance_valid(head):
 		return
@@ -545,43 +321,38 @@ func _distance_to_tracked_player() -> float:
 	var player_2d := Vector2(tracked_player.global_position.x, tracked_player.global_position.z)
 	return self_2d.distance_to(player_2d)
 
-func _can_see_player(player: Node3D) -> bool:
-	if not is_instance_valid(player):
-		return false
-	var eye_position := global_position + Vector3.UP * vision_eye_height
-	var target_center: Vector3 = player.global_position + Vector3.UP * 0.9
-	if eye_position.distance_squared_to(target_center) <= close_contact_vision_distance * close_contact_vision_distance:
-		return true
-	var space_state := get_world_3d().direct_space_state
-	var ray_offsets := [Vector3.ZERO, Vector3.UP * 0.75, Vector3.DOWN * 0.65]
-	for offset in ray_offsets:
-		var query := PhysicsRayQueryParameters3D.create(eye_position, target_center + offset)
-		query.exclude = [get_rid()]
-		var result := space_state.intersect_ray(query)
-		if result.is_empty():
+func _configure_debug_animation_loops() -> void:
+	if not is_instance_valid(debug_fractured_model):
+		return
+	var animation_player: AnimationPlayer = debug_fractured_model.get_node_or_null("AnimationPlayer")
+	if animation_player == null:
+		return
+	for clip_name in [&"Idle", &"Walk", &"Run", &"HoldingGun"]:
+		var clip := animation_player.get_animation(clip_name)
+		if clip == null:
 			continue
-		var collider = result.get("collider")
-		if collider == player:
-			return true
-		if is_instance_valid(collider) and collider.is_in_group("players"):
-			return true
-	return false
+		clip.loop_mode = Animation.LOOP_LINEAR
 
-func _update_navigation_target(target_position: Vector3) -> void:
-	navigation.target_position = Vector3(target_position.x, global_position.y, target_position.z)
+func _sync_debug_animation_with_state() -> void:
+	match current_state:
+		AiState.PATROL, AiState.AWARE:
+			_play_debug_animation_state(&"Walk")
+		AiState.PURSUIT, AiState.RETREAT:
+			_play_debug_animation_state(&"Run")
+		_:
+			_play_debug_animation_state(&"Idle")
 
-func _move_toward_navigation(move_speed: float) -> Vector3:
-	var next_path_position := navigation.get_next_path_position()
-	var move_direction := next_path_position - global_position
-	move_direction.y = 0.0
-	if move_direction.length_squared() <= 0.0001:
-		return Vector3.ZERO
-	var adjusted_speed := move_speed
-	if _hit_stagger_time > 0.0:
-		adjusted_speed *= 0.45
-	return move_direction.normalized() * adjusted_speed
-
-func _is_near_position(target_position: Vector3, threshold: float) -> bool:
-	var current_position_2d := Vector2(global_position.x, global_position.z)
-	var target_position_2d := Vector2(target_position.x, target_position.z)
-	return current_position_2d.distance_to(target_position_2d) <= threshold
+func _play_debug_animation_state(state_name: StringName) -> void:
+	if _current_debug_animation_state == state_name:
+		return
+	if not is_instance_valid(debug_fractured_model):
+		return
+	var animation_tree: AnimationTree = debug_fractured_model.get_node_or_null("AnimationTree")
+	if animation_tree == null:
+		return
+	animation_tree.active = true
+	var playback: AnimationNodeStateMachinePlayback = animation_tree.get("parameters/StateMachine/playback")
+	if playback == null:
+		return
+	playback.travel(StringName(state_name))
+	_current_debug_animation_state = state_name

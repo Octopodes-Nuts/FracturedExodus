@@ -1,7 +1,9 @@
 [gd_scene format=3 uid="uid://c8dj4at3lkd4j"]
 
 [ext_resource type="PackedScene" uid="uid://dx340x64cys4r" path="res://ui/main_menu/MainMenuBackground.tscn" id="1_10aiy"]
+[ext_resource type="Theme" uid="uid://bfr672pd54aq8" path="res://ui/main_menu/resources/MainMenuTheme.tres" id="1_jx6dv"]
 [ext_resource type="Script" uid="uid://bftj6q2dy5akg" path="res://ui/main_menu/MainMenu.gd" id="1_vrxho"]
+[ext_resource type="PackedScene" uid="uid://0nl6w8jibxr0" path="res://ui/main_menu/NewCharacterDialogue.tscn" id="2_bcai1"]
 [ext_resource type="PackedScene" uid="uid://b835oks81kglu" path="res://ui/main_menu/CharacterDisplay.tscn" id="3_u1tth"]
 [ext_resource type="PackedScene" uid="uid://fm55cmw02ao2" path="res://ui/paper_doll/WeaponSelect.tscn" id="5_2ijps"]
 [ext_resource type="PackedScene" uid="uid://64xuuj3va1ut" path="res://ui/main_menu/CharacterSelect.tscn" id="6_3vjg6"]
@@ -10,19 +12,39 @@
 [ext_resource type="PackedScene" uid="uid://f6kx521fvf0h" path="res://server/MatchmakingAPI.tscn" id="8_wuivf"]
 [ext_resource type="PackedScene" uid="uid://c0wkvdhyqflre" path="res://ui/main_menu/SocialPanel.tscn" id="9_o6kyq"]
 [ext_resource type="Script" uid="uid://b8kharo2dvtji" path="res://ui/main_menu/AddFriendPanel.gd" id="10_olnjm"]
+[ext_resource type="AudioStream" uid="uid://jdngidi0m626" path="res://ui/Typewriter Sound Effects.wav" id="12_uqh3w"]
 
-[node name="main_menu" type="Control" unique_id=1345078188]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_jx6dv"]
+
+[node name="main_menu" type="Control" unique_id=1345078188 node_paths=PackedStringArray("click_sound") groups=["UI"]]
+material = SubResource("CanvasItemMaterial_jx6dv")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_jx6dv")
 script = ExtResource("1_vrxho")
+click_sound = NodePath("click_sound")
+
+[node name="NewCharacterDialogue" parent="." unique_id=1621235896 node_paths=PackedStringArray("main_menu") groups=["UI"] instance=ExtResource("2_bcai1")]
+visible = false
+layout_mode = 1
+anchor_left = 0.29500002
+anchor_top = 0.27600002
+anchor_right = 0.68100005
+anchor_bottom = 0.698
+offset_left = -0.4000244
+offset_top = -0.08001709
+offset_right = -0.5201416
+offset_bottom = 0.15997314
+theme = ExtResource("1_jx6dv")
+main_menu = NodePath("..")
 
 [node name="MainMenuBackground" parent="." unique_id=1022720626 instance=ExtResource("1_10aiy")]
 
-[node name="character_display" parent="." unique_id=1443262840 instance=ExtResource("3_u1tth")]
+[node name="character_display" parent="." unique_id=1443262840 node_paths=PackedStringArray("new_character_dialogue") groups=["UI"] instance=ExtResource("3_u1tth")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -33,8 +55,9 @@ offset_left = -490.0
 offset_top = -260.72
 offset_right = -133.0
 offset_bottom = 260.28
+new_character_dialogue = NodePath("../NewCharacterDialogue")
 
-[node name="test_scene_btn" type="Button" parent="." unique_id=120431858]
+[node name="test_scene_btn" type="Button" parent="." unique_id=120431858 groups=["UI"]]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -48,7 +71,7 @@ offset_right = 0.559967
 offset_bottom = 0.159973
 text = "Enter Test Scene"
 
-[node name="ready_button" type="Button" parent="." unique_id=1842345167]
+[node name="ready_button" type="Button" parent="." unique_id=1842345167 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -59,9 +82,10 @@ offset_left = -908.0
 offset_top = -95.96002
 offset_right = -583.0
 offset_bottom = 0.039978027
+theme = ExtResource("1_jx6dv")
 text = "Ready"
 
-[node name="test_scene_btn2" type="Button" parent="." unique_id=1351891964]
+[node name="test_scene_btn2" type="Button" parent="." unique_id=1351891964 groups=["UI"]]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -75,7 +99,7 @@ offset_right = -0.440063
 offset_bottom = 0.519958
 text = "Enter Test Scene 2"
 
-[node name="quit" type="Button" parent="." unique_id=261054412]
+[node name="quit" type="Button" parent="." unique_id=261054412 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.998
@@ -85,7 +109,7 @@ offset_top = 3.0
 offset_right = 0.839966
 offset_bottom = 37.0
 
-[node name="paper_doll" parent="." unique_id=1042987710 instance=ExtResource("6_vmw4a")]
+[node name="paper_doll" parent="." unique_id=1042987710 node_paths=PackedStringArray("new_character_dialogue") groups=["UI"] instance=ExtResource("6_vmw4a")]
 layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.481
@@ -95,8 +119,9 @@ offset_left = -92.0
 offset_top = -207.48
 offset_right = 413.0
 offset_bottom = 209.52
+new_character_dialogue = NodePath("../NewCharacterDialogue")
 
-[node name="character_select" parent="." unique_id=499057137 instance=ExtResource("6_3vjg6")]
+[node name="character_select" parent="." unique_id=499057137 node_paths=PackedStringArray("new_character_dialogue") groups=["UI"] instance=ExtResource("6_3vjg6")]
 visible = false
 layout_mode = 1
 anchors_preset = 12
@@ -109,8 +134,9 @@ offset_right = -334.0
 offset_bottom = -47.0
 grow_horizontal = 2
 grow_vertical = 0
+new_character_dialogue = NodePath("../NewCharacterDialogue")
 
-[node name="weapon_select" parent="." unique_id=1873297619 instance=ExtResource("5_2ijps")]
+[node name="weapon_select" parent="." unique_id=1873297619 groups=["UI"] instance=ExtResource("5_2ijps")]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -129,7 +155,7 @@ grow_vertical = 2
 
 [node name="MatchmakingApi" parent="." unique_id=1586885325 instance=ExtResource("8_wuivf")]
 
-[node name="social_panel" parent="." unique_id=846758153 instance=ExtResource("9_o6kyq")]
+[node name="social_panel" parent="." unique_id=846758153 node_paths=PackedStringArray("weapon_select") instance=ExtResource("9_o6kyq")]
 layout_mode = 1
 anchor_left = 1.0020001
 anchor_top = 0.17500001
@@ -139,8 +165,9 @@ offset_left = -390.8402
 offset_top = -1.5258789e-05
 offset_right = -0.84020996
 offset_bottom = 0.19995117
+weapon_select = NodePath("../weapon_select")
 
-[node name="add_friend_panel" type="Panel" parent="." unique_id=1874122280]
+[node name="add_friend_panel" type="Panel" parent="." unique_id=1874122280 groups=["UI"]]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -154,14 +181,14 @@ offset_right = 212.6399
 offset_bottom = 493.0
 script = ExtResource("10_olnjm")
 
-[node name="friend_code" type="TextEdit" parent="add_friend_panel" unique_id=1441197320]
+[node name="friend_code" type="TextEdit" parent="add_friend_panel" unique_id=1441197320 groups=["UI"]]
 layout_mode = 0
 offset_left = 20.0
 offset_top = 33.0
 offset_right = 402.0
 offset_bottom = 71.0
 
-[node name="accept_button" type="Button" parent="add_friend_panel" unique_id=1853384120]
+[node name="accept_button" type="Button" parent="add_friend_panel" unique_id=1853384120 groups=["UI"]]
 layout_mode = 0
 offset_left = 147.0
 offset_top = 101.0
@@ -169,19 +196,19 @@ offset_right = 278.0
 offset_bottom = 158.0
 text = "Accept"
 
-[node name="party_panel" type="Panel" parent="." unique_id=1848652855]
+[node name="party_panel" type="Panel" parent="." unique_id=1848652855 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
 anchor_top = 0.002
 anchor_right = 1.0
 anchor_bottom = 0.002
-offset_left = -485.0
-offset_top = -0.16000009
-offset_right = -61.0
-offset_bottom = 120.84
+offset_left = -1172.0
+offset_top = 3.84
+offset_right = -748.0
+offset_bottom = 124.84
 
-[node name="leave_party_btn" type="Button" parent="party_panel" unique_id=1191599071]
+[node name="leave_party_btn" type="Button" parent="party_panel" unique_id=1191599071 groups=["UI"]]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -194,7 +221,7 @@ offset_right = 86.0
 offset_bottom = 52.5
 text = "Leave"
 
-[node name="FactionSelect" type="OptionButton" parent="." unique_id=691005504]
+[node name="FactionSelect" type="OptionButton" parent="." unique_id=691005504 groups=["UI"]]
 layout_mode = 0
 offset_left = 39.0
 offset_top = 1.0
@@ -207,6 +234,10 @@ popup/item_1/text = "Empire"
 popup/item_1/id = 1
 popup/item_2/text = "Free Agents"
 popup/item_2/id = 2
+
+[node name="click_sound" type="AudioStreamPlayer2D" parent="." unique_id=2136004658 groups=["UI"]]
+stream = ExtResource("12_uqh3w")
+volume_db = -13.514
 
 [connection signal="character_select" from="character_display" to="." method="_on_character_display_character_select"]
 [connection signal="pressed" from="test_scene_btn" to="." method="_on_test_scene_btn_pressed"]

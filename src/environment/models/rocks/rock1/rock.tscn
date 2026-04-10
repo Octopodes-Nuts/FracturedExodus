@@ -1,15 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://dtlqtlhk7uwg5"]
+[gd_scene format=3 uid="uid://dtlqtlhk7uwg5"]
 
 [ext_resource type="ArrayMesh" uid="uid://diqm0j41msrou" path="res://environment/models/rocks/rock1/rock1_Icosphere.res" id="1_v6217"]
+[ext_resource type="Material" uid="uid://dtsnqv6j4k5q6" path="res://environment/models/rocks/rock1/rock1.tres" id="2_vm5ak"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_blfy6"]
 margin = 0.1
 radius = 1.0779055
 
-[node name="rock" type="StaticBody3D"]
+[node name="rock" type="StaticBody3D" unique_id=1893715545]
 
-[node name="rock" type="MeshInstance3D" parent="."]
+[node name="rock" type="MeshInstance3D" parent="." unique_id=517241274]
 mesh = ExtResource("1_v6217")
+surface_material_override/0 = ExtResource("2_vm5ak")
 
-[node name="collision" type="CollisionShape3D" parent="."]
+[node name="collision" type="CollisionShape3D" parent="." unique_id=1101838097]
 shape = SubResource("SphereShape3D_blfy6")

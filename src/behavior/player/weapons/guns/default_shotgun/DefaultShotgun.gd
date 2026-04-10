@@ -5,15 +5,13 @@ class_name DefaultShotgun
 @export var num_pellets: int = 15
 
 func _init():
-	faction = Factions.DEFAULT
-	slots = {
-		Types.Classes.CLASS_DEFAULT: [1]
-	}
+	faction = Factions.Enum.DEFAULT
+	slots[ClassRegister.Classes.DEFAULT] = [1]
+	key = "DefaultShotgun"
 
 func _local_ready():
 	fire_sound =\
 		load("res://behavior/player/weapons/guns/default_shotgun/default_shotgun.mp3")
-	key = "DefaultShotgun"
 
 
 func _use():
@@ -31,7 +29,9 @@ func _use():
 				"ang": muzzle_end.global_rotation,
 				"lifetime": bullet_lifetime,
 				"ads": ads,
-				"spread": bullet_spread
+				"spread": bullet_spread,
+				"type": gun_type,
+				"shooter": multiplayer.get_unique_id()
 			})
 
 		current_clip -= 1

@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dyqccsxd1ohd8"]
+
+[ext_resource type="PackedScene" uid="uid://bda18a5vdgamx" path="res://debug/models/env/houses/housesets/house_set2/InnerInsideCorner.blend" id="1_qafm5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jat8j"]
+size = Vector3(0.16, 2.6, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_n2s2n"]
+size = Vector3(1, 2.6, 0.16)
+
+[node name="InnerInsideCorner2" unique_id=151352216 instance=ExtResource("1_qafm5")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="InnerInsideCorner" parent_id_path=PackedInt32Array(2099030644) index="0" unique_id=2146440270]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InnerInsideCorner/StaticBody3D" index="0" unique_id=2066022828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.92, 1.3, -0.5)
+shape = SubResource("BoxShape3D_jat8j")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="InnerInsideCorner/StaticBody3D" index="1" unique_id=6613627]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.3, -0.92)
+shape = SubResource("BoxShape3D_n2s2n")

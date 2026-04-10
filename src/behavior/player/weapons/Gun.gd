@@ -15,16 +15,18 @@ var bolt_pull_stream: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 @export var clip_size: int = 4
 var current_clip: int
 @export var ammo_pool: int = 10
-var current_reserve: int = ammo_pool
+var current_reserve: int
+
+@export var gun_type: WeaponRegister.GunType = WeaponRegister.GunType.RIFLE
 
 @export var model: Mesh
-var fire_sound: AudioStreamMP3
-var bolt_pull_sound: AudioStreamMP3
+@export var fire_sound: AudioStream
+@export var bolt_pull_sound: AudioStream
 @export var ads_animation: String = "none"
 @export var fire_animation: String = "none"
 @export var cock_animation: String = "none"
 @export var reload_animation: String = "none"
-var player: AnimationPlayer = AnimationPlayer.new()
+@export var player: AnimationPlayer
 @export var cycle_time: float = 0.7
 
 @export var bullet_damage: float
@@ -33,16 +35,23 @@ var player: AnimationPlayer = AnimationPlayer.new()
 @export var bullet_spread: float # the hipfire spread for this gun
 
 var current_cycle: float = 0.0
+var muzzle_smoke: GPUParticles3D
+var muzzle_blast: GPUParticles3D
+
+signal recoil(vertical: float, horizontal: float)
 
 func _ready():
+	super._ready()
 	# set up envrionment
 	audio_player.max_distance = 1200
 	audio_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
 	bolt_pull_stream.max_distance = 10
 	current_clip = clip_size
+	current_reserve = ammo_pool
 	self.add_child(audio_player)
 	self.add_child(bolt_pull_stream)
-	type = WeaponType.GUN
+	muzzle_smoke = get_node_or_null("MuzzleSmoke")
+	muzzle_blast = get_node_or_null("MuzzleBlast")
 	_local_ready()
 	
 func _local_ready():
@@ -65,16 +74,24 @@ func _use():
 	if current_clip > 0 and current_cycle <= 0:
 
 		play_sounds_and_anims.rpc()
+		if muzzle_smoke:
+			muzzle_smoke.restart()
+			muzzle_smoke.emitting = true
+		if muzzle_blast:
+			muzzle_blast.restart()
+			muzzle_blast.emitting = true
 		current_cycle = cycle_time
 
 		_spawn_bullet.rpc_id(1, {
 			"speed": bullet_speed,
 			"origin": muzzle_end.global_transform.origin,
-			"dmg": bullet_damage,
+			"dmg": definition.base_damage,
 			"ang": muzzle_end.global_rotation,
 			"lifetime": bullet_lifetime,
 			"ads": ads,
-			"spread": bullet_spread
+			"spread": bullet_spread,
+			"type": gun_type,
+			"shooter": multiplayer.get_unique_id()
 		})
 
 		# spawn a bullet
@@ -90,6 +107,8 @@ func _use():
 		# 	bullet_spread
 		# )
 		current_clip -= 1
+		if definition != null:
+			recoil.emit(float(definition.vertical_recoil), float(definition.horizantal_recoil))
 
 	else:
 		# player play weapon click
@@ -106,14 +125,22 @@ func _spawn_bullet(dict: Dictionary):
 		dict["ang"],
 		dict["lifetime"],
 		dict["ads"],
-		dict["spread"]
+		dict["spread"],
+		dict["type"],
+		dict.get("shooter", 0)
 	)
 
 func _reload():
 	player.play(reload_animation)
 	# increase weapon inside animation, but that is too 
 	# involved for this point
-	current_clip = clip_size
+	if (clip_size - current_clip) > current_reserve:
+		current_clip = current_reserve + current_clip
+		current_reserve = 0
+	else:
+		current_reserve -= (clip_size - current_clip)
+		current_clip = clip_size
+		
 	
 func get_ammo():
 	return [current_clip, current_reserve]

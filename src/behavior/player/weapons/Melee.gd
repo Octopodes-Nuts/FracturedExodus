@@ -12,12 +12,13 @@ class_name Melee
 @export var damage: float = 105
 
 func _init():
-	type = WeaponType.MELEE
+	# type = WeaponType.MELEE
+	pass
 
 var _stab := false
 
 func _ready():
-	pass # Replace with function body.
+	super._ready()
 
 func _physics_process(_delta: float) -> void:
 	if Input.is_action_just_released("ads") and active:

@@ -14,17 +14,24 @@ func set_player(node: Node):
 func interact(other: Node):
 	current_res += other.delta
 	if current_res >= RES_TIME:
+		var is_medic: bool = other.medic_res if "medic_res" in other else false
 		if multiplayer.is_server():
-			player.res(50.0)
+			player.res(50.0, is_medic)
 		else:
-			player.res.rpc_id(1, 50.0)
+			player.res.rpc_id(1, 50.0, is_medic)
 		_refresh(other)
-	Local.HUD.get_child(1).set_time_value((current_res / RES_TIME) * 100)
+	var hud := Local.get_hud()
+	if hud != null:
+		hud.set_progress_percent((current_res / RES_TIME) * 100)
 
 func _add_interaction(_node: Node):
 	current_res = 0.0
-	Local.HUD.get_child(1).set_time_value((current_res / RES_TIME) * 100)
-	Local.HUD.get_child(1).set_visible(true)
+	var hud := Local.get_hud()
+	if hud != null:
+		hud.set_progress_percent((current_res / RES_TIME) * 100)
+		hud.set_progress_visible(true)
 
 func _remove_interaction(_other: Node):
-	Local.HUD.get_child(1).set_visible(false)
+	var hud := Local.get_hud()
+	if hud != null:
+		hud.set_progress_visible(false)

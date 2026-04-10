@@ -1,36 +1,42 @@
 extends Node
 
 @onready var AccountAPI = $AccountApi
-@onready var Userfield = $Control/Panel/UserField
-@onready var Passfield = $Control/Panel/PassField
-@onready var ViewPanel = $Control/Panel
-@onready var LoginButton = $Control/Panel/SubmitButton
+@onready var Userfield = $Control/LoginPanel/UserField
+@onready var Passfield = $Control/LoginPanel/PassField
+@onready var ViewPanel = $Control/LoginPanel
+@onready var LoginButton = $Control/LoginPanel/SubmitButton
 @onready var MatchmakingAPI = $MatchmakingApi
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 
 	if OS.has_feature("dedicated_server") or DisplayServer.get_name() == "headless":
-		Local.server_name = OS.get_environment("MM_SERVER_NAME")
-		Local.registration_token = OS.get_environment("MM_SERVER_REGISTRATION_KEY")
-		Local.host = true
+		Local.set_state("server_name", OS.get_environment("MM_SERVER_NAME"))
+		Local.set_state("registration_token", OS.get_environment("MM_SERVER_REGISTRATION_KEY"))
+		# var ip = OS.get_environment("HOST_GATEWAY_IP")
+		# if ip != "":
+		# 	Local.set_state("server_ip", ip)
+		# 	print("Server IP set to ", Local.server_ip)
+		# else:
+		# 	print("No HOST_GATEWAY_IP environment variable set, using default")
+		Local.set_state("host", true)
 			# If no registration token is provided, we assume this is a local dedicated server for testing
-		if Local.registration_token == "":
+		if Local.get_state("registration_token") == "":
 			print("No registration token provided, assuming local dedicated server for testing")
 			_enter_dedicated_server_map()
 			return
 		else:
 			print("Registration token provided, attempting to register server with matchmaking service")
-			MatchmakingAPI.register_server(Local.server_name, Local.registration_token)
+			MatchmakingAPI.register_server(Local.get_state("server_name"), Local.get_state("registration_token"))
 				# If registration fails, we fall back to local dedicated server mode
 		MatchmakingAPI.server_registered.connect(func(): call_deferred("_enter_dedicated_server_map"))
 		return
 	else:
 	# set up pipeline
-		Local.selected_faction = Factions.ENTENTE
+		Local.set_state("selected_faction", Factions.Enum.ENTENTE)
 		AccountAPI.connect("login_complete", get_characters)
 		AccountAPI.connect("characters_received", get_account_info)
-		AccountAPI.characters_received.connect(Local.sort_characters)
+		AccountAPI.characters_received.connect(Callable(Local, "sort_characters"))
 		AccountAPI.account_info_received.connect(enter_main_menu)
 		AccountAPI.login_complete.connect(MatchmakingAPI.party_leave)
 
@@ -42,10 +48,10 @@ func _ready() -> void:
 			print(cli_credentials.user, cli_credentials.password)
 			return
 
-		if not ResourceLoader.exists("res://load/AccountInfo.res"):
+		if not ResourceLoader.exists("user://load/AccountInfo.res"):
 			ViewPanel.show()
 		else:
-			var account_info = ResourceLoader.load("res://load/AccountInfo.res")
+			var account_info = ResourceLoader.load("user://load/AccountInfo.res")
 			AccountAPI.login(account_info.AccountName, account_info.Password)
 	
 	
@@ -58,10 +64,10 @@ func _ready() -> void:
 	# load and enter main menu
 
 func get_characters():
-	AccountAPI.get_characters(Local.session_token)
+	AccountAPI.get_characters(Local.get_state("session_token"))
 
 func get_account_info():
-	AccountAPI.get_account_info(Local.session_token, Local.player_id)
+	AccountAPI.get_account_info(Local.get_state("session_token"), Local.get_state("player_id"))
 
 func enter_main_menu():
 	get_tree().change_scene_to_file("res://ui/main_menu/MainMenu.tscn")
@@ -114,10 +120,22 @@ func _on_SubmitButton_pressed():
 	account_info.AccountName = Userfield.text
 	account_info.Password = Passfield.text
 	
-	ResourceSaver.save(account_info, "res://load/AccountInfo.res")
+	ResourceSaver.save(account_info, "user://load/AccountInfo.res")
 	AccountAPI.login(account_info.AccountName, account_info.Password)
 
 func _enter_dedicated_server_map() -> void:
 	var err = get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn")
 	if err != OK:
 		push_error("[Entry] Failed to enter dedicated server map (error=%d)" % [err])
+
+
+func _on_user_field_text_changed() -> void:
+	if "\n" in Userfield.text:
+		Userfield.text = Userfield.text.substr(0, Userfield.text.length() - 1)
+		Passfield.grab_focus()
+
+
+func _on_pass_field_text_changed() -> void:
+	if "\n" in Passfield.text:
+		Passfield.text = Passfield.text.substr(0, Passfield.text.length() - 1)
+		_on_SubmitButton_pressed()

@@ -4,7 +4,7 @@
 ###############################################################
 
 class_name Factions
-enum {
+enum Enum {
 	DEFAULT,
 	ENTENTE,
 	EMPIRE,

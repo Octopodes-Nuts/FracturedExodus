@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://bxebnta0crhyl"]
+
+[ext_resource type="PackedScene" uid="uid://bga71bcmaas7t" path="res://debug/models/env/houses/housesets/house_set2/plain_wall.blend" id="1_58n6a"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dhrxr"]
+size = Vector3(0.16, 2.6, 1)
+
+[node name="plain_wall" unique_id=1799333565 instance=ExtResource("1_58n6a")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1" unique_id=399323473]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0" unique_id=1704441023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 1.3, -0.5)
+shape = SubResource("BoxShape3D_dhrxr")

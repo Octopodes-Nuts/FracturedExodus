@@ -13,7 +13,7 @@ var movement_handler = preload("res://behavior/player/movement/DefaultController
 var health_handler = preload("res://behavior/player/movement/DefaultControllerHealth.gd").new()
 
 var DEFAULT_LERP = 20.0
-const RECONCILE_DISTANCE_SQUARED = 0.0004
+const RECONCILE_DISTANCE_SQUARED = 0.04
 const REMOTE_POSITION_LERP = 14.0
 const REMOTE_ROTATION_LERP = 18.0
 const REMOTE_EXTRAPOLATION_SEC = 0.03
@@ -24,7 +24,7 @@ const REMOTE_EXTRAPOLATION_SEC = 0.03
 @onready var HUD = preload('res://ui/hud/Hud.tscn').instantiate()
 
 @onready var escape_menu = preload(
-	'res://debug/ui/debug_escape_menu/DebugEscapeMenu.tscn').instantiate()
+	'res://ui/escape_menu/EscapeMenu.tscn').instantiate()
 
 @export var MAX_SPEED: float = 6.0
 @export var MAX_SPRINT: float = 12.0
@@ -35,19 +35,23 @@ const REMOTE_EXTRAPOLATION_SEC = 0.03
 @export var DEACCEL: float = 10.0
 
 @export var mouse_sensitivity: float = 0.03
-@export var gravity: float = 15.0
-@export var jump: float = 10.0
+@export var gravity: float = 25.0
+@export var jump: float = 6.0
 
 @export var step_sound: String
 @export var step_volume: float
 
 @export var FULL_HEALTH: float = 100.0
-var current_health: float = 100 : set = _set_current_health
+var current_health: float = 100
 
 @export var current_eqipped_key: String = ""
+@export var medic_res: bool = false
 
 var full_contact = false
 var health = FULL_HEALTH
+
+var character_id: String = ""
+var down_count: int = 0
 
 #sounds
 var hits = [preload("res://behavior/player/sounds/hit1.wav"),
@@ -88,6 +92,7 @@ var remote_target_position: Vector3 = Vector3.ZERO
 var remote_target_yaw: float = 0.0
 var remote_target_pitch: float = 0.0
 var server_spawn_assigned_by_faction: bool = false
+var officer_speed_buff: float = 1.0
 
 @onready var camera = $neck/camera_head
 @onready var neck = $neck
@@ -107,13 +112,28 @@ var equipment: Array = []
 var current_equipped_index: int = 0
 
 func _is_local_player() -> bool:
-	if multiplayer == null or name.is_empty():
+	if multiplayer == null:
 		return false
-	return str(name).to_int() == multiplayer.get_unique_id()
+	var id := str(name).to_int()
+	if id != 0:
+		return id == multiplayer.get_unique_id()
+	# Class scenes wrap player_body in a Node3D — check parent's name
+	var p := get_parent()
+	if p != null:
+		id = str(p.name).to_int()
+		if id != 0:
+			return id == multiplayer.get_unique_id()
+	return false
 
 func _apply_look_rotation(yaw: float, pitch: float) -> void:
 	rotation.y = yaw
 	neck.rotation.x = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+
+func _apply_recoil(vertical_deg: float, horizontal_deg: float) -> void:
+	net_pitch += deg_to_rad(vertical_deg)
+	net_pitch = clamp(net_pitch, deg_to_rad(-89), deg_to_rad(89))
+	net_yaw += deg_to_rad(randf_range(-horizontal_deg, horizontal_deg))
+	_apply_look_rotation(net_yaw, net_pitch)
 
 func _update_remote_proxy(dt: float) -> void:
 	movement_handler.update_remote_proxy(self, dt)
@@ -121,25 +141,42 @@ func _update_remote_proxy(dt: float) -> void:
 func _enter_tree() -> void:
 	set_multiplayer_authority(1)
 
+func _get_peer_id_string() -> String:
+	var id := str(name).to_int()
+	if id != 0:
+		return str(name)
+	if get_parent() != null:
+		return str(get_parent().name)
+	return str(name)
+
 func _assign_server_spawn_from_character_faction() -> bool:
 	if not multiplayer.is_server():
 		return false
-	if not Global.character_data.has(name):
+	var peer_id_str := _get_peer_id_string()
+	print("[SPAWN] peer_id_str='%s' name='%s' parent='%s' has_data=%s" % [peer_id_str, name, str(get_parent().name) if get_parent() else "none", Global.character_data.has(peer_id_str)])
+	if not Global.character_data.has(peer_id_str):
 		return false
-	var player_payload: Variant = Global.character_data[name]
+	var player_payload: Variant = Global.character_data[peer_id_str]
+	print("[SPAWN] faction=%s payload=%s" % [player_payload.get("faction", "MISSING") if player_payload is Dictionary else "NOT_DICT", str(player_payload)])
 	if not (player_payload is Dictionary):
 		return false
 	if not player_payload.has("faction"):
 		return false
 	var spawn = Global.get_spawn(int(player_payload["faction"]))
+	print("[SPAWN] spawn=%s" % [spawn])
 	if spawn == null:
 		return false
+	print("[SPAWN] assigning global_position=%s" % [spawn.global_position])
 	transform.origin = spawn.transform.origin
 	global_position = spawn.global_position
 	return true
 
 
 func _ready():
+	escape_menu.leave_button_pressed.connect(
+		func():
+			Global.map_root.leave_game()
+	)
 	add_to_group("players")
 	connect("character_update", Global.emit_character_update)
 	Global.connect("character_update", char_serv_update)
@@ -149,21 +186,23 @@ func _ready():
 		server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
 		if not server_spawn_assigned_by_faction:
 			# Keep players out of origin while waiting for authoritative faction payload.
-			var fallback_spawn = Global.get_spawn(Factions.DEFAULT)
+			var fallback_spawn = Global.get_spawn(Factions.Enum.DEFAULT)
 			if fallback_spawn != null:
 				transform.origin = fallback_spawn.transform.origin
 				global_position = fallback_spawn.global_position
 		# Prevent owner transform replication from fighting local prediction.
 		var owner_peer_id := str(name).to_int()
+		if owner_peer_id == 0 and get_parent() != null:
+			owner_peer_id = str(get_parent().name).to_int()
 		if owner_peer_id > 1:
 			multiplayer_sync.set_visibility_for(owner_peer_id, false)
 	
 	if not _is_local_player(): return
 	
-	Local.input_active = true
+	Local.set_state("input_active", true)
 	camera.make_current()
-	if Local.terrain:
-		Local.terrain.set_camera(camera)
+	if Local.get_state("terrain"):
+		Local.get_state("terrain").set_camera(camera)
 	add_child(HUD)
 	var health_slider = HUD.get_node("health_slider")
 	health_slider.max_value = FULL_HEALTH
@@ -171,7 +210,10 @@ func _ready():
 	
 	# set up default character
 	character = Character.new()
-	character.load_from_character(Local.selected_character_def)
+	character.load_from_character(Local.get_state("selected_character_def"))
+	var selected_character_def: CharacterDef = Local.get_state("selected_character_def")
+	if selected_character_def != null:
+		character_id = String(selected_character_def.ID)
 	# character.primary_weapon = WeaponRegister.gun_register["DefaultGun"].instantiate()
 	# character.secondary_weapon = WeaponRegister.gun_register["DefaultPistol"].instantiate()
 	character.set_bullet_origin(gun_location)
@@ -180,8 +222,8 @@ func _ready():
 	# end default character
 	swap_equipped(character.primary_weapon)
 	# load from character 
-	Local.player = self
-	Local.HUD = HUD
+	Local.set_state("player", self)
+	Local.set_hud(HUD)
 	net_yaw = rotation.y
 	net_pitch = neck.rotation.x
 	send_character_data.rpc_id(1, _character_payload())
@@ -194,40 +236,47 @@ func _set_current_health(updated_health: float):
 		current_health = FULL_HEALTH
 	else:
 		current_health = updated_health
-	
-	HUD.get_node("health_slider").value = current_health
+	if _is_local_player():
+		HUD.get_node("health_slider").value = current_health
 
 func char_serv_update(ids: Array):
-	
-	if name in ids:
-		if multiplayer.is_server() and not server_spawn_assigned_by_faction:
-			server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
-		load_from_payload(Global.character_data[name])
+	var peer_id_str := _get_peer_id_string()
+	if peer_id_str not in ids:
+		return
+	if multiplayer.is_server() and not server_spawn_assigned_by_faction:
+		server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
+	load_from_payload(Global.character_data[peer_id_str])
 
 
 func load_from_payload(payload: Dictionary):
-
-	character = Character.new()
+	if payload.has("character_id"):
+		character_id = String(payload["character_id"])
+	if character == null:
+		character = Character.new()
 	character.load_from_payload(payload)
 	swap_equipped_from_index(payload["active"], false)
 
 func _ads(dt: float):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
-			lerp((active_equipable.ads_position - camera.transform.origin),
+			lerp(active_equipable.ads_position,
 				active_equipable.ADS_LERP * dt)
 		camera.fov = lerp(camera.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * dt)
 		if _is_local_player():
-			Local.HUD.set_visible(false)
+			var hud: Control = Local.get_hud()
+			if hud != null:
+				hud.set_visible(false)
 
 func _undo_ads(dt: float):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
-			lerp((active_equipable.default_position - camera.transform.origin),
+			lerp(active_equipable.default_position,
 				active_equipable.ADS_LERP * dt)
 		camera.fov = lerp(camera.fov, float(Settings.FOV), active_equipable.ADS_LERP * dt)
 		if _is_local_player():
-			Local.HUD.set_visible(true)
+			var hud: Control = Local.get_hud()
+			if hud != null:
+				hud.set_visible(true)
 	elif camera.fov != float(Settings.FOV):
 		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * dt)
 
@@ -243,14 +292,22 @@ func swap_equipped(equipable: Equipable):
 	if active_equipable != equipable:
 		if active_equipable.get_parent() == camera:
 			camera.remove_child(active_equipable)
+		var remaining_cycle := 0.0
+		if active_equipable is Gun:
+			remaining_cycle = active_equipable.current_cycle
+			if _is_local_player() and active_equipable.recoil.is_connected(_apply_recoil):
+				active_equipable.recoil.disconnect(_apply_recoil)
 		active_equipable._set_inactive()
 		# play stow animation
 		active_equipable = equipable
 		# play raise animation
+		if equipable is Gun and remaining_cycle > 0.0:
+			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
 		equipable._set_active()
+		if equipable is Gun and _is_local_player():
+			equipable.recoil.connect(_apply_recoil)
 		camera.add_child(equipable)
-		equipable.transform.origin = \
-		equipable.default_position - camera.transform.origin
+		equipable.transform.origin = equipable.default_position
 		current_eqipped_key = equipable.key
 
 func swap_equipped_from_index(id: int, call_rpc: bool):
@@ -258,18 +315,27 @@ func swap_equipped_from_index(id: int, call_rpc: bool):
 	if active_equipable != equipable:
 		if active_equipable.get_parent() == camera:
 			camera.remove_child(active_equipable)
+		var remaining_cycle := 0.0
+		if active_equipable is Gun:
+			remaining_cycle = active_equipable.current_cycle
+			if _is_local_player() and active_equipable.recoil.is_connected(_apply_recoil):
+				active_equipable.recoil.disconnect(_apply_recoil)
 		active_equipable._set_inactive()
 		# play stow animation
 		active_equipable = equipable
 		# play raise animation
+		if equipable is Gun and remaining_cycle > 0.0:
+			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
 		equipable._set_active()
+		if equipable is Gun and _is_local_player():
+			equipable.recoil.connect(_apply_recoil)
 		camera.add_child(equipable)
-		equipable.transform.origin = \
-		equipable.default_position - camera.transform.origin
+		equipable.transform.origin = equipable.default_position
 		current_equipped_index = id
 		if call_rpc:
 			update_character_server.rpc_id(1, "active", id)
-		HUD.display_ammo(active_equipable.get_ammo())
+		if _is_local_player():
+			HUD.display_ammo(active_equipable.get_ammo())
 
 func update_equipment():
 	return [
@@ -307,8 +373,8 @@ func _capture_and_submit_input(dt: float) -> void:
 	movement_handler.capture_and_submit_input(self, dt)
 
 @rpc("any_peer", "unreliable_ordered")
-func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float):
-	movement_handler.apply_network_input(self, seq, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
+func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float = 0.0):
+	movement_handler.apply_network_input(self, seq, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch, client_dt)
 
 func _create_authoritative_state() -> Dictionary:
 	return movement_handler.create_authoritative_state(self)
@@ -402,19 +468,23 @@ func  send_character_data(payload: Dictionary):
 
 
 func _character_payload() -> Dictionary:
-	
+	var char_def: CharacterDef = Local.get_state("selected_character_def")
+	print("[PAYLOAD] faction=%s class_type=%s" % [char_def.Faction, char_def.ClassType])
 	return {
 		"active": current_equipped_index,
-		"name": Local.selected_character_def.Name,
-		"wep1": Local.selected_character_def.Weapon1,
-		"wep2": Local.selected_character_def.Weapon2,
-		"wep3": Local.selected_character_def.Weapon3,
-		"eq1": Local.selected_character_def.Equipment1,
-		"eq2": Local.selected_character_def.Equipment2,
-		"faction": Local.selected_character_def.Faction,
+		"character_id": character_id,
+		"name": char_def.Name,
+		"wep1": char_def.Weapon1,
+		"wep2": char_def.Weapon2,
+		"wep3": char_def.Weapon3,
+		"eq1": char_def.Equipment1,
+		"eq2": char_def.Equipment2,
+		"faction": char_def.Faction,
+		"class_type": char_def.ClassType,
 		"scanner": character.has_scanner,
 		"obj": character.has_objective
 	}
+
 
 @rpc("any_peer", "reliable")
 func update_character_server(field: String, val):
@@ -449,13 +519,13 @@ func play_hit_noise(id):
 		audio_player.stream = hits.pick_random()
 		audio_player.play()
 
-func hit(dmg: int):
-	health_handler.handle_hit(self, dmg)
+func hit(dmg: int, shooter_id: int = 0):
+	health_handler.handle_hit(self, dmg, shooter_id)
 
 
 @rpc("any_peer", "reliable")
-func _request_damage(dmg: int):
-	health_handler.request_damage(self, dmg)
+func _request_damage(dmg: int, shooter_id: int = 0):
+	health_handler.request_damage(self, dmg, shooter_id)
 
 func _apply_authoritative_damage(dmg: int):
 	health_handler.apply_authoritative_damage(self, dmg)
@@ -469,6 +539,7 @@ func _apply_authoritative_heal(requested_heal: float):
 
 @rpc("authority", "reliable")
 func _sync_damage_feedback(updated_health: float):
+	print("[HIT] _sync_damage_feedback received on node=%s health=%s" % [name, updated_health])
 	health_handler.sync_damage_feedback(self, updated_health)
 
 @rpc("authority", "reliable")
@@ -478,25 +549,57 @@ func _sync_heal_feedback(updated_health: float, updated_pool: float):
 # this will be an RPC
 func extract():
 	if not _is_local_player(): return
+	if Global.map_root != null and Global.map_root.has_method("notify_player_extracted"):
+		Global.map_root.notify_player_extracted.rpc_id(1, character_id)
 	if Global.map_root != null and Global.map_root.has_method("report_match_left"):
 		Global.map_root.report_match_left("extract")
 	notify_extract(character.has_objective)
 	#Send RPC to server to remove node from scene
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	Local.input_active = false
+	Local.set_state("input_active", false)
 	multiplayer.multiplayer_peer = null
-	Local.has_objective = character.has_objective
+	Local.set_state("has_objective", character.has_objective)
 	if not get_tree().change_scene_to_file("res://ui/extraction/Extraction.tscn") == OK:
 		print("Error getting to file")
 	print('extract successful')
 
 func notify_extract(objective_left):
-	if objective_left and not Local.host:
-		Local.HUD.notify.rpc("Objective has left the mission area", 3.0)
+	if objective_left and not Local.get_state("host"):
+		var hud: Control = Local.get_hud()
+		if hud != null:
+			hud.notify.rpc("Objective has left the mission area", 3.0)
+
+const BLEED_OUT_TIME: float = 60.0
+
+func _get_faction() -> int:
+	var peer_id_str := _get_peer_id_string()
+	if Global.character_data.has(peer_id_str):
+		return int(Global.character_data[peer_id_str].get("faction", -1))
+	return -1
+
+@rpc("authority", "reliable")
+func _sync_down_state(new_down_count: int, new_full_health: float) -> void:
+	down_count = new_down_count
+	FULL_HEALTH = new_full_health
+
+func start_bleed_out_timer() -> void:
+	if not multiplayer.is_server():
+		return
+	var timer := Timer.new()
+	timer.wait_time = BLEED_OUT_TIME
+	timer.one_shot = true
+	timer.timeout.connect(func():
+		var peer_id := _get_peer_id_string().to_int()
+		if Global.map_root != null:
+			Global.map_root.remove_player(peer_id)
+		timer.queue_free()
+	)
+	add_child(timer)
+	timer.start()
 
 @rpc("any_peer", "reliable")
-func res(revive_health: float):
-	health_handler.handle_res(self, revive_health)
+func res(revive_health: float, resurrector_is_medic: bool = false):
+	health_handler.handle_res(self, revive_health, resurrector_is_medic)
 
 @rpc("any_peer", "reliable")
 func _res_local(revive_health: float):

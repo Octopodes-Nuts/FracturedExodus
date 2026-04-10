@@ -3,4 +3,4 @@
 # Authors: Isaiah Raspet
 ###############################################################
 
-extends DefaultController
+extends OfficerController

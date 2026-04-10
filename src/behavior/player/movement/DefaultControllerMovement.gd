@@ -1,5 +1,17 @@
 extends RefCounted
 
+const SERVER_SNAPSHOT_INTERVAL := 1.0 / 15.0
+
+# NET PROF disabled
+# const PERF_REPORT_INTERVAL_MS := 1000
+# static var _perf_last_report_ms: int = 0
+# static var _perf_sim_calls: int = 0
+# static var _perf_sim_us_total: int = 0
+# static var _perf_input_packets_received: int = 0
+# static var _perf_snapshots_sent: int = 0
+# static var _perf_player_ticks: int = 0
+static var _snapshot_accumulator_by_player: Dictionary = {}
+
 func update_remote_proxy(controller, dt: float) -> void:
 	if controller.multiplayer.is_server() or not controller.has_remote_snapshot:
 		return
@@ -37,11 +49,11 @@ func clear_movement_state(controller) -> void:
 func build_local_input(controller, dt: float) -> Dictionary:
 	var move_x: float = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	var move_y: float = Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
-	if not controller.Local.input_active or controller.current_health <= 0:
+	if not controller.Local.get_state("input_active") or controller.current_health <= 0:
 		move_x = 0.0
 		move_y = 0.0
-	var wants_sprint: bool = controller.Local.input_active and controller.current_health > 0 and Input.is_action_pressed("sprint")
-	var jump_pressed: bool = controller.Local.input_active and controller.current_health > 0 and Input.is_action_just_pressed("jump")
+	var wants_sprint: bool = controller.Local.get_state("input_active") and controller.current_health > 0 and Input.is_action_pressed("sprint")
+	var jump_pressed: bool = controller.Local.get_state("input_active") and controller.current_health > 0 and Input.is_action_just_pressed("jump")
 	return {
 		"seq": controller.input_sequence,
 		"dt": dt,
@@ -82,17 +94,21 @@ func capture_and_submit_input(controller, dt: float) -> void:
 			input_packet["wants_sprint"],
 			input_packet["jump_pressed"],
 			input_packet["yaw"],
-			input_packet["pitch"]
+			input_packet["pitch"],
+			input_packet["dt"]
 		)
 
-func apply_network_input(controller, seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float) -> void:
+var _pending_client_dt: Dictionary = {}
+
+func apply_network_input(controller, seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float) -> void:
 	if not controller.multiplayer.is_server():
 		return
 	var sender_id: int = controller.multiplayer.get_remote_sender_id()
-	if sender_id != str(controller.name).to_int():
+	if sender_id != controller._get_peer_id_string().to_int():
 		return
 	controller.last_server_sequence = seq
 	set_movement_input(controller, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
+	_pending_client_dt[controller._get_peer_id_string()] = client_dt
 
 func create_authoritative_state(controller) -> Dictionary:
 	return {
@@ -161,17 +177,17 @@ func handle_physics(controller, dt: float) -> void:
 				controller.current_interaction.interact(controller)
 				controller.HUD.display_ammo(controller.active_equipable.get_ammo())
 
-		if not controller.active_equipable.continuous_usage and Input.is_action_just_pressed("fire") and controller.Local.input_active:
+		if not controller.active_equipable.continuous_usage and Input.is_action_just_pressed("fire") and controller.Local.get_state("input_active"):
 			if controller.active_equipable.has_method("use"):
 				controller.active_equipable.use(controller)
 				controller.HUD.display_ammo(controller.active_equipable.get_ammo())
 
-		if controller.active_equipable.continuous_usage and Input.is_action_pressed("fire") and controller.Local.input_active:
+		if controller.active_equipable.continuous_usage and Input.is_action_pressed("fire") and controller.Local.get_state("input_active"):
 			if not controller.active_equipable.cool_down and controller.active_equipable.has_method("use"):
 				controller.active_equipable.use(controller)
 				controller.HUD.display_ammo(controller.active_equipable.get_ammo())
 
-		if Input.is_action_just_pressed("reload") and controller.Local.input_active:
+		if Input.is_action_just_pressed("reload") and controller.Local.get_state("input_active"):
 			if controller.active_equipable.has_method("_reload"):
 				controller.active_equipable._reload()
 				controller.HUD.display_ammo(controller.active_equipable.get_ammo())
@@ -185,10 +201,41 @@ func handle_physics(controller, dt: float) -> void:
 	if not controller.multiplayer.is_server():
 		return
 
-	simulate(controller, dt, true, false)
-	controller.receive_remote_snapshot.rpc(controller.global_position, controller.rotation.y, controller.neck.rotation.x, controller.horizantal_velocity)
-	if not controller._is_local_player() and controller.last_server_sequence >= 0:
-		controller.reconcile_movement.rpc_id(str(controller.name).to_int(), controller.last_server_sequence, create_authoritative_state(controller))
+	var player_key = controller._get_peer_id_string()
+	var sim_dt := float(_pending_client_dt.get(player_key, dt))
+	_pending_client_dt.erase(player_key)
+	if sim_dt <= 0.0:
+		sim_dt = dt
+	simulate(controller, sim_dt, true, false)
+	var snapshot_accumulator := float(_snapshot_accumulator_by_player.get(player_key, 0.0)) + dt
+	if snapshot_accumulator >= SERVER_SNAPSHOT_INTERVAL:
+		snapshot_accumulator = 0.0
+		controller.receive_remote_snapshot.rpc(controller.global_position, controller.rotation.y, controller.neck.rotation.x, controller.horizantal_velocity)
+		if not controller._is_local_player() and controller.last_server_sequence >= 0:
+			controller.reconcile_movement.rpc_id(controller._get_peer_id_string().to_int(), controller.last_server_sequence, create_authoritative_state(controller))
+	_snapshot_accumulator_by_player[player_key] = snapshot_accumulator
+
+	# NET PROF disabled
+	# var now_ms := Time.get_ticks_msec()
+	# if _perf_last_report_ms == 0:
+	# 	_perf_last_report_ms = now_ms
+	# elif now_ms - _perf_last_report_ms >= PERF_REPORT_INTERVAL_MS:
+	# 	var avg_sim_ms := 0.0
+	# 	if _perf_sim_calls > 0:
+	# 		avg_sim_ms = float(_perf_sim_us_total) / float(_perf_sim_calls) / 1000.0
+	# 	print("[NET PROF][SERVER] player_ticks=%d input_packets=%d snapshots=%d sim_calls=%d avg_sim_ms=%.3f" % [
+	# 		_perf_player_ticks,
+	# 		_perf_input_packets_received,
+	# 		_perf_snapshots_sent,
+	# 		_perf_sim_calls,
+	# 		avg_sim_ms,
+	# 	])
+	# 	_perf_last_report_ms = now_ms
+	# 	_perf_player_ticks = 0
+	# 	_perf_input_packets_received = 0
+	# 	_perf_snapshots_sent = 0
+	# 	_perf_sim_calls = 0
+	# 	_perf_sim_us_total = 0
 
 func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_locally: bool) -> void:
 	var speed = 0.0
@@ -201,7 +248,10 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 
 	controller.full_contact = ground_check(controller)
 
-	if not controller.is_on_floor():
+	if controller.is_on_floor():
+		if controller.gravity_direction.y < 0.0:
+			controller.gravity_direction.y = 0.0
+	else:
 		controller.gravity_direction += Vector3.DOWN * controller.gravity * dt
 
 	if controller.current_health > 0:
@@ -237,6 +287,15 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 			speed = controller.MAX_SPEED
 			accel = controller.ACCEL
 			walk_state = controller.WALK_STATES.WALK
+
+		# Infantry buff: faster when tertiary (melee/light) weapon is out
+		if controller is InfantryController and controller.current_equipped_index == 2:
+			speed *= controller.stowed_speed_buff
+		# Special ADS penalty: extra slowdown when aiming down sights
+		elif controller is SpecialController and controller.active_equipable.ads:
+			speed /= controller.ads_movement_penalty
+		# Officer aura (and other received officer buffs)
+		speed *= controller.officer_speed_buff
 
 	if not controller.is_on_floor():
 		walk_state = controller.WALK_STATES.STOP

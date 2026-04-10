@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://jjpy0ginkx61"]
+
+[ext_resource type="PackedScene" uid="uid://d1gkqpa1cycuq" path="res://debug/models/env/houses/housesets/house_set2/WindowWall.blend" id="1_5xldx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dhrxr"]
+size = Vector3(0.16, 2.6, 1)
+
+[node name="WindowWall2" unique_id=270228973 instance=ExtResource("1_5xldx")]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1" unique_id=172717508]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0" unique_id=635954985]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 1.3, -0.5)
+shape = SubResource("BoxShape3D_dhrxr")
