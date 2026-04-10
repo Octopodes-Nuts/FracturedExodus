@@ -106,11 +106,24 @@ func _on_get_characters_request_complete(_result, response_code, _headers, body)
 			Local.get_state("characters").characters[char_def.ID] = char_def
 
 		if len(Local.get_state("characters").characters) > 0:
-			var selected_id: String = Local.get_state("characters").characters.keys()[0]
+			var selected_id: String = ""
+			# Restore previously selected character if it still exists
 			if previous_selected_id != "" and Local.get_state("characters").characters.has(previous_selected_id):
 				selected_id = previous_selected_id
-			Local.set_state("char_id", selected_id)
-			Local.set_state("selected_character_def", Local.get_state("characters").characters[selected_id])
+			# Otherwise fall back to the first character matching the current faction
+			if selected_id == "":
+				var current_faction: int = Local.get_state("selected_faction")
+				for id in Local.get_state("characters").characters.keys():
+					var c = Local.get_state("characters").characters[id]
+					if c.Faction == current_faction:
+						selected_id = id
+						break
+			if selected_id != "":
+				Local.set_state("char_id", selected_id)
+				Local.set_state("selected_character_def", Local.get_state("characters").characters[selected_id])
+			else:
+				Local.set_state("char_id", "")
+				Local.set_state("selected_character_def", null)
 		else:
 			Local.set_state("char_id", "")
 			Local.set_state("selected_character_def", null)
