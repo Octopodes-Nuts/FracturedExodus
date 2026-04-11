@@ -1,0 +1,201 @@
+[gd_scene format=3 uid="uid://bvwk568y2xhr8"]
+
+[ext_resource type="PackedScene" uid="uid://cc8g8iocwkt4w" path="res://behavior/player/character/Ch36_nonPBR.fbx" id="1_6o2j1"]
+[ext_resource type="Script" uid="uid://crvrb08dwkuun" path="res://behavior/player/character/CharacterModel.gd" id="2_40wch"]
+[ext_resource type="AnimationLibrary" uid="uid://d1yk0o7aw61mk" path="res://behavior/player/character/Crouching Idle.fbx" id="2_juwl0"]
+[ext_resource type="AnimationLibrary" uid="uid://bmsihspvhvsy2" path="res://behavior/player/character/Idle.fbx" id="3_40wch"]
+[ext_resource type="AnimationLibrary" uid="uid://cfnrufew7hmna" path="res://behavior/player/character/Jumping.fbx" id="4_eton7"]
+[ext_resource type="AnimationLibrary" uid="uid://darxj62v1eash" path="res://behavior/player/character/Running.fbx" id="5_f3x3l"]
+[ext_resource type="AnimationLibrary" uid="uid://paasou85r6lx" path="res://behavior/player/character/Stumble Backwards.fbx" id="6_y1hk2"]
+[ext_resource type="AnimationLibrary" uid="uid://dsurqajvhb72" path="res://behavior/player/character/Walk Crouching Forward.fbx" id="7_mj6ov"]
+[ext_resource type="AnimationLibrary" uid="uid://blp8sxbhgttqe" path="res://behavior/player/character/Walking.fbx" id="8_qygcl"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_juwl0"]
+animation = &"Crouching Idle/mixamo_com"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_40wch"]
+animation = &"Walk Crouching Forward/mixamo_com"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_eton7"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_f3x3l"]
+advance_mode = 2
+advance_expression = "move_state == 1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_y1hk2"]
+advance_mode = 2
+advance_expression = "move_state == 0"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_mj6ov"]
+"states/Crouching Idle_mixamo_com/node" = SubResource("AnimationNodeAnimation_juwl0")
+"states/Crouching Idle_mixamo_com/position" = Vector2(460, 100)
+"states/Walk Crouching Forward_mixamo_com/node" = SubResource("AnimationNodeAnimation_40wch")
+"states/Walk Crouching Forward_mixamo_com/position" = Vector2(682, 240)
+transitions = ["Start", "Crouching Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_eton7"), "Crouching Idle_mixamo_com", "Walk Crouching Forward_mixamo_com", SubResource("AnimationNodeStateMachineTransition_f3x3l"), "Walk Crouching Forward_mixamo_com", "Crouching Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_y1hk2")]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_eton7"]
+animation = &"Idle/mixamo_com"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_f3x3l"]
+animation = &"Running/mixamo_com"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y1hk2"]
+animation = &"Walking/mixamo_com"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mj6ov"]
+advance_mode = 2
+advance_expression = "move_state == 0"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qygcl"]
+advance_mode = 2
+advance_expression = "move_state == 1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_axpm3"]
+advance_mode = 2
+advance_expression = "move_state == 2"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_juwl0"]
+advance_mode = 2
+advance_expression = "move_state == 1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_40wch"]
+advance_mode = 2
+advance_expression = "move_state == 0"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ciwo7"]
+states/End/position = Vector2(1010, 100)
+states/Idle_mixamo_com/node = SubResource("AnimationNodeAnimation_eton7")
+states/Idle_mixamo_com/position = Vector2(388, 100)
+states/Running_mixamo_com/node = SubResource("AnimationNodeAnimation_f3x3l")
+states/Running_mixamo_com/position = Vector2(827, 100)
+states/Walking_mixamo_com/node = SubResource("AnimationNodeAnimation_y1hk2")
+states/Walking_mixamo_com/position = Vector2(605, 100)
+transitions = ["Start", "Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_mj6ov"), "Idle_mixamo_com", "Walking_mixamo_com", SubResource("AnimationNodeStateMachineTransition_qygcl"), "Walking_mixamo_com", "Running_mixamo_com", SubResource("AnimationNodeStateMachineTransition_axpm3"), "Running_mixamo_com", "Walking_mixamo_com", SubResource("AnimationNodeStateMachineTransition_juwl0"), "Walking_mixamo_com", "Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_40wch")]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jumping"]
+animation = &"Jumping/mixamo_com"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_downed"]
+animation = &"Stumble Backwards/mixamo_com"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ciwo7"]
+advance_mode = 2
+advance_expression = "crouch_state == 0"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cjcea"]
+advance_mode = 2
+advance_expression = "crouch_state == 1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2udst"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_to_jump1"]
+advance_mode = 2
+advance_expression = "move_state == 3"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_to_jump2"]
+advance_mode = 2
+advance_expression = "move_state == 3"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jump_exit"]
+advance_mode = 2
+advance_expression = "move_state < 3"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_to_down1"]
+advance_mode = 2
+advance_expression = "move_state == 4"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_to_down2"]
+advance_mode = 2
+advance_expression = "move_state == 4"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_to_down3"]
+advance_mode = 2
+advance_expression = "move_state == 4"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_down_exit"]
+advance_mode = 2
+advance_expression = "move_state == 0"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_cjcea"]
+"states/Crouch SM/node" = SubResource("AnimationNodeStateMachine_mj6ov")
+"states/Crouch SM/position" = Vector2(556, 240)
+"states/Grounded SM/node" = SubResource("AnimationNodeStateMachine_ciwo7")
+"states/Grounded SM/position" = Vector2(358, 240)
+"states/Jump/node" = SubResource("AnimationNodeAnimation_jumping")
+"states/Jump/position" = Vector2(460, 100)
+"states/Downed/node" = SubResource("AnimationNodeAnimation_downed")
+"states/Downed/position" = Vector2(700, 100)
+transitions = ["Start", "Grounded SM", SubResource("AnimationNodeStateMachineTransition_2udst"), "Grounded SM", "Crouch SM", SubResource("AnimationNodeStateMachineTransition_ciwo7"), "Crouch SM", "Grounded SM", SubResource("AnimationNodeStateMachineTransition_cjcea"), "Grounded SM", "Jump", SubResource("AnimationNodeStateMachineTransition_to_jump1"), "Crouch SM", "Jump", SubResource("AnimationNodeStateMachineTransition_to_jump2"), "Jump", "Grounded SM", SubResource("AnimationNodeStateMachineTransition_jump_exit"), "Grounded SM", "Downed", SubResource("AnimationNodeStateMachineTransition_to_down1"), "Crouch SM", "Downed", SubResource("AnimationNodeStateMachineTransition_to_down2"), "Jump", "Downed", SubResource("AnimationNodeStateMachineTransition_to_down3"), "Downed", "Grounded SM", SubResource("AnimationNodeStateMachineTransition_down_exit")]
+
+[node name="Ch36_nonPBR" unique_id=460768369 instance=ExtResource("1_6o2j1")]
+script = ExtResource("2_40wch")
+
+[node name="Skeleton3D" parent="." index="0" unique_id=1705609140]
+bones/1/rotation = Quaternion(-0.060396235, 0, 0, 0.9981745)
+bones/2/rotation = Quaternion(-6.938894e-18, 0, 0, 1)
+bones/3/rotation = Quaternion(-6.938894e-18, 0, 0, 1)
+bones/4/rotation = Quaternion(0.06039623, 0, 0, 0.9981745)
+bones/7/rotation = Quaternion(-0.55085117, -0.43766928, 0.57205564, -0.42161718)
+bones/8/rotation = Quaternion(-0.099081375, 0.0015088331, -0.015151311, 0.9949628)
+bones/9/rotation = Quaternion(-0.049151633, -0.0027801937, 0.05640299, 0.9971936)
+bones/10/rotation = Quaternion(0.053676873, 0.114363186, 0.021736464, 0.99174964)
+bones/11/rotation = Quaternion(0.11589231, 0.03116674, 0.25782108, 0.95871055)
+bones/12/rotation = Quaternion(0.084402986, -6.227656e-08, -1.8171401e-07, 0.9964317)
+bones/13/rotation = Quaternion(-0.0003866955, 3.4901743e-07, 1.3403978e-07, 0.99999994)
+bones/15/rotation = Quaternion(0.018899746, 0.0011083316, 0.058524493, 0.9981064)
+bones/16/rotation = Quaternion(0.060931068, -2.5503846e-08, 9.142377e-08, 0.998142)
+bones/17/rotation = Quaternion(0.025117218, -1.9742151e-08, 8.043035e-08, 0.9996845)
+bones/19/rotation = Quaternion(0.045832004, -6.738674e-05, -0.0014716134, 0.9989481)
+bones/20/rotation = Quaternion(0.052678395, -1.3482651e-07, -4.305052e-08, 0.9986115)
+bones/21/rotation = Quaternion(-0.027591333, 4.3821004e-08, 1.3927616e-08, 0.9996193)
+bones/23/rotation = Quaternion(0.122720145, -0.00291177, -0.023540383, 0.9921578)
+bones/24/rotation = Quaternion(-0.03749605, 3.1852642e-07, 3.4882077e-09, 0.9992968)
+bones/25/rotation = Quaternion(-0.0021455772, 3.4545938e-08, -1.1615333e-09, 0.9999977)
+bones/27/rotation = Quaternion(0.095229514, -0.0050405576, -0.052614342, 0.99405116)
+bones/28/rotation = Quaternion(0.039731257, -9.25534e-08, -2.499425e-08, 0.9992104)
+bones/29/rotation = Quaternion(0.013471501, 1.391952e-07, 4.301949e-09, 0.9999093)
+bones/31/rotation = Quaternion(0.55373317, -0.43542874, 0.56973886, 0.42329538)
+bones/32/rotation = Quaternion(-0.09994308, -0.0023182274, 0.02306983, 0.99472296)
+bones/33/rotation = Quaternion(-0.04915202, 0.0028665594, -0.05815067, 0.99709296)
+bones/34/rotation = Quaternion(0.0548744, -0.10942516, -0.027996311, 0.9920842)
+bones/35/rotation = Quaternion(0.11595235, -0.030265968, -0.25073788, 0.96060896)
+bones/36/rotation = Quaternion(0.08713139, 5.2514753e-09, 5.1757475e-08, 0.99619687)
+bones/37/rotation = Quaternion(-0.050491635, -3.8737534e-07, 4.4284025e-08, 0.99872446)
+bones/39/rotation = Quaternion(0.04454036, -0.0013705922, -0.030731047, 0.99853384)
+bones/40/rotation = Quaternion(0.041999206, -4.0196448e-07, 1.8518839e-09, 0.9991176)
+bones/41/rotation = Quaternion(-0.0016001499, -1.0065327e-08, -2.0422628e-07, 0.9999987)
+bones/43/rotation = Quaternion(0.024431884, 3.4869878e-05, 0.001418315, 0.9997005)
+bones/44/rotation = Quaternion(0.07132035, -2.809988e-07, -1.4377329e-08, 0.99745345)
+bones/45/rotation = Quaternion(-0.027250485, 1.3290462e-07, -4.4922423e-08, 0.99962866)
+bones/47/rotation = Quaternion(0.070691384, 0.0031781045, 0.044798516, 0.99648666)
+bones/48/rotation = Quaternion(0.044178292, -3.1327703e-09, -2.8951483e-08, 0.9990237)
+bones/49/rotation = Quaternion(-0.048698794, 1.9986543e-07, 1.5978273e-08, 0.9988135)
+bones/51/rotation = Quaternion(0.08523811, 0.0049605533, 0.057882767, 0.9946655)
+bones/52/rotation = Quaternion(0.060461584, -1.6509088e-07, 5.1830618e-08, 0.9981705)
+bones/53/rotation = Quaternion(-0.019942403, -7.2807005e-08, -8.047801e-09, 0.99980116)
+bones/55/rotation = Quaternion(-0.001384912, -0.031603243, 0.99854124, -0.04375792)
+bones/56/rotation = Quaternion(-0.0026597104, 1.0447771e-05, -0.0039276243, 0.99998873)
+bones/57/rotation = Quaternion(0.4951237, -0.01473412, 0.008398306, 0.86865693)
+bones/58/rotation = Quaternion(0.29011598, -0.056511864, 0.017164504, 0.9551673)
+bones/60/rotation = Quaternion(0.0012669812, -0.028902654, 0.9986224, 0.04377577)
+bones/61/rotation = Quaternion(-0.0063811, -2.5170712e-05, 0.003944722, 0.99997187)
+bones/62/rotation = Quaternion(0.4974399, 0.014425731, -0.008273503, 0.867339)
+bones/63/rotation = Quaternion(0.2885272, 0.05736588, -0.017320758, 0.9555947)
+
+[node name="AnimationPlayer" parent="." index="1" unique_id=330600728]
+"libraries/Crouching Idle" = ExtResource("2_juwl0")
+libraries/Idle = ExtResource("3_40wch")
+libraries/Jumping = ExtResource("4_eton7")
+libraries/Running = ExtResource("5_f3x3l")
+"libraries/Stumble Backwards" = ExtResource("6_y1hk2")
+"libraries/Walk Crouching Forward" = ExtResource("7_mj6ov")
+libraries/Walking = ExtResource("8_qygcl")
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="2" unique_id=985879704]
+root_motion_track = NodePath("Skeleton3D:mixamorig1_Hips")
+root_motion_local = true
+tree_root = SubResource("AnimationNodeStateMachine_cjcea")
+advance_expression_base_node = NodePath("..")
+anim_player = NodePath("../AnimationPlayer")

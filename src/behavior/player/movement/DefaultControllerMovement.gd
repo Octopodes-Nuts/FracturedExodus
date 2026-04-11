@@ -251,6 +251,12 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 	if controller.is_on_floor():
 		if controller.gravity_direction.y < 0.0:
 			controller.gravity_direction.y = 0.0
+			if play_walk_locally:
+				var model = controller.get_node_or_null("Ch36_nonPBR")
+				if model and model.has_method("set_landed"):
+					model.set_landed()
+			elif replicate_walk_state:
+				controller.play_character_state.rpc(controller.name, "land")
 	else:
 		controller.gravity_direction += Vector3.DOWN * controller.gravity * dt
 
@@ -258,6 +264,12 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 		if controller.net_jump_pressed and controller.is_on_floor() and controller.full_contact:
 			controller.gravity_direction = Vector3.UP * controller.jump
 			controller.net_jump_pressed = false
+			if play_walk_locally:
+				var model = controller.get_node_or_null("Ch36_nonPBR")
+				if model and model.has_method("set_jumping"):
+					model.set_jumping()
+			elif replicate_walk_state:
+				controller.play_character_state.rpc(controller.name, "jump")
 	else:
 		clear_movement_state(controller)
 
@@ -288,6 +300,9 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 			accel = controller.ACCEL
 			walk_state = controller.WALK_STATES.WALK
 
+		# Crouch penalty
+		if controller.is_crouching:
+			speed = minf(speed, controller.CROUCH_SPEED)
 		# Infantry buff: faster when tertiary (melee/light) weapon is out
 		if controller is InfantryController and controller.current_equipped_index == 2:
 			speed *= controller.stowed_speed_buff

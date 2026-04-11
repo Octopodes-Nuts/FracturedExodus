@@ -84,6 +84,15 @@ var net_wants_sprint: bool = false
 var net_jump_pressed: bool = false
 var net_yaw: float = 0.0
 var net_pitch: float = 0.0
+
+var is_crouching: bool = false
+@export var CROUCH_SPEED: float = 2.5
+@export var CROUCH_HEIGHT: float = 0.9
+@export var CROUCH_NECK_Y: float = -0.3
+const CROUCH_LERP: float = 12.0
+var _stand_height: float = 0.0
+var _stand_neck_y: float = 0.0
+var _stand_collider_y: float = 0.0
 var input_sequence: int = 0
 var last_server_sequence: int = -1
 var pending_inputs: Array = []
@@ -201,8 +210,19 @@ func _ready():
 		if owner_peer_id > 1:
 			multiplayer_sync.set_visibility_for(owner_peer_id, false)
 	
+	var collider = get_node_or_null("player_main_collider")
+	if collider and collider.shape is CapsuleShape3D:
+		_stand_height = collider.shape.height
+		_stand_collider_y = collider.position.y
+	_stand_neck_y = neck.position.y
+
 	if not _is_local_player(): return
-	
+
+	var character_model = get_node_or_null("Ch36_nonPBR")
+	if character_model:
+		for child in character_model.find_children("*", "MeshInstance3D", true, false):
+			child.layers = 2
+
 	Local.set_state("input_active", true)
 	camera.make_current()
 	if Local.get_state("terrain"):
@@ -284,11 +304,34 @@ func _undo_ads(dt: float):
 	elif camera.fov != float(Settings.FOV):
 		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * dt)
 
+func _set_crouch(crouching: bool) -> void:
+	if is_crouching == crouching:
+		return
+	is_crouching = crouching
+	var collider = get_node_or_null("player_main_collider")
+	if collider and collider.shape is CapsuleShape3D:
+		if crouching:
+			collider.shape.height = CROUCH_HEIGHT
+			collider.position.y = _stand_collider_y - (_stand_height - CROUCH_HEIGHT) * 0.5
+		else:
+			collider.shape.height = _stand_height
+			collider.position.y = _stand_collider_y
+	var model = get_node_or_null("Ch36_nonPBR")
+	if model:
+		model.crouch_state = 0 if crouching else 1
+	play_character_state.rpc(name, "crouch" if crouching else "stand")
+
+func _process_crouch(dt: float) -> void:
+	var target_neck_y := (CROUCH_NECK_Y if is_crouching else _stand_neck_y)
+	neck.position.y = lerp(neck.position.y, target_neck_y, CROUCH_LERP * dt)
+
 func ground_check():
 	return movement_handler.ground_check(self)
 
 func _process(dt: float):
 	input_handler.handle_process(self, dt)
+	if _is_local_player():
+		_process_crouch(dt)
 	if _is_local_player() and (_hit_lurch_yaw != 0.0 or _hit_lurch_pitch != 0.0):
 		_hit_lurch_yaw = lerpf(_hit_lurch_yaw, 0.0, HIT_LURCH_DECAY * dt)
 		_hit_lurch_pitch = lerpf(_hit_lurch_pitch, 0.0, HIT_LURCH_DECAY * dt)
@@ -425,9 +468,32 @@ func call_help(id):
 
 var play_state = {}
 
+@rpc("call_local", "any_peer")
+func play_character_state(id: String, state: String) -> void:
+	if name == id:
+		var model = get_node_or_null("Ch36_nonPBR")
+		if model == null:
+			return
+		match state:
+			"jump":
+				if model.has_method("set_jumping"): model.set_jumping()
+			"land":
+				if model.has_method("set_landed"): model.set_landed()
+			"downed":
+				if model.has_method("set_downed"): model.set_downed()
+			"revived":
+				if model.has_method("set_revived"): model.set_revived()
+			"crouch":
+				model.crouch_state = 0
+			"stand":
+				model.crouch_state = 1
+
 @rpc("call_local","any_peer")
 func play_walk(id, walk_state):
 	if name == id:
+		var model = get_node_or_null("Ch36_nonPBR")
+		if model and model.has_method("set_walk_state"):
+			model.set_walk_state(walk_state)
 		if walk_state == WALK_STATES.STOP:
 			$footsteps.stop()
 			play_state[name] = WALK_STATES.STOP
@@ -605,6 +671,7 @@ func _get_faction() -> int:
 func _sync_down_state(new_down_count: int, new_full_health: float) -> void:
 	down_count = new_down_count
 	FULL_HEALTH = new_full_health
+	play_character_state.rpc(name, "downed")
 
 func start_bleed_out_timer() -> void:
 	if not multiplayer.is_server():
@@ -628,6 +695,7 @@ func res(revive_health: float, resurrector_is_medic: bool = false):
 @rpc("any_peer", "reliable")
 func _res_local(revive_health: float):
 	health_handler.handle_res_local(self, revive_health)
+	play_character_state.rpc(name, "revived")
 
 @rpc("any_peer", "reliable")
 func set_res_sphere(active: bool):

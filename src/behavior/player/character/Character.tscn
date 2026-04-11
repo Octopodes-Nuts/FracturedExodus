@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bq2eecyc8ku3x"]
+
+[ext_resource type="PackedScene" uid="uid://bvwk568y2xhr8" path="res://behavior/player/character/ch_36_non_pbr.tscn" id="1_jprn8"]
+
+[node name="Character" type="Node3D" unique_id=373977618]
+
+[node name="Ch36_nonPBR" parent="." unique_id=460768369 instance=ExtResource("1_jprn8")]

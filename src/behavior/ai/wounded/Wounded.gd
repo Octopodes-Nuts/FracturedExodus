@@ -8,6 +8,7 @@ extends BaseAI
 @export var max_home_leash_distance: float = 14.0
 @export var minimum_attack_range: float = 5.5
 @export var close_retreat_distance: float = 6.0
+@export var retreat_exit_distance: float = 10.0
 @export var hit_stagger_duration: float = 0.35
 @export var headshot_multiplier: float = 1.75
 @export var head_track_speed: float = 8.0
@@ -157,9 +158,6 @@ func _tick_attack() -> Vector3:
 		return Vector3.ZERO
 
 	last_heard_position = tracked_player.global_position
-	if _distance_to_tracked_player() <= close_retreat_distance:
-		_set_state(AiState.RETREAT)
-		return Vector3.ZERO
 
 	if _attack_age >= attack_cooldown and _can_see_player(tracked_player):
 		_attempt_attack()
@@ -184,7 +182,10 @@ func _tick_retreat() -> Vector3:
 	return _move_toward_navigation(retreat_speed)
 
 func _should_retreat() -> bool:
-	if _distance_to_tracked_player() <= close_retreat_distance:
+	var dist := _distance_to_tracked_player()
+	# Hysteresis: stay in retreat until the player is farther than retreat_exit_distance
+	var threshold := retreat_exit_distance if current_state == AiState.RETREAT else close_retreat_distance
+	if dist <= threshold:
 		return true
 	if max_health <= 0.0:
 		return false
@@ -196,8 +197,6 @@ func _should_attack() -> bool:
 	if noise_age > pursuit_timeout:
 		return false
 	if not _is_player_in_attack_window(tracked_player.global_position):
-		return false
-	if _distance_to_tracked_player() <= close_retreat_distance:
 		return false
 	if _can_see_player(tracked_player):
 		return true
