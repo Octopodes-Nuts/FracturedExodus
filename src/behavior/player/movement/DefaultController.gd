@@ -321,6 +321,8 @@ func _set_crouch(crouching: bool) -> void:
 	var collider = get_node_or_null("player_main_collider")
 	if collider and collider.shape is CapsuleShape3D:
 		collider.shape.height = CROUCH_HEIGHT if crouching else _stand_height
+		if not crouching:
+			global_position.y += (_stand_height - CROUCH_HEIGHT) / 2.0
 	var model = get_node_or_null("Ch36_nonPBR")
 	if model:
 		model.crouch_state = 0 if crouching else 1

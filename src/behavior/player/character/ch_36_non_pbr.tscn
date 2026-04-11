@@ -34,6 +34,9 @@ advance_expression = "move_state == 0"
 "states/Walk Crouching Forward_mixamo_com/position" = Vector2(682, 240)
 transitions = ["Start", "Crouching Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_eton7"), "Crouching Idle_mixamo_com", "Walk Crouching Forward_mixamo_com", SubResource("AnimationNodeStateMachineTransition_f3x3l"), "Walk Crouching Forward_mixamo_com", "Crouching Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_y1hk2")]
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_downed"]
+animation = &"Stumble Backwards/mixamo_com"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_eton7"]
 animation = &"Idle/mixamo_com"
 
@@ -63,6 +66,14 @@ advance_expression = "move_state == 1"
 advance_mode = 2
 advance_expression = "move_state == 0"
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hqhx4"]
+advance_mode = 2
+advance_expression = "move_state == 2"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_obs8v"]
+advance_mode = 2
+advance_expression = "move_state == 0"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ciwo7"]
 states/End/position = Vector2(1010, 100)
 states/Idle_mixamo_com/node = SubResource("AnimationNodeAnimation_eton7")
@@ -70,14 +81,14 @@ states/Idle_mixamo_com/position = Vector2(388, 100)
 states/Running_mixamo_com/node = SubResource("AnimationNodeAnimation_f3x3l")
 states/Running_mixamo_com/position = Vector2(827, 100)
 states/Walking_mixamo_com/node = SubResource("AnimationNodeAnimation_y1hk2")
-states/Walking_mixamo_com/position = Vector2(605, 100)
-transitions = ["Start", "Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_mj6ov"), "Idle_mixamo_com", "Walking_mixamo_com", SubResource("AnimationNodeStateMachineTransition_qygcl"), "Walking_mixamo_com", "Running_mixamo_com", SubResource("AnimationNodeStateMachineTransition_axpm3"), "Running_mixamo_com", "Walking_mixamo_com", SubResource("AnimationNodeStateMachineTransition_juwl0"), "Walking_mixamo_com", "Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_40wch")]
+states/Walking_mixamo_com/position = Vector2(597, 231)
+transitions = ["Start", "Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_mj6ov"), "Idle_mixamo_com", "Walking_mixamo_com", SubResource("AnimationNodeStateMachineTransition_qygcl"), "Walking_mixamo_com", "Running_mixamo_com", SubResource("AnimationNodeStateMachineTransition_axpm3"), "Running_mixamo_com", "Walking_mixamo_com", SubResource("AnimationNodeStateMachineTransition_juwl0"), "Walking_mixamo_com", "Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_40wch"), "Idle_mixamo_com", "Running_mixamo_com", SubResource("AnimationNodeStateMachineTransition_hqhx4"), "Running_mixamo_com", "Idle_mixamo_com", SubResource("AnimationNodeStateMachineTransition_obs8v")]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jumping"]
 animation = &"Jumping/mixamo_com"
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_downed"]
-animation = &"Stumble Backwards/mixamo_com"
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2udst"]
+advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ciwo7"]
 advance_mode = 2
@@ -86,9 +97,6 @@ advance_expression = "crouch_state == 0"
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cjcea"]
 advance_mode = 2
 advance_expression = "crouch_state == 1"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2udst"]
-advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_to_jump1"]
 advance_mode = 2
@@ -121,12 +129,12 @@ advance_expression = "move_state == 0"
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_cjcea"]
 "states/Crouch SM/node" = SubResource("AnimationNodeStateMachine_mj6ov")
 "states/Crouch SM/position" = Vector2(556, 240)
+states/Downed/node = SubResource("AnimationNodeAnimation_downed")
+states/Downed/position = Vector2(700, 100)
 "states/Grounded SM/node" = SubResource("AnimationNodeStateMachine_ciwo7")
 "states/Grounded SM/position" = Vector2(358, 240)
-"states/Jump/node" = SubResource("AnimationNodeAnimation_jumping")
-"states/Jump/position" = Vector2(460, 100)
-"states/Downed/node" = SubResource("AnimationNodeAnimation_downed")
-"states/Downed/position" = Vector2(700, 100)
+states/Jump/node = SubResource("AnimationNodeAnimation_jumping")
+states/Jump/position = Vector2(460, 100)
 transitions = ["Start", "Grounded SM", SubResource("AnimationNodeStateMachineTransition_2udst"), "Grounded SM", "Crouch SM", SubResource("AnimationNodeStateMachineTransition_ciwo7"), "Crouch SM", "Grounded SM", SubResource("AnimationNodeStateMachineTransition_cjcea"), "Grounded SM", "Jump", SubResource("AnimationNodeStateMachineTransition_to_jump1"), "Crouch SM", "Jump", SubResource("AnimationNodeStateMachineTransition_to_jump2"), "Jump", "Grounded SM", SubResource("AnimationNodeStateMachineTransition_jump_exit"), "Grounded SM", "Downed", SubResource("AnimationNodeStateMachineTransition_to_down1"), "Crouch SM", "Downed", SubResource("AnimationNodeStateMachineTransition_to_down2"), "Jump", "Downed", SubResource("AnimationNodeStateMachineTransition_to_down3"), "Downed", "Grounded SM", SubResource("AnimationNodeStateMachineTransition_down_exit")]
 
 [node name="Ch36_nonPBR" unique_id=460768369 instance=ExtResource("1_6o2j1")]
