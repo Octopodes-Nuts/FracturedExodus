@@ -265,7 +265,7 @@ func _ads(dt: float):
 		if _is_local_player():
 			var hud: Control = Local.get_hud()
 			if hud != null:
-				hud.set_visible(false)
+				hud.set_hud_visible(false)
 
 func _undo_ads(dt: float):
 	if active_equipable is Weapon:
@@ -276,7 +276,7 @@ func _undo_ads(dt: float):
 		if _is_local_player():
 			var hud: Control = Local.get_hud()
 			if hud != null:
-				hud.set_visible(true)
+				hud.set_hud_visible(true)
 	elif camera.fov != float(Settings.FOV):
 		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * dt)
 
@@ -521,6 +521,11 @@ func play_hit_noise(id):
 
 func hit(dmg: int, shooter_id: int = 0):
 	health_handler.handle_hit(self, dmg, shooter_id)
+
+@rpc("authority", "reliable")
+func show_hit_marker() -> void:
+	if _is_local_player() and Local.has_hud():
+		HUD.hit()
 
 
 @rpc("any_peer", "reliable")

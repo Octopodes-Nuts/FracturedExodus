@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://iuogwiwcu6b" path="res://behavior/player/weapons/Gun.gd" id="1_abknl"]
 [ext_resource type="PackedScene" uid="uid://dy7plboxee7hu" path="res://debug/models/weapons/webley/WebleyRevolver.blend" id="2_m58y2"]
 [ext_resource type="AudioStream" uid="uid://bneh7opew0s8w" path="res://behavior/player/weapons/guns/default_pistol/DefaultPistolShot.mp3" id="2_pc14l"]
+[ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="3_i2xuj"]
+[ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="4_h7hjn"]
 
 [sub_resource type="Animation" id="Animation_abknl"]
 resource_name = "Fire"
@@ -63,6 +65,12 @@ slots = Dictionary[int, Array]({
 4: []
 })
 default_position = Vector3(0.1, -0.1, -0.1)
+
+[node name="MuzzleBlast" parent="." unique_id=2098191403 instance=ExtResource("3_i2xuj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.019711595, -0.2876382)
+
+[node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_h7hjn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.019711595, -0.2876382)
 
 [node name="WebleyRevolver" parent="." unique_id=1031495640 instance=ExtResource("2_m58y2")]
 transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0)

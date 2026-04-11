@@ -155,6 +155,12 @@ func _on_party_status_request_request_completed(_result, response_code, _headers
 			emit_signal("in_party_status_changed", Local.get_state("party_members"))
 		if status.has("status"):
 			Local.set_state("party_status", status["status"])
+			# Non-leaders start polling matchmaking status when the party leader queues
+			if status["status"] == "searching" and not Local.get_state("party_leader") and not queued:
+				queued = true
+				emit_signal("matchmaking_status_changed", "searching")
+				if status_timer.is_stopped():
+					status_timer.start()
 		if status.has("primaryPlayerId"):
 			Local.set_state("party_leader_id", status["primaryPlayerId"])
 			if Local.get_state("party_leader_id") == Local.get_state("player_id"):

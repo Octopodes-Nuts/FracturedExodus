@@ -3,6 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://bak172cpjt7x5" path="res://debug/models/weapons/reichsrevolver/reichsrevolver.blend" id="1_g510i"]
 [ext_resource type="Script" uid="uid://s647xfw7x7oc" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/Reichsrevolver.gd" id="1_nqb6u"]
 [ext_resource type="AudioStream" uid="uid://diqd1kyumq8s1" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/reiche revolver.wav" id="2_6xkq4"]
+[ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="3_apku6"]
+[ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="4_0471c"]
 
 [sub_resource type="Animation" id="Animation_6xkq4"]
 resource_name = "Fire"
@@ -62,6 +64,12 @@ slots = Dictionary[int, Array]({
 4: []
 })
 default_position = Vector3(0.1, -0.1, -0.2)
+
+[node name="MuzzleBlast" parent="." unique_id=2098191403 instance=ExtResource("3_apku6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.009626292, -0.3904976)
+
+[node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_0471c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.009626612, -0.3904976)
 
 [node name="reichsrevolver" parent="." unique_id=1563747988 instance=ExtResource("1_g510i")]
 transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)

@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://32usuqbxjy4e" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/Kar98a.gd" id="1_0udev"]
 [ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_0hngi"]
 [ext_resource type="PackedScene" uid="uid://mrn3jwdve6v5" path="res://debug/models/weapons/kar98k/kar98k.blend" id="2_jhjtq"]
+[ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="3_rhxrv"]
+[ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="4_tm3ce"]
 
 [sub_resource type="Animation" id="Animation_0hngi"]
 resource_name = "Fire"
@@ -60,6 +62,12 @@ slots = Dictionary[int, Array]({
 4: []
 })
 default_position = Vector3(0.1, -0.1, 0.3)
+
+[node name="MuzzleBlast" parent="." unique_id=2098191403 instance=ExtResource("3_rhxrv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.022091739, -1.109646)
+
+[node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_tm3ce")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.022091739, -1.109646)
 
 [node name="kar98k" parent="." unique_id=1791415609 instance=ExtResource("2_jhjtq")]
 
