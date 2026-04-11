@@ -17,12 +17,24 @@ extends Control
 
 var hitmarker_timer: Timer
 
+var _hit_indicator: ColorRect
+var hit_indicator_timer: float = 0.0
+const _HIT_INDICATOR_DURATION: float = 1.5
+const _HIT_INDICATOR_RADIUS: float = 110.0
+
 func _ready() -> void:
 	hitmarker_timer = Timer.new()
 	add_child(hitmarker_timer)
 	hitmarker_timer.one_shot = true
 	hitmarker_timer.timeout.connect(hit_marker.hide)
 	hitmarker_timer.wait_time = 0.2
+
+	_hit_indicator = ColorRect.new()
+	_hit_indicator.color = Color(1.0, 0.0, 0.0, 0.75)
+	_hit_indicator.size = Vector2(72, 10)
+	_hit_indicator.pivot_offset = Vector2(36, 5)
+	_hit_indicator.hide()
+	add_child(_hit_indicator)
 
 func hit():
 	hit_marker.show()
@@ -45,7 +57,21 @@ var clear_text_delta = 0.0
 #func _process(delta):
 #	pass
 
+func show_hit_direction(relative_angle: float) -> void:
+	var center := get_viewport_rect().size / 2.0
+	var dir := Vector2(sin(relative_angle), -cos(relative_angle))
+	_hit_indicator.position = center + dir * _HIT_INDICATOR_RADIUS - _hit_indicator.pivot_offset
+	_hit_indicator.rotation = relative_angle
+	_hit_indicator.modulate.a = 0.75
+	_hit_indicator.show()
+	hit_indicator_timer = _HIT_INDICATOR_DURATION
+
 func _process(delta):
+	if hit_indicator_timer > 0.0:
+		hit_indicator_timer -= delta
+		_hit_indicator.modulate.a = (hit_indicator_timer / _HIT_INDICATOR_DURATION) * 0.75
+		if hit_indicator_timer <= 0.0:
+			_hit_indicator.hide()
 	if clear_text:
 		if clear_text_delta > 0.0:
 			clear_text_delta -= delta

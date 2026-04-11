@@ -125,9 +125,13 @@ func _is_local_player() -> bool:
 			return id == multiplayer.get_unique_id()
 	return false
 
+var _hit_lurch_yaw: float = 0.0
+var _hit_lurch_pitch: float = 0.0
+const HIT_LURCH_DECAY = 7.0
+
 func _apply_look_rotation(yaw: float, pitch: float) -> void:
-	rotation.y = yaw
-	neck.rotation.x = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+	rotation.y = yaw + _hit_lurch_yaw
+	neck.rotation.x = clamp(pitch + _hit_lurch_pitch, deg_to_rad(-89), deg_to_rad(89))
 
 func _apply_recoil(vertical_deg: float, horizontal_deg: float) -> void:
 	net_pitch += deg_to_rad(vertical_deg)
@@ -285,6 +289,10 @@ func ground_check():
 
 func _process(dt: float):
 	input_handler.handle_process(self, dt)
+	if _is_local_player() and (_hit_lurch_yaw != 0.0 or _hit_lurch_pitch != 0.0):
+		_hit_lurch_yaw = lerpf(_hit_lurch_yaw, 0.0, HIT_LURCH_DECAY * dt)
+		_hit_lurch_pitch = lerpf(_hit_lurch_pitch, 0.0, HIT_LURCH_DECAY * dt)
+		_apply_look_rotation(net_yaw, net_pitch)
 
 
 # @rpc("call_local", "any_peer")
@@ -526,6 +534,17 @@ func hit(dmg: int, shooter_id: int = 0):
 func show_hit_marker() -> void:
 	if _is_local_player() and Local.has_hud():
 		HUD.hit()
+
+@rpc("authority", "reliable")
+func receive_hit_feedback(hit_world_yaw: float) -> void:
+	if not _is_local_player():
+		return
+	var relative_angle := hit_world_yaw - net_yaw
+	_hit_lurch_yaw = sin(relative_angle) * deg_to_rad(4.0)
+	_hit_lurch_pitch = deg_to_rad(randf_range(1.5, 3.0))
+	_apply_look_rotation(net_yaw, net_pitch)
+	if Local.has_hud():
+		HUD.show_hit_direction(relative_angle)
 
 
 @rpc("any_peer", "reliable")
