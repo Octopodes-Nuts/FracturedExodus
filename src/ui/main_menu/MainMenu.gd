@@ -19,6 +19,7 @@ class_name MainMenu
 @onready var social_panel = $social_panel
 @onready var friend_request_panel = $add_friend_panel
 @onready var faction_select = $FactionSelect
+@onready var matchmaking_time_display = $matchmaking_time_display
 
 @onready var account_info_update_timer: Timer = Timer.new()
 @onready var party_update_timer: Timer = Timer.new()
@@ -39,6 +40,8 @@ var _character_warmup_polls_left: int = 0
 
 # this server code will likely be moved
 var active_register = 1
+
+var matchmaking_time_elapsed: float = 0.0
 
 signal reload_ui
 
@@ -93,7 +96,9 @@ func _ready():
 
 
 func _process(_delta: float) -> void:
-	pass
+	if queued:
+		matchmaking_time_elapsed += _delta
+		matchmaking_time_display.text = str(matchmaking_time_elapsed).substr(0, 3)
 
 func _poll_characters_in_lobby() -> void:
 	var token := String(Local.get_state("session_token"))

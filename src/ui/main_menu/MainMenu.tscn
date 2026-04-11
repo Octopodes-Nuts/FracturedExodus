@@ -239,6 +239,15 @@ popup/item_2/id = 2
 stream = ExtResource("12_uqh3w")
 volume_db = -13.514
 
+[node name="matchmaking_time_display" type="Label" parent="." unique_id=1162965316]
+layout_mode = 0
+offset_left = 143.0
+offset_top = 563.0
+offset_right = 286.0
+offset_bottom = 600.0
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+
 [connection signal="character_select" from="character_display" to="." method="_on_character_display_character_select"]
 [connection signal="pressed" from="test_scene_btn" to="." method="_on_test_scene_btn_pressed"]
 [connection signal="pressed" from="ready_button" to="." method="_on_ready_button_pressed"]
