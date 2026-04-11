@@ -28,7 +28,7 @@ func ground_check(controller) -> bool:
 		controller.ground_check_3.is_colliding() or \
 		controller.ground_check_4.is_colliding()
 
-func set_movement_input(controller, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float) -> void:
+func set_movement_input(controller, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, wants_crouch: bool = false) -> void:
 	controller.net_move_x = clamp(move_x, -1.0, 1.0)
 	controller.net_move_y = clamp(move_y, -1.0, 1.0)
 	controller.net_wants_sprint = wants_sprint
@@ -36,6 +36,8 @@ func set_movement_input(controller, move_x: float, move_y: float, wants_sprint: 
 		controller.net_jump_pressed = true
 	controller.net_yaw = yaw
 	controller.net_pitch = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+	if wants_crouch != controller.is_crouching:
+		controller._set_crouch(wants_crouch)
 
 func clear_movement_state(controller) -> void:
 	controller.net_move_x = 0.0
@@ -63,6 +65,7 @@ func build_local_input(controller, dt: float) -> Dictionary:
 		"jump_pressed": jump_pressed,
 		"yaw": controller.net_yaw,
 		"pitch": controller.net_pitch,
+		"wants_crouch": controller.is_crouching,
 	}
 
 func apply_input_packet(controller, input_packet: Dictionary) -> void:
@@ -73,7 +76,8 @@ func apply_input_packet(controller, input_packet: Dictionary) -> void:
 		input_packet["wants_sprint"],
 		input_packet["jump_pressed"],
 		input_packet["yaw"],
-		input_packet["pitch"]
+		input_packet["pitch"],
+		input_packet.get("wants_crouch", false)
 	)
 
 func capture_and_submit_input(controller, dt: float) -> void:
@@ -95,19 +99,20 @@ func capture_and_submit_input(controller, dt: float) -> void:
 			input_packet["jump_pressed"],
 			input_packet["yaw"],
 			input_packet["pitch"],
-			input_packet["dt"]
+			input_packet["dt"],
+			input_packet["wants_crouch"]
 		)
 
 var _pending_client_dt: Dictionary = {}
 
-func apply_network_input(controller, seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float) -> void:
+func apply_network_input(controller, seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float, wants_crouch: bool = false) -> void:
 	if not controller.multiplayer.is_server():
 		return
 	var sender_id: int = controller.multiplayer.get_remote_sender_id()
 	if sender_id != controller._get_peer_id_string().to_int():
 		return
 	controller.last_server_sequence = seq
-	set_movement_input(controller, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
+	set_movement_input(controller, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch, wants_crouch)
 	_pending_client_dt[controller._get_peer_id_string()] = client_dt
 
 func create_authoritative_state(controller) -> Dictionary:
@@ -117,6 +122,7 @@ func create_authoritative_state(controller) -> Dictionary:
 		"gravity_direction": controller.gravity_direction,
 		"yaw": controller.rotation.y,
 		"pitch": controller.neck.rotation.x,
+		"is_crouching": controller.is_crouching,
 	}
 
 func restore_authoritative_state(controller, state: Dictionary) -> void:
@@ -126,6 +132,9 @@ func restore_authoritative_state(controller, state: Dictionary) -> void:
 	controller.net_yaw = state["yaw"]
 	controller.net_pitch = state["pitch"]
 	controller._apply_look_rotation(controller.net_yaw, controller.net_pitch)
+	var authoritative_crouch: bool = state.get("is_crouching", false)
+	if authoritative_crouch != controller.is_crouching:
+		controller._set_crouch(authoritative_crouch)
 
 func discard_acknowledged_inputs(controller, sequence: int) -> void:
 	if controller.pending_inputs.is_empty():

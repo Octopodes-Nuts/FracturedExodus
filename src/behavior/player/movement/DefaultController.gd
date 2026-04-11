@@ -212,8 +212,12 @@ func _ready():
 	
 	var collider = get_node_or_null("player_main_collider")
 	if collider and collider.shape is CapsuleShape3D:
+		collider.shape = collider.shape.duplicate()
 		_stand_height = collider.shape.height
 		_stand_collider_y = collider.position.y
+		print("[CROUCH] peer=%s stand_height=%.3f" % [name, _stand_height])
+	else:
+		print("[CROUCH] peer=%s collider NOT FOUND or wrong shape type" % name)
 	_stand_neck_y = neck.position.y
 
 	if not _is_local_player(): return
@@ -267,9 +271,12 @@ func char_serv_update(ids: Array):
 	var peer_id_str := _get_peer_id_string()
 	if peer_id_str not in ids:
 		return
+	var payload: Variant = Global.character_data.get(peer_id_str)
+	if not (payload is Dictionary) or not payload.has("wep1"):
+		return
 	if multiplayer.is_server() and not server_spawn_assigned_by_faction:
 		server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
-	load_from_payload(Global.character_data[peer_id_str])
+	load_from_payload(payload)
 
 
 func load_from_payload(payload: Dictionary):
@@ -307,19 +314,18 @@ func _undo_ads(dt: float):
 func _set_crouch(crouching: bool) -> void:
 	if is_crouching == crouching:
 		return
+	if _stand_height <= 0.0:
+		push_warning("[CROUCH] _set_crouch called before _stand_height was initialized, ignoring")
+		return
 	is_crouching = crouching
 	var collider = get_node_or_null("player_main_collider")
 	if collider and collider.shape is CapsuleShape3D:
-		if crouching:
-			collider.shape.height = CROUCH_HEIGHT
-			collider.position.y = _stand_collider_y - (_stand_height - CROUCH_HEIGHT) * 0.5
-		else:
-			collider.shape.height = _stand_height
-			collider.position.y = _stand_collider_y
+		collider.shape.height = CROUCH_HEIGHT if crouching else _stand_height
 	var model = get_node_or_null("Ch36_nonPBR")
 	if model:
 		model.crouch_state = 0 if crouching else 1
-	play_character_state.rpc(name, "crouch" if crouching else "stand")
+	if _is_local_player():
+		play_character_state.rpc(name, "crouch" if crouching else "stand")
 
 func _process_crouch(dt: float) -> void:
 	var target_neck_y := (CROUCH_NECK_Y if is_crouching else _stand_neck_y)
@@ -424,8 +430,8 @@ func _capture_and_submit_input(dt: float) -> void:
 	movement_handler.capture_and_submit_input(self, dt)
 
 @rpc("any_peer", "unreliable_ordered")
-func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float = 0.0):
-	movement_handler.apply_network_input(self, seq, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch, client_dt)
+func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float = 0.0, wants_crouch: bool = false):
+	movement_handler.apply_network_input(self, seq, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch, client_dt, wants_crouch)
 
 func _create_authoritative_state() -> Dictionary:
 	return movement_handler.create_authoritative_state(self)
