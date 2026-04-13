@@ -28,7 +28,7 @@ properties/1/replication_mode = 1
 size = Vector3(0.15891647, 0.220047, 0.19281006)
 
 [node name="player_body" type="CharacterBody3D" unique_id=404869370]
-collision_layer = 10
+collision_layer = 2
 script = ExtResource("1")
 MAX_SPEED = 4.0
 MAX_SPRINT = 7.0
@@ -82,6 +82,8 @@ input_ray_pickable = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.36387455, 0)
 collision_layer = 8
 collision_mask = 8
+monitoring = false
+monitorable = false
 script = ExtResource("4_xn1ii")
 
 [node name="head_collision" type="CollisionShape3D" parent="neck" unique_id=1366611763]

@@ -113,6 +113,7 @@ var officer_speed_buff: float = 1.0
 @onready var ground_check_3 = $ground_check_3
 @onready var ground_check_4 = $ground_check_4
 @onready var multiplayer_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
+@onready var player_model_and_hitbox = $Ch36_nonPBR
 
 
 var character: Character
@@ -196,6 +197,7 @@ func _ready():
 	res_sphere.set_player(self)
 	
 	if multiplayer.is_server():
+		player_model_and_hitbox.report_hit.connect(func(dmg: float, shooter_id: int): hit(int(dmg), shooter_id))
 		server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
 		if not server_spawn_assigned_by_faction:
 			# Keep players out of origin while waiting for authoritative faction payload.
@@ -506,23 +508,13 @@ func play_walk(id, walk_state):
 			$footsteps.stop()
 			play_state[name] = WALK_STATES.STOP
 		elif walk_state == WALK_STATES.WALK:
-			if not $footsteps.playing:
-				$footsteps.stream = walk
-				$footsteps.autoplay = true
-				$footsteps.play()
-				play_state[name] = WALK_STATES.WALK
-			elif play_state[name] != WALK_STATES.WALK:
+			if not $footsteps.playing or play_state.get(name) != WALK_STATES.WALK:
 				$footsteps.stream = walk
 				$footsteps.autoplay = true
 				$footsteps.play()
 				play_state[name] = WALK_STATES.WALK
 		elif walk_state == WALK_STATES.RUN:
-			if not $footsteps.playing:
-				$footsteps.stream = run
-				$footsteps.autoplay = true
-				$footsteps.play()
-				play_state[name] = WALK_STATES.RUN
-			elif play_state[name] != WALK_STATES.RUN:
+			if not $footsteps.playing or play_state.get(name) != WALK_STATES.RUN:
 				$footsteps.stream = run
 				$footsteps.autoplay = true
 				$footsteps.play()
@@ -531,6 +523,7 @@ func play_walk(id, walk_state):
 
 func register_interaction(interactable: Interactable):
 	if not _is_local_player(): return
+	if current_health <= 0: return
 	current_interaction = interactable
 	if interactable.auto_interact:
 		interactable._interact(self)

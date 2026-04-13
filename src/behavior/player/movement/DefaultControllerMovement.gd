@@ -219,7 +219,7 @@ func handle_physics(controller, dt: float) -> void:
 	var snapshot_accumulator := float(_snapshot_accumulator_by_player.get(player_key, 0.0)) + dt
 	if snapshot_accumulator >= SERVER_SNAPSHOT_INTERVAL:
 		snapshot_accumulator = 0.0
-		controller.receive_remote_snapshot.rpc(controller.global_position, controller.rotation.y, controller.neck.rotation.x, controller.horizantal_velocity)
+		controller.receive_remote_snapshot.rpc(controller.global_position, controller.rotation.y, controller.neck.rotation.x, controller.velocity)
 		if not controller._is_local_player() and controller.last_server_sequence >= 0:
 			controller.reconcile_movement.rpc_id(controller._get_peer_id_string().to_int(), controller.last_server_sequence, create_authoritative_state(controller))
 	_snapshot_accumulator_by_player[player_key] = snapshot_accumulator

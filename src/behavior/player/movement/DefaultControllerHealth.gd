@@ -65,7 +65,7 @@ func _send_hit_feedback(controller, shooter_id: int) -> void:
 	if not found:
 		return
 	var dir = shooter_pos - controller.global_position
-	var hit_world_yaw := atan2(dir.x, dir.z)
+	var hit_world_yaw := atan2(dir.x, -dir.z)
 	var victim_peer_id = controller._get_peer_id_string().to_int()
 	if victim_peer_id == controller.multiplayer.get_unique_id():
 		controller.receive_hit_feedback(hit_world_yaw)

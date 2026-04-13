@@ -82,6 +82,8 @@ func _use():
 			muzzle_blast.emitting = true
 		current_cycle = cycle_time
 
+		assert(definition != null, "[GUN] definition is null on '%s' (definition_path='%s') — set definition_path in the scene" % [name, definition_path])
+		print("[GUN] client sending _spawn_bullet RPC — gun=%s dmg=%.1f speed=%.1f origin=%s" % [name, definition.base_damage, bullet_speed, muzzle_end.global_transform.origin])
 		_spawn_bullet.rpc_id(1, {
 			"speed": bullet_speed,
 			"origin": muzzle_end.global_transform.origin,
@@ -116,6 +118,10 @@ func _use():
 
 @rpc("any_peer")
 func _spawn_bullet(dict: Dictionary):
+	print("[GUN] _spawn_bullet received on peer=%d is_server=%s gun=%s origin=%s" % [multiplayer.get_unique_id(), multiplayer.is_server(), name, dict.get("origin", "?")])
+	if not multiplayer.is_server():
+		push_warning("[GUN] _spawn_bullet called on non-server peer — ignoring")
+		return
 	var bullet = BulletScene.instantiate()
 	Global.bullet_spawn.add_child(bullet)
 	bullet.set_properties(

@@ -4,11 +4,36 @@
 [ext_resource type="Script" uid="uid://crvrb08dwkuun" path="res://behavior/player/character/CharacterModel.gd" id="2_40wch"]
 [ext_resource type="AnimationLibrary" uid="uid://d1yk0o7aw61mk" path="res://behavior/player/character/Crouching Idle.fbx" id="2_juwl0"]
 [ext_resource type="AnimationLibrary" uid="uid://bmsihspvhvsy2" path="res://behavior/player/character/Idle.fbx" id="3_40wch"]
+[ext_resource type="Script" uid="uid://bleg3myfiw31m" path="res://behavior/player/character/body_coll.gd" id="3_eton7"]
 [ext_resource type="AnimationLibrary" uid="uid://cfnrufew7hmna" path="res://behavior/player/character/Jumping.fbx" id="4_eton7"]
 [ext_resource type="AnimationLibrary" uid="uid://darxj62v1eash" path="res://behavior/player/character/Running.fbx" id="5_f3x3l"]
 [ext_resource type="AnimationLibrary" uid="uid://paasou85r6lx" path="res://behavior/player/character/Stumble Backwards.fbx" id="6_y1hk2"]
 [ext_resource type="AnimationLibrary" uid="uid://dsurqajvhb72" path="res://behavior/player/character/Walk Crouching Forward.fbx" id="7_mj6ov"]
 [ext_resource type="AnimationLibrary" uid="uid://blp8sxbhgttqe" path="res://behavior/player/character/Walking.fbx" id="8_qygcl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_juwl0"]
+size = Vector3(0.26553345, 0.57837677, 0.22464752)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qygcl"]
+size = Vector3(0.14646149, 0.23858738, 0.21381569)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_40wch"]
+size = Vector3(0.11230469, 0.5312195, 0.14968872)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eton7"]
+size = Vector3(0.10449219, 0.4194336, 0.12686157)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f3x3l"]
+size = Vector3(0.10498047, 0.3474884, 0.079956055)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_y1hk2"]
+size = Vector3(0.10498047, 0.3474884, 0.07727051)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_mj6ov"]
+size = Vector3(0.10498047, 0.41475296, 0.051879883)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_axpm3"]
+size = Vector3(0.10498047, 0.41475296, 0.06838989)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_juwl0"]
 animation = &"Crouching Idle/mixamo_com"
@@ -192,7 +217,157 @@ bones/61/rotation = Quaternion(-0.0063811, -2.5170712e-05, 0.003944722, 0.999971
 bones/62/rotation = Quaternion(0.4974399, 0.014425731, -0.008273503, 0.867339)
 bones/63/rotation = Quaternion(0.2885272, 0.05736588, -0.017320758, 0.9555947)
 
+[node name="BodyCollisionAttachment" type="BoneAttachment3D" parent="Skeleton3D" index="1" unique_id=1019486020]
+transform = Transform3D(1, 0, 0, 0, 0.9927046, 0.12057196, 0, -0.12057196, 0.9927046, -2.2888183e-07, 1.0947127, 0.018276367)
+bone_name = "mixamorig1_Spine"
+bone_idx = 1
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/BodyCollisionAttachment" index="0" unique_id=1349538650]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/BodyCollisionAttachment/Coll" index="0" unique_id=778209895]
+transform = Transform3D(1, 0, 0, 0, 1.0000639, 0, 0, 0, 1.0000677, 0, 0.14, 0.019)
+shape = SubResource("BoxShape3D_juwl0")
+
+[node name="HeadColision" type="BoneAttachment3D" parent="Skeleton3D" index="2" unique_id=1922956927]
+transform = Transform3D(1, 0, 0, 0, 0.9999999, 7.450581e-09, 0, -7.450581e-09, 0.9999999, -2.2888183e-07, 1.5506057, -0.009211699)
+bone_name = "mixamorig1_Head"
+bone_idx = 5
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/HeadColision" index="0" unique_id=1554367367]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+body_part = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/HeadColision/Coll" index="0" unique_id=1452580799]
+transform = Transform3D(1, 0, 0, 0, 1.0000639, 0, 0, 0, 1.0000677, 0.0009880064, 0.095044255, 0.030134909)
+shape = SubResource("BoxShape3D_qygcl")
+
+[node name="RightThighAttachment" type="BoneAttachment3D" parent="Skeleton3D" index="3" unique_id=1169545730]
+transform = Transform3D(-0.9961642, -0.08750417, -2.3283064e-10, 0.08735769, -0.9944967, -0.057836603, 0.005060944, -0.057614747, 0.99832606, -0.08078221, 0.94351625, 0.022561122)
+bone_name = "mixamorig1_RightUpLeg"
+bone_idx = 60
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/RightThighAttachment" index="0" unique_id=1355306183]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+body_part = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/RightThighAttachment/Coll" index="0" unique_id=720581316]
+transform = Transform3D(1, 6.693881e-10, 0, 6.9849193e-10, 1, 0, 0, 0, 1, -0.001464814, 0.23439056, 0.002181977)
+shape = SubResource("BoxShape3D_40wch")
+
+[node name="LeftThighAttachment" type="BoneAttachment3D" parent="Skeleton3D" index="4" unique_id=490217652]
+transform = Transform3D(-0.9961663, 0.08747569, 9.313226e-10, -0.08730061, -0.99417263, -0.06323548, -0.005531566, -0.062993065, 0.99799865, 0.08078175, 0.94351625, 0.02472013)
+bone_name = "mixamorig1_LeftUpLeg"
+bone_idx = 55
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/LeftThighAttachment" index="0" unique_id=2018623722]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+body_part = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/LeftThighAttachment/Coll" index="0" unique_id=1763003725]
+transform = Transform3D(1, 6.693881e-10, 0, 6.9849193e-10, 1, 0, 0, 0, 1, -0.001464814, 0.23439056, 0.002181977)
+shape = SubResource("BoxShape3D_40wch")
+
+[node name="RightShinAttachment" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=1998937620]
+transform = Transform3D(-0.99682355, -0.07963568, -0.0010164, 0.07950885, -0.99433583, -0.0705321, 0.0046062293, -0.07038887, 0.997509, -0.11821291, 0.51811135, -0.0020841062)
+bone_name = "mixamorig1_RightLeg"
+bone_idx = 61
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/RightShinAttachment" index="0" unique_id=1405737904]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+body_part = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/RightShinAttachment/Coll" index="0" unique_id=666085368]
+transform = Transform3D(1, -4.3655746e-10, 4.6007335e-07, -8.731149e-10, 1, 9.685755e-08, 0, 1.0430813e-07, 1, 0.0063475817, 0.29028338, -0.013626173)
+shape = SubResource("BoxShape3D_eton7")
+
+[node name="LeftShinAttachment" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=976270494]
+transform = Transform3D(-0.9968226, 0.079646766, 0.00042368073, -0.07948848, -0.9944773, -0.068526514, -0.005036574, -0.068342485, 0.9976492, 0.11821245, 0.51811147, -0.0022344962)
+bone_name = "mixamorig1_LeftLeg"
+bone_idx = 56
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/LeftShinAttachment" index="0" unique_id=2080110032]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+body_part = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/LeftShinAttachment/Coll" index="0" unique_id=1472142232]
+transform = Transform3D(1, -4.3655746e-10, 4.6007335e-07, -8.731149e-10, 1, 9.685755e-08, 0, 1.0430813e-07, 1, 0.0063475817, 0.29028338, -0.013626173)
+shape = SubResource("BoxShape3D_eton7")
+
+[node name="LeftArmAttachment" type="BoneAttachment3D" parent="Skeleton3D" index="7" unique_id=124878559]
+transform = Transform3D(-0.06695634, 0.9955611, -0.06614125, -0.112591565, -0.07340568, -0.99092615, -0.99138284, -0.05890187, 0.11700677, 0.18685111, 1.4321079, -0.02980483)
+bone_name = "mixamorig1_LeftArm"
+bone_idx = 8
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/LeftArmAttachment" index="0" unique_id=1656517157]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+body_part = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/LeftArmAttachment/Coll" index="0" unique_id=2133139927]
+transform = Transform3D(0.99999285, 1.206994e-06, -1.7359853e-06, 6.3329935e-08, 0.9999717, -4.92204e-07, -2.0116568e-07, -2.230052e-06, 1.0000389, 0.004150495, 0.11204501, 0.008602977)
+shape = SubResource("BoxShape3D_f3x3l")
+
+[node name="RightArmAttachment" type="BoneAttachment3D" parent="Skeleton3D" index="8" unique_id=37476809]
+transform = Transform3D(-0.07308693, -0.99516106, 0.06567375, 0.108274035, -0.07337804, -0.9914093, 0.9914307, -0.065348335, 0.1131131, -0.18685162, 1.432108, -0.028061736)
+bone_name = "mixamorig1_RightArm"
+bone_idx = 32
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/RightArmAttachment" index="0" unique_id=1045381938]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+body_part = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/RightArmAttachment/Coll" index="0" unique_id=1660301449]
+transform = Transform3D(1.0000033, 6.631017e-07, -1.706183e-06, 9.685755e-08, 0.9999804, -5.5972487e-07, -4.3958426e-07, -2.0638108e-06, 1.0000452, 0.00415051, 0.11204506, 0.0075051785)
+shape = SubResource("BoxShape3D_y1hk2")
+
+[node name="LeftForearmAttachment" type="BoneAttachment3D" parent="Skeleton3D" index="9" unique_id=1540056842]
+transform = Transform3D(0.045732867, 0.9984345, 0.032201886, -0.12015105, 0.037499327, -0.992047, -0.9917016, 0.04150006, 0.1216779, 0.44132435, 1.4133449, -0.04486061)
+bone_name = "mixamorig1_LeftForeArm"
+bone_idx = 9
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/LeftForearmAttachment" index="0" unique_id=302839735]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+body_part = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/LeftForearmAttachment/Coll" index="0" unique_id=1507724174]
+transform = Transform3D(1.0000058, 3.017485e-07, -1.6614795e-06, -3.3527613e-07, 0.9999854, -9.704381e-07, -4.61936e-07, -2.2975728e-06, 1.0000558, 0.004150696, 0.23535079, -0.0021398067)
+shape = SubResource("BoxShape3D_mj6ov")
+
+[node name="RightForearmAttachment" type="BoneAttachment3D" parent="Skeleton3D" index="10" unique_id=188218158]
+transform = Transform3D(0.043091096, -0.9985362, -0.03269244, 0.11606984, 0.0375048, -0.99253273, 0.9923058, 0.038974654, 0.11751607, -0.4413249, 1.4133445, -0.044772)
+bone_name = "mixamorig1_RightForeArm"
+bone_idx = 33
+
+[node name="Coll" type="Area3D" parent="Skeleton3D/RightForearmAttachment" index="0" unique_id=1037414125]
+collision_layer = 8
+collision_mask = 8
+script = ExtResource("3_eton7")
+body_part = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Skeleton3D/RightForearmAttachment/Coll" index="0" unique_id=26488204]
+transform = Transform3D(0.9999961, 9.313226e-08, -1.899898e-06, 3.2782555e-07, 0.99997556, -8.7497756e-07, -7.003546e-07, -2.0368025e-06, 1.0000416, 0.0041506663, 0.23535082, -0.006092787)
+shape = SubResource("BoxShape3D_axpm3")
+
 [node name="AnimationPlayer" parent="." index="1" unique_id=330600728]
+root_motion_track = NodePath("Skeleton3D:mixamorig1_Hips")
 "libraries/Crouching Idle" = ExtResource("2_juwl0")
 libraries/Idle = ExtResource("3_40wch")
 libraries/Jumping = ExtResource("4_eton7")
