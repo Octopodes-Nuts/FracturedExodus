@@ -37,6 +37,10 @@ window/size/viewport_height=1080
 window/size/resizable=false
 window/size/fullscreen=true
 
+[editor]
+
+run/main_run_args="--user=User --password=Password"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/SunshineClouds2/plugin.cfg", "res://addons/SunshineVolumetricClouds/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")

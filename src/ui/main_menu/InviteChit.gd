@@ -5,9 +5,10 @@ class_name InviteChit
 var matchmaking_api: MatchmakingAPI
 var invite_id: String
 
-func init(api: MatchmakingAPI, id: String):
+func init(api: MatchmakingAPI, id: String, username: String):
 	matchmaking_api = api
 	invite_id = id
+	text = username
 
 func accept():
 	matchmaking_api.party_response(invite_id, true)

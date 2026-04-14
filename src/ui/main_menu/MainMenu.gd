@@ -20,6 +20,7 @@ class_name MainMenu
 @onready var friend_request_panel = $add_friend_panel
 @onready var faction_select = $FactionSelect
 @onready var matchmaking_time_display = $matchmaking_time_display
+@onready var party_panel = $party_panel
 
 @onready var account_info_update_timer: Timer = Timer.new()
 @onready var party_update_timer: Timer = Timer.new()
@@ -57,6 +58,7 @@ func _ready():
 	_connect_buttons_recursive(self)
 	social_panel.account_api = account_api
 	social_panel.matchmaking_api = matchmaking_api
+	party_panel.matchmaking_api = matchmaking_api
 	matchmaking_api.in_party_status_changed.connect(_determine_faction_select_state)
 	matchmaking_api.in_party_status_changed.connect(_determine_queue_button_state)
 	add_child(account_info_update_timer)
@@ -320,8 +322,9 @@ func _on_local_state_updated(state: String, value: Variant):
 		if value != null:
 			_determine_queue_button_state(null)
 		else:
-			print("Queue Button Should disable")
 			queue_button.disabled = true
+	elif state == "all_party_members_have_character" or state == "party_leader":
+		_determine_queue_button_state(null)
 
 func reload():
 	weapon_select.hide()

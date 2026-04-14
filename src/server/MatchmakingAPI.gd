@@ -149,10 +149,14 @@ func _on_party_status_request_request_completed(_result, response_code, _headers
 			else:
 				Local.set_state("in_party", false)
 			Local.set_state("party_members", status["members"])
+			print(status["members"])
 			var party_member_names = []
 			for member in Local.get_state("party_members"):
 				party_member_names.append(member["username"])
 			emit_signal("in_party_status_changed", Local.get_state("party_members"))
+		else:
+			Local.set_state("in_party", false)
+			Local.set_state("party_members", [])
 		if status.has("status"):
 			Local.set_state("party_status", status["status"])
 			# Non-leaders start polling matchmaking status when the party leader queues

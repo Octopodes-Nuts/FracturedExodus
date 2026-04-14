@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://dciymm0oifuj4"]
+
+[ext_resource type="PackedScene" uid="uid://bbh50iijcpkh5" path="res://ui/main_menu/PartyMemberButton.tscn" id="1_4d2fq"]
+[ext_resource type="Script" uid="uid://dcutk6s7ry6j6" path="res://ui/main_menu/PartyPanel.gd" id="1_ej74a"]
+
+[node name="party_panel" type="Panel" unique_id=16321308 groups=["UI"]]
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.002
+anchor_right = 1.0
+anchor_bottom = 0.002
+offset_left = -1172.0
+offset_top = 3.84
+offset_right = -748.0
+offset_bottom = 124.84
+script = ExtResource("1_ej74a")
+
+[node name="leave_party_btn" type="Button" parent="." unique_id=105969009 groups=["UI"]]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -84.0
+offset_top = 21.5
+offset_right = 86.0
+offset_bottom = 52.5
+text = "Leave"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=271731638 groups=["UI"]]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 78.0
+grow_horizontal = 2
+
+[node name="PartyMemberButton" parent="VBoxContainer" unique_id=75945477 instance=ExtResource("1_4d2fq")]
+visible = false
+layout_mode = 2
+
+[connection signal="pressed" from="leave_party_btn" to="." method="_on_leave_party_btn_pressed"]
