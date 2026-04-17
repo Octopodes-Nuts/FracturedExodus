@@ -1,6 +1,6 @@
 extends RefCounted
 
-const SERVER_SNAPSHOT_INTERVAL := 1.0 / 15.0
+const SERVER_SNAPSHOT_INTERVAL := 1.0 / 20.0
 
 # NET PROF disabled
 # const PERF_REPORT_INTERVAL_MS := 1000
@@ -219,7 +219,9 @@ func handle_physics(controller, dt: float) -> void:
 	var snapshot_accumulator := float(_snapshot_accumulator_by_player.get(player_key, 0.0)) + dt
 	if snapshot_accumulator >= SERVER_SNAPSHOT_INTERVAL:
 		snapshot_accumulator = 0.0
-		controller.receive_remote_snapshot.rpc(controller.global_position, controller.rotation.y, controller.neck.rotation.x, controller.velocity)
+		var snap_vel = controller.velocity
+		snap_vel.y = maxf(snap_vel.y, -4.0)
+		controller.receive_remote_snapshot.rpc(controller.global_position, controller.rotation.y, controller.neck.rotation.x, snap_vel)
 		if not controller._is_local_player() and controller.last_server_sequence >= 0:
 			controller.reconcile_movement.rpc_id(controller._get_peer_id_string().to_int(), controller.last_server_sequence, create_authoritative_state(controller))
 	_snapshot_accumulator_by_player[player_key] = snapshot_accumulator
@@ -266,6 +268,11 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 					model.set_landed()
 			elif replicate_walk_state:
 				controller.play_character_state.rpc(controller.name, "land")
+		# Keep a small constant downward push so move_and_slide always has
+		# something to press against the floor. Prevents is_on_floor() from
+		# flickering on bumpy terrain when gravity is exactly 0.
+		if controller.gravity_direction.y == 0.0:
+			controller.gravity_direction.y = -0.5
 	else:
 		controller.gravity_direction += Vector3.DOWN * controller.gravity * dt
 
@@ -330,7 +337,7 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 		controller.play_walk(controller.name, walk_state)
 
 	controller.direction = controller.direction.normalized()
-	controller.horizantal_velocity = controller.horizantal_velocity.lerp(controller.direction * speed, accel * dt)
+	controller.horizantal_velocity = controller.horizantal_velocity.lerp(controller.direction * speed, clampf(accel * dt, 0.0, 1.0))
 	controller.movement.z = controller.horizantal_velocity.z + controller.gravity_direction.z
 	controller.movement.x = controller.horizantal_velocity.x + controller.gravity_direction.x
 	controller.movement.y = controller.gravity_direction.y
@@ -338,3 +345,7 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 	controller.set_velocity(controller.movement)
 	controller.set_up_direction(Vector3.UP)
 	controller.move_and_slide()
+	# Feed back actual post-collision velocity so the next frame's lerp doesn't
+	# fight the physics response (e.g. sliding along a wall or step).
+	controller.horizantal_velocity.x = controller.velocity.x
+	controller.horizantal_velocity.z = controller.velocity.z

@@ -17,8 +17,6 @@ var current_clip: int
 @export var ammo_pool: int = 10
 var current_reserve: int
 
-@export var gun_type: WeaponRegister.GunType = WeaponRegister.GunType.RIFLE
-
 @export var model: Mesh
 @export var fire_sound: AudioStream
 @export var bolt_pull_sound: AudioStream
@@ -44,7 +42,9 @@ func _ready():
 	super._ready()
 	# set up envrionment
 	audio_player.max_distance = 1200
-	audio_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+	audio_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_LOGARITHMIC
+	audio_player.unit_size = 75
+	audio_player.panning_strength = 2
 	bolt_pull_stream.max_distance = 10
 	current_clip = clip_size
 	current_reserve = ammo_pool
@@ -53,6 +53,8 @@ func _ready():
 	muzzle_smoke = get_node_or_null("MuzzleSmoke")
 	muzzle_blast = get_node_or_null("MuzzleBlast")
 	_local_ready()
+	if not player:
+		player = $GunInHand/AnimationPlayer
 	
 func _local_ready():
 	pass
@@ -92,7 +94,7 @@ func _use():
 			"lifetime": bullet_lifetime,
 			"ads": ads,
 			"spread": bullet_spread,
-			"type": gun_type,
+			"type": definition.gun_type,
 			"shooter": multiplayer.get_unique_id()
 		})
 

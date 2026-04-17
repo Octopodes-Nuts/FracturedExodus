@@ -52,7 +52,8 @@ var actions = [
 	"equipment_1",
 	"equipment_2",
 	"medpack",
-	"help"
+	"help",
+	"map",
 ]
 
 # Key Bindings
@@ -111,6 +112,7 @@ var key_codes = {
 	"KEY_SPACE": KEY_SPACE,
 	"KEY_CTRL": KEY_CTRL,
 	"KEY_ESC": KEY_ESCAPE,
+	"KEY_TAB": KEY_TAB,
 
 	#function keys
 	"KEY_F1": KEY_F1,

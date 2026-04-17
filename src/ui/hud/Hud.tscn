@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://lj8x80hs34ug" path="res://ui/hud/crosshair.png" id="1"]
 [ext_resource type="Script" uid="uid://c0yqvyd7ijmul" path="res://ui/hud/Hud.gd" id="1_by07e"]
+[ext_resource type="PackedScene" uid="uid://bbd3bam3g27d1" path="res://ui/hud/TabMap.tscn" id="2_epdrl"]
 [ext_resource type="PackedScene" uid="uid://brvwixs700y2q" path="res://ui/hud/ExtractTimer.tscn" id="2_ywxef"]
 [ext_resource type="PackedScene" uid="uid://bemh5f0ii405o" path="res://ui/hud/TextDisplay.tscn" id="3_4sqfl"]
 [ext_resource type="Script" uid="uid://c5fv6p3x4adkp" path="res://ui/hud/AmmoCounter.gd" id="5_gt2ij"]
@@ -16,7 +17,7 @@ font_size = 30
 [sub_resource type="LabelSettings" id="LabelSettings_dqfrj"]
 font_size = 40
 
-[node name="hud" type="Control" unique_id=918143909]
+[node name="hud" type="Control" unique_id=918143909 node_paths=PackedStringArray("tab_map")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,6 +25,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_by07e")
+tab_map = NodePath("TabMap")
 
 [node name="crosshair" type="TextureRect" parent="." unique_id=1626041731]
 layout_mode = 0
@@ -141,3 +143,7 @@ expand_mode = 1
 
 [node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=2054272183]
 stream = ExtResource("7_ks410")
+
+[node name="TabMap" parent="." unique_id=1353416848 instance=ExtResource("2_epdrl")]
+visible = false
+layout_mode = 1

@@ -159,12 +159,21 @@ func _on_party_status_request_request_completed(_result, response_code, _headers
 			Local.set_state("party_members", [])
 		if status.has("status"):
 			Local.set_state("party_status", status["status"])
-			# Non-leaders start polling matchmaking status when the party leader queues
-			if status["status"] == "searching" and not Local.get_state("party_leader") and not queued:
-				queued = true
-				emit_signal("matchmaking_status_changed", "searching")
-				if status_timer.is_stopped():
-					status_timer.start()
+			if not Local.get_state("party_leader"):
+				if status["status"] == "searching" and not queued:
+					queued = true
+					# Grab party ticket if the server provides one so status polling works.
+					if status.has("ticketId"):
+						Local.set_state("matchmaking_ticket", status["ticketId"])
+					emit_signal("matchmaking_status_changed", "searching")
+					if status_timer.is_stopped():
+						status_timer.start()
+				elif status["status"] == "matched" and status.has("port"):
+					# Non-leader may have skipped "searching" entirely due to timing —
+					# handle matched directly from party status so they don't get stuck.
+					status_timer.stop()
+					queued = false
+					emit_signal("match_found", int(status["port"]), "209.38.77.226")
 		if status.has("primaryPlayerId"):
 			Local.set_state("party_leader_id", status["primaryPlayerId"])
 			if Local.get_state("party_leader_id") == Local.get_state("player_id"):

@@ -2,36 +2,9 @@
 
 [ext_resource type="Script" uid="uid://iuogwiwcu6b" path="res://behavior/player/weapons/Gun.gd" id="1_i3t1y"]
 [ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_ka5y8"]
-[ext_resource type="PackedScene" uid="uid://c8ykr74ck6t3k" path="res://debug/models/weapons/carbine-repeater/carbinerepeater.blend" id="2_v8esx"]
 [ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="3_m832t"]
 [ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="4_ani1g"]
-
-[sub_resource type="Animation" id="Animation_m832t"]
-resource_name = "Fire"
-length = 0.5
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("carbinerepeater")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.06666667, 1, 0, 0, 0.06876552, 0.13333334, 1, 0, 0, 0.08473913, 0.46666667, 1, 0, 0, 0)
-
-[sub_resource type="Animation" id="Animation_ani1g"]
-length = 0.001
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("carbinerepeater")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_mi430"]
-_data = {
-&"Fire": SubResource("Animation_m832t"),
-&"RESET": SubResource("Animation_ani1g")
-}
+[ext_resource type="PackedScene" uid="uid://bhpa1swljhv1e" path="res://behavior/player/weapons/guns/free_agents/longarms/carbinerepeater/carbinerepeateringhand.blend" id="5_m832t"]
 
 [node name="Carbinerepeater" type="Node3D" unique_id=1897951925 node_paths=PackedStringArray("player")]
 script = ExtResource("1_i3t1y")
@@ -40,7 +13,7 @@ ammo_pool = 20
 gun_type = 1
 fire_sound = ExtResource("2_ka5y8")
 fire_animation = "Fire"
-player = NodePath("AnimationPlayer")
+player = NodePath("")
 bullet_damage = 62.0
 bullet_speed = 310.0
 bullet_lifetime = 5.0
@@ -64,7 +37,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.9860208)
 [node name="MuzzleBlast" parent="." unique_id=2098191403 instance=ExtResource("4_ani1g")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.9844771)
 
-[node name="carbinerepeater" parent="." unique_id=858964715 instance=ExtResource("2_v8esx")]
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1532251261]
-libraries/ = SubResource("AnimationLibrary_mi430")
+[node name="GunInHand" parent="." unique_id=1303287208 instance=ExtResource("5_m832t")]

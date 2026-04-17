@@ -1,6 +1,6 @@
-[gd_resource type="Sky" load_steps=2 format=3 uid="uid://crbfl06idhep"]
+[gd_resource type="Sky" format=3 uid="uid://crbfl06idhep"]
 
-[ext_resource type="Material" uid="uid://bws727lhgg4e2" path="res://ui/main_menu/SkyMat.tres" id="1_lor50"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_6r860"]
 
 [resource]
-sky_material = ExtResource("1_lor50")
+sky_material = SubResource("ProceduralSkyMaterial_6r860")

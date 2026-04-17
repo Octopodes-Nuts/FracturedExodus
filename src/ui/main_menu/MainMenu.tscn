@@ -4,7 +4,9 @@
 [ext_resource type="Theme" uid="uid://bfr672pd54aq8" path="res://ui/main_menu/resources/MainMenuTheme.tres" id="1_jx6dv"]
 [ext_resource type="Script" uid="uid://bftj6q2dy5akg" path="res://ui/main_menu/MainMenu.gd" id="1_vrxho"]
 [ext_resource type="PackedScene" uid="uid://0nl6w8jibxr0" path="res://ui/main_menu/NewCharacterDialogue.tscn" id="2_bcai1"]
+[ext_resource type="Material" uid="uid://b0p8vuq4k2gmw" path="res://environment/shaders/shader.tres" id="3_41v8r"]
 [ext_resource type="PackedScene" uid="uid://b835oks81kglu" path="res://ui/main_menu/CharacterDisplay.tscn" id="3_u1tth"]
+[ext_resource type="Script" uid="uid://cfnij864ner7t" path="res://environment/shaders/WorldShader.gd" id="4_rpuge"]
 [ext_resource type="PackedScene" uid="uid://fm55cmw02ao2" path="res://ui/paper_doll/WeaponSelect.tscn" id="5_2ijps"]
 [ext_resource type="PackedScene" uid="uid://64xuuj3va1ut" path="res://ui/main_menu/CharacterSelect.tscn" id="6_3vjg6"]
 [ext_resource type="PackedScene" uid="uid://cx8wrsam0j5j5" path="res://ui/paper_doll/PaperDoll.tscn" id="6_vmw4a"]
@@ -29,9 +31,22 @@ theme = ExtResource("1_jx6dv")
 script = ExtResource("1_vrxho")
 click_sound = NodePath("click_sound")
 
+[node name="ShaderRect" type="ColorRect" parent="." unique_id=1153010841]
+material = ExtResource("3_41v8r")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource("4_rpuge")
+
 [node name="NewCharacterDialogue" parent="." unique_id=1621235896 node_paths=PackedStringArray("main_menu") groups=["UI"] instance=ExtResource("2_bcai1")]
 visible = false
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.29500002
 anchor_top = 0.27600002
 anchor_right = 0.68100005
@@ -227,11 +242,14 @@ stream = ExtResource("12_uqh3w")
 volume_db = -13.514
 
 [node name="matchmaking_time_display" type="Label" parent="." unique_id=1162965316]
-layout_mode = 0
-offset_left = 143.0
-offset_top = 563.0
-offset_right = 286.0
-offset_bottom = 600.0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.565
+anchor_bottom = 0.565
+offset_left = 110.0
+offset_top = -18.200012
+offset_right = 253.0
+offset_bottom = 18.799988
 theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 

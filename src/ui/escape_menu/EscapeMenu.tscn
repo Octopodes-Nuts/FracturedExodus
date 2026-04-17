@@ -2,12 +2,15 @@
 
 [ext_resource type="Script" uid="uid://cxmcywutepmwr" path="res://ui/escape_menu/EscapeMenu.gd" id="1"]
 
-[node name="escape_menu" type="Control" unique_id=1316011320]
+[node name="escape_menu" type="Control" unique_id=1316011320 node_paths=PackedStringArray("MasterVolume")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1")
+MasterVolume = NodePath("escape_panel/VBoxContainer2/GridContainer/MasterVolumeSlider")
 
 [node name="escape_panel" type="Panel" parent="." unique_id=537262948]
 layout_mode = 0
@@ -19,6 +22,42 @@ offset_left = -202.0
 offset_top = -202.0
 offset_right = 198.0
 offset_bottom = 298.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="escape_panel" unique_id=363332181]
+layout_mode = 0
+offset_top = 2.0
+offset_right = 399.0
+offset_bottom = 74.0
+
+[node name="Label" type="Label" parent="escape_panel/VBoxContainer2" unique_id=667952594]
+layout_mode = 2
+text = "Settings"
+
+[node name="VolumeLabel" type="Label" parent="escape_panel/VBoxContainer2" unique_id=1267730894]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Volume"
+
+[node name="GridContainer" type="GridContainer" parent="escape_panel/VBoxContainer2" unique_id=1346205596]
+layout_mode = 2
+columns = 2
+
+[node name="MasterVolLabel" type="Label" parent="escape_panel/VBoxContainer2/GridContainer" unique_id=2113137472]
+layout_mode = 2
+text = "Master: "
+
+[node name="MasterVolumeSlider" type="HSlider" parent="escape_panel/VBoxContainer2/GridContainer" unique_id=346339904]
+layout_mode = 2
+size_flags_horizontal = 3
+value = 100.0
+
+[node name="MusicVolLabel" type="Label" parent="escape_panel/VBoxContainer2/GridContainer" unique_id=705373654]
+layout_mode = 2
+text = "Music: "
+
+[node name="MusicVolumeSlider" type="HSlider" parent="escape_panel/VBoxContainer2/GridContainer" unique_id=370599160]
+layout_mode = 2
+value = 100.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="escape_panel" unique_id=751199842]
 layout_mode = 0

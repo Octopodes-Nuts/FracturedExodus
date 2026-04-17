@@ -15,6 +15,8 @@ extends Control
 @onready var hit_marker = $HitMarker
 @onready var hit_sound = $HitSound
 
+@export var tab_map: Control
+
 var hitmarker_timer: Timer
 
 var _hit_indicator: ColorRect
@@ -109,6 +111,8 @@ func set_hud_visible(visible_state: bool) -> void:
 	if not visible_state:
 		crosshair.visible = false
 		extract_timer.visible = false
+	else:
+		crosshair.visible = true
 	# hit_marker visibility is managed independently via hit()
 
 func set_dead_state(dead: bool):

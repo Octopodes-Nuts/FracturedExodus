@@ -94,6 +94,8 @@ func _ready():
 	# Enemy spawing needs to be moved to LOD @MINSUNG YOU DO THIS
 	if not multiplayer.is_server():
 		return
+	if not multiplayer.has_multiplayer_peer():
+		return
 	await get_tree().physics_frame
 	_cache_spawn_points()
 
@@ -111,6 +113,8 @@ func _ready():
 		])
 	# mint random number of fractured
 	for ai in range(number_fractured):
+		if not  is_multiplayer_authority():
+			return
 		var enemy_kind := "fractured"
 		if ai < wounded_count:
 			enemy_kind = "wounded"

@@ -6,7 +6,6 @@
 
 [node name="NewCharacterDialogue" type="Panel" unique_id=1621235896 node_paths=PackedStringArray("class_name_label", "class_summary", "infantry_button", "medic_button", "special_button", "officer_button", "character_name_label", "character_portrait")]
 custom_minimum_size = Vector2(20, 20)
-anchors_preset = -1
 offset_right = 741.0
 offset_bottom = 456.0
 script = ExtResource("1_sdxi5")

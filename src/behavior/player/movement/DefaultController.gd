@@ -14,7 +14,7 @@ var health_handler = preload("res://behavior/player/movement/DefaultControllerHe
 
 var DEFAULT_LERP = 20.0
 const RECONCILE_DISTANCE_SQUARED = 0.04
-const REMOTE_POSITION_LERP = 14.0
+const REMOTE_POSITION_LERP = 25.0
 const REMOTE_ROTATION_LERP = 18.0
 const REMOTE_EXTRAPOLATION_SEC = 0.03
 
@@ -29,7 +29,7 @@ const REMOTE_EXTRAPOLATION_SEC = 0.03
 @export var MAX_SPEED: float = 6.0
 @export var MAX_SPRINT: float = 12.0
 
-@export var ACCEL: float = 2.0
+@export var ACCEL: float = 10.0
 @export var SPRINT_ACCEL: float = 10.0
 
 @export var DEACCEL: float = 10.0
@@ -348,9 +348,28 @@ func _process(dt: float):
 		_apply_look_rotation(net_yaw, net_pitch)
 
 
+func _continue_gun_audio_on_swap(gun: Gun) -> void:
+	# Reparent any in-flight audio to the camera so it keeps playing after
+	# the gun node leaves the scene tree. Give the gun fresh players for its next use.
+	for ap in [gun.audio_player, gun.bolt_pull_stream]:
+		if not ap.is_playing():
+			continue
+		ap.reparent(camera)
+		ap.finished.connect(ap.queue_free, CONNECT_ONE_SHOT)
+		var fresh := AudioStreamPlayer3D.new()
+		fresh.max_distance = ap.max_distance
+		fresh.attenuation_model = ap.attenuation_model
+		if ap == gun.audio_player:
+			gun.audio_player = fresh
+		else:
+			gun.bolt_pull_stream = fresh
+		gun.add_child(fresh)
+
 # @rpc("call_local", "any_peer")
 func swap_equipped(equipable: Equipable):
 	if active_equipable != equipable:
+		if active_equipable is Gun:
+			_continue_gun_audio_on_swap(active_equipable as Gun)
 		if active_equipable.get_parent() == camera:
 			camera.remove_child(active_equipable)
 		var remaining_cycle := 0.0
@@ -374,6 +393,8 @@ func swap_equipped(equipable: Equipable):
 func swap_equipped_from_index(id: int, call_rpc: bool):
 	var equipable = update_equipment()[id]
 	if active_equipable != equipable:
+		if active_equipable is Gun:
+			_continue_gun_audio_on_swap(active_equipable as Gun)
 		if active_equipable.get_parent() == camera:
 			camera.remove_child(active_equipable)
 		var remaining_cycle := 0.0
