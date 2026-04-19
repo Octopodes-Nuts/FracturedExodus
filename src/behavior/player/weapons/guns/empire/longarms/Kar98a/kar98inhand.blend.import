@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dvehyvj886kjv"
-path="res://.godot/imported/sherrifinhand.blend-ba09b7a8c4ba6bcd8f80b5c2ca041b29.scn"
+uid="uid://cl3lh6dfu5lbj"
+path="res://.godot/imported/kar98inhand.blend-e542344cdf9f0713b86a3ef21028dbc9.scn"
 
 [deps]
 
-source_file="res://behavior/player/weapons/guns/free_agents/sidearms/gussonsherif/sherrifinhand.blend"
-dest_files=["res://.godot/imported/sherrifinhand.blend-ba09b7a8c4ba6bcd8f80b5c2ca041b29.scn"]
+source_file="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98inhand.blend"
+dest_files=["res://.godot/imported/kar98inhand.blend-e542344cdf9f0713b86a3ef21028dbc9.scn"]
 
 [params]
 

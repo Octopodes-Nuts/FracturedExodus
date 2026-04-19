@@ -4,21 +4,18 @@
 [ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_ka5y8"]
 [ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="3_m832t"]
 [ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="4_ani1g"]
-[ext_resource type="PackedScene" uid="uid://bhpa1swljhv1e" path="res://behavior/player/weapons/guns/free_agents/longarms/carbinerepeater/carbinerepeateringhand.blend" id="5_m832t"]
+[ext_resource type="PackedScene" uid="uid://c0uhlry0dy176" path="res://behavior/player/weapons/guns/free_agents/longarms/carbinerepeater/carbinerepeateringhand.tscn" id="5_m832t"]
 
-[node name="Carbinerepeater" type="Node3D" unique_id=1897951925 node_paths=PackedStringArray("player")]
+[node name="Carbinerepeater" type="Node3D" unique_id=1897951925]
 script = ExtResource("1_i3t1y")
 clip_size = 12
 ammo_pool = 20
-gun_type = 1
 fire_sound = ExtResource("2_ka5y8")
-fire_animation = "Fire"
-player = NodePath("")
 bullet_damage = 62.0
 bullet_speed = 310.0
 bullet_lifetime = 5.0
 bullet_spread = 0.02
-ads_position = Vector3(0, 0, 0.3)
+ads_position = Vector3(0, 0, 0.1)
 definition_path = "res://behavior/player/weapons/guns/free_agents/longarms/carbinerepeater/CarbineRepeater.res"
 type = 1
 faction = 3
@@ -29,7 +26,7 @@ slots = Dictionary[int, Array]({
 3: [],
 4: []
 })
-default_position = Vector3(0.1, -0.1, 0.2)
+default_position = Vector3(0.1, -0.1, 0)
 
 [node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("3_m832t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.9860208)
@@ -37,4 +34,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.9860208)
 [node name="MuzzleBlast" parent="." unique_id=2098191403 instance=ExtResource("4_ani1g")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.9844771)
 
-[node name="GunInHand" parent="." unique_id=1303287208 instance=ExtResource("5_m832t")]
+[node name="GunInHand" parent="." unique_id=1540557673 instance=ExtResource("5_m832t")]

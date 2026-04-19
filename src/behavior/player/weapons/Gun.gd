@@ -20,11 +20,7 @@ var current_reserve: int
 @export var model: Mesh
 @export var fire_sound: AudioStream
 @export var bolt_pull_sound: AudioStream
-@export var ads_animation: String = "none"
-@export var fire_animation: String = "none"
-@export var cock_animation: String = "none"
 @export var reload_animation: String = "none"
-@export var player: AnimationPlayer
 @export var cycle_time: float = 0.7
 
 @export var bullet_damage: float
@@ -35,6 +31,11 @@ var current_reserve: int
 var current_cycle: float = 0.0
 var muzzle_smoke: GPUParticles3D
 var muzzle_blast: GPUParticles3D
+
+var _anim_tree: AnimationTree
+var _sm: AnimationNodeStateMachinePlayback
+var _pending_fire: bool = false
+const RUN_SPEED_THRESHOLD: float = 5.0
 
 signal recoil(vertical: float, horizontal: float)
 
@@ -53,28 +54,65 @@ func _ready():
 	muzzle_smoke = get_node_or_null("MuzzleSmoke")
 	muzzle_blast = get_node_or_null("MuzzleBlast")
 	_local_ready()
-	if not player:
-		player = $GunInHand/AnimationPlayer
+	_anim_tree = $GunInHand/AnimationTree
+	_sm = _anim_tree.get("parameters/playback")
 	
 func _local_ready():
 	pass
 
+func _set_active():
+	super._set_active()
+	_use_parent = get_parent().get_parent().get_parent() as DefaultController
+	var gun_in_hand = get_node_or_null("GunInHand")
+	if gun_in_hand:
+		gun_in_hand.visible = _use_parent != null and _use_parent._is_local_player()
+	if _sm:
+		_sm.start("Raise")
+
+func _set_inactive():
+	super._set_inactive()
+	_pending_fire = false
+	if _sm:
+		_sm.travel("Stow")
+
 func _process(delta):
 	if current_cycle > 0:
 		current_cycle -= delta
+	if not active or not _sm:
+		return
+	var current := _sm.get_current_node()
+	if ads and current in ["Idle", "Fire"]:
+		_sm.travel("ADS")
+	elif not ads and current == "ADS":
+		_sm.travel("Idle")
+	if not _use_parent:
+		return
+	var speed := _use_parent.velocity.length()
+	if current == "Idle" and speed > RUN_SPEED_THRESHOLD:
+		_sm.travel("Run")
+	elif current == "Run" and speed <= RUN_SPEED_THRESHOLD:
+		_sm.travel("Idle")
+	if _pending_fire:
+		if not Input.is_action_pressed("fire"):
+			_pending_fire = false
+		elif speed <= RUN_SPEED_THRESHOLD:
+			_pending_fire = false
+			_use()
 
 @rpc("call_local","any_peer")
 func play_sounds_and_anims():
-	player.play(fire_animation)
-	
 	audio_player.stream = fire_sound
 	bolt_pull_stream.stream = bolt_pull_sound
 	audio_player.play()
 	bolt_pull_stream.play()
 
 func _use():
+	if _use_parent and _use_parent.velocity.length() > RUN_SPEED_THRESHOLD:
+		_pending_fire = true
+		return
 	if current_clip > 0 and current_cycle <= 0:
-
+		if _sm:
+			_sm.travel("Fire")
 		play_sounds_and_anims.rpc()
 		if muzzle_smoke:
 			muzzle_smoke.restart()
@@ -139,7 +177,7 @@ func _spawn_bullet(dict: Dictionary):
 	)
 
 func _reload():
-	player.play(reload_animation)
+	_sm.travel(reload_animation)
 	# increase weapon inside animation, but that is too 
 	# involved for this point
 	if (clip_size - current_clip) > current_reserve:

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dvehyvj886kjv"
-path="res://.godot/imported/sherrifinhand.blend-ba09b7a8c4ba6bcd8f80b5c2ca041b29.scn"
+uid="uid://tpj7ntgru1kr"
+path="res://.godot/imported/enfieldinhand.blend-eab80dcf7f4b22f56e1b9939c2fad733.scn"
 
 [deps]
 
-source_file="res://behavior/player/weapons/guns/free_agents/sidearms/gussonsherif/sherrifinhand.blend"
-dest_files=["res://.godot/imported/sherrifinhand.blend-ba09b7a8c4ba6bcd8f80b5c2ca041b29.scn"]
+source_file="res://behavior/player/weapons/guns/entente/longarms/leeenfield/enfieldinhand.blend"
+dest_files=["res://.godot/imported/enfieldinhand.blend-eab80dcf7f4b22f56e1b9939c2fad733.scn"]
 
 [params]
 

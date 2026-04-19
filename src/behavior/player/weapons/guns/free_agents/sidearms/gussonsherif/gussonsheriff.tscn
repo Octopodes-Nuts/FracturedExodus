@@ -4,13 +4,12 @@
 [ext_resource type="AudioStream" uid="uid://bneh7opew0s8w" path="res://behavior/player/weapons/guns/default_pistol/DefaultPistolShot.mp3" id="2_0wc8y"]
 [ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="3_pg7vo"]
 [ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="4_dvgp4"]
-[ext_resource type="PackedScene" uid="uid://dvehyvj886kjv" path="res://behavior/player/weapons/guns/free_agents/sidearms/gussonsherif/sherrifinhand.blend" id="5_70lcj"]
+[ext_resource type="PackedScene" uid="uid://dbgw4wqv2tqeb" path="res://behavior/player/weapons/guns/free_agents/sidearms/gussonsherif/sherrifinhand.tscn" id="5_70lcj"]
 
 [node name="Gussonsherif" type="Node3D" unique_id=1764709958]
 script = ExtResource("1_70lcj")
 clip_size = 6
 ammo_pool = 18
-gun_type = 4
 fire_sound = ExtResource("2_0wc8y")
 fire_animation = "Fire"
 bullet_speed = 332.0
@@ -28,4 +27,4 @@ transform = Transform3D(0.99837357, -0.0016329633, 0.056987282, 0.012859913, 0.9
 [node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_dvgp4")]
 transform = Transform3D(0.99837357, -0.0016329633, 0.056987282, 0.012859913, 0.9802777, -0.19720614, -0.055541333, 0.19761825, 0.97870433, -0.006327186, -0.01751149, -0.33670044)
 
-[node name="GunInHand" parent="." unique_id=549534706 instance=ExtResource("5_70lcj")]
+[node name="GunInHand" parent="." unique_id=2023295170 instance=ExtResource("5_70lcj")]

@@ -118,6 +118,12 @@ transform = Transform3D(0.7608592, 0, 0.648917, 0, 1, 0, -0.648917, 0, 0.7608592
 [node name="camp7" parent="NavigationRegion3D/Terrain3D" unique_id=623710757 instance=ExtResource("28_i2883")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 114.6361, 20.119125, 174.43967)
 
+[node name="camp8" parent="NavigationRegion3D/Terrain3D" unique_id=1919718263 instance=ExtResource("28_i2883")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -192.60516, 20.018862, 77.50484)
+
+[node name="camp9" parent="NavigationRegion3D/Terrain3D" unique_id=1836446004 instance=ExtResource("28_i2883")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.445717, 20.105482, 202.05978)
+
 [node name="Camera3D" type="Camera3D" parent="NavigationRegion3D/Terrain3D" unique_id=1955141817]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.35678, 36.4629, 197.521)
 
@@ -182,9 +188,6 @@ faction = 2
 [node name="Spawn7" parent="NavigationRegion3D/Terrain3D/Spawns/EmpireSpawns" unique_id=1556386126 instance=ExtResource("3_aqnjy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.214565, 6.7254815, 258.68857)
 faction = 2
-
-[node name="scanner_site" parent="NavigationRegion3D/Terrain3D" unique_id=616897090 instance=ExtResource("18_ulnwu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63.79654, 20.442915, -186.20862)
 
 [node name="Extracts" type="Node" parent="NavigationRegion3D/Terrain3D" unique_id=66330082]
 
@@ -1591,11 +1594,23 @@ transform = Transform3D(-0.77551776, 0, -0.6313258, 0, 1, 0, 0.6313258, 0, -0.77
 [node name="House7" parent="NavigationRegion3D/Terrain3D/Props/MediumHouses" unique_id=1061579247 instance=ExtResource("29_yg4fi")]
 transform = Transform3D(0.9379495, 0, 0.34677204, 0, 1, 0, -0.34677204, 0, 0.9379495, -74.59617, 29.814936, 29.814014)
 
-[node name="camp8" parent="NavigationRegion3D/Terrain3D" unique_id=1919718263 instance=ExtResource("28_i2883")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -192.60516, 20.018862, 77.50484)
+[node name="scanner_site2" parent="NavigationRegion3D/Terrain3D" unique_id=2062052497 instance=ExtResource("18_ulnwu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 116.96344, 20.377932, 174.40628)
+
+[node name="scanner_site" parent="NavigationRegion3D/Terrain3D" unique_id=616897090 instance=ExtResource("18_ulnwu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 63.79654, 20.442915, -186.20862)
+
+[node name="scanner_site3" parent="NavigationRegion3D/Terrain3D" unique_id=1971694477 instance=ExtResource("18_ulnwu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50.7489, 20.484182, 200.89165)
 
 [node name="ChipsiteSpawn" parent="." unique_id=1665953061 instance=ExtResource("19_6nkx3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -152.571, 20.145874, 55.1323)
+
+[node name="ChipsiteSpawn2" parent="." unique_id=345039591 instance=ExtResource("19_6nkx3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.429653, 40.375393, 32.575867)
+
+[node name="ChipsiteSpawn3" parent="." unique_id=1834958036 instance=ExtResource("19_6nkx3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 94.30912, 40.138737, 21.210413)
 
 [node name="water" type="MeshInstance3D" parent="." unique_id=635221398]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2335582, 3.3977458, 0.16769123)

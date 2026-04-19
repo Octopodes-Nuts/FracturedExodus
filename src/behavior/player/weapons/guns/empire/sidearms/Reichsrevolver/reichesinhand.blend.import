@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dvehyvj886kjv"
-path="res://.godot/imported/sherrifinhand.blend-ba09b7a8c4ba6bcd8f80b5c2ca041b29.scn"
+uid="uid://d2mcaiq030qh2"
+path="res://.godot/imported/reichesinhand.blend-f75ad1f6a6e57204c9a735989855406f.scn"
 
 [deps]
 
-source_file="res://behavior/player/weapons/guns/free_agents/sidearms/gussonsherif/sherrifinhand.blend"
-dest_files=["res://.godot/imported/sherrifinhand.blend-ba09b7a8c4ba6bcd8f80b5c2ca041b29.scn"]
+source_file="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/reichesinhand.blend"
+dest_files=["res://.godot/imported/reichesinhand.blend-f75ad1f6a6e57204c9a735989855406f.scn"]
 
 [params]
 

@@ -40,6 +40,7 @@ const REMOTE_EXTRAPOLATION_SEC = 0.03
 
 @export var step_sound: String
 @export var step_volume: float
+@export var ads_sway_amount: float = 1.0
 
 @export var FULL_HEALTH: float = 100.0
 var current_health: float = 100
@@ -291,8 +292,10 @@ func load_from_payload(payload: Dictionary):
 
 func _ads(dt: float):
 	if active_equipable is Weapon:
+		var t := Time.get_ticks_msec() * 0.001
+		var sway := Vector3(sin(t * 0.7) * 0.001, sin(t * 1.3) * 0.0008, 0.0) * ads_sway_amount
 		active_equipable.transform.origin = active_equipable.transform.origin.\
-			lerp(active_equipable.ads_position,
+			lerp(active_equipable.ads_position + sway,
 				active_equipable.ADS_LERP * dt)
 		camera.fov = lerp(camera.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * dt)
 		if _is_local_player():
@@ -383,11 +386,11 @@ func swap_equipped(equipable: Equipable):
 		# play raise animation
 		if equipable is Gun and remaining_cycle > 0.0:
 			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
-		equipable._set_active()
 		if equipable is Gun and _is_local_player():
 			equipable.recoil.connect(_apply_recoil)
 		camera.add_child(equipable)
 		equipable.transform.origin = equipable.default_position
+		equipable._set_active()
 		current_eqipped_key = equipable.key
 
 func swap_equipped_from_index(id: int, call_rpc: bool):
@@ -408,11 +411,11 @@ func swap_equipped_from_index(id: int, call_rpc: bool):
 		# play raise animation
 		if equipable is Gun and remaining_cycle > 0.0:
 			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
-		equipable._set_active()
 		if equipable is Gun and _is_local_player():
 			equipable.recoil.connect(_apply_recoil)
 		camera.add_child(equipable)
 		equipable.transform.origin = equipable.default_position
+		equipable._set_active()
 		current_equipped_index = id
 		if call_rpc:
 			update_character_server.rpc_id(1, "active", id)

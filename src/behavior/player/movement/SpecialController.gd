@@ -11,3 +11,15 @@ class_name SpecialController
 @export var ads_zoom_buff: float = 1.2
 # Extra movement speed penalty while ADS — special operators commit when they aim
 @export var ads_movement_penalty: float = 1.5
+
+func _ads(dt: float):
+	if active_equipable is Weapon:
+		var t := Time.get_ticks_msec() * 0.001
+		var sway := Vector3(sin(t * 0.7) * 0.001, sin(t * 1.3) * 0.0008, 0.0) * ads_sway_amount
+		active_equipable.transform.origin = active_equipable.transform.origin.\
+			lerp(active_equipable.ads_position + sway, active_equipable.ADS_LERP * dt)
+		camera.fov = lerp(camera.fov, active_equipable.ads_fov / ads_zoom_buff, active_equipable.ADS_LERP * dt)
+		if _is_local_player():
+			var hud: Control = Local.get_hud()
+			if hud != null:
+				hud.set_hud_visible(false)
