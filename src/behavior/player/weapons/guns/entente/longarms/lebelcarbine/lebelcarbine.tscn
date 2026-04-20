@@ -8,7 +8,9 @@
 
 [node name="Lebelcarbine" type="Node3D" unique_id=23219951]
 script = ExtResource("1_mvll6")
+ammo_pool = 16
 fire_sound = ExtResource("2_j6bu2")
+cycle_time = 1.9
 bullet_lifetime = 5.0
 bullet_spread = 0.02
 ads_position = Vector3(0, 0, 0.2)

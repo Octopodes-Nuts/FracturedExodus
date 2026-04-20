@@ -9,10 +9,9 @@
 [node name="Webley" type="Node3D" unique_id=693476292]
 script = ExtResource("1_abknl")
 clip_size = 6
-ammo_pool = 12
+ammo_pool = 18
 fire_sound = ExtResource("2_pc14l")
-bullet_damage = 60.0
-bullet_speed = 310.0
+cycle_time = 1.5
 bullet_lifetime = 5.0
 bullet_spread = 0.04
 ads_position = Vector3(0, 0, -0.3)

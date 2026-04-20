@@ -8,8 +8,9 @@
 
 [node name="M1873Repeater" type="Node3D" unique_id=1598034702]
 script = ExtResource("1_t7fbr")
+clip_size = 15
 fire_sound = ExtResource("2_p4lgh")
-bullet_speed = 550.0
+cycle_time = 1.2
 bullet_lifetime = 5.0
 bullet_spread = 0.01
 ads_position = Vector3(0, 0, 0.1)
