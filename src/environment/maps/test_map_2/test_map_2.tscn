@@ -1524,6 +1524,21 @@ transform = Transform3D(0.15834495, -0.19195673, -0.9685451, 0.030971345, 0.9814
 [node name="BrokenFence14" parent="NavigationRegion3D/Terrain3D/Props/Fences" unique_id=259341431 instance=ExtResource("21_5qmi1")]
 transform = Transform3D(0.6525482, 0, -0.75774723, -0.11891658, 0.987609, -0.10240724, 0.748358, 0.15693437, 0.64446247, -79.58281, 29.293999, -2.985273)
 
+[node name="BrokenFence15" parent="NavigationRegion3D/Terrain3D/Props/Fences" unique_id=674099354 instance=ExtResource("21_5qmi1")]
+transform = Transform3D(-0.95765686, 0, -0.2879122, 0, 1, 0, 0.2879122, 0, -0.95765686, -49.172836, 29.008745, -26.2579)
+
+[node name="Fence61" parent="NavigationRegion3D/Terrain3D/Props/Fences" unique_id=1958240864 instance=ExtResource("22_5mgin")]
+transform = Transform3D(-0.90317065, 0, -0.42928195, 0, 1, 0, 0.42928195, 0, -0.90317065, -48.41476, 29.088186, -23.59715)
+
+[node name="Fence62" parent="NavigationRegion3D/Terrain3D/Props/Fences" unique_id=1974079725 instance=ExtResource("23_q70rj")]
+transform = Transform3D(-0.92254484, 0, -0.38588986, 0, 1, 0, 0.38588986, 0, -0.92254484, -47.407528, 29.139492, -21.391048)
+
+[node name="Fence63" parent="NavigationRegion3D/Terrain3D/Props/Fences" unique_id=1142434686 instance=ExtResource("23_q70rj")]
+transform = Transform3D(-0.89995384, 0, -0.43598518, 0, 1, 0, 0.43598518, 0, -0.89995384, -46.426216, 29.156603, -19.084623)
+
+[node name="fencepost9" parent="NavigationRegion3D/Terrain3D/Props/Fences" unique_id=1315059693 instance=ExtResource("26_fvuxy")]
+transform = Transform3D(0.88135296, 0, 0.47245848, 0, 1, 0, -0.47245848, 0, 0.88135296, -45.330853, 29.264914, -16.77132)
+
 [node name="SmallHouses" type="Node" parent="NavigationRegion3D/Terrain3D/Props" unique_id=223913319]
 
 [node name="House3" parent="NavigationRegion3D/Terrain3D/Props/SmallHouses" unique_id=1947976878 instance=ExtResource("27_tk16t")]
@@ -1575,7 +1590,13 @@ transform = Transform3D(-0.23471794, 0, -0.97206354, 0, 1, 0, 0.97206354, 0, -0.
 transform = Transform3D(-0.99099034, 0, 0.13393424, 0, 1, 0, -0.13393424, 0, -0.99099034, 130.59482, 19.939651, 145.47182)
 
 [node name="House17" parent="NavigationRegion3D/Terrain3D/Props/SmallHouses" unique_id=2095165000 instance=ExtResource("26_5mgin")]
-transform = Transform3D(-0.9989989, 0, 0.044735342, 0, 1, 0, -0.044735342, 0, -0.9989989, -52.821022, 30.24336, 42.20204)
+transform = Transform3D(-0.9989989, 0, 0.044735342, 0, 1, 0, -0.044735342, 0, -0.9989989, -52.821022, 29.938986, 42.20204)
+
+[node name="House18" parent="NavigationRegion3D/Terrain3D/Props/SmallHouses" unique_id=983376334 instance=ExtResource("26_5mgin")]
+transform = Transform3D(0.21335442, 0, -0.9769749, 0, 1, 0, 0.9769749, 0, 0.21335442, 5.1019735, 39.919273, -116.96074)
+
+[node name="House19" parent="NavigationRegion3D/Terrain3D/Props/SmallHouses" unique_id=127607422 instance=ExtResource("27_tk16t")]
+transform = Transform3D(-0.28301108, 0, 0.95911676, 0, 1, 0, -0.95911676, 0, -0.28301108, -20.378439, 39.924965, -115.82326)
 
 [node name="MediumHouses" type="Node" parent="NavigationRegion3D/Terrain3D/Props" unique_id=515401898]
 
@@ -1593,6 +1614,12 @@ transform = Transform3D(-0.77551776, 0, -0.6313258, 0, 1, 0, 0.6313258, 0, -0.77
 
 [node name="House7" parent="NavigationRegion3D/Terrain3D/Props/MediumHouses" unique_id=1061579247 instance=ExtResource("29_yg4fi")]
 transform = Transform3D(0.9379495, 0, 0.34677204, 0, 1, 0, -0.34677204, 0, 0.9379495, -74.59617, 29.814936, 29.814014)
+
+[node name="House8" parent="NavigationRegion3D/Terrain3D/Props/MediumHouses" unique_id=1274371375 instance=ExtResource("29_yg4fi")]
+transform = Transform3D(0.94043064, 0, 0.33998567, 0, 1, 0, -0.33998567, 0, 0.94043064, -14.616437, 39.852013, -101.64405)
+
+[node name="House9" parent="NavigationRegion3D/Terrain3D/Props/MediumHouses" unique_id=1307352116 instance=ExtResource("29_tk16t")]
+transform = Transform3D(-0.8122973, 0, -0.5832436, 0, 1, 0, 0.5832436, 0, -0.8122973, -65.59584, 29.817, 5.011203)
 
 [node name="scanner_site2" parent="NavigationRegion3D/Terrain3D" unique_id=2062052497 instance=ExtResource("18_ulnwu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 116.96344, 20.377932, 174.40628)

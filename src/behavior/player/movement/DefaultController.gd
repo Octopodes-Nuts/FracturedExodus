@@ -292,11 +292,11 @@ func load_from_payload(payload: Dictionary):
 
 func _ads(dt: float):
 	if active_equipable is Weapon:
-		var t := Time.get_ticks_msec() * 0.001
-		var sway := Vector3(sin(t * 0.7) * 0.001, sin(t * 1.3) * 0.0008, 0.0) * ads_sway_amount
 		active_equipable.transform.origin = active_equipable.transform.origin.\
-			lerp(active_equipable.ads_position + sway,
-				active_equipable.ADS_LERP * dt)
+			lerp(active_equipable.ads_position, active_equipable.ADS_LERP * dt)
+		var t := Time.get_ticks_msec() * 0.001
+		camera.rotation.x += sin(t * 1.3) * 0.00015 * ads_sway_amount
+		camera.rotation.y += sin(t * 0.7) * 0.0001 * ads_sway_amount
 		camera.fov = lerp(camera.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * dt)
 		if _is_local_player():
 			var hud: Control = Local.get_hud()

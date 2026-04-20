@@ -2,16 +2,19 @@
 
 [ext_resource type="PackedScene" uid="uid://cxjvdn2ahdxue" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/reichsrevolver.tscn" id="1_f7ruo"]
 [ext_resource type="Script" uid="uid://crnbtxd7k7s5n" path="res://behavior/player/weapons/WeaponDefinition.gd" id="1_j7jhr"]
+[ext_resource type="Texture2D" uid="uid://hdlqgisqw0nm" path="res://debug/models/weapons/Reiches.png" id="3_8eqnv"]
 
 [resource]
 script = ExtResource("1_j7jhr")
 name = "Reichsrevolver"
 key = "Reichsrevolver"
 scene = ExtResource("1_f7ruo")
+texture = ExtResource("3_8eqnv")
 type = 1
 gun_type = 4
 base_damage = 55.0
 faction = Array[int]([2])
+muzzle_velocity = 310.0
 slots = Dictionary[int, Array]({
 0: [1, 2],
 1: [],

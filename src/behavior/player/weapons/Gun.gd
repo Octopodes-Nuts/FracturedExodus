@@ -23,8 +23,6 @@ var current_reserve: int
 @export var reload_animation: String = "none"
 @export var cycle_time: float = 0.7
 
-@export var bullet_damage: float
-@export var bullet_speed: float
 @export var bullet_lifetime: float
 @export var bullet_spread: float # the hipfire spread for this gun
 
@@ -123,9 +121,9 @@ func _use():
 		current_cycle = cycle_time
 
 		assert(definition != null, "[GUN] definition is null on '%s' (definition_path='%s') — set definition_path in the scene" % [name, definition_path])
-		print("[GUN] client sending _spawn_bullet RPC — gun=%s dmg=%.1f speed=%.1f origin=%s" % [name, definition.base_damage, bullet_speed, muzzle_end.global_transform.origin])
+		print("[GUN] client sending _spawn_bullet RPC — gun=%s dmg=%.1f speed=%.1f origin=%s" % [name, definition.base_damage, definition.muzzle_velocity, muzzle_end.global_transform.origin])
 		_spawn_bullet.rpc_id(1, {
-			"speed": bullet_speed,
+			"speed": definition.muzzle_velocity,
 			"origin": muzzle_end.global_transform.origin,
 			"dmg": definition.base_damage,
 			"ang": muzzle_end.global_rotation,

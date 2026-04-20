@@ -18,6 +18,7 @@ enum Type {
 @export var faction: Array[Factions.Enum]
 @export var vertical_recoil: int = 5
 @export var horizantal_recoil: int = 3
+@export var muzzle_velocity: float = 0.0
 
 @export var slots: Dictionary[ClassRegister.Classes, Array] = {
 	ClassRegister.Classes.DEFAULT: [],

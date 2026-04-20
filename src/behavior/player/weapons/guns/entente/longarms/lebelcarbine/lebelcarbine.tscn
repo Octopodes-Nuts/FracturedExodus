@@ -9,8 +9,6 @@
 [node name="Lebelcarbine" type="Node3D" unique_id=23219951]
 script = ExtResource("1_mvll6")
 fire_sound = ExtResource("2_j6bu2")
-bullet_damage = 62.0
-bullet_speed = 600.0
 bullet_lifetime = 5.0
 bullet_spread = 0.02
 ads_position = Vector3(0, 0, 0.2)
