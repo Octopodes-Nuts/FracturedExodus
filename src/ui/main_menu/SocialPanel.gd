@@ -78,11 +78,12 @@ func set_invite_chits():
 	var new_invites = {}
 	for invite in Local.get_state("party_invites"):
 		var invite_id = invite["inviteId"]
+		var username  = invite["fromPlayerUsername"]
 		new_invites[invite_id] = true
 		print("[Invite]: ", invite)
 		if not invite_id in InviteChits.keys():
 			var chit = InviteChitScene.instantiate()
-			chit.init(matchmaking_api, invite_id)
+			chit.init(matchmaking_api, invite_id, username)
 			InvitesVBox.add_child(chit)
 			InviteChits[invite_id] = chit
 

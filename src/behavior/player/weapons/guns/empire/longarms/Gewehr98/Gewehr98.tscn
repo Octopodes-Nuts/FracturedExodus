@@ -2,52 +2,19 @@
 
 [ext_resource type="Script" uid="uid://dgxpockhs8ag" path="res://behavior/player/weapons/guns/empire/longarms/Gewehr98/Gewehr98.gd" id="1_dpahx"]
 [ext_resource type="AudioStream" uid="uid://dmswysli7rdge" path="res://behavior/player/weapons/guns/empire/longarms/Gewehr98/gewehr98 tremolo.wav" id="2_4p3pj"]
-[ext_resource type="PackedScene" uid="uid://be2crulkuo6nv" path="res://debug/models/weapons/gewehr98/gewehr98.blend" id="3_wjm1x"]
+[ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="3_r02vb"]
+[ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="4_ypllb"]
+[ext_resource type="PackedScene" uid="uid://d0bbluyx6fdu7" path="res://behavior/player/weapons/guns/empire/longarms/Gewehr98/gewehr_98_inhand.tscn" id="5_wjm1x"]
 
-[sub_resource type="Animation" id="Animation_dpahx"]
-resource_name = "Fire"
-length = 0.5
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("gewehr98")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.1, 1, 0, 0, 0.10313386, 0.2, 1, 0, 0, 0.11026883, 0.46666667, 1, 0, 0, 0)
-tracks/1/type = "rotation_3d"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("gewehr98")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = PackedFloat32Array()
-
-[sub_resource type="Animation" id="Animation_4p3pj"]
-length = 0.001
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("gewehr98")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_wjm1x"]
-_data = {
-&"Fire": SubResource("Animation_dpahx"),
-&"RESET": SubResource("Animation_4p3pj")
-}
-
-[node name="Gewehr98" type="Node3D" unique_id=1551296906 node_paths=PackedStringArray("player")]
+[node name="Gewehr98" type="Node3D" unique_id=1551296906]
 script = ExtResource("1_dpahx")
+clip_size = 5
+ammo_pool = 15
 bolt_pull_sound = ExtResource("2_4p3pj")
-fire_animation = "Fire"
-player = NodePath("AnimationPlayer")
-bullet_damage = 74.0
-bullet_speed = 410.0
+cycle_time = 1.5
 bullet_lifetime = 5.0
 bullet_spread = 0.01
-ads_position = Vector3(0, 0, 0.3)
+ads_position = Vector3(0, 0, 0.1)
 definition_path = "res://behavior/player/weapons/guns/empire/longarms/Gewehr98/Gewehr98.res"
 faction = 2
 classes = Array[int]([1, 3])
@@ -58,9 +25,12 @@ slots = Dictionary[int, Array]({
 3: [1],
 4: []
 })
-default_position = Vector3(0.2, -0.14, 0.3)
+default_position = Vector3(0.2, -0.14, 0)
 
-[node name="gewehr98" parent="." unique_id=1447849565 instance=ExtResource("3_wjm1x")]
+[node name="MuzzleBlast" parent="." unique_id=2098191403 instance=ExtResource("3_r02vb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.016266694, -1.2513504)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=44952220]
-libraries/ = SubResource("AnimationLibrary_wjm1x")
+[node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_ypllb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.016266694, -1.2513504)
+
+[node name="GunInHand" parent="." unique_id=705409710 instance=ExtResource("5_wjm1x")]

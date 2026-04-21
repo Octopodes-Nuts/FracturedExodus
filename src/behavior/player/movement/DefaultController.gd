@@ -14,7 +14,7 @@ var health_handler = preload("res://behavior/player/movement/DefaultControllerHe
 
 var DEFAULT_LERP = 20.0
 const RECONCILE_DISTANCE_SQUARED = 0.04
-const REMOTE_POSITION_LERP = 14.0
+const REMOTE_POSITION_LERP = 25.0
 const REMOTE_ROTATION_LERP = 18.0
 const REMOTE_EXTRAPOLATION_SEC = 0.03
 
@@ -29,7 +29,7 @@ const REMOTE_EXTRAPOLATION_SEC = 0.03
 @export var MAX_SPEED: float = 6.0
 @export var MAX_SPRINT: float = 12.0
 
-@export var ACCEL: float = 2.0
+@export var ACCEL: float = 10.0
 @export var SPRINT_ACCEL: float = 10.0
 
 @export var DEACCEL: float = 10.0
@@ -40,6 +40,7 @@ const REMOTE_EXTRAPOLATION_SEC = 0.03
 
 @export var step_sound: String
 @export var step_volume: float
+@export var ads_sway_amount: float = 1.0
 
 @export var FULL_HEALTH: float = 100.0
 var current_health: float = 100
@@ -84,6 +85,15 @@ var net_wants_sprint: bool = false
 var net_jump_pressed: bool = false
 var net_yaw: float = 0.0
 var net_pitch: float = 0.0
+
+var is_crouching: bool = false
+@export var CROUCH_SPEED: float = 2.5
+@export var CROUCH_HEIGHT: float = 0.9
+@export var CROUCH_NECK_Y: float = -0.3
+const CROUCH_LERP: float = 12.0
+var _stand_height: float = 0.0
+var _stand_neck_y: float = 0.0
+var _stand_collider_y: float = 0.0
 var input_sequence: int = 0
 var last_server_sequence: int = -1
 var pending_inputs: Array = []
@@ -104,6 +114,7 @@ var officer_speed_buff: float = 1.0
 @onready var ground_check_3 = $ground_check_3
 @onready var ground_check_4 = $ground_check_4
 @onready var multiplayer_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
+@onready var player_model_and_hitbox = $Ch36_nonPBR
 
 
 var character: Character
@@ -125,9 +136,13 @@ func _is_local_player() -> bool:
 			return id == multiplayer.get_unique_id()
 	return false
 
+var _hit_lurch_yaw: float = 0.0
+var _hit_lurch_pitch: float = 0.0
+const HIT_LURCH_DECAY = 7.0
+
 func _apply_look_rotation(yaw: float, pitch: float) -> void:
-	rotation.y = yaw
-	neck.rotation.x = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+	rotation.y = yaw + _hit_lurch_yaw
+	neck.rotation.x = clamp(pitch + _hit_lurch_pitch, deg_to_rad(-89), deg_to_rad(89))
 
 func _apply_recoil(vertical_deg: float, horizontal_deg: float) -> void:
 	net_pitch += deg_to_rad(vertical_deg)
@@ -183,6 +198,7 @@ func _ready():
 	res_sphere.set_player(self)
 	
 	if multiplayer.is_server():
+		player_model_and_hitbox.report_hit.connect(func(dmg: float, shooter_id: int): hit(int(dmg), shooter_id))
 		server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
 		if not server_spawn_assigned_by_faction:
 			# Keep players out of origin while waiting for authoritative faction payload.
@@ -197,8 +213,23 @@ func _ready():
 		if owner_peer_id > 1:
 			multiplayer_sync.set_visibility_for(owner_peer_id, false)
 	
+	var collider = get_node_or_null("player_main_collider")
+	if collider and collider.shape is CapsuleShape3D:
+		collider.shape = collider.shape.duplicate()
+		_stand_height = collider.shape.height
+		_stand_collider_y = collider.position.y
+		print("[CROUCH] peer=%s stand_height=%.3f" % [name, _stand_height])
+	else:
+		print("[CROUCH] peer=%s collider NOT FOUND or wrong shape type" % name)
+	_stand_neck_y = neck.position.y
+
 	if not _is_local_player(): return
-	
+
+	var character_model = get_node_or_null("Ch36_nonPBR")
+	if character_model:
+		for child in character_model.find_children("*", "MeshInstance3D", true, false):
+			child.layers = 2
+
 	Local.set_state("input_active", true)
 	camera.make_current()
 	if Local.get_state("terrain"):
@@ -243,9 +274,12 @@ func char_serv_update(ids: Array):
 	var peer_id_str := _get_peer_id_string()
 	if peer_id_str not in ids:
 		return
+	var payload: Variant = Global.character_data.get(peer_id_str)
+	if not (payload is Dictionary) or not payload.has("wep1"):
+		return
 	if multiplayer.is_server() and not server_spawn_assigned_by_faction:
 		server_spawn_assigned_by_faction = _assign_server_spawn_from_character_faction()
-	load_from_payload(Global.character_data[peer_id_str])
+	load_from_payload(payload)
 
 
 func load_from_payload(payload: Dictionary):
@@ -259,13 +293,15 @@ func load_from_payload(payload: Dictionary):
 func _ads(dt: float):
 	if active_equipable is Weapon:
 		active_equipable.transform.origin = active_equipable.transform.origin.\
-			lerp(active_equipable.ads_position,
-				active_equipable.ADS_LERP * dt)
+			lerp(active_equipable.ads_position, active_equipable.ADS_LERP * dt)
+		var t := Time.get_ticks_msec() * 0.001
+		camera.rotation.x += sin(t * 1.3) * 0.00015 * ads_sway_amount
+		camera.rotation.y += sin(t * 0.7) * 0.0001 * ads_sway_amount
 		camera.fov = lerp(camera.fov, active_equipable.ads_fov, active_equipable.ADS_LERP * dt)
 		if _is_local_player():
 			var hud: Control = Local.get_hud()
 			if hud != null:
-				hud.set_visible(false)
+				hud.set_hud_visible(false)
 
 func _undo_ads(dt: float):
 	if active_equipable is Weapon:
@@ -276,20 +312,67 @@ func _undo_ads(dt: float):
 		if _is_local_player():
 			var hud: Control = Local.get_hud()
 			if hud != null:
-				hud.set_visible(true)
+				hud.set_hud_visible(true)
 	elif camera.fov != float(Settings.FOV):
 		camera.fov = lerp(camera.fov, float(Settings.FOV), DEFAULT_LERP * dt)
+
+func _set_crouch(crouching: bool) -> void:
+	if is_crouching == crouching:
+		return
+	if _stand_height <= 0.0:
+		push_warning("[CROUCH] _set_crouch called before _stand_height was initialized, ignoring")
+		return
+	is_crouching = crouching
+	var collider = get_node_or_null("player_main_collider")
+	if collider and collider.shape is CapsuleShape3D:
+		collider.shape.height = CROUCH_HEIGHT if crouching else _stand_height
+		if not crouching:
+			global_position.y += (_stand_height - CROUCH_HEIGHT) / 2.0
+	var model = get_node_or_null("Ch36_nonPBR")
+	if model:
+		model.crouch_state = 0 if crouching else 1
+	if _is_local_player():
+		play_character_state.rpc(name, "crouch" if crouching else "stand")
+
+func _process_crouch(dt: float) -> void:
+	var target_neck_y := (CROUCH_NECK_Y if is_crouching else _stand_neck_y)
+	neck.position.y = lerp(neck.position.y, target_neck_y, CROUCH_LERP * dt)
 
 func ground_check():
 	return movement_handler.ground_check(self)
 
 func _process(dt: float):
 	input_handler.handle_process(self, dt)
+	if _is_local_player():
+		_process_crouch(dt)
+	if _is_local_player() and (_hit_lurch_yaw != 0.0 or _hit_lurch_pitch != 0.0):
+		_hit_lurch_yaw = lerpf(_hit_lurch_yaw, 0.0, HIT_LURCH_DECAY * dt)
+		_hit_lurch_pitch = lerpf(_hit_lurch_pitch, 0.0, HIT_LURCH_DECAY * dt)
+		_apply_look_rotation(net_yaw, net_pitch)
 
+
+func _continue_gun_audio_on_swap(gun: Gun) -> void:
+	# Reparent any in-flight audio to the camera so it keeps playing after
+	# the gun node leaves the scene tree. Give the gun fresh players for its next use.
+	for ap in [gun.audio_player, gun.bolt_pull_stream]:
+		if not ap.is_playing():
+			continue
+		ap.reparent(camera)
+		ap.finished.connect(ap.queue_free, CONNECT_ONE_SHOT)
+		var fresh := AudioStreamPlayer3D.new()
+		fresh.max_distance = ap.max_distance
+		fresh.attenuation_model = ap.attenuation_model
+		if ap == gun.audio_player:
+			gun.audio_player = fresh
+		else:
+			gun.bolt_pull_stream = fresh
+		gun.add_child(fresh)
 
 # @rpc("call_local", "any_peer")
 func swap_equipped(equipable: Equipable):
 	if active_equipable != equipable:
+		if active_equipable is Gun:
+			_continue_gun_audio_on_swap(active_equipable as Gun)
 		if active_equipable.get_parent() == camera:
 			camera.remove_child(active_equipable)
 		var remaining_cycle := 0.0
@@ -303,16 +386,18 @@ func swap_equipped(equipable: Equipable):
 		# play raise animation
 		if equipable is Gun and remaining_cycle > 0.0:
 			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
-		equipable._set_active()
 		if equipable is Gun and _is_local_player():
 			equipable.recoil.connect(_apply_recoil)
 		camera.add_child(equipable)
 		equipable.transform.origin = equipable.default_position
+		equipable._set_active()
 		current_eqipped_key = equipable.key
 
 func swap_equipped_from_index(id: int, call_rpc: bool):
 	var equipable = update_equipment()[id]
 	if active_equipable != equipable:
+		if active_equipable is Gun:
+			_continue_gun_audio_on_swap(active_equipable as Gun)
 		if active_equipable.get_parent() == camera:
 			camera.remove_child(active_equipable)
 		var remaining_cycle := 0.0
@@ -326,11 +411,11 @@ func swap_equipped_from_index(id: int, call_rpc: bool):
 		# play raise animation
 		if equipable is Gun and remaining_cycle > 0.0:
 			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
-		equipable._set_active()
 		if equipable is Gun and _is_local_player():
 			equipable.recoil.connect(_apply_recoil)
 		camera.add_child(equipable)
 		equipable.transform.origin = equipable.default_position
+		equipable._set_active()
 		current_equipped_index = id
 		if call_rpc:
 			update_character_server.rpc_id(1, "active", id)
@@ -373,8 +458,8 @@ func _capture_and_submit_input(dt: float) -> void:
 	movement_handler.capture_and_submit_input(self, dt)
 
 @rpc("any_peer", "unreliable_ordered")
-func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float = 0.0):
-	movement_handler.apply_network_input(self, seq, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch, client_dt)
+func submit_movement_input(seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float = 0.0, wants_crouch: bool = false):
+	movement_handler.apply_network_input(self, seq, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch, client_dt, wants_crouch)
 
 func _create_authoritative_state() -> Dictionary:
 	return movement_handler.create_authoritative_state(self)
@@ -417,30 +502,43 @@ func call_help(id):
 
 var play_state = {}
 
+@rpc("call_local", "any_peer")
+func play_character_state(id: String, state: String) -> void:
+	if name == id:
+		var model = get_node_or_null("Ch36_nonPBR")
+		if model == null:
+			return
+		match state:
+			"jump":
+				if model.has_method("set_jumping"): model.set_jumping()
+			"land":
+				if model.has_method("set_landed"): model.set_landed()
+			"downed":
+				if model.has_method("set_downed"): model.set_downed()
+			"revived":
+				if model.has_method("set_revived"): model.set_revived()
+			"crouch":
+				model.crouch_state = 0
+			"stand":
+				model.crouch_state = 1
+
 @rpc("call_local","any_peer")
 func play_walk(id, walk_state):
 	if name == id:
+		var model = get_node_or_null("Ch36_nonPBR")
+		if model and model.has_method("set_walk_state"):
+			model.set_walk_state(walk_state)
 		if walk_state == WALK_STATES.STOP:
 			$footsteps.stop()
 			play_state[name] = WALK_STATES.STOP
 		elif walk_state == WALK_STATES.WALK:
-			if not $footsteps.playing:
-				$footsteps.stream = walk
-				$footsteps.autoplay = true
-				$footsteps.play()
-				play_state[name] = WALK_STATES.WALK
-			elif play_state[name] != WALK_STATES.WALK:
+			if not $footsteps.playing or play_state.get(name) != WALK_STATES.WALK:
 				$footsteps.stream = walk
 				$footsteps.autoplay = true
 				$footsteps.play()
 				play_state[name] = WALK_STATES.WALK
 		elif walk_state == WALK_STATES.RUN:
-			if not $footsteps.playing:
-				$footsteps.stream = run
-				$footsteps.autoplay = true
-				$footsteps.play()
-				play_state[name] = WALK_STATES.RUN
-			elif play_state[name] != WALK_STATES.RUN:
+			if not $footsteps.playing or play_state.get(name) != WALK_STATES.RUN:
 				$footsteps.stream = run
 				$footsteps.autoplay = true
 				$footsteps.play()
@@ -449,6 +547,7 @@ func play_walk(id, walk_state):
 
 func register_interaction(interactable: Interactable):
 	if not _is_local_player(): return
+	if current_health <= 0: return
 	current_interaction = interactable
 	if interactable.auto_interact:
 		interactable._interact(self)
@@ -522,6 +621,22 @@ func play_hit_noise(id):
 func hit(dmg: int, shooter_id: int = 0):
 	health_handler.handle_hit(self, dmg, shooter_id)
 
+@rpc("authority", "reliable")
+func show_hit_marker() -> void:
+	if _is_local_player() and Local.has_hud():
+		HUD.hit()
+
+@rpc("authority", "reliable")
+func receive_hit_feedback(hit_world_yaw: float) -> void:
+	if not _is_local_player():
+		return
+	var relative_angle := hit_world_yaw - net_yaw
+	_hit_lurch_yaw = sin(relative_angle) * deg_to_rad(4.0)
+	_hit_lurch_pitch = deg_to_rad(randf_range(1.5, 3.0))
+	_apply_look_rotation(net_yaw, net_pitch)
+	if Local.has_hud():
+		HUD.show_hit_direction(relative_angle)
+
 
 @rpc("any_peer", "reliable")
 func _request_damage(dmg: int, shooter_id: int = 0):
@@ -581,6 +696,7 @@ func _get_faction() -> int:
 func _sync_down_state(new_down_count: int, new_full_health: float) -> void:
 	down_count = new_down_count
 	FULL_HEALTH = new_full_health
+	play_character_state.rpc(name, "downed")
 
 func start_bleed_out_timer() -> void:
 	if not multiplayer.is_server():
@@ -604,6 +720,7 @@ func res(revive_health: float, resurrector_is_medic: bool = false):
 @rpc("any_peer", "reliable")
 func _res_local(revive_health: float):
 	health_handler.handle_res_local(self, revive_health)
+	play_character_state.rpc(name, "revived")
 
 @rpc("any_peer", "reliable")
 func set_res_sphere(active: bool):

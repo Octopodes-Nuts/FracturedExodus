@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://d1x3mpkyjcjhu"]
+
+[ext_resource type="Script" uid="uid://iuogwiwcu6b" path="res://behavior/player/weapons/Gun.gd" id="1_y2fa6"]
+[ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_otayw"]
+[ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="2_y2fa6"]
+[ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="3_otayw"]
+[ext_resource type="PackedScene" uid="uid://kmeljohamxq7" path="res://behavior/player/weapons/guns/entente/longarms/berthier/berthierinhand.tscn" id="5_otayw"]
+
+[node name="Berthier" type="Node3D" unique_id=779288961]
+script = ExtResource("1_y2fa6")
+clip_size = 3
+ammo_pool = 18
+fire_sound = ExtResource("2_otayw")
+cycle_time = 1.7
+bullet_lifetime = 5.0
+bullet_spread = 0.02
+definition_path = "res://behavior/player/weapons/guns/entente/longarms/berthier/berthier.tres"
+type = 1
+default_position = Vector3(0.1, -0.05, 0)
+
+[node name="MuzzleBlast" parent="." unique_id=2098191403 instance=ExtResource("2_y2fa6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.017841587, -0.89008266)
+
+[node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("3_otayw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.017841587, -0.89008266)
+
+[node name="GunInHand" parent="." unique_id=254347692 instance=ExtResource("5_otayw")]

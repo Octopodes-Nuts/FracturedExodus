@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bbh50iijcpkh5"]
+
+[ext_resource type="Script" uid="uid://b6bpatj1msomr" path="res://ui/main_menu/PartyMemberButton.gd" id="1_0bfor"]
+
+[node name="PartyMemberButton" type="Button" unique_id=75945477]
+text = "Hello"
+script = ExtResource("1_0bfor")

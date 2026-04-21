@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://qkj7g0sm6ctv"]
+
+[ext_resource type="PackedScene" uid="uid://cdj21pvt0wlgb" path="res://debug/models/env/natural/trees/tree4.blend" id="1_cv1f0"]
+[ext_resource type="Shader" uid="uid://bi57s6eitukvn" path="res://environment/models/trees/materials/branch_sway.gdshader" id="2_f530u"]
+[ext_resource type="Texture2D" uid="uid://b7eopocb41i17" path="res://environment/models/trees/bark2.png" id="3_4i1kr"]
+[ext_resource type="Shader" uid="uid://dgng83p7xxvbq" path="res://environment/models/trees/materials/leaf_shimmer.gdshader" id="4_7ocm4"]
+[ext_resource type="Texture2D" uid="uid://cv8ttkxirmu4d" path="res://debug/textures/materials/pineneedles.png" id="5_tcfv3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6f2kc"]
+render_priority = 0
+shader = ExtResource("2_f530u")
+shader_parameter/texture_albedo = ExtResource("3_4i1kr")
+shader_parameter/sway_speed = 0.4
+shader_parameter/sway_strength = 0.02800000133
+shader_parameter/sway_frequency = 3.9360001837001204
+shader_parameter/wind_direction = Vector2(1, 0.3)
+shader_parameter/trunk_radius = 0.1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4u5q5"]
+render_priority = 0
+shader = ExtResource("4_7ocm4")
+shader_parameter/texture_albedo = ExtResource("5_tcfv3")
+shader_parameter/wave_speed = 0.3
+shader_parameter/wave_strength = 0.005
+shader_parameter/wave_frequency = 3.0
+shader_parameter/wind_direction = Vector2(1, 0.3)
+shader_parameter/glint_speed = 1.5
+shader_parameter/glint_intensity = 0.15
+shader_parameter/glint_sharpness = 24.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_r5v70"]
+height = 10.430603
+radius = 0.15283203
+
+[node name="tree4" unique_id=872151287 instance=ExtResource("1_cv1f0")]
+
+[node name="tree" parent="." index="0" unique_id=380361426]
+surface_material_override/0 = SubResource("ShaderMaterial_6f2kc")
+
+[node name="leaves" parent="tree" index="0" unique_id=1443426354]
+surface_material_override/0 = SubResource("ShaderMaterial_4u5q5")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1" unique_id=2106612731]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0" unique_id=706668796]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.174286, 0)
+shape = SubResource("CylinderShape3D_r5v70")

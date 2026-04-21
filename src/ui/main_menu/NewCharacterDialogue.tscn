@@ -4,117 +4,144 @@
 
 [sub_resource type="ImageTexture" id="ImageTexture_tou15"]
 
-[node name="NewCharacterDialogue" type="Panel" unique_id=1621235896]
+[node name="NewCharacterDialogue" type="Panel" unique_id=1621235896 node_paths=PackedStringArray("class_name_label", "class_summary", "infantry_button", "medic_button", "special_button", "officer_button", "character_name_label", "character_portrait")]
 custom_minimum_size = Vector2(20, 20)
-anchors_preset = -1
-anchor_right = 0.386
-anchor_bottom = 0.42200002
-offset_right = -0.11999512
-offset_bottom = 0.23999023
+offset_right = 741.0
+offset_bottom = 456.0
 script = ExtResource("1_sdxi5")
+class_name_label = NodePath("VBoxContainer/MarginContainer/ClassNameLabel")
+class_summary = NodePath("VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer/ClassSummary")
+infantry_button = NodePath("VBoxContainer/GridContainer/InfantryButton")
+medic_button = NodePath("VBoxContainer/GridContainer/MedicButton")
+special_button = NodePath("VBoxContainer/GridContainer/SpecialButton")
+officer_button = NodePath("VBoxContainer/GridContainer/OfficerButton")
+character_name_label = NodePath("CharacterPanel/VBoxContainer/CharacterNameLabel")
+character_portrait = NodePath("CharacterPanel/CharacterPortrait")
 
-[node name="InfantryButton" type="Button" parent="." unique_id=461785383]
-layout_mode = 0
-offset_left = 55.0
-offset_top = 344.0
-offset_right = 161.0
-offset_bottom = 375.0
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1045048830]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 420.0
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=1665929036]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="ClassNameLabel" type="Label" parent="VBoxContainer/MarginContainer" unique_id=190490103]
+custom_minimum_size = Vector2(30, 20)
+layout_mode = 2
+text = "Class Name"
+autowrap_mode = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=88916905]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ScrollContainer" unique_id=1322681239]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/MarginContainer" unique_id=771513973]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ClassSummary" type="Label" parent="VBoxContainer/ScrollContainer/MarginContainer/VBoxContainer" unique_id=681341696]
+custom_minimum_size = Vector2(394, 267)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 2
+text = "Lorem Ipsum"
+autowrap_mode = 3
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer" unique_id=1855992762]
+layout_mode = 2
+columns = 2
+
+[node name="InfantryButton" type="Button" parent="VBoxContainer/GridContainer" unique_id=461785383]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "Infantry"
 
-[node name="MedicButton" type="Button" parent="." unique_id=205739034]
-layout_mode = 0
-offset_left = 222.0
-offset_top = 344.0
-offset_right = 328.0
-offset_bottom = 375.0
+[node name="MedicButton" type="Button" parent="VBoxContainer/GridContainer" unique_id=205739034]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "Medic"
 
-[node name="SpecialButton" type="Button" parent="." unique_id=1303343939]
-layout_mode = 0
-offset_left = 54.0
-offset_top = 397.0
-offset_right = 160.0
-offset_bottom = 428.0
+[node name="SpecialButton" type="Button" parent="VBoxContainer/GridContainer" unique_id=1303343939]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "Special"
 
-[node name="OfficerButton" type="Button" parent="." unique_id=1247750599]
-layout_mode = 0
-offset_left = 222.0
-offset_top = 397.0
-offset_right = 328.0
-offset_bottom = 428.0
+[node name="OfficerButton" type="Button" parent="VBoxContainer/GridContainer" unique_id=1247750599]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 text = "Officer"
 
 [node name="CharacterPanel" type="Panel" parent="." unique_id=1624400617]
-layout_mode = 0
-offset_left = 434.0
-offset_top = 30.0
-offset_right = 724.0
-offset_bottom = 441.0
-
-[node name="CharacterNameLabel" type="Label" parent="CharacterPanel" unique_id=2091399849]
-layout_mode = 0
-offset_left = 68.0
-offset_top = 348.0
-offset_right = 224.0
-offset_bottom = 382.0
-text = "Character Name"
-horizontal_alignment = 1
-
-[node name="CancelButton" type="Button" parent="CharacterPanel" unique_id=1898471606]
-layout_mode = 0
-offset_left = 167.0
-offset_top = 377.0
-offset_right = 243.0
-offset_bottom = 408.0
-text = "Cancel"
-
-[node name="DeployButton" type="Button" parent="CharacterPanel" unique_id=1703457090]
-layout_mode = 0
-offset_left = 55.0
-offset_top = 376.0
-offset_right = 129.0
-offset_bottom = 407.0
-text = "Deploy"
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 0.99600005
+offset_left = -315.0
+offset_bottom = -0.17602539
+grow_horizontal = 0
 
 [node name="CharacterPortrait" type="TextureRect" parent="CharacterPanel" unique_id=346352727]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 7.0
-offset_right = 279.0
-offset_bottom = 345.0
+offset_right = 304.0
+offset_bottom = 372.0
 texture = SubResource("ImageTexture_tou15")
 
-[node name="ClassNameLabel" type="Label" parent="." unique_id=190490103]
-layout_mode = 0
-offset_left = 23.0
-offset_top = 33.0
-offset_right = 113.0
-offset_bottom = 56.0
-text = "Class Name"
-autowrap_mode = 3
+[node name="VBoxContainer" type="VBoxContainer" parent="CharacterPanel" unique_id=250199626]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=88916905]
-layout_mode = 0
-offset_left = 21.0
-offset_top = 65.0
-offset_right = 415.0
-offset_bottom = 332.0
+[node name="CharacterNameLabel" type="Label" parent="CharacterPanel/VBoxContainer" unique_id=2091399849]
+layout_mode = 2
+text = "Character Name"
+horizontal_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer" unique_id=771513973]
+[node name="HBoxContainer" type="HBoxContainer" parent="CharacterPanel/VBoxContainer" unique_id=264234329]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="DeployButton" type="Button" parent="CharacterPanel/VBoxContainer/HBoxContainer" unique_id=1703457090]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+text = "Deploy"
 
-[node name="ClassSummary" type="Label" parent="ScrollContainer/VBoxContainer" unique_id=681341696]
-custom_minimum_size = Vector2(394, 267)
+[node name="CancelButton" type="Button" parent="CharacterPanel/VBoxContainer/HBoxContainer" unique_id=1898471606]
 layout_mode = 2
-text = "Lorem Ipsum"
-autowrap_mode = 3
+size_flags_horizontal = 3
+text = "Cancel"
 
-[connection signal="pressed" from="InfantryButton" to="." method="_on_infantry_button_pressed"]
-[connection signal="pressed" from="MedicButton" to="." method="_on_medic_button_pressed"]
-[connection signal="pressed" from="SpecialButton" to="." method="_on_special_button_pressed"]
-[connection signal="pressed" from="OfficerButton" to="." method="_on_officer_button_pressed"]
-[connection signal="pressed" from="CharacterPanel/CancelButton" to="." method="_on_cancel_button_pressed"]
-[connection signal="pressed" from="CharacterPanel/DeployButton" to="." method="_on_deploy_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/InfantryButton" to="." method="_on_infantry_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/MedicButton" to="." method="_on_medic_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/SpecialButton" to="." method="_on_special_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/OfficerButton" to="." method="_on_officer_button_pressed"]
+[connection signal="pressed" from="CharacterPanel/VBoxContainer/HBoxContainer/DeployButton" to="." method="_on_deploy_button_pressed"]
+[connection signal="pressed" from="CharacterPanel/VBoxContainer/HBoxContainer/CancelButton" to="." method="_on_cancel_button_pressed"]

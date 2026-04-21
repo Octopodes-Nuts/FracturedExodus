@@ -2,15 +2,18 @@
 
 [ext_resource type="Script" uid="uid://crnbtxd7k7s5n" path="res://behavior/player/weapons/WeaponDefinition.gd" id="1_8ugti"]
 [ext_resource type="PackedScene" uid="uid://vc6o5dls34mo" path="res://behavior/player/weapons/guns/entente/longarms/leeenfield/leeenfield.tscn" id="1_56qww"]
+[ext_resource type="Texture2D" uid="uid://bjkhpkguek8jy" path="res://debug/models/weapons/Enfield.png" id="3_3ppca"]
 
 [resource]
 script = ExtResource("1_8ugti")
 name = "Lee Enfield"
 key = "LeeEnfield"
 scene = ExtResource("1_56qww")
+texture = ExtResource("3_3ppca")
 type = 1
 base_damage = 72.0
 faction = Array[int]([1])
+muzzle_velocity = 744.0
 slots = Dictionary[int, Array]({
 0: [],
 1: [1],

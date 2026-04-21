@@ -19,6 +19,8 @@ class_name MainMenu
 @onready var social_panel = $social_panel
 @onready var friend_request_panel = $add_friend_panel
 @onready var faction_select = $FactionSelect
+@onready var matchmaking_time_display = $matchmaking_time_display
+@onready var party_panel = $party_panel
 
 @onready var account_info_update_timer: Timer = Timer.new()
 @onready var party_update_timer: Timer = Timer.new()
@@ -40,6 +42,8 @@ var _character_warmup_polls_left: int = 0
 # this server code will likely be moved
 var active_register = 1
 
+var matchmaking_time_elapsed: float = 0.0
+
 signal reload_ui
 
 # Called when the node enters the scene tree for the first time.
@@ -54,6 +58,7 @@ func _ready():
 	_connect_buttons_recursive(self)
 	social_panel.account_api = account_api
 	social_panel.matchmaking_api = matchmaking_api
+	party_panel.matchmaking_api = matchmaking_api
 	matchmaking_api.in_party_status_changed.connect(_determine_faction_select_state)
 	matchmaking_api.in_party_status_changed.connect(_determine_queue_button_state)
 	add_child(account_info_update_timer)
@@ -93,7 +98,9 @@ func _ready():
 
 
 func _process(_delta: float) -> void:
-	pass
+	if queued:
+		matchmaking_time_elapsed += _delta
+		matchmaking_time_display.text = str(matchmaking_time_elapsed).substr(0, 3)
 
 func _poll_characters_in_lobby() -> void:
 	var token := String(Local.get_state("session_token"))
@@ -315,8 +322,9 @@ func _on_local_state_updated(state: String, value: Variant):
 		if value != null:
 			_determine_queue_button_state(null)
 		else:
-			print("Queue Button Should disable")
 			queue_button.disabled = true
+	elif state == "all_party_members_have_character" or state == "party_leader":
+		_determine_queue_button_state(null)
 
 func reload():
 	weapon_select.hide()

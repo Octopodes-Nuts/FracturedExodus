@@ -21,6 +21,7 @@ class_name SettingsRes
 		"sprint":           "KEY_SHIFT",
 		"crouch":           "KEY_C",
 		"exit":             "KEY_ESC",
+		"map": 				"KEY_TAB",
 		"ads":              "MOUSE_BUTTON_RIGHT",
 		"use_scanner":      "KEY_F",
 		"primary_weapon":   "KEY_1",

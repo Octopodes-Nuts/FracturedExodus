@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ch32fy084vqku" path="res://ui/paper_doll/ListItem.gd" id="1_rdisf"]
 
-[sub_resource type="CanvasTexture" id="CanvasTexture_4cjdb"]
+[sub_resource type="ImageTexture" id="ImageTexture_rdisf"]
 
 [node name="static_list_item" type="Panel" unique_id=887968163]
 offset_right = 467.0
@@ -31,4 +31,6 @@ offset_right = -5.0
 offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("CanvasTexture_4cjdb")
+texture = SubResource("ImageTexture_rdisf")
+expand_mode = 5
+stretch_mode = 5

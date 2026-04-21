@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" format=3 uid="uid://co4bwef53ntry"]
+
+[ext_resource type="PackedScene" uid="uid://hbjf7m4dfct8" path="res://behavior/player/weapons/guns/free_agents/longarms/m1873repeater/m1873repeater.tscn" id="1_1aby7"]
+[ext_resource type="Script" uid="uid://crnbtxd7k7s5n" path="res://behavior/player/weapons/WeaponDefinition.gd" id="1_vah6t"]
+[ext_resource type="Texture2D" uid="uid://bpsb24vpcynoa" path="res://debug/models/weapons/repeater.png" id="3_t30oa"]
+
+[resource]
+script = ExtResource("1_vah6t")
+name = "M1873 Repeating Rifle"
+key = "m1873repeater"
+scene = ExtResource("1_1aby7")
+texture = ExtResource("3_t30oa")
+type = 1
+base_damage = 68.0
+faction = Array[int]([3])
+muzzle_velocity = 410.0
+slots = Dictionary[int, Array]({
+0: [],
+1: [1],
+2: [],
+3: [1],
+4: []
+})
+metadata/_custom_type_script = "uid://crnbtxd7k7s5n"

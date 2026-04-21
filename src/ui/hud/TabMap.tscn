@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bbd3bam3g27d1"]
+
+[ext_resource type="Script" uid="uid://b375u1jj2ult4" path="res://ui/hud/tab_map.gd" id="1_4t47k"]
+[ext_resource type="Texture2D" uid="uid://c4yimfpuky8kq" path="res://environment/maps/test_map_2/maps/test_map_2_map.png" id="2_iawvk"]
+[ext_resource type="Texture2D" uid="uid://e7h4rjt5c3g7" path="res://ui/hud/friendly_marker.png" id="2_u7u22"]
+[ext_resource type="Texture2D" uid="uid://87sntwcbepm8" path="res://ui/hud/marker.png" id="3_fvq63"]
+[ext_resource type="Texture2D" uid="uid://dh4ket3lmsgdq" path="res://ui/hud/self_marker.png" id="4_btjb2"]
+
+[node name="TabMap" type="Control" unique_id=1353416848 node_paths=PackedStringArray("_map_texture")]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_4t47k")
+_map_texture = NodePath("Map")
+friendly_texture = ExtResource("2_u7u22")
+ping_texture = ExtResource("3_fvq63")
+self_texture = ExtResource("4_btjb2")
+
+[node name="Map" type="TextureRect" parent="." unique_id=1899012006]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -512.0
+offset_top = -512.0
+offset_right = 512.0
+offset_bottom = 512.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_iawvk")
+stretch_mode = 4

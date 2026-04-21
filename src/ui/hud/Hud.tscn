@@ -1,10 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://c2vdf5bs4gl6y"]
+[gd_scene format=3 uid="uid://c2vdf5bs4gl6y"]
 
 [ext_resource type="Texture2D" uid="uid://lj8x80hs34ug" path="res://ui/hud/crosshair.png" id="1"]
 [ext_resource type="Script" uid="uid://c0yqvyd7ijmul" path="res://ui/hud/Hud.gd" id="1_by07e"]
+[ext_resource type="PackedScene" uid="uid://bbd3bam3g27d1" path="res://ui/hud/TabMap.tscn" id="2_epdrl"]
 [ext_resource type="PackedScene" uid="uid://brvwixs700y2q" path="res://ui/hud/ExtractTimer.tscn" id="2_ywxef"]
 [ext_resource type="PackedScene" uid="uid://bemh5f0ii405o" path="res://ui/hud/TextDisplay.tscn" id="3_4sqfl"]
 [ext_resource type="Script" uid="uid://c5fv6p3x4adkp" path="res://ui/hud/AmmoCounter.gd" id="5_gt2ij"]
+[ext_resource type="Texture2D" uid="uid://ckcw4wtfg2ysc" path="res://ui/hud/hitmarker.png" id="6_dqfrj"]
+[ext_resource type="AudioStream" uid="uid://jdngidi0m626" path="res://ui/Typewriter Sound Effects.wav" id="7_ks410"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4sqfl"]
 font_size = 30
@@ -14,7 +17,7 @@ font_size = 30
 [sub_resource type="LabelSettings" id="LabelSettings_dqfrj"]
 font_size = 40
 
-[node name="hud" type="Control"]
+[node name="hud" type="Control" unique_id=918143909 node_paths=PackedStringArray("tab_map")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,21 +25,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_by07e")
+tab_map = NodePath("TabMap")
 
-[node name="crosshair" type="TextureRect" parent="."]
-layout_mode = 0
+[node name="crosshair" type="TextureRect" parent="." unique_id=1626041731]
+layout_mode = 1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -128.0
-offset_top = -128.0
-offset_right = 384.0
-offset_bottom = 384.0
+offset_left = -55.0
+offset_top = -57.0
+offset_right = 165.0
+offset_bottom = 169.0
+grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("1")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="ExtractTimer" parent="." instance=ExtResource("2_ywxef")]
+[node name="ExtractTimer" parent="." unique_id=2117378087 instance=ExtResource("2_ywxef")]
 visible = false
 layout_mode = 1
 anchor_left = 0.5
@@ -48,7 +57,7 @@ offset_top = -0.480003
 offset_right = 307.0
 offset_bottom = 15.52
 
-[node name="TextDisplay" parent="." instance=ExtResource("3_4sqfl")]
+[node name="TextDisplay" parent="." unique_id=1860800693 instance=ExtResource("3_4sqfl")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -62,7 +71,7 @@ offset_bottom = 11.3999
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Notification" parent="." instance=ExtResource("3_4sqfl")]
+[node name="Notification" parent="." unique_id=880456587 instance=ExtResource("3_4sqfl")]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -76,7 +85,7 @@ offset_bottom = 16.695
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="death_text" type="Label" parent="."]
+[node name="death_text" type="Label" parent="." unique_id=1003992596]
 visible = false
 layout_mode = 1
 anchors_preset = -1
@@ -93,7 +102,7 @@ label_settings = SubResource("LabelSettings_4sqfl")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="health_slider" type="HSlider" parent="."]
+[node name="health_slider" type="HSlider" parent="." unique_id=1521597263]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -110,7 +119,7 @@ value = 100.0
 editable = false
 scrollable = false
 
-[node name="AmmoCounter" type="Label" parent="."]
+[node name="AmmoCounter" type="Label" parent="." unique_id=1171409055]
 layout_mode = 0
 offset_left = 1504.0
 offset_top = 966.0
@@ -119,3 +128,27 @@ offset_bottom = 1021.0
 text = "0/0"
 label_settings = SubResource("LabelSettings_dqfrj")
 script = ExtResource("5_gt2ij")
+
+[node name="HitMarker" type="TextureRect" parent="." unique_id=985888825]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -56.0
+offset_top = -50.0
+offset_right = 52.25
+offset_bottom = 52.875
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_dqfrj")
+expand_mode = 1
+
+[node name="HitSound" type="AudioStreamPlayer" parent="." unique_id=2054272183]
+stream = ExtResource("7_ks410")
+
+[node name="TabMap" parent="." unique_id=1353416848 instance=ExtResource("2_epdrl")]
+visible = false
+layout_mode = 1

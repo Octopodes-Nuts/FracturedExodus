@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://bi0icrikod3ux"]
+
+[ext_resource type="PackedScene" uid="uid://bohpcdjx1spcs" path="res://debug/models/env/natural/trees/tree5.blend" id="1_yffs5"]
+[ext_resource type="Shader" uid="uid://bi57s6eitukvn" path="res://environment/models/trees/materials/branch_sway.gdshader" id="2_4ig44"]
+[ext_resource type="Texture2D" uid="uid://b7eopocb41i17" path="res://environment/models/trees/bark2.png" id="3_33r4y"]
+[ext_resource type="Shader" uid="uid://dgng83p7xxvbq" path="res://environment/models/trees/materials/leaf_shimmer.gdshader" id="4_gba74"]
+[ext_resource type="Texture2D" uid="uid://cv8ttkxirmu4d" path="res://debug/textures/materials/pineneedles.png" id="5_ecxwr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uvwsc"]
+render_priority = 0
+shader = ExtResource("2_4ig44")
+shader_parameter/texture_albedo = ExtResource("3_33r4y")
+shader_parameter/sway_speed = 0.4
+shader_parameter/sway_strength = 0.008
+shader_parameter/sway_frequency = 2.5
+shader_parameter/wind_direction = Vector2(1, 0.3)
+shader_parameter/trunk_radius = 0.1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2810y"]
+render_priority = 0
+shader = ExtResource("4_gba74")
+shader_parameter/texture_albedo = ExtResource("5_ecxwr")
+shader_parameter/wave_speed = 0.7560000352114801
+shader_parameter/wave_strength = 0.027000001282499998
+shader_parameter/wave_frequency = 3.0
+shader_parameter/wind_direction = Vector2(1, 0.3)
+shader_parameter/glint_speed = 1.5
+shader_parameter/glint_intensity = 0.15
+shader_parameter/glint_sharpness = 24.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_2frgd"]
+height = 7.841614
+radius = 0.2290039
+
+[node name="tree5" unique_id=621327825 instance=ExtResource("1_yffs5")]
+
+[node name="tree" parent="." index="0" unique_id=159055888]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58753, 0)
+surface_material_override/0 = SubResource("ShaderMaterial_uvwsc")
+
+[node name="leaves" parent="tree" index="0" unique_id=1082126592]
+surface_material_override/0 = SubResource("ShaderMaterial_2810y")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="tree" index="1" unique_id=1485059689]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="tree/StaticBody3D" index="0" unique_id=1137608070]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.315155, 0)
+shape = SubResource("CylinderShape3D_2frgd")

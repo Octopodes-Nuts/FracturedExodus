@@ -4,7 +4,9 @@
 [ext_resource type="Theme" uid="uid://bfr672pd54aq8" path="res://ui/main_menu/resources/MainMenuTheme.tres" id="1_jx6dv"]
 [ext_resource type="Script" uid="uid://bftj6q2dy5akg" path="res://ui/main_menu/MainMenu.gd" id="1_vrxho"]
 [ext_resource type="PackedScene" uid="uid://0nl6w8jibxr0" path="res://ui/main_menu/NewCharacterDialogue.tscn" id="2_bcai1"]
+[ext_resource type="Material" uid="uid://b0p8vuq4k2gmw" path="res://environment/shaders/shader.tres" id="3_41v8r"]
 [ext_resource type="PackedScene" uid="uid://b835oks81kglu" path="res://ui/main_menu/CharacterDisplay.tscn" id="3_u1tth"]
+[ext_resource type="Script" uid="uid://cfnij864ner7t" path="res://environment/shaders/WorldShader.gd" id="4_rpuge"]
 [ext_resource type="PackedScene" uid="uid://fm55cmw02ao2" path="res://ui/paper_doll/WeaponSelect.tscn" id="5_2ijps"]
 [ext_resource type="PackedScene" uid="uid://64xuuj3va1ut" path="res://ui/main_menu/CharacterSelect.tscn" id="6_3vjg6"]
 [ext_resource type="PackedScene" uid="uid://cx8wrsam0j5j5" path="res://ui/paper_doll/PaperDoll.tscn" id="6_vmw4a"]
@@ -13,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://c0wkvdhyqflre" path="res://ui/main_menu/SocialPanel.tscn" id="9_o6kyq"]
 [ext_resource type="Script" uid="uid://b8kharo2dvtji" path="res://ui/main_menu/AddFriendPanel.gd" id="10_olnjm"]
 [ext_resource type="AudioStream" uid="uid://jdngidi0m626" path="res://ui/Typewriter Sound Effects.wav" id="12_uqh3w"]
+[ext_resource type="PackedScene" uid="uid://dciymm0oifuj4" path="res://ui/main_menu/PartyPanel.tscn" id="13_mxi6j"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_jx6dv"]
 
@@ -28,9 +31,22 @@ theme = ExtResource("1_jx6dv")
 script = ExtResource("1_vrxho")
 click_sound = NodePath("click_sound")
 
+[node name="ShaderRect" type="ColorRect" parent="." unique_id=1153010841]
+material = ExtResource("3_41v8r")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource("4_rpuge")
+
 [node name="NewCharacterDialogue" parent="." unique_id=1621235896 node_paths=PackedStringArray("main_menu") groups=["UI"] instance=ExtResource("2_bcai1")]
 visible = false
 layout_mode = 1
+anchors_preset = -1
 anchor_left = 0.29500002
 anchor_top = 0.27600002
 anchor_right = 0.68100005
@@ -73,15 +89,14 @@ text = "Enter Test Scene"
 
 [node name="ready_button" type="Button" parent="." unique_id=1842345167 groups=["UI"]]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.512
-anchor_right = 0.5
-anchor_bottom = 0.512
-offset_left = -908.0
-offset_top = -95.96002
-offset_right = -583.0
-offset_bottom = 0.039978027
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 18.0
+offset_top = -48.0
+offset_right = 343.0
+offset_bottom = 48.0
+grow_vertical = 2
 theme = ExtResource("1_jx6dv")
 text = "Ready"
 
@@ -157,14 +172,15 @@ grow_vertical = 2
 
 [node name="social_panel" parent="." unique_id=846758153 node_paths=PackedStringArray("weapon_select") instance=ExtResource("9_o6kyq")]
 layout_mode = 1
-anchor_left = 1.0020001
-anchor_top = 0.17500001
-anchor_right = 1.0020001
-anchor_bottom = 0.9850001
-offset_left = -390.8402
-offset_top = -1.5258789e-05
-offset_right = -0.84020996
-offset_bottom = 0.19995117
+anchor_left = 1.0
+anchor_top = 0.18
+anchor_right = 1.0
+offset_left = -390.0
+offset_top = -0.40000916
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 0
 weapon_select = NodePath("../weapon_select")
 
 [node name="add_friend_panel" type="Panel" parent="." unique_id=1874122280 groups=["UI"]]
@@ -196,37 +212,23 @@ offset_right = 278.0
 offset_bottom = 158.0
 text = "Accept"
 
-[node name="party_panel" type="Panel" parent="." unique_id=1848652855 groups=["UI"]]
+[node name="party_panel" parent="." unique_id=16321308 instance=ExtResource("13_mxi6j")]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 0.002
-anchor_right = 1.0
-anchor_bottom = 0.002
-offset_left = -1172.0
-offset_top = 3.84
-offset_right = -748.0
-offset_bottom = 124.84
-
-[node name="leave_party_btn" type="Button" parent="party_panel" unique_id=1191599071 groups=["UI"]]
-layout_mode = 1
-anchors_preset = -1
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 0.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -84.0
-offset_top = 21.5
-offset_right = 86.0
-offset_bottom = 52.5
-text = "Leave"
+anchor_bottom = 0.0
+offset_left = -212.0
+offset_top = 0.0
+offset_right = 212.0
+offset_bottom = 128.0
+grow_horizontal = 2
 
 [node name="FactionSelect" type="OptionButton" parent="." unique_id=691005504 groups=["UI"]]
-layout_mode = 0
-offset_left = 39.0
-offset_top = 1.0
-offset_right = 275.0
-offset_bottom = 34.0
+layout_mode = 1
+offset_right = 236.0
+offset_bottom = 33.0
 item_count = 3
 popup/item_0/text = "Entente"
 popup/item_0/id = 0
@@ -239,6 +241,18 @@ popup/item_2/id = 2
 stream = ExtResource("12_uqh3w")
 volume_db = -13.514
 
+[node name="matchmaking_time_display" type="Label" parent="." unique_id=1162965316]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.565
+anchor_bottom = 0.565
+offset_left = 110.0
+offset_top = -18.200012
+offset_right = 253.0
+offset_bottom = 18.799988
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+
 [connection signal="character_select" from="character_display" to="." method="_on_character_display_character_select"]
 [connection signal="pressed" from="test_scene_btn" to="." method="_on_test_scene_btn_pressed"]
 [connection signal="pressed" from="ready_button" to="." method="_on_ready_button_pressed"]
@@ -248,5 +262,4 @@ volume_db = -13.514
 [connection signal="new_char_created" from="character_select" to="." method="_on_character_select_new_char_created"]
 [connection signal="new_char_selected" from="character_select" to="." method="_on_character_select_new_char_selected"]
 [connection signal="weapon_selected" from="weapon_select" to="." method="_on_weapon_select_weapon_selected"]
-[connection signal="pressed" from="party_panel/leave_party_btn" to="." method="_on_leave_party_btn_pressed"]
 [connection signal="item_selected" from="FactionSelect" to="." method="_on_option_button_item_selected"]

@@ -1,46 +1,19 @@
 [gd_scene format=3 uid="uid://vc6o5dls34mo"]
 
 [ext_resource type="Script" uid="uid://iuogwiwcu6b" path="res://behavior/player/weapons/Gun.gd" id="1_asra4"]
-[ext_resource type="AudioStream" uid="uid://c6qfcv2kgdvek" path="res://behavior/player/weapons/guns/empire/longarms/Kar98a/kar98k sound.wav" id="2_nd644"]
-[ext_resource type="PackedScene" uid="uid://v2k3x373pr54" path="res://debug/models/weapons/leeenfield/leeenfield.blend" id="2_saojg"]
+[ext_resource type="AudioStream" uid="uid://b8w8jdaxouc6u" path="res://behavior/player/weapons/guns/entente/longarms/leeenfield/Lee-enfield.wav" id="2_fkuq6"]
+[ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="3_fkuq6"]
+[ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="4_a45np"]
+[ext_resource type="PackedScene" uid="uid://hil3koteglxv" path="res://behavior/player/weapons/guns/entente/longarms/leeenfield/enfieldinhand.tscn" id="5_fkuq6"]
 
-[sub_resource type="Animation" id="Animation_fkuq6"]
-resource_name = "Fire"
-length = 0.5
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("leeenfield")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.1, 1, 0, 0, 0.07769382, 0.16666667, 1, 0, 0, 0.081727624, 0.46666667, 1, 0, 0, 0)
-
-[sub_resource type="Animation" id="Animation_saojg"]
-length = 0.001
-tracks/0/type = "position_3d"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("leeenfield")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_a45np"]
-_data = {
-&"Fire": SubResource("Animation_fkuq6"),
-&"RESET": SubResource("Animation_saojg")
-}
-
-[node name="Leeenfield" type="Node3D" unique_id=1642060425 node_paths=PackedStringArray("player")]
+[node name="Leeenfield" type="Node3D" unique_id=1642060425]
 script = ExtResource("1_asra4")
-fire_sound = ExtResource("2_nd644")
-fire_animation = "Fire"
-player = NodePath("AnimationPlayer")
-bullet_damage = 72.0
-bullet_speed = 410.0
+clip_size = 10
+fire_sound = ExtResource("2_fkuq6")
+cycle_time = 1.6
 bullet_lifetime = 5.0
 bullet_spread = 0.01
-ads_position = Vector3(0, 0, 0.3)
+ads_position = Vector3(0, 0, 0.1)
 definition_path = "res://behavior/player/weapons/guns/entente/longarms/leeenfield/LeeEnfield.tres"
 faction = 1
 classes = Array[int]([1, 3])
@@ -51,9 +24,12 @@ slots = Dictionary[int, Array]({
 3: [1],
 4: []
 })
-default_position = Vector3(0.1, -0.1, 0.2)
+default_position = Vector3(0.1, -0.1, 0)
 
-[node name="leeenfield" parent="." unique_id=1561866653 instance=ExtResource("2_saojg")]
+[node name="MuzzleBlast" parent="." unique_id=2098191403 instance=ExtResource("3_fkuq6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.024638887, -1.1736244)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=419461515]
-libraries/ = SubResource("AnimationLibrary_a45np")
+[node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_a45np")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.024638887, -1.1736244)
+
+[node name="GunInHand" parent="." unique_id=2010837255 instance=ExtResource("5_fkuq6")]

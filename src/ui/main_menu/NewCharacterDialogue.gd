@@ -7,16 +7,16 @@ var _character_name: String
 
 @export var main_menu: MainMenu
 
-@onready var class_name_label = $ClassNameLabel
-@onready var class_summary = $ScrollContainer/VBoxContainer/ClassSummary
+@export var class_name_label: Label
+@export var class_summary: Label
 
-@onready var infantry_button = $InfantryButton
-@onready var medic_button = $MedicButton
-@onready var special_button = $SpecialButton
-@onready var officer_button = $OfficerButton
+@export var infantry_button: Button
+@export var medic_button: Button
+@export var special_button: Button
+@export var officer_button: Button
 
-@onready var character_name_label = $CharacterPanel/CharacterNameLabel
-@onready var character_portrait = $CharacterPanel/CharacterPortrait
+@export var character_name_label: Label
+@export var character_portrait: TextureRect
 
 var last_names: PackedStringArray
 var first_names: PackedStringArray

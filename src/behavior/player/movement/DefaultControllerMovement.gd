@@ -1,6 +1,6 @@
 extends RefCounted
 
-const SERVER_SNAPSHOT_INTERVAL := 1.0 / 15.0
+const SERVER_SNAPSHOT_INTERVAL := 1.0 / 20.0
 
 # NET PROF disabled
 # const PERF_REPORT_INTERVAL_MS := 1000
@@ -28,7 +28,7 @@ func ground_check(controller) -> bool:
 		controller.ground_check_3.is_colliding() or \
 		controller.ground_check_4.is_colliding()
 
-func set_movement_input(controller, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float) -> void:
+func set_movement_input(controller, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, wants_crouch: bool = false) -> void:
 	controller.net_move_x = clamp(move_x, -1.0, 1.0)
 	controller.net_move_y = clamp(move_y, -1.0, 1.0)
 	controller.net_wants_sprint = wants_sprint
@@ -36,6 +36,8 @@ func set_movement_input(controller, move_x: float, move_y: float, wants_sprint: 
 		controller.net_jump_pressed = true
 	controller.net_yaw = yaw
 	controller.net_pitch = clamp(pitch, deg_to_rad(-89), deg_to_rad(89))
+	if wants_crouch != controller.is_crouching:
+		controller._set_crouch(wants_crouch)
 
 func clear_movement_state(controller) -> void:
 	controller.net_move_x = 0.0
@@ -63,6 +65,7 @@ func build_local_input(controller, dt: float) -> Dictionary:
 		"jump_pressed": jump_pressed,
 		"yaw": controller.net_yaw,
 		"pitch": controller.net_pitch,
+		"wants_crouch": controller.is_crouching,
 	}
 
 func apply_input_packet(controller, input_packet: Dictionary) -> void:
@@ -73,7 +76,8 @@ func apply_input_packet(controller, input_packet: Dictionary) -> void:
 		input_packet["wants_sprint"],
 		input_packet["jump_pressed"],
 		input_packet["yaw"],
-		input_packet["pitch"]
+		input_packet["pitch"],
+		input_packet.get("wants_crouch", false)
 	)
 
 func capture_and_submit_input(controller, dt: float) -> void:
@@ -95,19 +99,20 @@ func capture_and_submit_input(controller, dt: float) -> void:
 			input_packet["jump_pressed"],
 			input_packet["yaw"],
 			input_packet["pitch"],
-			input_packet["dt"]
+			input_packet["dt"],
+			input_packet["wants_crouch"]
 		)
 
 var _pending_client_dt: Dictionary = {}
 
-func apply_network_input(controller, seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float) -> void:
+func apply_network_input(controller, seq: int, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, client_dt: float, wants_crouch: bool = false) -> void:
 	if not controller.multiplayer.is_server():
 		return
 	var sender_id: int = controller.multiplayer.get_remote_sender_id()
 	if sender_id != controller._get_peer_id_string().to_int():
 		return
 	controller.last_server_sequence = seq
-	set_movement_input(controller, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch)
+	set_movement_input(controller, move_x, move_y, wants_sprint, jump_pressed, yaw, pitch, wants_crouch)
 	_pending_client_dt[controller._get_peer_id_string()] = client_dt
 
 func create_authoritative_state(controller) -> Dictionary:
@@ -117,6 +122,7 @@ func create_authoritative_state(controller) -> Dictionary:
 		"gravity_direction": controller.gravity_direction,
 		"yaw": controller.rotation.y,
 		"pitch": controller.neck.rotation.x,
+		"is_crouching": controller.is_crouching,
 	}
 
 func restore_authoritative_state(controller, state: Dictionary) -> void:
@@ -126,6 +132,9 @@ func restore_authoritative_state(controller, state: Dictionary) -> void:
 	controller.net_yaw = state["yaw"]
 	controller.net_pitch = state["pitch"]
 	controller._apply_look_rotation(controller.net_yaw, controller.net_pitch)
+	var authoritative_crouch: bool = state.get("is_crouching", false)
+	if authoritative_crouch != controller.is_crouching:
+		controller._set_crouch(authoritative_crouch)
 
 func discard_acknowledged_inputs(controller, sequence: int) -> void:
 	if controller.pending_inputs.is_empty():
@@ -210,7 +219,9 @@ func handle_physics(controller, dt: float) -> void:
 	var snapshot_accumulator := float(_snapshot_accumulator_by_player.get(player_key, 0.0)) + dt
 	if snapshot_accumulator >= SERVER_SNAPSHOT_INTERVAL:
 		snapshot_accumulator = 0.0
-		controller.receive_remote_snapshot.rpc(controller.global_position, controller.rotation.y, controller.neck.rotation.x, controller.horizantal_velocity)
+		var snap_vel = controller.velocity
+		snap_vel.y = maxf(snap_vel.y, -4.0)
+		controller.receive_remote_snapshot.rpc(controller.global_position, controller.rotation.y, controller.neck.rotation.x, snap_vel)
 		if not controller._is_local_player() and controller.last_server_sequence >= 0:
 			controller.reconcile_movement.rpc_id(controller._get_peer_id_string().to_int(), controller.last_server_sequence, create_authoritative_state(controller))
 	_snapshot_accumulator_by_player[player_key] = snapshot_accumulator
@@ -251,6 +262,17 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 	if controller.is_on_floor():
 		if controller.gravity_direction.y < 0.0:
 			controller.gravity_direction.y = 0.0
+			if play_walk_locally:
+				var model = controller.get_node_or_null("Ch36_nonPBR")
+				if model and model.has_method("set_landed"):
+					model.set_landed()
+			elif replicate_walk_state:
+				controller.play_character_state.rpc(controller.name, "land")
+		# Keep a small constant downward push so move_and_slide always has
+		# something to press against the floor. Prevents is_on_floor() from
+		# flickering on bumpy terrain when gravity is exactly 0.
+		if controller.gravity_direction.y == 0.0:
+			controller.gravity_direction.y = -0.5
 	else:
 		controller.gravity_direction += Vector3.DOWN * controller.gravity * dt
 
@@ -258,6 +280,12 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 		if controller.net_jump_pressed and controller.is_on_floor() and controller.full_contact:
 			controller.gravity_direction = Vector3.UP * controller.jump
 			controller.net_jump_pressed = false
+			if play_walk_locally:
+				var model = controller.get_node_or_null("Ch36_nonPBR")
+				if model and model.has_method("set_jumping"):
+					model.set_jumping()
+			elif replicate_walk_state:
+				controller.play_character_state.rpc(controller.name, "jump")
 	else:
 		clear_movement_state(controller)
 
@@ -288,6 +316,9 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 			accel = controller.ACCEL
 			walk_state = controller.WALK_STATES.WALK
 
+		# Crouch penalty
+		if controller.is_crouching:
+			speed = minf(speed, controller.CROUCH_SPEED)
 		# Infantry buff: faster when tertiary (melee/light) weapon is out
 		if controller is InfantryController and controller.current_equipped_index == 2:
 			speed *= controller.stowed_speed_buff
@@ -306,7 +337,7 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 		controller.play_walk(controller.name, walk_state)
 
 	controller.direction = controller.direction.normalized()
-	controller.horizantal_velocity = controller.horizantal_velocity.lerp(controller.direction * speed, accel * dt)
+	controller.horizantal_velocity = controller.horizantal_velocity.lerp(controller.direction * speed, clampf(accel * dt, 0.0, 1.0))
 	controller.movement.z = controller.horizantal_velocity.z + controller.gravity_direction.z
 	controller.movement.x = controller.horizantal_velocity.x + controller.gravity_direction.x
 	controller.movement.y = controller.gravity_direction.y
@@ -314,3 +345,7 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 	controller.set_velocity(controller.movement)
 	controller.set_up_direction(Vector3.UP)
 	controller.move_and_slide()
+	# Feed back actual post-collision velocity so the next frame's lerp doesn't
+	# fight the physics response (e.g. sliding along a wall or step).
+	controller.horizantal_velocity.x = controller.velocity.x
+	controller.horizantal_velocity.z = controller.velocity.z

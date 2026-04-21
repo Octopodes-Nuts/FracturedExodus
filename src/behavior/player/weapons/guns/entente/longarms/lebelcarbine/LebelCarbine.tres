@@ -2,16 +2,19 @@
 
 [ext_resource type="PackedScene" uid="uid://cot1ff62jhh3p" path="res://behavior/player/weapons/guns/entente/longarms/lebelcarbine/lebelcarbine.tscn" id="1_mry2r"]
 [ext_resource type="Script" uid="uid://crnbtxd7k7s5n" path="res://behavior/player/weapons/WeaponDefinition.gd" id="2_0fyft"]
+[ext_resource type="Texture2D" uid="uid://c0sfugfwxqlwi" path="res://debug/models/weapons/lebelcarbine.png" id="3_0fyft"]
 
 [resource]
 script = ExtResource("2_0fyft")
 name = "Lebel M1896 M93-R35 Carbine"
 key = "LebelCarbine"
 scene = ExtResource("1_mry2r")
+texture = ExtResource("3_0fyft")
 type = 1
 gun_type = 1
 base_damage = 62.0
 faction = Array[int]([1])
+muzzle_velocity = 610.0
 slots = Dictionary[int, Array]({
 0: [1],
 1: [],

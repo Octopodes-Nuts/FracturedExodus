@@ -1,6 +1,7 @@
 [gd_resource type="Environment" format=3 uid="uid://etedssom36ge"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_pmjc1"]
+energy_multiplier = 1.95
 
 [sub_resource type="Sky" id="Sky_pmjc1"]
 sky_material = SubResource("ProceduralSkyMaterial_pmjc1")
@@ -11,8 +12,11 @@ background_mode = 2
 sky = SubResource("Sky_pmjc1")
 ambient_light_color = Color(0.69135684, 0.6913568, 0.69135684, 1)
 ambient_light_energy = 0.51
+glow_enabled = true
+glow_intensity = 0.8
+glow_bloom = 0.3
 fog_density = 0.0
 volumetric_fog_enabled = true
-volumetric_fog_density = 0.0415
+volumetric_fog_density = 0.0327
 volumetric_fog_emission = Color(0.058420584, 0.0584206, 0.058420606, 1)
-volumetric_fog_emission_energy = 19.32
+volumetric_fog_emission_energy = 0.0

@@ -89,12 +89,24 @@ func hit(damage: float, shooter_id: int = 0) -> void:
 		return
 	_on_hit(damage)
 	health = maxf(health - damage, 0.0)
+	_notify_shooter_hit_marker(shooter_id)
 	if health <= 0.0:
 		if shooter_id != 0 and multiplayer.is_server():
 			Global.map_root.record_ai_kill(shooter_id)
 		_kill.rpc()
 		return
 	_on_post_hit()
+
+func _notify_shooter_hit_marker(shooter_id: int) -> void:
+	if shooter_id == 0 or not multiplayer.is_server():
+		return
+	for node in get_tree().get_nodes_in_group("players"):
+		if node is DefaultController and node._get_peer_id_string().to_int() == shooter_id:
+			if shooter_id == multiplayer.get_unique_id():
+				node.show_hit_marker()
+			else:
+				node.show_hit_marker.rpc_id(shooter_id)
+			return
 
 # Override to apply hit effects (stagger, noise chain reset, etc.)
 func _on_hit(_damage: float) -> void:

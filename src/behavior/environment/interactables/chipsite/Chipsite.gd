@@ -24,13 +24,14 @@ func interact(other):
 	if not extracted:
 		obtain_time += other.delta
 		if obtain_time >= OBTAIN_TIME_TARGET and not extracted:
-			_extract_chip.rpc()
+			_extract_chip()           # Immediate local feedback
+			_request_extract.rpc_id(1)  # Server validates and broadcasts to all other clients
 			other.get_objective()
 			_refresh(other)
 		var hud := Local.get_hud()
 		if hud != null:
 			hud.set_progress_percent((obtain_time / OBTAIN_TIME_TARGET) * 100)
-			
+
 
 func _add_interaction(_node: Node):
 	if not extracted:
@@ -44,7 +45,16 @@ func _remove_interaction(_node: Node):
 	if hud != null:
 		hud.set_progress_visible(false)
 
-@rpc("call_local")
+# Sent by the extracting client; server validates then broadcasts to all peers.
+@rpc("any_peer", "reliable")
+func _request_extract() -> void:
+	if not multiplayer.is_server():
+		return
+	if extracted:
+		return
+	_extract_chip.rpc()
+
+@rpc("call_local", "reliable")
 func _extract_chip():
 	extracted = true
 	$model/mesh.material_override = debug_red

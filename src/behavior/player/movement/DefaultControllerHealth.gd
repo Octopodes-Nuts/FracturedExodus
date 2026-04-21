@@ -41,7 +41,40 @@ func request_damage(controller, dmg: int, shooter_id: int = 0) -> void:
 		controller._sync_damage_feedback.rpc_id(damaged_peer_id, controller.current_health)
 	controller.play_hit_noise.rpc(controller.name)
 
+func _notify_shooter_hit_marker(controller, shooter_id: int) -> void:
+	if shooter_id == 0 or not controller.multiplayer.is_server():
+		return
+	for node in controller.get_tree().get_nodes_in_group("players"):
+		if node is DefaultController and node._get_peer_id_string().to_int() == shooter_id:
+			if shooter_id == controller.multiplayer.get_unique_id():
+				node.show_hit_marker()
+			else:
+				node.show_hit_marker.rpc_id(shooter_id)
+			return
+
+func _send_hit_feedback(controller, shooter_id: int) -> void:
+	if shooter_id == 0 or not controller.multiplayer.is_server():
+		return
+	var shooter_pos := Vector3.ZERO
+	var found := false
+	for node in controller.get_tree().get_nodes_in_group("players"):
+		if node is DefaultController and node._get_peer_id_string().to_int() == shooter_id:
+			shooter_pos = node.global_position
+			found = true
+			break
+	if not found:
+		return
+	var dir = shooter_pos - controller.global_position
+	var hit_world_yaw := atan2(dir.x, -dir.z)
+	var victim_peer_id = controller._get_peer_id_string().to_int()
+	if victim_peer_id == controller.multiplayer.get_unique_id():
+		controller.receive_hit_feedback(hit_world_yaw)
+	else:
+		controller.receive_hit_feedback.rpc_id(victim_peer_id, hit_world_yaw)
+
 func apply_authoritative_damage(controller, dmg: int, shooter_id: int = 0) -> void:
+	_notify_shooter_hit_marker(controller, shooter_id)
+	_send_hit_feedback(controller, shooter_id)
 	controller._set_current_health(controller.current_health - dmg)
 	if controller.current_health <= 0:
 		controller.down_count += 1

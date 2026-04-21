@@ -1,4 +1,4 @@
-[gd_resource type="Environment" load_steps=2 format=3 uid="uid://bwgug8pu2v12l"]
+[gd_resource type="Environment" format=3 uid="uid://bwgug8pu2v12l"]
 
 [ext_resource type="Sky" uid="uid://crbfl06idhep" path="res://ui/main_menu/Sky.tres" id="1_7ctcp"]
 
@@ -7,3 +7,8 @@ background_mode = 2
 sky = ExtResource("1_7ctcp")
 ambient_light_source = 3
 ambient_light_color = Color(0.870813, 0.874185, 0.826203, 1)
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.005
+volumetric_fog_albedo = Color(0.50928617, 0.50928617, 0.50928617, 1)
+volumetric_fog_emission = Color(1, 1, 1, 1)
+volumetric_fog_emission_energy = 0.2

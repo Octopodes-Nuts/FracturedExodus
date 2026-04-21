@@ -23,15 +23,23 @@ func handle_process(controller, dt: float) -> void:
 		if local_input_active and controller.character.scanner != null:
 			controller.swap_equipped_from_index(6, true)
 
-	if Input.is_action_pressed("ads") and local_input_active:
+	var is_sprinting: bool = Input.is_action_pressed("sprint") and local_input_active
+
+	if Input.is_action_pressed("ads") and local_input_active and not is_sprinting:
 		controller._ads(dt)
 	else:
 		controller._undo_ads(dt)
 
-	if Input.is_action_pressed("ads") and local_input_active and controller.active_equipable is Weapon and controller.is_on_floor():
+	if Input.is_action_pressed("ads") and local_input_active and not is_sprinting and controller.active_equipable is Weapon and controller.is_on_floor():
 		controller.active_equipable.ads = true
-	if Input.is_action_just_released("ads") and local_input_active and controller.active_equipable is Weapon or not controller.is_on_floor():
+	if (Input.is_action_just_released("ads") and local_input_active and controller.active_equipable is Weapon) or not controller.is_on_floor() or is_sprinting:
 		controller.active_equipable.ads = false
+
+	if Input.is_action_just_pressed("crouch") and local_input_active and controller.current_health > 0:
+		controller._set_crouch(not controller.is_crouching)
+
+	if Input.is_action_just_pressed("sprint") and controller.is_crouching and local_input_active:
+		controller._set_crouch(false)
 
 	if Input.is_action_just_pressed("exit"):
 		_toggle_escape_menu(controller)

@@ -8,6 +8,13 @@ var current_res = 0
 func _ready():
 	display_text = "Revive Teammate"
 
+func can_interact(body: Node) -> bool:
+	if not player or not player.has_method("_get_faction"):
+		return false
+	if not body.has_method("_get_faction"):
+		return false
+	return body._get_faction() == player._get_faction()
+
 func set_player(node: Node):
 	player = node
 

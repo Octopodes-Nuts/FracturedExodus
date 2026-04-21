@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://x821fm0nkahe"]
+
+[ext_resource type="PackedScene" uid="uid://bv1ekfhw7xjs4" path="res://debug/models/env/natural/trees/tree3.blend" id="1_tl74t"]
+[ext_resource type="Material" uid="uid://j8t15tp1p4ai" path="res://environment/models/trees/materials/branch_sway_tree_2.res" id="2_owno1"]
+[ext_resource type="Shader" uid="uid://dgng83p7xxvbq" path="res://environment/models/trees/materials/leaf_shimmer.gdshader" id="3_qhv7f"]
+[ext_resource type="Texture2D" uid="uid://ftvqagl70sl3" path="res://debug/textures/materials/firleaf.png" id="4_5nani"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_grn45"]
+render_priority = 0
+shader = ExtResource("3_qhv7f")
+shader_parameter/texture_albedo = ExtResource("4_5nani")
+shader_parameter/wave_speed = 0.3
+shader_parameter/wave_strength = 0.0110000005225
+shader_parameter/wave_frequency = 3.0
+shader_parameter/wind_direction = Vector2(1, 0.3)
+shader_parameter/glint_speed = 1.5
+shader_parameter/glint_intensity = 0.15
+shader_parameter/glint_sharpness = 24.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_6tkci"]
+height = 2.6660156
+radius = 0.16308594
+
+[node name="tree3" unique_id=1520139016 instance=ExtResource("1_tl74t")]
+
+[node name="tree" parent="." index="0" unique_id=2079740047]
+surface_material_override/0 = ExtResource("2_owno1")
+
+[node name="leaves" parent="tree" index="0" unique_id=50202745]
+surface_material_override/0 = SubResource("ShaderMaterial_grn45")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1" unique_id=1287721545]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0" unique_id=986636625]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2841797, 0)
+shape = SubResource("CylinderShape3D_6tkci")

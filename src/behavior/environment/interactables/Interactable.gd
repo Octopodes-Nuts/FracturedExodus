@@ -36,8 +36,13 @@ func _is_local_player_body(body: Node) -> bool:
 		return false
 	return body._is_local_player()
 
+func can_interact(_body: Node) -> bool:
+	return true
+
 func _on_interactable_body_entered(body:Node):
 	if not _is_local_player_body(body):
+		return
+	if not can_interact(body):
 		return
 	if body.has_method('register_interaction'):
 		_add_interaction(body)
