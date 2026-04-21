@@ -55,6 +55,7 @@ var selected_faction: int = Factions.Enum.DEFAULT
 var char_id: String
 var host: bool = false
 var has_objective = false
+var shader_rect: ColorRect
 
 func _ready():
 	pass

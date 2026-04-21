@@ -3,8 +3,10 @@
 [ext_resource type="Texture2D" uid="uid://lj8x80hs34ug" path="res://ui/hud/crosshair.png" id="1"]
 [ext_resource type="Script" uid="uid://c0yqvyd7ijmul" path="res://ui/hud/Hud.gd" id="1_by07e"]
 [ext_resource type="PackedScene" uid="uid://bbd3bam3g27d1" path="res://ui/hud/TabMap.tscn" id="2_epdrl"]
+[ext_resource type="Material" uid="uid://b0p8vuq4k2gmw" path="res://environment/shaders/shader.tres" id="2_iyywv"]
 [ext_resource type="PackedScene" uid="uid://brvwixs700y2q" path="res://ui/hud/ExtractTimer.tscn" id="2_ywxef"]
 [ext_resource type="PackedScene" uid="uid://bemh5f0ii405o" path="res://ui/hud/TextDisplay.tscn" id="3_4sqfl"]
+[ext_resource type="Script" uid="uid://cfnij864ner7t" path="res://environment/shaders/WorldShader.gd" id="3_q25gb"]
 [ext_resource type="Script" uid="uid://c5fv6p3x4adkp" path="res://ui/hud/AmmoCounter.gd" id="5_gt2ij"]
 [ext_resource type="Texture2D" uid="uid://ckcw4wtfg2ysc" path="res://ui/hud/hitmarker.png" id="6_dqfrj"]
 [ext_resource type="AudioStream" uid="uid://jdngidi0m626" path="res://ui/Typewriter Sound Effects.wav" id="7_ks410"]
@@ -26,6 +28,19 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_by07e")
 tab_map = NodePath("TabMap")
+
+[node name="ShaderRect" type="ColorRect" parent="." unique_id=213165207 node_paths=PackedStringArray("sun")]
+material = ExtResource("2_iyywv")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource("3_q25gb")
+sun = NodePath("")
 
 [node name="crosshair" type="TextureRect" parent="." unique_id=1626041731]
 layout_mode = 1

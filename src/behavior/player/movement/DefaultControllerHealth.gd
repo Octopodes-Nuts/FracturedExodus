@@ -1,14 +1,14 @@
 extends RefCounted
 
 func update_local_health_ui(controller) -> void:
-	if not controller._is_local_player() or not controller.Local.has_hud():
+	if not controller._is_local_player() or not Local.has_hud():
 		return
-	controller.Local.get_hud().set_health_percent((controller.current_health / controller.FULL_HEALTH) * 100)
+	Local.get_hud().set_health_percent((controller.current_health / controller.FULL_HEALTH) * 100)
 
 func set_local_death_ui(controller, dead: bool) -> void:
-	if not controller._is_local_player() or not controller.Local.has_hud():
+	if not controller._is_local_player() or not Local.has_hud():
 		return
-	controller.Local.get_hud().set_dead_state(dead)
+	Local.get_hud().set_dead_state(dead)
 
 func handle_hit(controller, dmg: int, shooter_id: int = 0) -> void:
 	if controller.current_health <= 0:
@@ -136,8 +136,13 @@ func sync_damage_feedback(controller, updated_health: float) -> void:
 	update_local_health_ui(controller)
 	var is_dead: bool = controller.current_health <= 0
 	set_local_death_ui(controller, is_dead)
+	if controller._is_local_player() and Local.shader_rect != null:
+		if is_dead:
+			Local.shader_rect.set_downed(true)
+		else:
+			Local.shader_rect.hit_effect()
 	if is_dead and controller._is_local_player():
-		controller.Local.set_state("input_active", false)
+		Local.set_state("input_active", false)
 
 func sync_heal_feedback(controller, updated_health: float, updated_pool: float) -> void:
 	controller._set_current_health(updated_health)
@@ -145,8 +150,8 @@ func sync_heal_feedback(controller, updated_health: float, updated_pool: float) 
 		controller.active_equipable.health_pool = updated_pool
 	update_local_health_ui(controller)
 	set_local_death_ui(controller, false)
-	if controller._is_local_player() and controller.Local.has_hud():
-		controller.Local.get_hud().display_ammo(controller.active_equipable.get_ammo())
+	if controller._is_local_player() and Local.has_hud():
+		Local.get_hud().display_ammo(controller.active_equipable.get_ammo())
 
 func handle_res(controller, revive_health: float, resurrector_is_medic: bool = false) -> void:
 	if not controller.multiplayer.is_server():
@@ -168,4 +173,6 @@ func handle_res_local(controller, revive_health: float) -> void:
 	controller.set_res_sphere(false)
 	controller.set_res_sphere.rpc(false)
 	if controller._is_local_player():
-		controller.Local.set_state("input_active", true)
+		if Local.shader_rect != null:
+			Local.shader_rect.set_downed(false)
+		Local.set_state("input_active", true)
