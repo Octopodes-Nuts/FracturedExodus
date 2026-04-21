@@ -83,6 +83,7 @@ var net_move_x: float = 0.0
 var net_move_y: float = 0.0
 var net_wants_sprint: bool = false
 var net_jump_pressed: bool = false
+var net_is_using: bool = false
 var net_yaw: float = 0.0
 var net_pitch: float = 0.0
 

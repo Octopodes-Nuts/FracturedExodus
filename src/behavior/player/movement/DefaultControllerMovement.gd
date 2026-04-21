@@ -180,6 +180,12 @@ func handle_physics(controller, dt: float) -> void:
 		if not controller.multiplayer.is_server():
 			simulate(controller, dt, false, true)
 
+	if controller._is_local_player():
+		controller.net_is_using = controller.current_health > 0 \
+			and Input.is_action_pressed("fire") \
+			and is_instance_valid(controller.active_equipable) \
+			and controller.active_equipable.is_inside_tree()
+
 	if controller._is_local_player() and controller.current_health > 0:
 		if Input.is_action_pressed("interact") and controller.current_interaction:
 			if controller.current_interaction.has_method("interact"):
@@ -327,6 +333,9 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 			speed /= controller.ads_movement_penalty
 		# Officer aura (and other received officer buffs)
 		speed *= controller.officer_speed_buff
+		# Use penalty: clamp speed while actively firing an equipped item
+		if controller.net_is_using and controller.active_equipable.use_speed > 0.0:
+			speed = minf(speed, controller.active_equipable.use_speed)
 
 	if not controller.is_on_floor():
 		walk_state = controller.WALK_STATES.STOP
