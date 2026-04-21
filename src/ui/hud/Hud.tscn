@@ -120,11 +120,17 @@ editable = false
 scrollable = false
 
 [node name="AmmoCounter" type="Label" parent="." unique_id=1171409055]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 1504.0
-offset_top = 966.0
-offset_right = 1571.0
-offset_bottom = 1021.0
+offset_top = -114.0
+offset_right = -349.0
+offset_bottom = -59.0
+grow_horizontal = 2
+grow_vertical = 0
 text = "0/0"
 label_settings = SubResource("LabelSettings_dqfrj")
 script = ExtResource("5_gt2ij")

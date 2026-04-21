@@ -11,6 +11,8 @@ func set_local_death_ui(controller, dead: bool) -> void:
 	controller.Local.get_hud().set_dead_state(dead)
 
 func handle_hit(controller, dmg: int, shooter_id: int = 0) -> void:
+	if controller.current_health <= 0:
+		return
 	print("[HIT] is_server=%s node=%s peer_id=%s dmg=%s health_before=%s" % [
 		controller.multiplayer.is_server(), controller.name,
 		controller._get_peer_id_string(), dmg, controller.current_health])

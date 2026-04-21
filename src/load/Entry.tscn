@@ -19,15 +19,17 @@ offset_bottom = 1088.0
 
 [node name="LoginPanel" type="Panel" parent="Control" unique_id=1750668303]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.326
-anchor_top = 0.31
-anchor_right = 0.326
-anchor_bottom = 0.31
-offset_left = 0.38397217
-offset_top = 83.72
-offset_right = 609.384
-offset_bottom = 381.72
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -304.50003
+offset_top = -149.0
+offset_right = 304.50003
+offset_bottom = 149.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="UserField" type="TextEdit" parent="Control/LoginPanel" unique_id=2009720960]
 layout_mode = 1
