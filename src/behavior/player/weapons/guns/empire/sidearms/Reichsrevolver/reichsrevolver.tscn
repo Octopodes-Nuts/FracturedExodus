@@ -11,8 +11,7 @@ script = ExtResource("1_nqb6u")
 clip_size = 6
 ammo_pool = 18
 fire_sound = ExtResource("2_6xkq4")
-bullet_damage = 55.0
-bullet_speed = 340.0
+cycle_time = 1.0
 bullet_lifetime = 5.0
 bullet_spread = 7.0
 ads_position = Vector3(0, 0, -0.3)
@@ -34,4 +33,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.009626292, -0.3904976)
 [node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_0471c")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.009626612, -0.3904976)
 
-[node name="GunInHand" parent="." unique_id=1504676241 instance=ExtResource("5_apku6")]
+[node name="GunInHand" parent="." unique_id=1045052859 instance=ExtResource("5_apku6")]

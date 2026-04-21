@@ -8,9 +8,10 @@
 
 [node name="Berthier" type="Node3D" unique_id=779288961]
 script = ExtResource("1_y2fa6")
+clip_size = 3
+ammo_pool = 18
 fire_sound = ExtResource("2_otayw")
-bullet_damage = 66.0
-bullet_speed = 515.0
+cycle_time = 1.7
 bullet_lifetime = 5.0
 bullet_spread = 0.02
 definition_path = "res://behavior/player/weapons/guns/entente/longarms/berthier/berthier.tres"

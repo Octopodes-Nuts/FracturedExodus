@@ -8,9 +8,10 @@
 
 [node name="Gewehr98" type="Node3D" unique_id=1551296906]
 script = ExtResource("1_dpahx")
+clip_size = 5
+ammo_pool = 15
 bolt_pull_sound = ExtResource("2_4p3pj")
-bullet_damage = 74.0
-bullet_speed = 410.0
+cycle_time = 1.5
 bullet_lifetime = 5.0
 bullet_spread = 0.01
 ads_position = Vector3(0, 0, 0.1)
@@ -32,4 +33,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.016266694, -1.2513504)
 [node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_ypllb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.016266694, -1.2513504)
 
-[node name="GunInHand" parent="." unique_id=1446869095 instance=ExtResource("5_wjm1x")]
+[node name="GunInHand" parent="." unique_id=705409710 instance=ExtResource("5_wjm1x")]

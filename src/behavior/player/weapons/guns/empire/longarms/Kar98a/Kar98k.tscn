@@ -8,9 +8,10 @@
 
 [node name="Kar98k" type="Node3D" unique_id=2004871969]
 script = ExtResource("1_0udev")
+clip_size = 5
+ammo_pool = 15
 fire_sound = ExtResource("2_0hngi")
-bullet_damage = 60.0
-bullet_speed = 370.0
+cycle_time = 1.7
 bullet_lifetime = 5.0
 bullet_spread = 0.02
 ads_position = Vector3(0, 0, 0.1)
@@ -32,4 +33,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.022091739, -1.109646)
 [node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_tm3ce")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.022091739, -1.109646)
 
-[node name="GunInHand" parent="." unique_id=1287673811 instance=ExtResource("5_rhxrv")]
+[node name="GunInHand" parent="." unique_id=1408276042 instance=ExtResource("5_rhxrv")]
