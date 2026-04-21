@@ -194,10 +194,13 @@ func _tick_pursuit() -> Vector3:
 	if current_state != AiState.PURSUIT:
 		_set_state(AiState.PURSUIT)
 	if is_instance_valid(tracked_player):
-		last_heard_position = tracked_player.global_position
-		if _is_player_in_attack_range(tracked_player.global_position):
-			_set_state(AiState.ATTACK)
-			return Vector3.ZERO
+		if not _is_player_alive(tracked_player):
+			tracked_player = null
+		else:
+			last_heard_position = tracked_player.global_position
+			if _is_player_in_attack_range(tracked_player.global_position):
+				_set_state(AiState.ATTACK)
+				return Vector3.ZERO
 	_update_navigation_target(last_heard_position)
 	if noise_age > pursuit_timeout:
 		_set_state(AiState.SCAN)
@@ -207,7 +210,8 @@ func _tick_pursuit() -> Vector3:
 func _tick_attack() -> Vector3:
 	if current_state != AiState.ATTACK:
 		_set_state(AiState.ATTACK)
-	if not is_instance_valid(tracked_player):
+	if not _is_player_alive(tracked_player):
+		tracked_player = null
 		_set_state(AiState.SCAN)
 		return Vector3.ZERO
 	last_heard_position = tracked_player.global_position
@@ -220,7 +224,7 @@ func _tick_attack() -> Vector3:
 func _should_attack() -> bool:
 	if _should_retreat():
 		return false
-	if not is_instance_valid(tracked_player):
+	if not _is_player_alive(tracked_player):
 		return false
 	if noise_age > pursuit_timeout:
 		return false
@@ -246,6 +250,8 @@ func _cast_vision_cone() -> void:
 	var forward := -global_transform.basis.z
 	for candidate in _cached_players:
 		if not is_instance_valid(candidate) or not (candidate is Node3D):
+			continue
+		if not _is_player_alive(candidate):
 			continue
 		var player := candidate as Node3D
 		var target_center: Vector3 = player.global_position + Vector3.UP * 0.9

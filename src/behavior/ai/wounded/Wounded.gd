@@ -140,8 +140,9 @@ func _tick_pursuit() -> Vector3:
 	if current_state != AiState.PURSUIT:
 		_set_state(AiState.PURSUIT)
 	if is_instance_valid(tracked_player):
-		last_heard_position = tracked_player.global_position
-		if _is_player_in_attack_window(tracked_player.global_position) and _can_see_player(tracked_player):
+		if not _is_player_alive(tracked_player):
+			tracked_player = null
+		elif _is_player_in_attack_window(tracked_player.global_position) and _can_see_player(tracked_player):
 			_set_state(AiState.ATTACK)
 			return Vector3.ZERO
 	_update_navigation_target(last_heard_position)
@@ -153,7 +154,8 @@ func _tick_pursuit() -> Vector3:
 func _tick_attack() -> Vector3:
 	if current_state != AiState.ATTACK:
 		_set_state(AiState.ATTACK)
-	if not is_instance_valid(tracked_player):
+	if not _is_player_alive(tracked_player):
+		tracked_player = null
 		_set_state(AiState.SCAN)
 		return Vector3.ZERO
 
@@ -192,7 +194,7 @@ func _should_retreat() -> bool:
 	return health <= max_health * retreat_health_threshold
 
 func _should_attack() -> bool:
-	if not is_instance_valid(tracked_player):
+	if not _is_player_alive(tracked_player):
 		return false
 	if noise_age > pursuit_timeout:
 		return false
