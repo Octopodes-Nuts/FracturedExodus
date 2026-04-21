@@ -257,6 +257,12 @@ func _register_noise(source_position: Vector3) -> void:
 
 # --- Vision ---
 
+func _is_player_alive(player: Node3D) -> bool:
+	if not is_instance_valid(player):
+		return false
+	var health_val = player.get("current_health")
+	return health_val == null or health_val > 0
+
 func _can_see_player(player: Node3D) -> bool:
 	if not is_instance_valid(player):
 		return false
@@ -285,6 +291,8 @@ func _cast_vision_cone() -> void:
 	var forward := -global_transform.basis.z
 	for candidate in get_tree().get_nodes_in_group("players"):
 		if not is_instance_valid(candidate) or not (candidate is Node3D):
+			continue
+		if not _is_player_alive(candidate):
 			continue
 		var player := candidate as Node3D
 		var target_center: Vector3 = player.global_position + Vector3.UP * 0.9
@@ -472,7 +480,10 @@ func _tick_pursuit() -> Vector3:
 	if current_state != AiState.PURSUIT:
 		_set_state(AiState.PURSUIT)
 	if is_instance_valid(tracked_player):
-		last_heard_position = tracked_player.global_position
+		if not _is_player_alive(tracked_player):
+			tracked_player = null
+		else:
+			last_heard_position = tracked_player.global_position
 	_update_navigation_target(last_heard_position)
 	if noise_age > pursuit_timeout:
 		_set_state(AiState.SCAN)
