@@ -21,7 +21,6 @@ const FRIENDLY_ICON_SIZE := Vector2(38.0, 38.0)
 
 var _local_icon: TextureRect
 var _friendly_icons: Array[TextureRect] = []
-var _coord_label: Label
 
 
 func _ready() -> void:
@@ -33,11 +32,6 @@ func _ready() -> void:
 	_map_texture.add_child(_local_icon)
 	_local_icon.size = LOCAL_ICON_SIZE
 	_local_icon.pivot_offset = LOCAL_ICON_SIZE / 2.0
-
-	_coord_label = Label.new()
-	_coord_label.position = Vector2(8, 8)
-	_coord_label.add_theme_font_size_override("font_size", 14)
-	add_child(_coord_label)
 
 
 func _make_icon(tex: Texture2D, size: Vector2) -> TextureRect:
@@ -75,11 +69,6 @@ func _process(_delta: float) -> void:
 	_apply_icon_size(_local_icon, LOCAL_ICON_SIZE)
 	var world_pos = local_player.global_position
 	_local_icon.position = _world_to_map(world_pos) - _local_icon.pivot_offset
-	_coord_label.text = "world: (%.1f, %.1f)  map_px: (%.0f, %.0f)" % [
-		world_pos.x, world_pos.z,
-		_local_icon.position.x + _local_icon.pivot_offset.x,
-		_local_icon.position.y + _local_icon.pivot_offset.y,
-	]
 
 	var local_faction := -1
 	var char_def = Local.get_state("selected_character_def")
