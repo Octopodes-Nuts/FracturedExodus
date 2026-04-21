@@ -56,6 +56,7 @@ var char_id: String
 var host: bool = false
 var has_objective = false
 var shader_rect: ColorRect
+var queued: bool = false
 
 func _ready():
 	pass

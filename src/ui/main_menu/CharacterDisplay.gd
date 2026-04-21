@@ -7,6 +7,8 @@ var def: CharacterDef
 @onready var character_render = $character_render
 @onready var character_name = $character_name
 @onready var xp_label: Label = $VBoxContainer/XPLabel
+@onready var select_btn = $VBoxContainer/HBoxContainer/select_btn
+@onready var dismiss_btn = $VBoxContainer/HBoxContainer/dismiss_btn
 
 var account_api: AccountAPI
 
@@ -18,6 +20,7 @@ func _ready() -> void:
 	new_character_dialogue.opened.connect(hide)
 	new_character_dialogue.closed.connect(show)
 	Local.state_changed.connect(reload)
+	Local.state_changed.connect(_on_local_state_changed)
 
 func _process(_delta: float) -> void:
 	pass
@@ -43,3 +46,8 @@ func _on_dismiss_btn_pressed() -> void:
 		Local.sort_characters()
 		# Clear the selected character
 		account_api.set_active_character(null)
+
+func _on_local_state_changed(state: String, value: Variant) -> void:
+	if state == "queued":
+		select_btn.disabled = value
+		dismiss_btn.disabled = value

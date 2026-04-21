@@ -156,6 +156,7 @@ func _on_party_status_request_request_completed(_result, response_code, _headers
 			emit_signal("in_party_status_changed", Local.get_state("party_members"))
 		else:
 			Local.set_state("in_party", false)
+			Local.set_state("party_leader", true)
 			Local.set_state("party_members", [])
 		if status.has("status"):
 			Local.set_state("party_status", status["status"])
