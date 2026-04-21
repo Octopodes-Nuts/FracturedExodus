@@ -27,6 +27,10 @@ uniform float ray_weight : hint_range(0.0, 1.0) = 0.4;
 uniform int ray_samples : hint_range(10, 100) = 60;
 uniform vec3 ray_color : source_color = vec3(1.0, 0.95, 0.8);
 
+uniform vec4 hit_color : source_color = vec4(0.60, 0.212, 0.212, 1.0);
+
+uniform int hit = 0;
+
 float luma(vec3 c) {
 	return dot(c, vec3(0.299, 0.587, 0.114));
 }
@@ -111,9 +115,15 @@ void fragment() {
 	color += grain * grain_strength;
 
 	// Vignette
-	float vignette = smoothstep(vignette_radius, vignette_radius - 0.3, dist);
-	vignette = mix(1.0 - vignette_strength, 1.0, vignette);
-	color *= vignette;
+	if (hit == 0) {
+		float vignette = smoothstep(vignette_radius, vignette_radius - 0.3, dist);
+		vignette = mix(1.0 - vignette_strength, 1.0, vignette);
+		color *= vignette;
+	} else {
+		float hit_vignette = smoothstep(0.0, 0.55, dist);
+		color = mix(color, hit_color.rgb, 0.3 + hit_vignette * 0.6);
+		color *= mix(1.0, 0.2, hit_vignette);
+	}
 
 	COLOR = vec4(color, 1.0);
 }

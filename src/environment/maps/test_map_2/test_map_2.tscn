@@ -33,8 +33,6 @@
 [ext_resource type="PackedScene" uid="uid://b7debegyyf7rg" path="res://debug/models/env/houses/house3.tscn" id="29_tk16t"]
 [ext_resource type="PackedScene" uid="uid://cxj13kr66ri02" path="res://debug/models/env/houses/house4.tscn" id="29_yg4fi"]
 [ext_resource type="PackedScene" uid="uid://dmrb2g6lve0sh" path="res://debug/models/env/props/fences/PartiallyBrokenFence1.tscn" id="39_1g8m1"]
-[ext_resource type="Material" uid="uid://b0p8vuq4k2gmw" path="res://environment/shaders/shader.tres" id="41_dmac0"]
-[ext_resource type="Script" uid="uid://cfnij864ner7t" path="res://environment/shaders/WorldShader.gd" id="42_mou33"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_k2gh6"]
 size = Vector2(1000, 1000)
@@ -69,20 +67,6 @@ environment = ExtResource("1_un54m")
 script = ExtResource("2_qhi0f")
 
 [node name="Game" parent="." unique_id=169425246 instance=ExtResource("3_ulnwu")]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=554964373]
-
-[node name="ShaderRect" type="ColorRect" parent="CanvasLayer" unique_id=1468592912 node_paths=PackedStringArray("sun")]
-material = ExtResource("41_dmac0")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 6
-size_flags_vertical = 6
-script = ExtResource("42_mou33")
-sun = NodePath("../../DirectionalLight3D")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=26450132]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.006169319, -0.027614594, -0.061088562)

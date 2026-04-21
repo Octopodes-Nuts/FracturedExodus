@@ -52,6 +52,8 @@ func _ready():
 		Local.set_state("host", true)
 		if not get_tree().change_scene_to_file("res://environment/maps/test_map_2/test_map_2.tscn") == OK:
 			print("Error getting to file")
+			
+	Local.shader_rect.set_downed(false)
 
 	Local.state_changed.connect(_on_local_state_updated)
 			
