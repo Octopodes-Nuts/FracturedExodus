@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://dk2x6qhkktl2w"]
+[gd_scene format=3 uid="uid://dk2x6qhkktl2w"]
 
 [ext_resource type="Script" uid="uid://42d7f1pm4wvq" path="res://behavior/player/equipment/MedPack.gd" id="1_in6q0"]
 
@@ -8,18 +8,20 @@ size = Vector3(0.4, 0.4, 0.2)
 [sub_resource type="ViewportTexture" id="ViewportTexture_in6q0"]
 viewport_path = NodePath("SubViewport")
 
-[node name="MedPack" type="Node3D"]
+[node name="MedPack" type="Node3D" unique_id=321005712]
 transform = Transform3D(0.469749, 0, 0.8828, 0, 1, 0, -0.8828, 0, 0.469749, 0, 0, 0)
 script = ExtResource("1_in6q0")
+heal_rate = 7.5
+use_speed = 2.0
 default_position = Vector3(-1, 0.025, -1)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=157624007]
 mesh = SubResource("BoxMesh_x3p8j")
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="." unique_id=564876123]
 transparent_bg = true
 
-[node name="Label" type="Label" parent="SubViewport"]
+[node name="Label" type="Label" parent="SubViewport" unique_id=925347235]
 offset_right = 29.0
 offset_bottom = 53.0
 theme_override_colors/font_color = Color(0.648642, 0.2616, 0.254419, 1)
@@ -28,7 +30,7 @@ text = "H"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Sprite3D" type="Sprite3D" parent="."]
+[node name="Sprite3D" type="Sprite3D" parent="." unique_id=219925692]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -2.4, -2.292, 0.107)
 rotation_order = 0
 axis = 0

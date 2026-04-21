@@ -14,6 +14,7 @@ var continuous_usage: bool = false
 var cool_down: bool = false
 
 @export var default_position: Vector3 = Vector3.ZERO
+@export var use_speed: float = 3.0
 
 
 # this is for a good reason anthony. This active setting needs
