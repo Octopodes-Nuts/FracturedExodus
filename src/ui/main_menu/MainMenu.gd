@@ -41,6 +41,8 @@ var _character_warmup_polls_left: int = 0
 # this server code will likely be moved
 var active_register = 1
 
+var menu_state: MenuState
+
 var matchmaking_time_elapsed: float = 0.0
 
 signal reload_ui
@@ -78,8 +80,17 @@ func _ready():
 
 	character_select.account_api = account_api
 	character_select.click_sound = click_sound
-	faction_select.select(0)
-	_on_option_button_item_selected(0)
+	if ResourceLoader.exists("user://menu_state.res"):
+		menu_state = ResourceLoader.load("user://menu_state.res")
+		Local.set_state("selected_faction", menu_state.selected_faction)
+		faction_select.select(Local.get_state("selected_faction") - 1)
+		_on_option_button_item_selected(Local.get_state("selected_faction") - 1)
+	else:
+		menu_state = MenuState.new()
+		menu_state.selected_faction = Factions.Enum.ENTENTE
+		faction_select.select(Factions.Enum.ENTENTE - 1)
+		_on_option_button_item_selected(Local.get_state("selected_faction") - 1)
+		ResourceSaver.save(menu_state, "user://menu_state.res")
 	account_api.character_created.connect(character_select._on_character_created)
 	account_api.characters_received.connect(_on_characters_refreshed)
 	matchmaking_api.match_found.connect(match_found)
@@ -207,6 +218,8 @@ func _set_current_faction(faction: int):
 			Factions.Enum.FREE_AGENTS:
 				faction_select.select(2)
 				_on_option_button_item_selected(2)
+		menu_state.selected_faction = faction
+		ResourceSaver.save(menu_state, "user://menu_state.res")
 
 func match_found(port: int, ip: String):
 	character_update_timer.stop()
@@ -300,6 +313,8 @@ func _on_option_button_item_selected(index: int) -> void:
 		0:
 			if Local.get_state("selected_faction") != Factions.Enum.ENTENTE:
 				Local.set_state("selected_faction", Factions.Enum.ENTENTE)
+				menu_state.selected_faction = Factions.Enum.ENTENTE
+				ResourceSaver.save(menu_state, "user://menu_state.res")
 				if len(Local.get_state("entente_characters").characters) != 0:
 					account_api.set_active_character(Local.get_state("entente_characters").characters.values()[0])
 				else:
@@ -307,6 +322,8 @@ func _on_option_button_item_selected(index: int) -> void:
 		1:
 			if Local.get_state("selected_faction") != Factions.Enum.EMPIRE:
 				Local.set_state("selected_faction", Factions.Enum.EMPIRE)
+				menu_state.selected_faction = Factions.Enum.EMPIRE
+				ResourceSaver.save(menu_state, "user://menu_state.res")
 				if len(Local.get_state("empire_characters").characters) != 0:
 					account_api.set_active_character(Local.get_state("empire_characters").characters.values()[0])
 				else:
@@ -314,6 +331,8 @@ func _on_option_button_item_selected(index: int) -> void:
 		2:
 			if Local.get_state("selected_faction") != Factions.Enum.FREE_AGENTS:
 				Local.set_state("selected_faction", Factions.Enum.FREE_AGENTS)
+				menu_state.selected_faction = Factions.Enum.FREE_AGENTS
+				ResourceSaver.save(menu_state, "user://menu_state.res")
 				if len(Local.get_state("free_agent_characters").characters) != 0:
 					account_api.set_active_character(Local.get_state("free_agent_characters").characters.values()[0])
 				else:
