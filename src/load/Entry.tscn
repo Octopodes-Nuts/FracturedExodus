@@ -13,11 +13,6 @@ script = ExtResource("1_bsg4i")
 
 [node name="Control" type="Control" parent="." unique_id=1384325857]
 layout_mode = 3
-<<<<<<< Updated upstream
-anchors_preset = 0
-offset_right = 1916.0
-offset_bottom = 1088.0
-=======
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -31,7 +26,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
->>>>>>> Stashed changes
 
 [node name="LoginPanel" type="Panel" parent="Control" unique_id=1750668303]
 layout_mode = 1

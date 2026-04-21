@@ -36,7 +36,6 @@ const CHARACTER_POLL_SEARCHING_INTERVAL: float = 25.0
 
 @export var click_sound: AudioStreamPlayer2D
 
-var queued = false
 var _character_warmup_polls_left: int = 0
 
 # this server code will likely be moved
@@ -111,7 +110,7 @@ func _ready():
 
 
 func _process(_delta: float) -> void:
-	if queued:
+	if Local.get_state("queued"):
 		matchmaking_time_elapsed += _delta
 		matchmaking_time_display.text = str(matchmaking_time_elapsed).substr(0, 3)
 
@@ -143,7 +142,7 @@ func _schedule_character_poll(interval_seconds: float) -> void:
 	character_update_timer.start()
 
 func _get_adaptive_character_poll_interval() -> float:
-	if queued or String(Local.get_state("matchmaking_status")) == "searching":
+	if Local.get_state("queued") or String(Local.get_state("matchmaking_status")) == "searching":
 		return CHARACTER_POLL_SEARCHING_INTERVAL
 	return CHARACTER_POLL_IDLE_INTERVAL
 
@@ -190,12 +189,16 @@ func _set_first_character_for_selected_faction() -> void:
 		account_api.set_active_character(null)
 	
 func _determine_faction_select_state(_input):
-	faction_select.disabled = Local.get_state("in_party") and (not Local.get_state("party_leader") and len(Local.get_state("party_members")) > 1) or queued
+	var not_leader: bool = (not Local.get_state("party_leader")) and len(Local.get_state("party_members")) > 1
+	var in_party: bool = Local.get_state("in_party")
+	var queued: bool = Local.get_state("queued")
+	faction_select.disabled = in_party and not_leader or queued
 
 func _determine_queue_button_state(_input):
 	var not_leader: bool = (not Local.get_state("party_leader")) and len(Local.get_state("party_members")) > 1
 	var party_not_ready: bool = Local.get_state("in_party") and not Local.get_state("all_party_members_have_character")
 	var no_character := Local.get_state("selected_character_def") == null
+	var queued: bool = Local.get_state("queued")
 	queue_button.disabled = not_leader or party_not_ready or no_character or queued
 
 var _faction = Factions.Enum.DEFAULT
@@ -274,15 +277,15 @@ func _on_character_select_new_char_created() -> void:
 
 
 func _on_matchmaking_status_changed(status: String) -> void:
-	queued = status == "searching"
-	queue_button.disabled = queued
+	Local.set_state("queued", status == "searching")
+	queue_button.disabled = Local.get_state("queued")
 	_schedule_next_character_poll()
 
 
 func _on_ready_button_pressed() -> void:
 	queue_button.disabled = true
 	matchmaking_api.queue_for_match()
-	queued = true
+	Local.set_state("queued", true)
 	_schedule_next_character_poll()
 
 
@@ -346,6 +349,7 @@ func _on_local_state_updated(state: String, value: Variant):
 			queue_button.disabled = true
 	elif state == "all_party_members_have_character" or state == "party_leader":
 		_determine_queue_button_state(null)
+		_determine_faction_select_state(null)
 
 func reload():
 	weapon_select.hide()
