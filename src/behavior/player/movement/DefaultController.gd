@@ -105,6 +105,12 @@ var remote_target_pitch: float = 0.0
 var server_spawn_assigned_by_faction: bool = false
 var officer_speed_buff: float = 1.0
 
+var jump_fatigue: float = 0.0
+@export var JUMP_FATIGUE_ACCRUAL: float = 0.3
+@export var JUMP_FATIGUE_DECAY: float = 2.0
+@export var JUMP_FATIGUE_MIN_HEIGHT: float = 0.2
+@export var JUMP_FATIGUE_MIN_SPEED: float = 0.1
+
 @onready var camera = $neck/camera_head
 @onready var neck = $neck
 @onready var gun_location = $neck/camera_head/gun_location

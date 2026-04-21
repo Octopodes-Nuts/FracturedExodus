@@ -123,6 +123,7 @@ func create_authoritative_state(controller) -> Dictionary:
 		"yaw": controller.rotation.y,
 		"pitch": controller.neck.rotation.x,
 		"is_crouching": controller.is_crouching,
+		"jump_fatigue": controller.jump_fatigue,
 	}
 
 func restore_authoritative_state(controller, state: Dictionary) -> void:
@@ -135,6 +136,7 @@ func restore_authoritative_state(controller, state: Dictionary) -> void:
 	var authoritative_crouch: bool = state.get("is_crouching", false)
 	if authoritative_crouch != controller.is_crouching:
 		controller._set_crouch(authoritative_crouch)
+	controller.jump_fatigue = state.get("jump_fatigue", 0.0)
 
 func discard_acknowledged_inputs(controller, sequence: int) -> void:
 	if controller.pending_inputs.is_empty():
@@ -146,6 +148,11 @@ func discard_acknowledged_inputs(controller, sequence: int) -> void:
 	controller.pending_inputs = remaining_inputs
 
 func replay_pending_inputs(controller) -> void:
+	# Refresh is_on_floor() from the restored authoritative position before replaying,
+	# otherwise the stale in-air value from before the reconcile causes jump inputs to fail.
+	controller.set_velocity(Vector3.ZERO)
+	controller.set_up_direction(Vector3.UP)
+	controller.move_and_slide()
 	for input_packet in controller.pending_inputs:
 		apply_input_packet(controller, input_packet)
 		simulate(controller, input_packet["dt"], false, false)
@@ -158,6 +165,13 @@ func reconcile(controller, sequence: int, state: Dictionary) -> void:
 	discard_acknowledged_inputs(controller, sequence)
 	if not needs_reconcile:
 		return
+	# If the server snapshot predates our predicted jump (server still has us on the floor
+	# but we have a pending jump input), trust the local prediction to avoid snapping
+	# the player back to the ground before the server has confirmed the jump.
+	if state.get("gravity_direction", Vector3.ZERO).y <= 0.0 and controller.gravity_direction.y > 0.0:
+		for input in controller.pending_inputs:
+			if input.get("jump_pressed", false):
+				return
 	restore_authoritative_state(controller, state)
 	if not controller.pending_inputs.is_empty():
 		replay_pending_inputs(controller)
@@ -279,12 +293,15 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 		# flickering on bumpy terrain when gravity is exactly 0.
 		if controller.gravity_direction.y == 0.0:
 			controller.gravity_direction.y = -0.5
+		controller.jump_fatigue = maxf(controller.jump_fatigue - controller.JUMP_FATIGUE_DECAY * dt, 0.0)
 	else:
 		controller.gravity_direction += Vector3.DOWN * controller.gravity * dt
 
 	if controller.current_health > 0:
-		if controller.net_jump_pressed and controller.is_on_floor() and controller.full_contact:
-			controller.gravity_direction = Vector3.UP * controller.jump
+		if controller.net_jump_pressed and controller.is_on_floor():
+			var height_scale := lerpf(1.0, controller.JUMP_FATIGUE_MIN_HEIGHT, controller.jump_fatigue)
+			controller.gravity_direction = Vector3.UP * controller.jump * height_scale
+			controller.jump_fatigue = minf(controller.jump_fatigue + controller.JUMP_FATIGUE_ACCRUAL, 1.0)
 			controller.net_jump_pressed = false
 			if play_walk_locally:
 				var model = controller.get_node_or_null("Ch36_nonPBR")
@@ -346,6 +363,9 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 		controller.play_walk(controller.name, walk_state)
 
 	controller.direction = controller.direction.normalized()
+	if not controller.is_on_floor():
+		var air_speed_scale := lerpf(1.0, controller.JUMP_FATIGUE_MIN_SPEED, controller.jump_fatigue)
+		speed *= air_speed_scale
 	controller.horizantal_velocity = controller.horizantal_velocity.lerp(controller.direction * speed, clampf(accel * dt, 0.0, 1.0))
 	controller.movement.z = controller.horizantal_velocity.z + controller.gravity_direction.z
 	controller.movement.x = controller.horizantal_velocity.x + controller.gravity_direction.x
