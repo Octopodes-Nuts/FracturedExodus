@@ -242,7 +242,7 @@ func _ready():
 	if Local.get_state("terrain"):
 		Local.get_state("terrain").set_camera(camera)
 	add_child(HUD)
-	var health_slider = HUD.get_node("health_slider")
+	var health_slider = HUD.get_health_slider()
 	health_slider.max_value = FULL_HEALTH
 	health_slider.value = current_health
 	

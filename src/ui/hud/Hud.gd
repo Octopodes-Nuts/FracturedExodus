@@ -24,6 +24,9 @@ var hit_indicator_timer: float = 0.0
 const _HIT_INDICATOR_DURATION: float = 1.5
 const _HIT_INDICATOR_RADIUS: float = 110.0
 
+func get_health_slider():
+	return health_slider
+
 func _ready() -> void:
 	hitmarker_timer = Timer.new()
 	add_child(hitmarker_timer)
