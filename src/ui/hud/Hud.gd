@@ -7,11 +7,11 @@ extends Control
 
 @onready var crosshair = $crosshair
 @onready var death_text = $death_text
-@onready var health_slider = $health_slider
+@onready var health_slider = $BottomRow/health_slider
 @onready var display_text = $Notification
 @onready var extract_timer = $ExtractTimer
 @onready var interaction_text = $TextDisplay
-@onready var ammo_counter = $AmmoCounter
+@onready var ammo_counter = $BottomRow/AmmoCounterSpace/AmmoCounter
 @onready var hit_marker = $HitMarker
 @onready var hit_sound = $HitSound
 

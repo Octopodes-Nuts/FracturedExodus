@@ -29,7 +29,7 @@ grow_vertical = 2
 script = ExtResource("1_by07e")
 tab_map = NodePath("TabMap")
 
-[node name="ShaderRect" type="ColorRect" parent="." unique_id=213165207 node_paths=PackedStringArray("sun")]
+[node name="ShaderRect" type="ColorRect" parent="." unique_id=213165207]
 material = ExtResource("2_iyywv")
 layout_mode = 1
 anchors_preset = 15
@@ -40,7 +40,6 @@ grow_vertical = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
 script = ExtResource("3_q25gb")
-sun = NodePath("")
 
 [node name="crosshair" type="TextureRect" parent="." unique_id=1626041731]
 layout_mode = 1
@@ -117,39 +116,6 @@ label_settings = SubResource("LabelSettings_4sqfl")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="health_slider" type="HSlider" parent="." unique_id=1521597263]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 485.0
-offset_top = -147.0
-offset_right = -483.0
-offset_bottom = -33.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_icons/grabber_disabled = SubResource("ImageTexture_by07e")
-value = 100.0
-editable = false
-scrollable = false
-
-[node name="AmmoCounter" type="Label" parent="." unique_id=1171409055]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 1504.0
-offset_top = -114.0
-offset_right = -349.0
-offset_bottom = -59.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "0/0"
-label_settings = SubResource("LabelSettings_dqfrj")
-script = ExtResource("5_gt2ij")
-
 [node name="HitMarker" type="TextureRect" parent="." unique_id=985888825]
 visible = false
 layout_mode = 1
@@ -173,3 +139,35 @@ stream = ExtResource("7_ks410")
 [node name="TabMap" parent="." unique_id=1353416848 instance=ExtResource("2_epdrl")]
 visible = false
 layout_mode = 1
+
+[node name="BottomRow" type="HBoxContainer" parent="." unique_id=371086995]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -84.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Spacer1" type="Control" parent="BottomRow" unique_id=1271721844]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="health_slider" type="HSlider" parent="BottomRow" unique_id=1521597263]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_icons/grabber_disabled = SubResource("ImageTexture_by07e")
+value = 100.0
+editable = false
+scrollable = false
+
+[node name="AmmoCounterSpace" type="HBoxContainer" parent="BottomRow" unique_id=1288825310]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AmmoCounter" type="Label" parent="BottomRow/AmmoCounterSpace" unique_id=1171409055]
+layout_mode = 2
+text = "0/0"
+label_settings = SubResource("LabelSettings_dqfrj")
+script = ExtResource("5_gt2ij")
