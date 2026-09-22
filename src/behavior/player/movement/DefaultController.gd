@@ -275,7 +275,7 @@ func _set_current_health(updated_health: float):
 	else:
 		current_health = updated_health
 	if _is_local_player():
-		HUD.get_node("health_slider").value = current_health
+		HUD.get_health_slider().value = current_health
 
 func char_serv_update(ids: Array):
 	var peer_id_str := _get_peer_id_string()
