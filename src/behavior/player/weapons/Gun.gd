@@ -122,30 +122,8 @@ func _use():
 
 		assert(definition != null, "[GUN] definition is null on '%s' (definition_path='%s') — set definition_path in the scene" % [name, definition_path])
 		print("[GUN] client sending _spawn_bullet RPC — gun=%s dmg=%.1f speed=%.1f origin=%s" % [name, definition.base_damage, definition.muzzle_velocity, muzzle_end.global_transform.origin])
-		_spawn_bullet.rpc_id(1, {
-			"speed": definition.muzzle_velocity,
-			"origin": muzzle_end.global_transform.origin,
-			"dmg": definition.base_damage,
-			"ang": muzzle_end.global_rotation,
-			"lifetime": bullet_lifetime,
-			"ads": ads,
-			"spread": bullet_spread,
-			"type": definition.gun_type,
-			"shooter": multiplayer.get_unique_id()
-		})
+		_shoot()
 
-		# spawn a bullet
-		# var bullet = BulletScene.instantiate()
-		# Global.spawn_parent.add_child(bullet)
-		# bullet.set_properties(
-		# 	bullet_speed,
-		# 	muzzle_end.global_transform.origin,
-		# 	bullet_damage,
-		# 	muzzle_end.global_rotation,
-		# 	bullet_lifetime,
-		# 	ads,
-		# 	bullet_spread
-		# )
 		current_clip -= 1
 		if definition != null:
 			recoil.emit(float(definition.vertical_recoil), float(definition.horizantal_recoil))
@@ -153,6 +131,19 @@ func _use():
 	else:
 		# player play weapon click
 		pass
+
+func _shoot():
+	_spawn_bullet.rpc_id(1, {
+		"speed": definition.muzzle_velocity,
+		"origin": muzzle_end.global_transform.origin,
+		"dmg": definition.base_damage,
+		"ang": muzzle_end.global_rotation,
+		"lifetime": bullet_lifetime,
+		"ads": ads,
+		"spread": bullet_spread,
+		"type": definition.gun_type,
+		"shooter": multiplayer.get_unique_id()
+	})
 
 @rpc("any_peer")
 func _spawn_bullet(dict: Dictionary):

@@ -19,7 +19,8 @@ signal party_faction_updated
 var match_ended_request: HTTPRequest = HTTPRequest.new()
 var register_server_request: HTTPRequest = HTTPRequest.new()
 
-var server_url: String = "http://" + Local.server_ip + ":" + Local.server_port + "/"
+var server_url: String:
+	get: return "http://" + Local.server_ip + ":" + Local.server_port + "/"
 # var server_url = "http://209.38.77.226:8000/"
 # var server_url = "http://192.168.1.238:8000/"
 
