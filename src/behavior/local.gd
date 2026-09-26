@@ -62,11 +62,20 @@ func _ready():
 	pass
 
 func get_state(key: StringName) -> Variant:
+	if not _is_known_key(key):
+		push_error("[Local] get_state: unknown key '%s' (typo?)" % key)
+		return null
 	return get(String(key))
 
 func set_state(key: StringName, value: Variant) -> void:
+	if not _is_known_key(key):
+		push_error("[Local] set_state: unknown key '%s' (typo?)" % key)
+		return
 	set(String(key), value)
 	emit_signal("state_changed", key, value)
+
+func _is_known_key(key: StringName) -> bool:
+	return String(key) in self
 
 func set_hud(hud: Control) -> void:
 	if HUD == hud:
