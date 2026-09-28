@@ -7,6 +7,10 @@ class_name SettingsRes
 @export var sfx_volume: float = 0.5
 @export var fullscreen: bool = true
 @export var resolution: Vector2i = Vector2i(1920, 1080)
+@export var screen_size: DisplayServer.WindowMode = DisplayServer.WINDOW_MODE_FULLSCREEN
+@export var msaa: Viewport.MSAA = Viewport.MSAA_DISABLED
+@export var ssaa: Viewport.ScreenSpaceAA = Viewport.SCREEN_SPACE_AA_DISABLED
+@export var TAA: bool = true
 @export var language: String = "en"
 @export var show_tutorials: bool = true
 

@@ -71,6 +71,7 @@ common/enable_pause_aware_picking=true
 
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=4
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=4
+anti_aliasing/quality/use_taa=true
 quality/shadows/filter_mode=2
 
 [shader_globals]

@@ -21,6 +21,7 @@ class_name MainMenu
 @onready var faction_select = $FactionSelect
 @onready var matchmaking_time_display = $matchmaking_time_display
 @onready var party_panel = $party_panel
+@onready var settings_menu = $settings_menu
 
 @onready var account_info_update_timer: Timer = Timer.new()
 @onready var party_update_timer: Timer = Timer.new()
@@ -82,14 +83,13 @@ func _ready():
 	character_select.click_sound = click_sound
 	if ResourceLoader.exists("user://menu_state.res"):
 		menu_state = ResourceLoader.load("user://menu_state.res")
-		Local.set_state("selected_faction", menu_state.selected_faction)
-		faction_select.select(Local.get_state("selected_faction") - 1)
-		_on_option_button_item_selected(Local.get_state("selected_faction") - 1)
+		faction_select.select(menu_state.selected_faction - 1)
+		_on_option_button_item_selected(menu_state.selected_faction - 1)
 	else:
 		menu_state = MenuState.new()
 		menu_state.selected_faction = Factions.Enum.ENTENTE
 		faction_select.select(Factions.Enum.ENTENTE - 1)
-		_on_option_button_item_selected(Local.get_state("selected_faction") - 1)
+		_on_option_button_item_selected(Factions.Enum.ENTENTE - 1)
 		ResourceSaver.save(menu_state, "user://menu_state.res")
 	account_api.character_created.connect(character_select._on_character_created)
 	account_api.characters_received.connect(_on_characters_refreshed)
@@ -108,6 +108,11 @@ func _ready():
 	for character in Local.get_state("characters").characters.keys():
 		print("Character: ", character, " Def: ", Local.get_state("characters").characters[character])
 
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("exit"):
+		settings_menu.visible = not settings_menu.visible
+		get_viewport().set_input_as_handled()
 
 func _process(_delta: float) -> void:
 	if Local.get_state("queued"):

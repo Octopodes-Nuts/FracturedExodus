@@ -16,6 +16,7 @@
 [ext_resource type="Script" uid="uid://b8kharo2dvtji" path="res://ui/main_menu/AddFriendPanel.gd" id="10_olnjm"]
 [ext_resource type="AudioStream" uid="uid://jdngidi0m626" path="res://ui/Typewriter Sound Effects.wav" id="12_uqh3w"]
 [ext_resource type="PackedScene" uid="uid://dciymm0oifuj4" path="res://ui/main_menu/PartyPanel.tscn" id="13_mxi6j"]
+[ext_resource type="PackedScene" uid="uid://dvkh4cq4tusji" path="res://ui/settings/SettingsMenu.tscn" id="14_stgmnu"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_jx6dv"]
 
@@ -236,6 +237,15 @@ popup/item_1/text = "Empire"
 popup/item_1/id = 1
 popup/item_2/text = "Free Agents"
 popup/item_2/id = 2
+
+[node name="settings_menu" parent="." unique_id=1938475601 groups=["UI"] instance=ExtResource("14_stgmnu")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="click_sound" type="AudioStreamPlayer2D" parent="." unique_id=2136004658 groups=["UI"]]
 stream = ExtResource("12_uqh3w")

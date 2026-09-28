@@ -14,9 +14,21 @@ Alt-history WWI, 1914. Three factions:
 
 **Likely but unconfirmed connection:** "chips" (the extraction objective, §2) are probably the recovered alien tech/fission-cell salvage itself, given this story — but that wasn't stated explicitly, so treat it as a strong inference to confirm rather than settled.
 
+**No human NPCs — players control every human entity in the game.** All AI is the Fractured themselves, split into three types:
+
+| Type | Speed | Weapon | Behavior |
+|---|---|---|---|
+| Wounded | Slow | Rifle | Sentry, guards camps |
+| Survivor | — | Melee | Guards camps |
+| Hunter | Healthy | Rifle | Wanders the open landscape (not camp-bound) |
+
+**Wounded.gd already matches its type well**, and the connection to this reveal was already latent in the code before this conversation: it carries a `BasicAiGun` (rifle), and has real camp-sentry behavior — a `home` anchor with `max_home_leash_distance`, clamping patrol/retreat targets to that leash and returning home (`_tick_return_home`) if it strays. Its model node path is literally `debug_fractured/Armature/...` — the placeholder art was already named after the species before anyone said so out loud.
+
+**`BasicEnemy.gd` doesn't cleanly match either remaining type.** It carries an `AiSword` (melee — matches Survivor's weapon) but has no home/leash logic at all — it wanders freely from its spawn point with no camp to guard (matches Hunter's *behavior*, not its weapon). So today it's a blend of half-Survivor, half-Hunter, and neither Survivor (camp-guarding melee) nor Hunter (wandering rifle) exists as a clean, correctly-matched implementation yet. Turning this into the three real types means: keep `Wounded` as-is (just tune "slow" if the current speed values aren't slow enough), and either rework `BasicEnemy` into one of Survivor/Hunter and build the other from scratch, or split it into two new AI subclasses.
+
 **Still open:**
 - Confirm/deny the chips = alien tech salvage connection above.
-- Given this story, is PvE (bots) meant to include hostile aliens (scout-ship security, wildlife, whatever) alongside human NPCs? The story makes that a natural fit, but it hasn't been decided (§2 already had this as open independent of the story reveal).
+- Speed/rifle/melee numeric tuning for Survivor and Hunter specifically (Wounded's numbers already exist as a starting point).
 
 **Real gap: this story currently has no delivery vehicle in the actual game.** There's no lore text, mission briefing, dialogue, or environmental storytelling anywhere in the codebase (confirmed by search), and gameplay today is pure human-vs-human PvP over an unlabeled "chip" objective — a player experiencing the shipped game wouldn't encounter any of this. The premise is strong on paper (the mechanics-narrative unity around scattered crash sites, the nobody's-the-hero framing), but it needs *some* in-game vessel — chip flavor text, alien wreckage/environmental storytelling at chipsites, hostile alien AI, a mission-select blurb, anything — or it stays something only the designer knows. Not urgent for alpha, but worth deciding intentionally rather than letting it default to "the fiction lives outside the game."
 
@@ -37,7 +49,7 @@ This already has real implementation in `Map.gd`: `extracted_character_ids` / `e
 **[NEEDS INPUT]**
 - Is a 25-minute match length right, independent of the permadeath question above?
 - What do chips *do* mechanically — are they currency, crafting material, or something extraction-related beyond the objective-count they already drive? (Narratively they're likely the alien tech itself, per §1 — unconfirmed.)
-- Is PvE (bots) meant to be a core part of the loop, or filler/atmosphere around PvP? (§1's story makes hostile aliens a natural PvE option alongside/instead of human NPCs — still undecided.)
+- Is PvE (bots) meant to be a core part of the loop, or filler/atmosphere around PvP? (Now confirmed non-human per §1 — still undecided whether it's core or filler.)
 
 ## 3. Factions & Classes
 
@@ -136,7 +148,7 @@ Cross-faction parties are **not allowed** — a party queues as a single faction
 
 Everything marked **[NEEDS INPUT]** above, collected:
 
-1. ~~Setting/fiction~~ — **answered**, see §1: alt-history 1914, an alien species (the Fractured — fractured world, fractured politics, fractured exodus fleet) crash-lands scout ships worldwide mid-WWI; human powers want the tech for the war, the still-neutral US hires the Free Agents as deniable mercenaries to get it covertly. Still open: whether "chips" narratively are the alien tech itself (likely, unconfirmed).
+1. ~~Setting/fiction~~ — **answered**, see §1: alt-history 1914, an alien species (the Fractured — fractured world, fractured politics, fractured exodus fleet) crash-lands scout ships worldwide mid-WWI; human powers want the tech for the war, the still-neutral US hires the Free Agents as deniable mercenaries to get it covertly. No human NPCs exist — all AI is the Fractured, in three types (Wounded/Survivor/Hunter, see §1 table); `Wounded.gd` already matches its type, `BasicEnemy.gd` is a half-Survivor/half-Hunter blend that needs splitting or reworking. Still open: whether "chips" narratively are the alien tech itself (likely, unconfirmed), and Survivor/Hunter numeric tuning.
 2. ~~Match structure / why individual extraction~~ — **answered**, see §2: permadeath on failure to extract is the stakes mechanic, extraction is per-character for that reason. Still open: whether 25 min is the right match length, and whether there's a win condition beyond extracting successfully.
 3. ~~Faction mechanical identity beyond skins~~ — **answered**, see §3: weapon/equipment access (implemented) + per-level traits per class/faction combo (designed, not implemented, list not yet in repo). Still open: whether there's also meant to be a baseline stat difference (health/speed/etc.) between factions/classes, separate from traits.
 4. ~~Class mechanical role~~ — **answered and already implemented**: Officer's speed-buff aura (`OfficerController.gd`), Special's ADS zoom/movement-penalty tradeoff (`SpecialController.gd`), Infantry's stowed-weapon speed buff, and Medic's healing all exist in code with real tuning numbers already set (not placeholders — see §3 for the actual values). The one real remaining gap is scoped weapons specifically: the zoom mechanic exists, but no weapon is marked/modeled as "scoped."
