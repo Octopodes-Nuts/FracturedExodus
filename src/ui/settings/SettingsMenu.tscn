@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://dvkh4cq4tusji"]
+
+[ext_resource type="PackedScene" uid="uid://4pc6j4a374l7" path="res://ui/settings/settings_pages/GraphicsPage.tscn" id="1_argmo"]
+
+[node name="SettingsMenu" type="Control" unique_id=292982584]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=726737650]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.021000002
+anchor_top = -0.026
+anchor_right = 1.0320001
+anchor_bottom = 1.047
+offset_left = -0.6799965
+offset_top = 0.07999992
+offset_right = -0.44018555
+offset_bottom = 0.23999023
+color = Color(0.38928655, 0.38928664, 0.38928658, 1)
+
+[node name="TabContainer" type="TabContainer" parent="." unique_id=1114455487]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -325.0
+offset_top = -427.0
+offset_right = 268.0
+offset_bottom = 409.0
+current_tab = 0
+
+[node name="GraphicsPage" parent="TabContainer" unique_id=323910104 instance=ExtResource("1_argmo")]
+layout_mode = 2
+metadata/_tab_index = 0

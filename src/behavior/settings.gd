@@ -9,17 +9,28 @@ var settings_res: SettingsRes
 
 # setup
 func _ready():
-
-	if ResourceLoader.exists("res://load/Settings.res"):
-		settings_res = ResourceLoader.load("res://load/Settings.res")
+	if ResourceLoader.exists("user://Settings.res"):
+		settings_res = ResourceLoader.load("user://Settings.res")
 	else:
 		settings_res = SettingsRes.new()
-		ResourceSaver.save(settings_res, "res://load/Settings.res")
+		ResourceSaver.save(settings_res, "user://Settings.res")
+
+	# if ResourceLoader.exists("res://load/Settings.res"):
+	# 	settings_res = ResourceLoader.load("res://load/Settings.res")
+	# else:
+	# 	settings_res = SettingsRes.new()
+	# 	ResourceSaver.save(settings_res, "res://load/Settings.res")
 	
 	key_binds = settings_res.key_binds
 	volume = settings_res.volume
 	music_volume = settings_res.music_volume
 	environment_volume = settings_res.sfx_volume
+
+	DisplayServer.window_set_size(settings_res.resolution)
+	DisplayServer.window_set_mode(settings_res.screen_size)
+	get_viewport().msaa_3d = settings_res.msaa
+	get_viewport().screen_space_aa = settings_res.ssaa
+	get_viewport().use_taa = settings_res.TAA
 
 	_set_actions()
 	_load_bindings()

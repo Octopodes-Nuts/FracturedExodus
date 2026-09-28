@@ -24,6 +24,7 @@ func load_from(id: String, dict: Dictionary):
 func set_null():
 	_name.text = "unassigned"
 	_id = ""
+	_img.texture = ImageTexture.new()
 
 
 func _pressed() -> void:
