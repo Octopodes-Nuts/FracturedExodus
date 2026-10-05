@@ -2,21 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://f07mmb6e4puk"
-path.s3tc="res://.godot/imported/tallgreen.png-a52e9741a6224d1e0ecd3e847082018b.s3tc.ctex"
+uid="uid://dlcuei0p10nb4"
+path="res://.godot/imported/lightrock_1.png-8904d2213d41a020433fc87ad3faa337.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
-source_file="res://environment/maps/test_map_2/textures/tallgreen.png"
-dest_files=["res://.godot/imported/tallgreen.png-a52e9741a6224d1e0ecd3e847082018b.s3tc.ctex"]
+source_file="res://environment/maps/test_map_2/textures/lightrock_1.png"
+dest_files=["res://.godot/imported/lightrock_1.png-8904d2213d41a020433fc87ad3faa337.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

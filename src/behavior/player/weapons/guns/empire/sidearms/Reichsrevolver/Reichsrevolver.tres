@@ -15,6 +15,7 @@ gun_type = 4
 base_damage = 55.0
 faction = Array[int]([2])
 muzzle_velocity = 310.0
+devotion_cost = 2
 slots = Dictionary[int, Array]({
 0: [1, 2],
 1: [],

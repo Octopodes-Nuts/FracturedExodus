@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7o2ubgp8jsb5"
-path.s3tc="res://.godot/imported/twoflower.png-ee4b6a0b8ff01b410f6c2b55c643e75a.s3tc.ctex"
+uid="uid://dddq8fu48dct4"
+path.s3tc="res://.godot/imported/oneflower.png-eca2020ff83bd40bc45b36deebb6d5fe.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://environment/maps/test_map_2/textures/twoflower.png"
-dest_files=["res://.godot/imported/twoflower.png-ee4b6a0b8ff01b410f6c2b55c643e75a.s3tc.ctex"]
+source_file="res://environment/maps/test_map_2/textures/sprites/oneflower.png"
+dest_files=["res://.godot/imported/oneflower.png-eca2020ff83bd40bc45b36deebb6d5fe.s3tc.ctex"]
 
 [params]
 

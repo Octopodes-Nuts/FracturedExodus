@@ -64,8 +64,11 @@ var groans = [preload("res://behavior/player/sounds/groan1.wav"),
 			  preload("res://behavior/player/sounds/groan3.wav")]
 var helps = [preload('res://behavior/player/sounds/help1.wav'),
 			 preload('res://behavior/player/sounds/help2.wav')]
-var walk = preload("res://behavior/player/sounds/walk.wav")
-var run = preload("res://behavior/player/sounds/run.wav")
+# var walk = preload("res://behavior/player/sounds/walk.wav")
+# var run = preload("res://behavior/player/sounds/run.wav")
+@export var run: AudioStream
+@export var walk: AudioStream
+@export var land: AudioStream
 
 @onready var audio_player = $audio_player
 
@@ -105,6 +108,9 @@ var remote_target_pitch: float = 0.0
 var server_spawn_assigned_by_faction: bool = false
 var officer_speed_buff: float = 1.0
 
+var was_airborne: bool = false
+var airborne_ticks: int = 0
+const LANDING_AIRBORNE_TICKS: int = 3
 var jump_fatigue: float = 0.0
 @export var JUMP_FATIGUE_ACCRUAL: float = 0.3
 @export var JUMP_FATIGUE_DECAY: float = 2.0
@@ -520,6 +526,9 @@ func play_character_state(id: String, state: String) -> void:
 				if model.has_method("set_jumping"): model.set_jumping()
 			"land":
 				if model.has_method("set_landed"): model.set_landed()
+				if land != null:
+					audio_player.stream = land
+					audio_player.play()
 			"downed":
 				if model.has_method("set_downed"): model.set_downed()
 			"revived":

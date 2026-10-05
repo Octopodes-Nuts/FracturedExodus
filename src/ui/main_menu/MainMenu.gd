@@ -260,18 +260,33 @@ func _on_paper_doll_weapon_change(register: int) -> void:
 func _on_weapon_select_weapon_selected(id: String) -> void:
 	weapon_select.visible = false
 	print("[MainMenu] weapon selected id=%s register=%d" % [id, active_register])
+	var char_def: CharacterDef = Local.get_state("selected_character_def")
+	var old_key := ""
 	if active_register == 1:
-		Local.get_state("selected_character_def").Weapon1 = id
+		old_key = char_def.Weapon1
 	if active_register == 2:
-		Local.get_state("selected_character_def").Weapon2 = id
+		old_key = char_def.Weapon2
 	if active_register == 3:
-		Local.get_state("selected_character_def").Weapon3 = id
+		old_key = char_def.Weapon3
+	var old_def: WeaponDefinition = WeaponRegister.weapons.Definitions.get(old_key)
+	var old_cost := old_def.devotion_cost if old_def != null else 0
+	var new_def: WeaponDefinition = WeaponRegister.weapons.Definitions.get(id)
+	var new_cost := new_def.devotion_cost if new_def != null else 0
+	# The old weapon's cost is refunded as part of the swap, so it goes toward the new one's cost.
+	char_def.Devotion = maxi(int(char_def.Devotion) + old_cost - new_cost, 0)
+	if active_register == 1:
+		char_def.Weapon1 = id
+	if active_register == 2:
+		char_def.Weapon2 = id
+	if active_register == 3:
+		char_def.Weapon3 = id
 	print("[MainMenu] character def after update: W1=%s W2=%s W3=%s" % [
 		Local.get_state("selected_character_def").Weapon1,
 		Local.get_state("selected_character_def").Weapon2,
 		Local.get_state("selected_character_def").Weapon3
 	])
 	Local.emit_character_updated()
+	Local.set_state("selected_character_def", char_def)
 	account_api.update_character(Local.get_state("session_token"), Local.get_state("selected_character_def"))
 
 

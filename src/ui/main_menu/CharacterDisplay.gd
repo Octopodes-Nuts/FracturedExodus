@@ -6,7 +6,8 @@ var def: CharacterDef
 
 @onready var character_render = $character_render
 @onready var character_name = $character_name
-@onready var xp_label: Label = $VBoxContainer/XPLabel
+@onready var xp_label: Label = $VBoxContainer/HBoxContainer2/XPLabel
+@onready var devotion_label: Label = $VBoxContainer/HBoxContainer2/DevotionLabel
 @onready var select_btn = $VBoxContainer/HBoxContainer/select_btn
 @onready var dismiss_btn = $VBoxContainer/HBoxContainer/dismiss_btn
 
@@ -30,6 +31,7 @@ func reload(state: String, value: Variant):
 	if Local.get_state("selected_character_def") != null:
 		character_name.text = Local.get_state("selected_character_def").Name
 		xp_label.text = "XP: %s" % Local.get_state("selected_character_def").XP
+		devotion_label.text = "Devotion: %s" % Local.get_state("selected_character_def").Devotion
 	else:
 		character_name.text = "Select Character"
 

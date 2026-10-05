@@ -282,10 +282,16 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 	if controller.is_on_floor():
 		if controller.gravity_direction.y < 0.0:
 			controller.gravity_direction.y = 0.0
+		controller.airborne_ticks = 0
+		if controller.was_airborne:
+			controller.was_airborne = false
 			if play_walk_locally:
 				var model = controller.get_node_or_null("Ch36_nonPBR")
 				if model and model.has_method("set_landed"):
 					model.set_landed()
+				if controller.land != null:
+					controller.audio_player.stream = controller.land
+					controller.audio_player.play()
 			elif replicate_walk_state:
 				controller.play_character_state.rpc(controller.name, "land")
 		# Keep a small constant downward push so move_and_slide always has
@@ -295,6 +301,12 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 			controller.gravity_direction.y = -0.5
 		controller.jump_fatigue = maxf(controller.jump_fatigue - controller.JUMP_FATIGUE_DECAY * dt, 0.0)
 	else:
+		# Require a few consecutive airborne ticks before arming the landing
+		# trigger, so a single-frame is_on_floor() flicker on bumpy terrain
+		# doesn't retrigger the land sound/animation every frame.
+		controller.airborne_ticks += 1
+		if controller.airborne_ticks >= controller.LANDING_AIRBORNE_TICKS:
+			controller.was_airborne = true
 		controller.gravity_direction += Vector3.DOWN * controller.gravity * dt
 
 	if controller.current_health > 0:
