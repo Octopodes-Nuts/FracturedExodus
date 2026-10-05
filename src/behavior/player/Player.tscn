@@ -2,8 +2,11 @@
 
 [ext_resource type="Script" uid="uid://p561hd5ejgpe" path="res://behavior/player/movement/DefaultController.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://bvwk568y2xhr8" path="res://behavior/player/character/ch_36_non_pbr.tscn" id="1_ch36"]
+[ext_resource type="AudioStream" uid="uid://btey6138dvudl" path="res://behavior/player/sounds/Run2.wav" id="2_tfvsf"]
+[ext_resource type="AudioStream" uid="uid://cbj28xjk7tqx2" path="res://behavior/player/sounds/walk3.wav" id="3_0m67m"]
 [ext_resource type="Script" uid="uid://dbotvawysdgfa" path="res://behavior/player/movement/SoundSphere.gd" id="3_6l03r"]
 [ext_resource type="PackedScene" uid="uid://t64shttxwiks" path="res://behavior/environment/interactables/res_sphere/res_sphere.tscn" id="3_6yuvp"]
+[ext_resource type="AudioStream" uid="uid://bar7kco07ialg" path="res://behavior/player/sounds/Land1.wav" id="4_0m67m"]
 [ext_resource type="Script" uid="uid://hpvfcmyrxokr" path="res://behavior/player/Head.gd" id="4_xn1ii"]
 
 [sub_resource type="CapsuleMesh" id="2"]
@@ -33,6 +36,9 @@ script = ExtResource("1")
 MAX_SPEED = 4.0
 MAX_SPRINT = 7.0
 jump = 7.0
+run = ExtResource("2_tfvsf")
+walk = ExtResource("3_0m67m")
+land = ExtResource("4_0m67m")
 
 [node name="player_mesh" type="MeshInstance3D" parent="." unique_id=1470333164]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.36986238, 0)

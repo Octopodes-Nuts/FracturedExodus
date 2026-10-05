@@ -2,21 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://haq6ddq1tncs"
-path.s3tc="res://.godot/imported/deadgrass.png-3a27d8bc94f5332ab918f34ac0fe4413.s3tc.ctex"
+uid="uid://bcfyce4swemjy"
+path="res://.godot/imported/rocktex2.png-085c43985610d45a4881cae06d365d18.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
-source_file="res://environment/maps/test_map_2/textures/deadgrass.png"
-dest_files=["res://.godot/imported/deadgrass.png-3a27d8bc94f5332ab918f34ac0fe4413.s3tc.ctex"]
+source_file="res://environment/textures/rocktex2.png"
+dest_files=["res://.godot/imported/rocktex2.png-085c43985610d45a4881cae06d365d18.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
