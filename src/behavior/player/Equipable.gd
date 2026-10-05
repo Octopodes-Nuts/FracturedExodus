@@ -27,3 +27,9 @@ func _set_inactive():
 
 func get_ammo():
 	return [0, 0]
+
+# How long this equipable's stow animation takes, in seconds. The caller
+# waits this long before swapping the next equipable in. 0 means swap
+# immediately (no stow animation to wait on).
+func get_stow_duration() -> float:
+	return 0.0
