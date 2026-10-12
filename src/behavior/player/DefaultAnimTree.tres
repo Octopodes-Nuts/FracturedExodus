@@ -1,0 +1,97 @@
+[gd_resource type="AnimationNodeBlendTree" format=3 uid="uid://caigus2iob1oc"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_7nckj"]
+animation = &"BaseModelClothingAnim/ADS"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_krs0m"]
+animation = &"BaseModelClothingAnim/Crouch"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_df1js"]
+animation = &"BaseModelClothingAnim/CrouchWalk"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_cobd0"]
+min_space = 0.0
+blend_point_0/node = SubResource("AnimationNodeAnimation_krs0m")
+blend_point_0/pos = 0.0
+blend_point_0/name = &"Crouch"
+blend_point_1/node = SubResource("AnimationNodeAnimation_df1js")
+blend_point_1/pos = 1.0
+blend_point_1/name = &"CrouchWalk"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mq81n"]
+animation = &"BaseModelClothingAnim/Default"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hvdco"]
+animation = &"BaseModelClothingAnim/Walk"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6m5kr"]
+animation = &"BaseModelClothingAnim/Run"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_krs0m"]
+min_space = 0.0
+max_space = 2.0
+blend_point_0/node = SubResource("AnimationNodeAnimation_mq81n")
+blend_point_0/pos = 0.0
+blend_point_0/name = &"Default"
+blend_point_1/node = SubResource("AnimationNodeAnimation_hvdco")
+blend_point_1/pos = 1.0
+blend_point_1/name = &"Walk"
+blend_point_2/node = SubResource("AnimationNodeAnimation_6m5kr")
+blend_point_2/pos = 2.0
+blend_point_2/name = &"Run"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_df1js"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mvq78"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_424gs"]
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_cobd0"]
+states/Crouch/node = SubResource("AnimationNodeBlendSpace1D_cobd0")
+states/Crouch/position = Vector2(393, 153)
+states/Stand/node = SubResource("AnimationNodeBlendSpace1D_krs0m")
+states/Stand/position = Vector2(393, 68)
+transitions = ["Start", "Stand", SubResource("AnimationNodeStateMachineTransition_df1js"), "Stand", "Crouch", SubResource("AnimationNodeStateMachineTransition_mvq78"), "Crouch", "Stand", SubResource("AnimationNodeStateMachineTransition_424gs")]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_to1d0"]
+animation = &"BaseModelClothingAnim/RifleReady"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_rstpt"]
+animation = &"BaseModelClothingAnim/HoldGunRest"
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_i4f0m"]
+filter_enabled = true
+filters = ["", "Human_rig/Skeleton3D:breast.L", "Human_rig/Skeleton3D:eye.R", "Human_rig/Skeleton3D:finger1-1.L", "Human_rig/Skeleton3D:finger1-1.R", "Human_rig/Skeleton3D:finger1-2.L", "Human_rig/Skeleton3D:finger1-2.R", "Human_rig/Skeleton3D:finger1-3.L", "Human_rig/Skeleton3D:finger1-3.R", "Human_rig/Skeleton3D:finger2-1.L", "Human_rig/Skeleton3D:finger2-1.R", "Human_rig/Skeleton3D:finger2-2.L", "Human_rig/Skeleton3D:finger2-2.R", "Human_rig/Skeleton3D:finger2-3.L", "Human_rig/Skeleton3D:finger2-3.R", "Human_rig/Skeleton3D:finger3-1.L", "Human_rig/Skeleton3D:finger3-1.R", "Human_rig/Skeleton3D:finger3-2.L", "Human_rig/Skeleton3D:finger3-2.R", "Human_rig/Skeleton3D:finger3-3.L", "Human_rig/Skeleton3D:finger3-3.R", "Human_rig/Skeleton3D:finger4-1.L", "Human_rig/Skeleton3D:finger4-1.R", "Human_rig/Skeleton3D:finger4-2.L", "Human_rig/Skeleton3D:finger4-2.R", "Human_rig/Skeleton3D:finger4-3.L", "Human_rig/Skeleton3D:finger4-3.R", "Human_rig/Skeleton3D:finger5-1.L", "Human_rig/Skeleton3D:finger5-1.R", "Human_rig/Skeleton3D:finger5-2.L", "Human_rig/Skeleton3D:finger5-2.R", "Human_rig/Skeleton3D:finger5-3.L", "Human_rig/Skeleton3D:finger5-3.R", "Human_rig/Skeleton3D:left_elbow_ik", "Human_rig/Skeleton3D:left_finger1_grip", "Human_rig/Skeleton3D:left_finger2_grip", "Human_rig/Skeleton3D:left_finger3_grip", "Human_rig/Skeleton3D:left_finger4_grip", "Human_rig/Skeleton3D:left_finger5_grip", "Human_rig/Skeleton3D:left_hand_ik", "Human_rig/Skeleton3D:left_master_grip", "Human_rig/Skeleton3D:levator02.L", "Human_rig/Skeleton3D:lowerarm01.L", "Human_rig/Skeleton3D:lowerarm01.R", "Human_rig/Skeleton3D:lowerarm02.L", "Human_rig/Skeleton3D:lowerarm02.R", "Human_rig/Skeleton3D:neck01", "Human_rig/Skeleton3D:oculi02.R", "Human_rig/Skeleton3D:orbicularis03.L", "Human_rig/Skeleton3D:orbicularis04.L", "Human_rig/Skeleton3D:oris04.L", "Human_rig/Skeleton3D:oris04.R", "Human_rig/Skeleton3D:right_elbow_ik", "Human_rig/Skeleton3D:right_finger1_grip", "Human_rig/Skeleton3D:right_finger2_grip", "Human_rig/Skeleton3D:right_finger3_grip", "Human_rig/Skeleton3D:right_finger4_grip", "Human_rig/Skeleton3D:right_finger5_grip", "Human_rig/Skeleton3D:right_hand_ik", "Human_rig/Skeleton3D:right_master_grip", "Human_rig/Skeleton3D:special01", "Human_rig/Skeleton3D:special03", "Human_rig/Skeleton3D:spine04", "Human_rig/Skeleton3D:temporalis01.L", "Human_rig/Skeleton3D:temporalis02.R", "Human_rig/Skeleton3D:tongue00", "Human_rig/Skeleton3D:tongue01", "Human_rig/Skeleton3D:upperarm01.L", "Human_rig/Skeleton3D:upperarm01.R", "Human_rig/Skeleton3D:upperarm02.L", "Human_rig/Skeleton3D:upperarm02.R", "Human_rig/Skeleton3D:weapon_r", "Human_rig/Skeleton3D:wrist.L", "Human_rig/Skeleton3D:wrist.R"]
+
+[sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_ukrt8"]
+xfade_time = 0.1
+input_0/name = "rest"
+input_0/auto_advance = false
+input_0/break_loop_at_end = false
+input_0/reset = true
+input_1/name = "ready"
+input_1/auto_advance = false
+input_1/break_loop_at_end = false
+input_1/reset = true
+input_2/name = "ads"
+input_2/auto_advance = false
+input_2/break_loop_at_end = false
+input_2/reset = true
+
+[resource]
+graph_offset = Vector2(-355.98236, 10.434601)
+nodes/output/position = Vector2(900, 120)
+nodes/Locomotion/node = SubResource("AnimationNodeStateMachine_cobd0")
+nodes/Locomotion/position = Vector2(240, 0)
+nodes/WeaponPose/node = SubResource("AnimationNodeTransition_ukrt8")
+nodes/WeaponPose/position = Vector2(320, 200)
+nodes/Rest/node = SubResource("AnimationNodeAnimation_rstpt")
+nodes/Rest/position = Vector2(-140, 200)
+nodes/Ready/node = SubResource("AnimationNodeAnimation_to1d0")
+nodes/Ready/position = Vector2(-140, 400)
+nodes/ADS/node = SubResource("AnimationNodeAnimation_7nckj")
+nodes/ADS/position = Vector2(-140, 600)
+nodes/UpperBlend/node = SubResource("AnimationNodeBlend2_i4f0m")
+nodes/UpperBlend/position = Vector2(600, 100)
+node_connections = [&"output", 0, &"UpperBlend", &"WeaponPose", 0, &"Rest", &"WeaponPose", 1, &"Ready", &"WeaponPose", 2, &"ADS", &"UpperBlend", 0, &"Locomotion", &"UpperBlend", 1, &"WeaponPose"]

@@ -1,13 +1,15 @@
 [gd_scene format=3 uid="uid://dcudvv4sp7mpc"]
 
 [ext_resource type="Script" uid="uid://p561hd5ejgpe" path="res://behavior/player/movement/DefaultController.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://bvwk568y2xhr8" path="res://behavior/player/character/ch_36_non_pbr.tscn" id="1_ch36"]
 [ext_resource type="AudioStream" uid="uid://btey6138dvudl" path="res://behavior/player/sounds/Run2.wav" id="2_tfvsf"]
 [ext_resource type="AudioStream" uid="uid://cbj28xjk7tqx2" path="res://behavior/player/sounds/walk3.wav" id="3_0m67m"]
 [ext_resource type="Script" uid="uid://dbotvawysdgfa" path="res://behavior/player/movement/SoundSphere.gd" id="3_6l03r"]
 [ext_resource type="PackedScene" uid="uid://t64shttxwiks" path="res://behavior/environment/interactables/res_sphere/res_sphere.tscn" id="3_6yuvp"]
 [ext_resource type="AudioStream" uid="uid://bar7kco07ialg" path="res://behavior/player/sounds/Land1.wav" id="4_0m67m"]
 [ext_resource type="Script" uid="uid://hpvfcmyrxokr" path="res://behavior/player/Head.gd" id="4_xn1ii"]
+[ext_resource type="PackedScene" uid="uid://dnfubo8lt27fh" path="res://assets/skeletons/BaseRig.tscn" id="9_8wfwj"]
+[ext_resource type="AnimationNodeBlendTree" uid="uid://caigus2iob1oc" path="res://behavior/player/DefaultAnimTree.tres" id="10_8wfwj"]
+[ext_resource type="AnimationLibrary" uid="uid://drjqup42dechv" path="res://debug/models/player/BaseModelClothingAnim.blend" id="10_lair8"]
 
 [sub_resource type="CapsuleMesh" id="2"]
 radius = 0.3
@@ -95,6 +97,7 @@ script = ExtResource("4_xn1ii")
 [node name="head_collision" type="CollisionShape3D" parent="neck" unique_id=1366611763]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00042152405, 0.28635097, -0.025238037)
 shape = SubResource("BoxShape3D_6yuvp")
+disabled = true
 
 [node name="camera_head" type="Camera3D" parent="neck" unique_id=1552021269]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.17458147, 0)
@@ -104,13 +107,26 @@ near = 0.001
 [node name="gun_location" type="Node3D" parent="neck/camera_head" unique_id=1181246444]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.7)
 
-[node name="Ch36_nonPBR" parent="." unique_id=1137410707 instance=ExtResource("1_ch36")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -1, 0)
-
 [node name="audio_player" type="AudioStreamPlayer3D" parent="." unique_id=184064540]
 max_distance = 50.58
 
 [node name="footsteps" type="AudioStreamPlayer3D" parent="." unique_id=794843996]
 max_distance = 179.5
+
+[node name="Human_rig" parent="." unique_id=569343193 instance=ExtResource("9_8wfwj")]
+transform = Transform3D(-0.78000003, 0, -6.818977e-08, 0, 0.78000003, 0, 6.818977e-08, 0, -0.78000003, 0, -1.0128863, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1776255973]
+libraries/BaseModelClothingAnim = ExtResource("10_lair8")
+
+[node name="AnimationTree" type="AnimationTree" parent="." unique_id=1404886787]
+tree_root = ExtResource("10_8wfwj")
+anim_player = NodePath("../AnimationPlayer")
+parameters/Locomotion/Crouch/blend_position = 0.0
+parameters/Locomotion/Stand/blend_position = 0.0
+parameters/WeaponPose/current_state = ""
+parameters/WeaponPose/transition_request = ""
+parameters/WeaponPose/current_index = -1
+parameters/UpperBlend/blend_amount = 1.0
 
 [connection signal="body_entered" from="sound_sphere" to="sound_sphere" method="_on_body_entered"]

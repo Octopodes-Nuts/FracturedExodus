@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cxjvdn2ahdxue" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/reichsrevolver.tscn" id="1_f7ruo"]
 [ext_resource type="Script" uid="uid://crnbtxd7k7s5n" path="res://behavior/player/weapons/WeaponDefinition.gd" id="1_j7jhr"]
+[ext_resource type="PackedScene" uid="uid://d022gyy53e8t0" path="res://behavior/player/weapons/guns/empire/sidearms/Reichsrevolver/reichesnaked.tscn" id="2_7ilan"]
 [ext_resource type="Texture2D" uid="uid://hdlqgisqw0nm" path="res://debug/models/weapons/Reiches.png" id="3_8eqnv"]
 
 [resource]
@@ -9,6 +10,7 @@ script = ExtResource("1_j7jhr")
 name = "Reichsrevolver"
 key = "Reichsrevolver"
 scene = ExtResource("1_f7ruo")
+scene_naked = ExtResource("2_7ilan")
 texture = ExtResource("3_8eqnv")
 type = 1
 gun_type = 4

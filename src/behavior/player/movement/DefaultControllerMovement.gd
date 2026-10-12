@@ -28,6 +28,108 @@ func ground_check(controller) -> bool:
 		controller.ground_check_3.is_colliding() or \
 		controller.ground_check_4.is_colliding()
 
+# Target blend_position for the Locomotion blend spaces (Stand: 0=Default,
+# 1=Walk, 2=Run; Crouch: 0=Crouch, 1=CrouchWalk), by move_state. Keyed by the
+# plain int values of DefaultController.MOVE_STATE (IDLE=0, WALK=1, RUN=2) —
+# not referenced by class name, since that would make this file and
+# DefaultController.gd preload each other.
+const LOCOMOTION_BLEND := {
+	0: 0.0, # IDLE
+	1: 1.0, # WALK
+	2: 2.0, # RUN
+}
+const CROUCH_BLEND := {
+	0: 0.0, # IDLE
+	1: 1.0, # WALK
+	2: 1.0, # RUN — no dedicated crouch-sprint pose, hold CrouchWalk
+}
+const BLEND_LERP_SPEED: float = 8.0
+
+# Travels the Locomotion state machine and updates movement state. Drives
+# controller.animation_tree directly — the tree lives on player_body next
+# to this controller, so there's no need to go through the rig at all.
+# This is the one place that knows how to drive it, called both by local
+# prediction (jump/land, below in simulate()) and by the play_character_state
+# RPC, so the two paths can't drift apart.
+func apply_character_state(controller, state: String) -> void:
+	match state:
+		"jump":
+			controller.move_state = controller.MOVE_STATE.JUMP
+		"land":
+			if controller.move_state == controller.MOVE_STATE.JUMP:
+				controller.move_state = controller.MOVE_STATE.IDLE
+			if controller.land != null:
+				controller.audio_player.stream = controller.land
+				controller.audio_player.play()
+		"downed":
+			controller.move_state = controller.MOVE_STATE.DOWNED
+		"revived":
+			controller.move_state = controller.MOVE_STATE.IDLE
+			controller.player_model_and_hitbox.reset_to_rest()
+		"crouch":
+			_travel_locomotion(controller, "Crouch")
+		"stand":
+			_travel_locomotion(controller, "Stand")
+
+func _travel_locomotion(controller, state_name: String) -> void:
+	var playback: AnimationNodeStateMachinePlayback = controller.animation_tree.get("parameters/Locomotion/playback")
+	if playback:
+		playback.travel(state_name)
+
+# Pushes locomotion state (walk/run/stop) onto move_state and drives
+# footstep audio. Called by the play_walk RPC.
+func apply_walk_state(controller, walk_state: int) -> void:
+	match walk_state:
+		controller.WALK_STATES.WALK:
+			controller.move_state = controller.MOVE_STATE.WALK
+		controller.WALK_STATES.RUN:
+			controller.move_state = controller.MOVE_STATE.RUN
+		controller.WALK_STATES.STOP:
+			if controller.move_state != controller.MOVE_STATE.JUMP and controller.move_state != controller.MOVE_STATE.DOWNED:
+				controller.move_state = controller.MOVE_STATE.IDLE
+	var footsteps: AudioStreamPlayer3D = controller.footsteps
+	if walk_state == controller.WALK_STATES.STOP:
+		footsteps.stop()
+		controller.play_state[controller.name] = controller.WALK_STATES.STOP
+	elif walk_state == controller.WALK_STATES.WALK:
+		if not footsteps.playing or controller.play_state.get(controller.name) != controller.WALK_STATES.WALK:
+			footsteps.stream = controller.walk
+			footsteps.autoplay = true
+			footsteps.play()
+			controller.play_state[controller.name] = controller.WALK_STATES.WALK
+	elif walk_state == controller.WALK_STATES.RUN:
+		if not footsteps.playing or controller.play_state.get(controller.name) != controller.WALK_STATES.RUN:
+			footsteps.stream = controller.run
+			footsteps.autoplay = true
+			footsteps.play()
+			controller.play_state[controller.name] = controller.WALK_STATES.RUN
+
+# Lerps the Locomotion blend_position toward move_state's target every
+# frame, for smooth idle/walk/run blending. Called from _process.
+func update_locomotion_blend(controller, dt: float) -> void:
+	if controller.move_state == controller.MOVE_STATE.JUMP or controller.move_state == controller.MOVE_STATE.DOWNED:
+		return # no jump/downed pose yet, hold the last locomotion blend
+	controller._stand_blend = move_toward(controller._stand_blend, LOCOMOTION_BLEND[controller.move_state], BLEND_LERP_SPEED * dt)
+	controller._crouch_blend = move_toward(controller._crouch_blend, CROUCH_BLEND[controller.move_state], BLEND_LERP_SPEED * dt)
+	controller.animation_tree.set("parameters/Locomotion/Stand/blend_position", controller._stand_blend)
+	controller.animation_tree.set("parameters/Locomotion/Crouch/blend_position", controller._crouch_blend)
+
+# Keeps the character's WeaponPose animation (rest/ready/ads) in sync with
+# what's currently equipped. Driven by controller.net_ads, which is
+# replicated via play_ads_state so remote peers see the pose too.
+func update_weapon_pose(controller) -> void:
+	var pose: StringName
+	if not (controller.active_equipable is Weapon):
+		pose = &"rest"
+	elif controller.net_ads:
+		pose = &"ads"
+	else:
+		pose = &"ready"
+	if controller._weapon_pose == pose:
+		return
+	controller._weapon_pose = pose
+	controller.animation_tree.set("parameters/WeaponPose/transition_request", pose)
+
 func set_movement_input(controller, move_x: float, move_y: float, wants_sprint: bool, jump_pressed: bool, yaw: float, pitch: float, wants_crouch: bool = false) -> void:
 	controller.net_move_x = clamp(move_x, -1.0, 1.0)
 	controller.net_move_y = clamp(move_y, -1.0, 1.0)
@@ -286,12 +388,7 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 		if controller.was_airborne:
 			controller.was_airborne = false
 			if play_walk_locally:
-				var model = controller.get_node_or_null("Ch36_nonPBR")
-				if model and model.has_method("set_landed"):
-					model.set_landed()
-				if controller.land != null:
-					controller.audio_player.stream = controller.land
-					controller.audio_player.play()
+				apply_character_state(controller, "land")
 			elif replicate_walk_state:
 				controller.play_character_state.rpc(controller.name, "land")
 		# Keep a small constant downward push so move_and_slide always has
@@ -316,9 +413,7 @@ func simulate(controller, dt: float, replicate_walk_state: bool, play_walk_local
 			controller.jump_fatigue = minf(controller.jump_fatigue + controller.JUMP_FATIGUE_ACCRUAL, 1.0)
 			controller.net_jump_pressed = false
 			if play_walk_locally:
-				var model = controller.get_node_or_null("Ch36_nonPBR")
-				if model and model.has_method("set_jumping"):
-					model.set_jumping()
+				apply_character_state(controller, "jump")
 			elif replicate_walk_state:
 				controller.play_character_state.rpc(controller.name, "jump")
 	else:

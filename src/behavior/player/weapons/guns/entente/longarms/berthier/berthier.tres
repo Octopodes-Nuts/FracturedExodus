@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://d1x3mpkyjcjhu" path="res://behavior/player/weapons/guns/entente/longarms/berthier/berthier.tscn" id="1_2ihnx"]
 [ext_resource type="Script" uid="uid://crnbtxd7k7s5n" path="res://behavior/player/weapons/WeaponDefinition.gd" id="1_jj7la"]
+[ext_resource type="PackedScene" uid="uid://42fk44k03wcn" path="res://behavior/player/weapons/guns/entente/longarms/berthier/berthiernaked.tscn" id="2_57ab8"]
 [ext_resource type="Texture2D" uid="uid://cgl7p0jqw0l4j" path="res://debug/models/weapons/Berthier.png" id="3_vmj7h"]
 
 [resource]
@@ -9,6 +10,7 @@ script = ExtResource("1_jj7la")
 name = "Berthier M1892 Carbine"
 key = "berthier"
 scene = ExtResource("1_2ihnx")
+scene_naked = ExtResource("2_57ab8")
 texture = ExtResource("3_vmj7h")
 type = 1
 gun_type = 1
@@ -23,4 +25,6 @@ slots = Dictionary[int, Array]({
 3: [],
 4: []
 })
+in_hand_position = Vector3(0.029914498, -0.22358672, 0.14826715)
+in_hand_rotation = Vector3(1.1383327, -0.7289286, -1.768579)
 metadata/_custom_type_script = "uid://crnbtxd7k7s5n"

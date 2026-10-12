@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://r5nf1xspho1q"]
+
+[ext_resource type="PackedScene" uid="uid://c4y050b2w2sdn" path="res://debug/models/weapons/lebelcarbine/lebelcarbine.blend" id="1_kirui"]
+
+[node name="Lebelcarbinenaked" type="Node3D" unique_id=1838635867]
+
+[node name="lebelcarbine" parent="." unique_id=217777392 instance=ExtResource("1_kirui")]
