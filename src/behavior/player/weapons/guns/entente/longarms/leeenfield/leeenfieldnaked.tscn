@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://b0joyytpknsi4"]
+
+[ext_resource type="PackedScene" uid="uid://v2k3x373pr54" path="res://debug/models/weapons/leeenfield/leeenfield.blend" id="1_8w4gb"]
+
+[node name="Leeenfieldnaked" type="Node3D" unique_id=421381185]
+
+[node name="leeenfield" parent="." unique_id=1381459501 instance=ExtResource("1_8w4gb")]

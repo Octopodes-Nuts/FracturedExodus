@@ -22,4 +22,6 @@ slots = Dictionary[int, Array]({
 3: [1],
 4: []
 })
+in_hand_position = Vector3(0.04376805, -0.2559139, 0.1770019)
+in_hand_rotation = Vector3(1.1383327, -0.7289286, -1.768579)
 metadata/_custom_type_script = "uid://crnbtxd7k7s5n"

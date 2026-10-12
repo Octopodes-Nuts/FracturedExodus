@@ -10,6 +10,7 @@ enum Type {
 @export var name: String
 @export var key: String
 @export var scene: PackedScene
+@export var scene_naked: PackedScene
 @export var texture: Texture2D
 
 @export var type: Type
@@ -29,3 +30,6 @@ enum Type {
 	ClassRegister.Classes.SPECIAL: [],
 	ClassRegister.Classes.OFFICER: []
 }
+
+@export var in_hand_position: Vector3
+@export var in_hand_rotation: Vector3

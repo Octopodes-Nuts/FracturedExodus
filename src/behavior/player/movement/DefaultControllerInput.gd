@@ -35,6 +35,9 @@ func handle_process(controller, dt: float) -> void:
 	if (Input.is_action_just_released("ads") and local_input_active and controller.active_equipable is Weapon) or not controller.is_on_floor() or is_sprinting:
 		controller.active_equipable.ads = false
 
+	if controller.active_equipable.ads != controller.net_ads:
+		controller.play_ads_state.rpc(controller.name, controller.active_equipable.ads)
+
 	if Input.is_action_just_pressed("crouch") and local_input_active and controller.current_health > 0:
 		controller._set_crouch(not controller.is_crouching)
 

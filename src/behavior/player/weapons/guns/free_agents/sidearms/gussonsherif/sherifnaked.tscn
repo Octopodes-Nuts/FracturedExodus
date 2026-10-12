@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bp8jetycf4ur6"]
+
+[ext_resource type="PackedScene" uid="uid://cu4vyud5ggxj6" path="res://debug/models/weapons/COLT PEACEMAKER.blend" id="1_odf8e"]
+
+[node name="Sherifnaked" type="Node3D" unique_id=472347527]
+
+[node name="COLT PEACEMAKER" parent="." unique_id=417713840 instance=ExtResource("1_odf8e")]

@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://d022gyy53e8t0"]
+
+[ext_resource type="PackedScene" uid="uid://bak172cpjt7x5" path="res://debug/models/weapons/reichsrevolver/reichsrevolver.blend" id="1_ee4au"]
+
+[node name="Reichesnaked" type="Node3D" unique_id=889028897]
+
+[node name="reichsrevolver" parent="." unique_id=1994686540 instance=ExtResource("1_ee4au")]

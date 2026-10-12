@@ -71,6 +71,7 @@ var helps = [preload('res://behavior/player/sounds/help1.wav'),
 @export var land: AudioStream
 
 @onready var audio_player = $audio_player
+@onready var footsteps = $footsteps
 
 var direction = Vector3()
 var horizantal_velocity = Vector3()
@@ -89,11 +90,18 @@ var net_jump_pressed: bool = false
 var net_is_using: bool = false
 var net_yaw: float = 0.0
 var net_pitch: float = 0.0
+var net_ads: bool = false
+
+enum MOVE_STATE { IDLE, WALK, RUN, JUMP, DOWNED }
+var move_state: int = MOVE_STATE.IDLE
+var _stand_blend: float = 0.0
+var _crouch_blend: float = 0.0
+var _weapon_pose: StringName = &"rest"
 
 var is_crouching: bool = false
 @export var CROUCH_SPEED: float = 2.5
-@export var CROUCH_HEIGHT: float = 0.9
-@export var CROUCH_NECK_Y: float = -0.3
+@export var CROUCH_HEIGHT: float = 1.0
+@export var CROUCH_NECK_Y: float = -0.05
 const CROUCH_LERP: float = 12.0
 var _stand_height: float = 0.0
 var _stand_neck_y: float = 0.0
@@ -127,7 +135,10 @@ var jump_fatigue: float = 0.0
 @onready var ground_check_3 = $ground_check_3
 @onready var ground_check_4 = $ground_check_4
 @onready var multiplayer_sync: MultiplayerSynchronizer = $MultiplayerSynchronizer
-@onready var player_model_and_hitbox = $Ch36_nonPBR
+@onready var player_model_and_hitbox = $Human_rig
+@onready var animation_tree: AnimationTree = $AnimationTree
+@onready var weapon_attachment: BoneAttachment3D = $Human_rig/Skeleton3D/WeaponAttachment
+var _naked_weapon_instance: Node3D = null
 
 
 var character: Character
@@ -238,10 +249,10 @@ func _ready():
 
 	if not _is_local_player(): return
 
-	var character_model = get_node_or_null("Ch36_nonPBR")
-	if character_model:
-		for child in character_model.find_children("*", "MeshInstance3D", true, false):
-			child.layers = 2
+	# Hide our own body from our own camera (cull_mask excludes layer 2),
+	# while remaining visible to other players.
+	for child in player_model_and_hitbox.find_children("*", "MeshInstance3D", true, false):
+		child.layers = 2
 
 	Local.set_state("input_active", true)
 	camera.make_current()
@@ -338,12 +349,12 @@ func _set_crouch(crouching: bool) -> void:
 	is_crouching = crouching
 	var collider = get_node_or_null("player_main_collider")
 	if collider and collider.shape is CapsuleShape3D:
+		var height_diff := _stand_height - CROUCH_HEIGHT
 		collider.shape.height = CROUCH_HEIGHT if crouching else _stand_height
-		if not crouching:
-			global_position.y += (_stand_height - CROUCH_HEIGHT) / 2.0
-	var model = get_node_or_null("Ch36_nonPBR")
-	if model:
-		model.crouch_state = 0 if crouching else 1
+		# Shrink/grow the capsule from the top instead of its center, so its
+		# bottom (the feet) stays planted at the same height either way.
+		collider.position.y = (_stand_collider_y - height_diff / 2.0) if crouching else _stand_collider_y
+	movement_handler.apply_character_state(self, "crouch" if crouching else "stand")
 	if _is_local_player():
 		play_character_state.rpc(name, "crouch" if crouching else "stand")
 
@@ -362,6 +373,8 @@ func _process(dt: float):
 		_hit_lurch_yaw = lerpf(_hit_lurch_yaw, 0.0, HIT_LURCH_DECAY * dt)
 		_hit_lurch_pitch = lerpf(_hit_lurch_pitch, 0.0, HIT_LURCH_DECAY * dt)
 		_apply_look_rotation(net_yaw, net_pitch)
+	movement_handler.update_weapon_pose(self)
+	movement_handler.update_locomotion_blend(self, dt)
 
 
 func _continue_gun_audio_on_swap(gun: Gun) -> void:
@@ -411,6 +424,29 @@ func _swap_to(equipable: Equipable) -> void:
 	camera.add_child(equipable)
 	equipable.transform.origin = equipable.default_position
 	equipable._set_active()
+	_update_naked_weapon(equipable)
+
+# Shows a bare, arm-less world model of the equipped weapon on the hand bone
+# (BoneAttachment3D), visible to everyone — unlike GunInHand, which is a
+# first-person viewmodel with its own baked-in arms and is local-player-only.
+func _update_naked_weapon(equipable: Equipable) -> void:
+	if _naked_weapon_instance:
+		_naked_weapon_instance.queue_free()
+		_naked_weapon_instance = null
+	if not (equipable is Weapon):
+		return
+	var definition: WeaponDefinition = equipable.definition
+	if definition == null or definition.scene_naked == null:
+		return
+	_naked_weapon_instance = definition.scene_naked.instantiate()
+	weapon_attachment.add_child(_naked_weapon_instance)
+	_naked_weapon_instance.position = definition.in_hand_position
+	_naked_weapon_instance.rotation = definition.in_hand_rotation
+	if _is_local_player():
+		# Same trick as the body: push it to layer 2 so our own camera
+		# (cull_mask excludes layer 2) doesn't render it on top of GunInHand.
+		for child in _naked_weapon_instance.find_children("*", "MeshInstance3D", true, false):
+			child.layers = 2
 
 # @rpc("call_local", "any_peer")
 func swap_equipped(equipable: Equipable) -> void:
@@ -517,47 +553,17 @@ var play_state = {}
 @rpc("call_local", "any_peer")
 func play_character_state(id: String, state: String) -> void:
 	if name == id:
-		var model = get_node_or_null("Ch36_nonPBR")
-		if model == null:
-			return
-		match state:
-			"jump":
-				if model.has_method("set_jumping"): model.set_jumping()
-			"land":
-				if model.has_method("set_landed"): model.set_landed()
-				if land != null:
-					audio_player.stream = land
-					audio_player.play()
-			"downed":
-				if model.has_method("set_downed"): model.set_downed()
-			"revived":
-				if model.has_method("set_revived"): model.set_revived()
-			"crouch":
-				model.crouch_state = 0
-			"stand":
-				model.crouch_state = 1
+		movement_handler.apply_character_state(self, state)
 
 @rpc("call_local","any_peer")
 func play_walk(id, walk_state):
 	if name == id:
-		var model = get_node_or_null("Ch36_nonPBR")
-		if model and model.has_method("set_walk_state"):
-			model.set_walk_state(walk_state)
-		if walk_state == WALK_STATES.STOP:
-			$footsteps.stop()
-			play_state[name] = WALK_STATES.STOP
-		elif walk_state == WALK_STATES.WALK:
-			if not $footsteps.playing or play_state.get(name) != WALK_STATES.WALK:
-				$footsteps.stream = walk
-				$footsteps.autoplay = true
-				$footsteps.play()
-				play_state[name] = WALK_STATES.WALK
-		elif walk_state == WALK_STATES.RUN:
-			if not $footsteps.playing or play_state.get(name) != WALK_STATES.RUN:
-				$footsteps.stream = run
-				$footsteps.autoplay = true
-				$footsteps.play()
-				play_state[name] = WALK_STATES.RUN
+		movement_handler.apply_walk_state(self, walk_state)
+
+@rpc("call_local", "any_peer")
+func play_ads_state(id: String, ads_state: bool) -> void:
+	if name == id:
+		net_ads = ads_state
 
 
 func register_interaction(interactable: Interactable):
