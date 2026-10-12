@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://c0nu6atmrpbf8"]
+
+[ext_resource type="PackedScene" uid="uid://be2crulkuo6nv" path="res://debug/models/weapons/gewehr98/gewehr98.blend" id="1_y00vu"]
+
+[node name="Gewehrnaked" type="Node3D" unique_id=425122584]
+
+[node name="gewehr98" parent="." unique_id=1366243086 instance=ExtResource("1_y00vu")]

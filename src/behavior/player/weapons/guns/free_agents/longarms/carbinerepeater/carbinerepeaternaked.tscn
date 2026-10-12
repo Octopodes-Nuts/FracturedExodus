@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://cvm6qp3rmw7ub"]
+
+[ext_resource type="PackedScene" uid="uid://c8ykr74ck6t3k" path="res://debug/models/weapons/carbine-repeater/carbinerepeater.blend" id="1_073sb"]
+
+[node name="Carbinerepeaternaked" type="Node3D" unique_id=1867650841]
+
+[node name="carbinerepeater" parent="." unique_id=744536138 instance=ExtResource("1_073sb")]

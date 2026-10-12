@@ -61,6 +61,8 @@ func _local_ready():
 func _set_active():
 	super._set_active()
 	_use_parent = get_parent().get_parent().get_parent() as DefaultController
+	# GunInHand is a first-person viewmodel with its own baked-in hand/arm
+	# rig, parented to the camera — only the local player should see it.
 	var gun_in_hand = get_node_or_null("GunInHand")
 	if gun_in_hand:
 		gun_in_hand.visible = _use_parent != null and _use_parent._is_local_player()

@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://42fk44k03wcn"]
+
+[ext_resource type="PackedScene" uid="uid://bnqu362oxk50w" path="res://debug/models/weapons/Berthier.blend" id="1_au412"]
+
+[node name="Berthiernaked" type="Node3D" unique_id=1153908652]
+
+[node name="Berthier" parent="." unique_id=1821290959 instance=ExtResource("1_au412")]

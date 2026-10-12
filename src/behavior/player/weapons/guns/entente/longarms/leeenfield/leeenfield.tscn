@@ -4,7 +4,7 @@
 [ext_resource type="AudioStream" uid="uid://b8w8jdaxouc6u" path="res://behavior/player/weapons/guns/entente/longarms/leeenfield/Lee-enfield.wav" id="2_fkuq6"]
 [ext_resource type="PackedScene" uid="uid://cbkx434s8wdjv" path="res://debug/assets/guns/muzzle_blast.tscn" id="3_fkuq6"]
 [ext_resource type="PackedScene" uid="uid://pp86141unm6x" path="res://debug/assets/guns/muzzle_smoke.tscn" id="4_a45np"]
-[ext_resource type="PackedScene" uid="uid://hil3koteglxv" path="res://behavior/player/weapons/guns/entente/longarms/leeenfield/enfieldinhand.tscn" id="5_fkuq6"]
+[ext_resource type="PackedScene" uid="uid://daehkit6n3gw8" path="res://behavior/player/weapons/guns/entente/longarms/leeenfield/einfieldinhand.tscn" id="5_fkuq6"]
 
 [node name="Leeenfield" type="Node3D" unique_id=1642060425]
 script = ExtResource("1_asra4")
@@ -32,4 +32,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.024638887, -1.1736244)
 [node name="MuzzleSmoke" parent="." unique_id=143664032 instance=ExtResource("4_a45np")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.024638887, -1.1736244)
 
-[node name="GunInHand" parent="." unique_id=2010837255 instance=ExtResource("5_fkuq6")]
+[node name="GunInHand" parent="." unique_id=536575843 instance=ExtResource("5_fkuq6")]

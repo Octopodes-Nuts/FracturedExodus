@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cot1ff62jhh3p" path="res://behavior/player/weapons/guns/entente/longarms/lebelcarbine/lebelcarbine.tscn" id="1_mry2r"]
 [ext_resource type="Script" uid="uid://crnbtxd7k7s5n" path="res://behavior/player/weapons/WeaponDefinition.gd" id="2_0fyft"]
+[ext_resource type="PackedScene" uid="uid://r5nf1xspho1q" path="res://behavior/player/weapons/guns/entente/longarms/lebelcarbine/lebelcarbinenaked.tscn" id="2_v1y7c"]
 [ext_resource type="Texture2D" uid="uid://c0sfugfwxqlwi" path="res://debug/models/weapons/lebelcarbine.png" id="3_0fyft"]
 
 [resource]
@@ -9,6 +10,7 @@ script = ExtResource("2_0fyft")
 name = "Lebel M1896 M93-R35 Carbine"
 key = "LebelCarbine"
 scene = ExtResource("1_mry2r")
+scene_naked = ExtResource("2_v1y7c")
 texture = ExtResource("3_0fyft")
 type = 1
 gun_type = 1
@@ -23,4 +25,6 @@ slots = Dictionary[int, Array]({
 3: [],
 4: []
 })
+in_hand_position = Vector3(0.050843477, -0.23196687, 0.17046106)
+in_hand_rotation = Vector3(1.1383327, -0.7289286, -1.768579)
 metadata/_custom_type_script = "uid://crnbtxd7k7s5n"
