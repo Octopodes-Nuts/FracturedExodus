@@ -21,40 +21,54 @@ animation = &"Run"
 animation = &"Stow"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yxlxk"]
+xfade_time = 0.1
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_isvc5"]
+xfade_time = 0.1
 switch_mode = 2
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dq8xv"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lhemj"]
+xfade_time = 0.1
 switch_mode = 2
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_p3030"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_aydsh"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_7m3d0"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_cho40"]
+xfade_time = 0.1
 switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gh4lw"]
+xfade_time = 0.1
 switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_y5veb"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xl70d"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_auium"]
+xfade_time = 0.1
 switch_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2o155"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mbl2n"]
+xfade_time = 0.1
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_mbfn7"]
 states/ADS/node = SubResource("AnimationNodeAnimation_xjl1w")
@@ -73,13 +87,13 @@ transitions = ["Start", "Raise", SubResource("AnimationNodeStateMachineTransitio
 
 [node name="carbinerepeateringhand" unique_id=1540557673 instance=ExtResource("1_mbfn7")]
 
-[node name="Skeleton3D" parent="Armature" parent_id_path=PackedInt32Array(478640484) index="0" unique_id=973984042]
+[node name="Skeleton3D" parent="Armature" parent_id_path=PackedInt32Array(879259990) index="0" unique_id=1441952215]
 bones/0/position = Vector3(0, -0.13404103, 0.083306886)
 bones/1/position = Vector3(-0.26145145, 0.0018435335, 0.03285842)
-bones/1/rotation = Quaternion(-0.67118293, -0.42628556, 0.44680476, 0.41007268)
-bones/2/rotation = Quaternion(-0.21388796, -0.4436946, -0.35052037, 0.7965693)
+bones/1/rotation = Quaternion(-0.6734621, -0.42372963, 0.44745266, 0.40827468)
+bones/2/rotation = Quaternion(-0.21479107, -0.4433136, -0.3520005, 0.79588544)
 bones/3/position = Vector3(-0.26276332, -0.2892421, -0.1356586)
-bones/4/position = Vector3(-0.042885035, 0.0855542, -0.65290475)
+bones/4/position = Vector3(-0.04216355, 0.08126268, -0.6525266)
 bones/4/rotation = Quaternion(0.13069817, 0.16125964, 0.9704281, 0.123218186)
 bones/5/position = Vector3(-0.010402057, 0.00016116365, 0.0038337738)
 bones/5/rotation = Quaternion(-0.69668883, 0.5446508, 0.042756885, 0.46492174)
@@ -103,10 +117,10 @@ bones/18/rotation = Quaternion(0.15677387, 0.51027244, -0.33935454, 0.77452075)
 bones/19/rotation = Quaternion(-0.04966923, -0.006819053, 0.12298461, 0.99114144)
 bones/20/rotation = Quaternion(0.18837047, -0.18132222, -0.055050172, 0.9636434)
 bones/21/position = Vector3(0.16852719, 0.04701456, 0.06913949)
-bones/21/rotation = Quaternion(-0.81030166, 0.15523958, -0.56121284, 0.06597)
+bones/21/rotation = Quaternion(-0.8106232, 0.14982235, -0.56261814, 0.06248317)
 bones/22/rotation = Quaternion(1.8053392e-08, 4.3223354e-09, 0.9032466, 0.429122)
 bones/23/position = Vector3(0.14608282, -0.35668215, 0.086598605)
-bones/24/position = Vector3(0.043670267, 0.020518824, -0.24724376)
+bones/24/position = Vector3(0.04439175, 0.016227305, -0.24686569)
 bones/24/rotation = Quaternion(0.09369433, 0.14592119, -0.48725438, 0.8558689)
 bones/25/rotation = Quaternion(-0.69554245, 0.08297639, -0.25947753, 0.6648361)
 bones/26/position = Vector3(-0.043817997, 0.4164821, -0.030081004)
@@ -128,8 +142,8 @@ bones/39/rotation = Quaternion(-0.20351633, -0.3292841, 0.26644537, 0.8827003)
 bones/40/rotation = Quaternion(0.0078024785, 0.035238437, -0.19151726, 0.9808254)
 bones/41/rotation = Quaternion(0.1991347, 0.052008238, -0.25400203, 0.9450522)
 
-[node name="Hand_R" parent="Armature/Skeleton3D" index="0" unique_id=43090894]
-transform = Transform3D(0.054041978, -0.13063782, 0.98995614, -0.9965315, 0.05577013, 0.061760604, -0.0632782, -0.9898602, -0.12717077, 0.04367026, -0.113522224, -0.16393682)
+[node name="Hand_R" parent="Armature/Skeleton3D" index="0" unique_id=126173780]
+transform = Transform3D(0.054041978, -0.13063782, 0.98995614, -0.9965315, 0.05577013, 0.061760604, -0.0632782, -0.9898602, -0.12717077, 0.044391744, -0.11781374, -0.16355875)
 
 [node name="AnimationTree" type="AnimationTree" parent="." index="2" unique_id=1671787333]
 tree_root = SubResource("AnimationNodeStateMachine_mbfn7")

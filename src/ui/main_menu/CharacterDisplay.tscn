@@ -22,9 +22,19 @@ offset_right = 171.5
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="XPLabel" type="Label" parent="VBoxContainer" unique_id=626960716]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" unique_id=1276391906]
 layout_mode = 2
+
+[node name="XPLabel" type="Label" parent="VBoxContainer/HBoxContainer2" unique_id=626960716]
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 6
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DevotionLabel" type="Label" parent="VBoxContainer/HBoxContainer2" unique_id=1622728346]
+layout_mode = 2
+size_flags_horizontal = 3
 horizontal_alignment = 1
 vertical_alignment = 1
 

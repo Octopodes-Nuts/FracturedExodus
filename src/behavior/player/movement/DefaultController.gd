@@ -64,8 +64,11 @@ var groans = [preload("res://behavior/player/sounds/groan1.wav"),
 			  preload("res://behavior/player/sounds/groan3.wav")]
 var helps = [preload('res://behavior/player/sounds/help1.wav'),
 			 preload('res://behavior/player/sounds/help2.wav')]
-var walk = preload("res://behavior/player/sounds/walk.wav")
-var run = preload("res://behavior/player/sounds/run.wav")
+# var walk = preload("res://behavior/player/sounds/walk.wav")
+# var run = preload("res://behavior/player/sounds/run.wav")
+@export var run: AudioStream
+@export var walk: AudioStream
+@export var land: AudioStream
 
 @onready var audio_player = $audio_player
 
@@ -105,6 +108,9 @@ var remote_target_pitch: float = 0.0
 var server_spawn_assigned_by_faction: bool = false
 var officer_speed_buff: float = 1.0
 
+var was_airborne: bool = false
+var airborne_ticks: int = 0
+const LANDING_AIRBORNE_TICKS: int = 3
 var jump_fatigue: float = 0.0
 @export var JUMP_FATIGUE_ACCRUAL: float = 0.3
 @export var JUMP_FATIGUE_DECAY: float = 2.0
@@ -375,59 +381,58 @@ func _continue_gun_audio_on_swap(gun: Gun) -> void:
 			gun.bolt_pull_stream = fresh
 		gun.add_child(fresh)
 
-# @rpc("call_local", "any_peer")
-func swap_equipped(equipable: Equipable):
-	if active_equipable != equipable:
-		if active_equipable is Gun:
-			_continue_gun_audio_on_swap(active_equipable as Gun)
-		if active_equipable.get_parent() == camera:
-			camera.remove_child(active_equipable)
-		var remaining_cycle := 0.0
-		if active_equipable is Gun:
-			remaining_cycle = active_equipable.current_cycle
-			if _is_local_player() and active_equipable.recoil.is_connected(_apply_recoil):
-				active_equipable.recoil.disconnect(_apply_recoil)
-		active_equipable._set_inactive()
-		# play stow animation
-		active_equipable = equipable
-		# play raise animation
-		if equipable is Gun and remaining_cycle > 0.0:
-			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
-		if equipable is Gun and _is_local_player():
-			equipable.recoil.connect(_apply_recoil)
-		camera.add_child(equipable)
-		equipable.transform.origin = equipable.default_position
-		equipable._set_active()
-		current_eqipped_key = equipable.key
+# Stows the currently active equipable and waits for its stow animation to
+# finish playing before the incoming one is attached to the camera and
+# raised, so the two never overlap.
+var _swap_in_progress: bool = false
 
-func swap_equipped_from_index(id: int, call_rpc: bool):
+func _swap_to(equipable: Equipable) -> void:
+	var outgoing := active_equipable
+	var remaining_cycle := 0.0
+	if outgoing is Gun:
+		remaining_cycle = outgoing.current_cycle
+		if _is_local_player() and outgoing.recoil.is_connected(_apply_recoil):
+			outgoing.recoil.disconnect(_apply_recoil)
+	outgoing._set_inactive()
+	# play stow animation, and don't bring the next weapon out until it's done
+	var stow_duration: float = outgoing.get_stow_duration()
+	if stow_duration > 0.0:
+		await get_tree().create_timer(stow_duration).timeout
+	if outgoing is Gun:
+		_continue_gun_audio_on_swap(outgoing as Gun)
+	if outgoing.get_parent() == camera:
+		camera.remove_child(outgoing)
+	active_equipable = equipable
+	# play raise animation
+	if equipable is Gun and remaining_cycle > 0.0:
+		equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
+	if equipable is Gun and _is_local_player():
+		equipable.recoil.connect(_apply_recoil)
+	camera.add_child(equipable)
+	equipable.transform.origin = equipable.default_position
+	equipable._set_active()
+
+# @rpc("call_local", "any_peer")
+func swap_equipped(equipable: Equipable) -> void:
+	if active_equipable == equipable or _swap_in_progress:
+		return
+	_swap_in_progress = true
+	await _swap_to(equipable)
+	_swap_in_progress = false
+	current_eqipped_key = equipable.key
+
+func swap_equipped_from_index(id: int, call_rpc: bool) -> void:
 	var equipable = update_equipment()[id]
-	if active_equipable != equipable:
-		if active_equipable is Gun:
-			_continue_gun_audio_on_swap(active_equipable as Gun)
-		if active_equipable.get_parent() == camera:
-			camera.remove_child(active_equipable)
-		var remaining_cycle := 0.0
-		if active_equipable is Gun:
-			remaining_cycle = active_equipable.current_cycle
-			if _is_local_player() and active_equipable.recoil.is_connected(_apply_recoil):
-				active_equipable.recoil.disconnect(_apply_recoil)
-		active_equipable._set_inactive()
-		# play stow animation
-		active_equipable = equipable
-		# play raise animation
-		if equipable is Gun and remaining_cycle > 0.0:
-			equipable.current_cycle = maxf(equipable.current_cycle, remaining_cycle)
-		if equipable is Gun and _is_local_player():
-			equipable.recoil.connect(_apply_recoil)
-		camera.add_child(equipable)
-		equipable.transform.origin = equipable.default_position
-		equipable._set_active()
-		current_equipped_index = id
-		if call_rpc:
-			update_character_server.rpc_id(1, "active", id)
-		if _is_local_player():
-			HUD.display_ammo(active_equipable.get_ammo())
+	if active_equipable == equipable or _swap_in_progress:
+		return
+	_swap_in_progress = true
+	await _swap_to(equipable)
+	_swap_in_progress = false
+	current_equipped_index = id
+	if call_rpc:
+		update_character_server.rpc_id(1, "active", id)
+	if _is_local_player():
+		HUD.display_ammo(active_equipable.get_ammo())
 
 func update_equipment():
 	return [
@@ -520,6 +525,9 @@ func play_character_state(id: String, state: String) -> void:
 				if model.has_method("set_jumping"): model.set_jumping()
 			"land":
 				if model.has_method("set_landed"): model.set_landed()
+				if land != null:
+					audio_player.stream = land
+					audio_player.play()
 			"downed":
 				if model.has_method("set_downed"): model.set_downed()
 			"revived":

@@ -73,6 +73,14 @@ func _set_inactive():
 	if _sm:
 		_sm.travel("Stow")
 
+func get_stow_duration() -> float:
+	if _anim_tree == null:
+		return 0.0
+	var player := _anim_tree.get_node_or_null(_anim_tree.anim_player) as AnimationPlayer
+	if player and player.has_animation("Stow"):
+		return player.get_animation("Stow").length
+	return 0.0
+
 func _process(delta):
 	if current_cycle > 0:
 		current_cycle -= delta

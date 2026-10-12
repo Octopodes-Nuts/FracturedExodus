@@ -11,9 +11,13 @@
 [ext_resource type="Terrain3DMaterial" uid="uid://d20ebbd1x40iv" path="res://environment/maps/test_map_2/terrain_material.res" id="7_q70rj"]
 [ext_resource type="Material" uid="uid://c7it2yandccwi" path="res://environment/watermaterial.tres" id="8_uidhu"]
 [ext_resource type="PackedScene" uid="uid://b1l5xp6ccjxo" path="res://behavior/environment/interactables/scanner_site/ScannerSite.tscn" id="18_ulnwu"]
+[ext_resource type="PackedScene" uid="uid://mreehgo55lq4" path="res://environment/models/rocks/rock3/rock3.tscn" id="19_5mgin"]
 [ext_resource type="PackedScene" uid="uid://ilhiegf4ielk" path="res://behavior/environment/interactables/chipsite/ChipsiteSpawn.tscn" id="19_6nkx3"]
+[ext_resource type="PackedScene" uid="uid://jjnqcbqrbhwn" path="res://environment/models/rocks/rock4/rock4.tscn" id="20_fvuxy"]
 [ext_resource type="PackedScene" uid="uid://bry8jxsuewxkq" path="res://debug/models/env/props/fences/BrokenFence1.tscn" id="21_5qmi1"]
+[ext_resource type="PackedScene" uid="uid://c4c684aiq7mlh" path="res://environment/models/rocks/rock5/rock5.tscn" id="21_tk16t"]
 [ext_resource type="PackedScene" uid="uid://du187o1xpek0k" path="res://debug/models/env/props/fences/Fence1.tscn" id="22_5mgin"]
+[ext_resource type="PackedScene" uid="uid://cdoen30p1xjdq" path="res://environment/models/rocks/rock6/rock6.tscn" id="22_tk16t"]
 [ext_resource type="PackedScene" uid="uid://7uetw5vocfu3" path="res://environment/models/trees/tree1/tree_1.tscn" id="22_ulnwu"]
 [ext_resource type="PackedScene" uid="uid://cisdl6agi8tr5" path="res://environment/models/trees/tree2/tree2.tscn" id="23_7nqin"]
 [ext_resource type="PackedScene" uid="uid://nfktjgqfhn27" path="res://debug/models/env/props/fences/Fence2.tscn" id="23_q70rj"]
@@ -32,6 +36,7 @@
 [ext_resource type="PackedScene" uid="uid://bi0icrikod3ux" path="res://environment/models/trees/tree_5.tscn" id="29_itemv"]
 [ext_resource type="PackedScene" uid="uid://b7debegyyf7rg" path="res://debug/models/env/houses/house3.tscn" id="29_tk16t"]
 [ext_resource type="PackedScene" uid="uid://cxj13kr66ri02" path="res://debug/models/env/houses/house4.tscn" id="29_yg4fi"]
+[ext_resource type="AudioStream" uid="uid://i1n6tbjeovpf" path="res://environment/sounds/Wind2.wav" id="38_yg4fi"]
 [ext_resource type="PackedScene" uid="uid://dmrb2g6lve0sh" path="res://debug/models/env/props/fences/PartiallyBrokenFence1.tscn" id="39_1g8m1"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_k2gh6"]
@@ -1252,6 +1257,105 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -126.4115, 26.226042, 32.3544
 [node name="rock4" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=478553320 instance=ExtResource("24_ubrhm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -137.94281, 20.396364, 18.197006)
 
+[node name="Rock4" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=579746550 instance=ExtResource("19_5mgin")]
+transform = Transform3D(1, 0, 0, 0, 0.99541223, 0.095679134, 0, -0.095679134, 0.99541223, 191.23436, 4.9907374, 74.0407)
+
+[node name="Rock5" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1666970097 instance=ExtResource("19_5mgin")]
+transform = Transform3D(0.27441645, 0, -0.961611, 0, 1, 0, 0.961611, 0, 0.27441645, 198.59023, 2.9017096, 73.029564)
+
+[node name="Rock6" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1935136525 instance=ExtResource("20_fvuxy")]
+transform = Transform3D(-2.5814579, 0, 1.0606095, -0.64086056, -0.20848067, -4.182659, 0.09379481, -1.4244614, 0.6121638, 202.61493, 5.499405, 77.032074)
+
+[node name="Rock7" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=14545758 instance=ExtResource("20_fvuxy")]
+transform = Transform3D(-2.546971, 0, 0.0018390267, -0.00019458128, 1.8142275, -0.11029627, -0.0028679, -0.12309171, -1.6256378, 185.12656, 8.554373, 73.05575)
+
+[node name="Rock8" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1384417684 instance=ExtResource("19_5mgin")]
+transform = Transform3D(-0.5997307, 0, -0.8002019, 0, 1.1349508, 0, 0.8002019, 0, -0.5997307, 181.2322, 5.261135, 70.99557)
+
+[node name="Rock9" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=919103426 instance=ExtResource("21_tk16t")]
+transform = Transform3D(0.8332629, 0, -0.55287695, 0, 1, 0, 0.55287695, 0, 0.8332629, 206.71982, 4.4656982, 77.03503)
+
+[node name="Rock10" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=880148124 instance=ExtResource("21_tk16t")]
+transform = Transform3D(1.3189563, 0.2366648, 1.3050587, -0.4623784, 2.9505508, 0.036310423, -2.0762963, -0.5067294, 0.82094544, 211.07436, 2.2882028, 79.189926)
+
+[node name="Rock11" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=158568514 instance=ExtResource("21_tk16t")]
+transform = Transform3D(2.254713, 0, 2.1740315, 0, 5.173586, 0, -1.9228575, 0, 2.5492363, 219.38998, -0.12485075, 84.371796)
+
+[node name="Rock12" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=685074139 instance=ExtResource("19_5mgin")]
+transform = Transform3D(0.23852621, 0.13433596, -0.17389086, -0.021366414, 0.24958457, 0.17341417, 0.24612705, -0.10852085, 0.18357496, 216.31912, 15.272724, 82.374344)
+
+[node name="Rock13" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=112248715 instance=ExtResource("19_5mgin")]
+transform = Transform3D(0.060045946, -0.2514342, 0, 0.31696022, 0.047632493, 0, 0, 0, 0.36023402, 184.14316, 9.025698, 75.66639)
+
+[node name="Rock14" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=503897607 instance=ExtResource("21_tk16t")]
+transform = Transform3D(0.22328599, -0.97475296, 0, 0.97475296, 0.22328599, 0, 0, 0, 1, 199.17863, 6.777194, 79.51738)
+
+[node name="Rock15" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1599351542 instance=ExtResource("20_fvuxy")]
+transform = Transform3D(0.6553152, -0.6928313, -0.30091015, -0.044132367, 0.36257023, -0.93091124, 0.7540654, 0.6233201, 0.20702145, 188.50632, 7.626291, 76.88678)
+
+[node name="Rock16" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=730996881 instance=ExtResource("19_5mgin")]
+transform = Transform3D(0.1932521, -0.29176787, 0.39170313, 0.3240759, 0.55451, 0.17223588, -0.92929906, 0.13270064, 0.14152056, 159.29756, 9.875428, 100.43224)
+
+[node name="Rock17" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1093079223 instance=ExtResource("20_fvuxy")]
+transform = Transform3D(-0.22321784, 0, -0.9747685, 0, 1, 0, 0.9747685, 0, -0.22321784, 158.81718, 11.90308, 96.73352)
+
+[node name="Rock18" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1536072234 instance=ExtResource("21_tk16t")]
+transform = Transform3D(-0.8549825, 0.51865685, 0, -0.51865685, -0.8549825, 0, 0, 0, 1, 201.27599, 6.2531924, 79.32504)
+
+[node name="Rock19" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=297085908 instance=ExtResource("19_5mgin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 207.9124, -1.7959394, 87.08537)
+
+[node name="Rock20" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1470268368 instance=ExtResource("21_tk16t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 161.12978, 11.5963, 92.79651)
+
+[node name="Rock21" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=593140727 instance=ExtResource("19_5mgin")]
+transform = Transform3D(0.6752184, 0, 0.73761785, 0, 1, 0, -0.73761785, 0, 0.6752184, 151.59348, 9.113149, 115.35558)
+
+[node name="Rock22" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1728933561 instance=ExtResource("21_tk16t")]
+transform = Transform3D(3.4914763, -0.25308916, 0, 0.32752112, 2.6980088, 0, 0, 0, 2.537212, 151.4491, 12.061743, 125.50009)
+
+[node name="Rock23" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1102233797 instance=ExtResource("19_5mgin")]
+transform = Transform3D(0.27151537, -0.12759078, 0, 0.12759078, 0.27151537, 0, 0, 0, 0.3, 148.00423, 17.14787, 122.07444)
+
+[node name="Rock24" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=750112373 instance=ExtResource("21_tk16t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 220.48882, 1.9641023, 98.96274)
+
+[node name="Rock25" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1386503793 instance=ExtResource("19_5mgin")]
+transform = Transform3D(0.05609054, 0, -0.99842566, 0, 1, 0, 0.99842566, 0, 0.05609054, 222.61618, -4.7683716e-07, 100.848236)
+
+[node name="Rock26" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1212569889 instance=ExtResource("22_tk16t")]
+transform = Transform3D(0.7187768, -0.6952409, 0, 0.6952409, 0.7187768, 0, 0, 0, 1, 144.42207, 14.030696, 140.3335)
+
+[node name="Rock27" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=38786741 instance=ExtResource("20_fvuxy")]
+transform = Transform3D(-0.92031044, -0.05192826, -0.38772702, 0.17393102, 0.83347374, -0.5244707, 0.35039514, -0.55011374, -0.75802267, 83.05719, 25.17579, 129.9502)
+
+[node name="Rock28" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1091128996 instance=ExtResource("22_tk16t")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 220.9256, 9.536743e-07, 104.58887)
+
+[node name="Rock29" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1530152486 instance=ExtResource("20_fvuxy")]
+transform = Transform3D(-0.41229632, 0.7341367, -0.53949517, 0.902729, 0.24934882, -0.35057887, -0.12285044, -0.6315603, -0.7655317, 142.46326, 15.162582, 143.13995)
+
+[node name="Rock30" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1872271605 instance=ExtResource("20_fvuxy")]
+transform = Transform3D(0.9383704, 0.3226215, 0.12400144, 0, 0.358768, -0.93342674, -0.3456313, 0.87590003, 0.33665726, 88.48178, 19.12342, 173.63138)
+
+[node name="Rock31" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1993754144 instance=ExtResource("22_tk16t")]
+transform = Transform3D(1, 0, 0, 0, 0.9597525, 0.28084713, 0, -0.28084713, 0.9597525, 91.29997, 14.61948, 175.92218)
+
+[node name="Rock32" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=675447149 instance=ExtResource("22_tk16t")]
+transform = Transform3D(0.95690674, -0.036405083, 0.2881044, -0.033118017, 0.971957, 0.23281503, -0.28850067, -0.2323237, 0.9288665, 60.19467, 16.877722, 145.89952)
+
+[node name="Rock33" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=591722443 instance=ExtResource("19_5mgin")]
+transform = Transform3D(0.9370802, -0.078209, 0.34024122, 0, 0.9745843, 0.22402124, -0.3491142, -0.20992588, 0.9132636, 56.09618, 16.285172, 146.26256)
+
+[node name="Rock34" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=792144203 instance=ExtResource("21_tk16t")]
+transform = Transform3D(1, 0, 0, 0, 0.9743459, 0.22505562, 0, -0.22505562, 0.9743459, 59.592255, 23.213902, 143.48186)
+
+[node name="Rock35" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=12663330 instance=ExtResource("20_fvuxy")]
+transform = Transform3D(-0.5288785, -0.8024781, -0.27625373, -0.28578824, -0.13809897, 0.94829, -0.79913247, 0.58048034, -0.15630125, 62.768204, 19.996778, 146.15309)
+
+[node name="Rock36" parent="NavigationRegion3D/Terrain3D/environment/rock" unique_id=1273654006 instance=ExtResource("20_fvuxy")]
+transform = Transform3D(0.07231262, -0.92072433, -0.38345516, -0.7128704, 0.2211758, -0.6655054, 0.6975579, 0.32147828, -0.6403632, 40.81304, 30.322716, 141.85788)
+
 [node name="Props" type="Node" parent="NavigationRegion3D/Terrain3D" unique_id=1838421857]
 
 [node name="Fences" type="Node" parent="NavigationRegion3D/Terrain3D/Props" unique_id=339551273]
@@ -1826,6 +1930,11 @@ spawn_path = NodePath("../Spawns")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -196.547, 20.4796, 75.1885)
 
 [node name="MatchmakingApi" parent="." unique_id=1586885325 instance=ExtResource("27_ugx1w")]
+
+[node name="Wind" type="AudioStreamPlayer" parent="." unique_id=1656584916]
+stream = ExtResource("38_yg4fi")
+volume_db = -10.325
+autoplay = true
 
 [connection signal="child_entered_tree" from="Spawns" to="Spawns" method="_on_child_entered_tree"]
 [connection signal="spawned" from="PlayerSpawner" to="Spawns" method="_on_player_spawner_spawned"]

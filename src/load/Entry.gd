@@ -49,6 +49,7 @@ func _ready() -> void:
 		if not ResourceLoader.exists("user://load/AccountInfo.res"):
 			ViewPanel.show()
 		else:
+			print("found")
 			var account_info = ResourceLoader.load("user://load/AccountInfo.res")
 			AccountAPI.login(account_info.AccountName, account_info.Password)
 	
@@ -118,6 +119,8 @@ func _on_SubmitButton_pressed():
 	account_info.AccountName = Userfield.text
 	account_info.Password = Passfield.text
 	
+	if not DirAccess.dir_exists_absolute("user://load/"):
+		DirAccess.make_dir_absolute("user://load/")
 	ResourceSaver.save(account_info, "user://load/AccountInfo.res")
 	AccountAPI.login(account_info.AccountName, account_info.Password)
 

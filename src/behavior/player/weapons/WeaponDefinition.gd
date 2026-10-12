@@ -20,6 +20,8 @@ enum Type {
 @export var horizantal_recoil: int = 3
 @export var muzzle_velocity: float = 0.0
 
+@export var devotion_cost: int = 0
+
 @export var slots: Dictionary[ClassRegister.Classes, Array] = {
 	ClassRegister.Classes.DEFAULT: [],
 	ClassRegister.Classes.INFANTRY: [],

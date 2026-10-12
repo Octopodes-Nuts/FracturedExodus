@@ -169,6 +169,7 @@ func update_character(_token: String, character: CharacterDef):
 		"equipment2": character.Equipment2,
 		"classType": character.ClassType,
 		"faction": character.Faction,
+		"devotion": character.Devotion,
 	})
 
 

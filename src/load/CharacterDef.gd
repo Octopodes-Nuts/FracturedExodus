@@ -27,4 +27,4 @@ func _init(first: String = "", last: String = ""):
 
 @export var XP: int = 0
 
-@export var Devotion: int = 0
+@export var Devotion: int = 10
