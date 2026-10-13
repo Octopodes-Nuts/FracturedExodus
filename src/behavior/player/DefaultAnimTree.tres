@@ -44,8 +44,10 @@ blend_point_2/name = &"Run"
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mvq78"]
+xfade_time = 0.25
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_424gs"]
+xfade_time = 0.25
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_cobd0"]
 states/Crouch/node = SubResource("AnimationNodeBlendSpace1D_cobd0")
@@ -53,6 +55,15 @@ states/Crouch/position = Vector2(393, 153)
 states/Stand/node = SubResource("AnimationNodeBlendSpace1D_krs0m")
 states/Stand/position = Vector2(393, 68)
 transitions = ["Start", "Stand", SubResource("AnimationNodeStateMachineTransition_df1js"), "Stand", "Crouch", SubResource("AnimationNodeStateMachineTransition_mvq78"), "Crouch", "Stand", SubResource("AnimationNodeStateMachineTransition_424gs")]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_uaf44"]
+animation = &"BaseModelClothingAnim/PistolADS"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_71ctq"]
+animation = &"BaseModelClothingAnim/HoldPistolReady"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ny7is"]
+animation = &"BaseModelClothingAnim/HoldPistolRest"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_to1d0"]
 animation = &"BaseModelClothingAnim/RifleReady"
@@ -78,14 +89,26 @@ input_2/name = "ads"
 input_2/auto_advance = false
 input_2/break_loop_at_end = false
 input_2/reset = true
+input_3/name = "pistol_ads"
+input_3/auto_advance = false
+input_3/break_loop_at_end = false
+input_3/reset = true
+input_4/name = "pistol_rest"
+input_4/auto_advance = false
+input_4/break_loop_at_end = false
+input_4/reset = true
+input_5/name = "pistol_ready"
+input_5/auto_advance = false
+input_5/break_loop_at_end = false
+input_5/reset = true
 
 [resource]
-graph_offset = Vector2(-355.98236, 10.434601)
+graph_offset = Vector2(-480.76733, 544.9455)
 nodes/output/position = Vector2(900, 120)
 nodes/Locomotion/node = SubResource("AnimationNodeStateMachine_cobd0")
 nodes/Locomotion/position = Vector2(240, 0)
 nodes/WeaponPose/node = SubResource("AnimationNodeTransition_ukrt8")
-nodes/WeaponPose/position = Vector2(320, 200)
+nodes/WeaponPose/position = Vector2(420, 580)
 nodes/Rest/node = SubResource("AnimationNodeAnimation_rstpt")
 nodes/Rest/position = Vector2(-140, 200)
 nodes/Ready/node = SubResource("AnimationNodeAnimation_to1d0")
@@ -94,4 +117,10 @@ nodes/ADS/node = SubResource("AnimationNodeAnimation_7nckj")
 nodes/ADS/position = Vector2(-140, 600)
 nodes/UpperBlend/node = SubResource("AnimationNodeBlend2_i4f0m")
 nodes/UpperBlend/position = Vector2(600, 100)
-node_connections = [&"output", 0, &"UpperBlend", &"WeaponPose", 0, &"Rest", &"WeaponPose", 1, &"Ready", &"WeaponPose", 2, &"ADS", &"UpperBlend", 0, &"Locomotion", &"UpperBlend", 1, &"WeaponPose"]
+nodes/PistolADS/node = SubResource("AnimationNodeAnimation_uaf44")
+nodes/PistolADS/position = Vector2(-140, 800)
+nodes/PistolRest/node = SubResource("AnimationNodeAnimation_ny7is")
+nodes/PistolRest/position = Vector2(-140, 1000)
+nodes/PistolReady/node = SubResource("AnimationNodeAnimation_71ctq")
+nodes/PistolReady/position = Vector2(-140, 1220)
+node_connections = [&"output", 0, &"UpperBlend", &"WeaponPose", 0, &"Rest", &"WeaponPose", 1, &"Ready", &"WeaponPose", 2, &"ADS", &"WeaponPose", 3, &"PistolADS", &"WeaponPose", 4, &"PistolRest", &"WeaponPose", 5, &"PistolReady", &"UpperBlend", 0, &"Locomotion", &"UpperBlend", 1, &"WeaponPose"]
