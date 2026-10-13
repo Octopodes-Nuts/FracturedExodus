@@ -124,9 +124,9 @@ tree_root = ExtResource("10_8wfwj")
 anim_player = NodePath("../AnimationPlayer")
 parameters/Locomotion/Crouch/blend_position = 0.0
 parameters/Locomotion/Stand/blend_position = 0.0
-parameters/WeaponPose/current_state = ""
+parameters/WeaponPose/current_state = "rest"
 parameters/WeaponPose/transition_request = ""
-parameters/WeaponPose/current_index = -1
+parameters/WeaponPose/current_index = 0
 parameters/UpperBlend/blend_amount = 1.0
 
 [connection signal="body_entered" from="sound_sphere" to="sound_sphere" method="_on_body_entered"]

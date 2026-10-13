@@ -45,9 +45,11 @@ advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mvq78"]
 advance_mode = 1
+xfade_time = 0.25
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_424gs"]
 advance_mode = 1
+xfade_time = 0.25
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ky0dw"]
 advance_mode = 2

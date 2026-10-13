@@ -114,17 +114,33 @@ func update_locomotion_blend(controller, dt: float) -> void:
 	controller.animation_tree.set("parameters/Locomotion/Stand/blend_position", controller._stand_blend)
 	controller.animation_tree.set("parameters/Locomotion/Crouch/blend_position", controller._crouch_blend)
 
-# Keeps the character's WeaponPose animation (rest/ready/ads) in sync with
-# what's currently equipped. Driven by controller.net_ads, which is
-# replicated via play_ads_state so remote peers see the pose too.
+# Pistols and revolvers get their own one-handed hold poses (pistol_rest/
+# pistol_ready/pistol_ads) instead of the two-handed rifle ones.
+const PISTOL_GUN_TYPES: Array = [WeaponRegister.GunType.PISTOL, WeaponRegister.GunType.REVOLVER]
+
+func _is_pistol(weapon: Weapon) -> bool:
+	var definition: WeaponDefinition = weapon.definition
+	return definition != null and definition.gun_type in PISTOL_GUN_TYPES
+
+# Keeps the character's WeaponPose animation (rest/ready/ads, or the
+# pistol_ variants for one-handed sidearms) in sync with what's currently
+# equipped. Driven by controller.net_ads, which is replicated via
+# play_ads_state so remote peers see the pose too. This only drives the
+# third-person body (what other players see) - the first-person GunInHand
+# viewmodel has its own Run state in Gun._process() and is intentionally
+# left alone here.
 func update_weapon_pose(controller) -> void:
 	var pose: StringName
 	if not (controller.active_equipable is Weapon):
+		pose = &"rest"
+	elif controller.move_state == controller.MOVE_STATE.RUN:
 		pose = &"rest"
 	elif controller.net_ads:
 		pose = &"ads"
 	else:
 		pose = &"ready"
+	if controller.active_equipable is Weapon and _is_pistol(controller.active_equipable):
+		pose = &"pistol_%s" % pose
 	if controller._weapon_pose == pose:
 		return
 	controller._weapon_pose = pose

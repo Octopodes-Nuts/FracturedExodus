@@ -50,13 +50,21 @@ func set_properties(
 	_lifetime = lifetime
 	_type = type
 	_shooter_id = shooter_id
-	set_target_position(Vector3.FORWARD * 10)
 	set_norm_ray()
+	# Must cover at least one tick of travel at this speed - otherwise the
+	# gap between this first ray and the first _physics_process move (which
+	# advances speed * delta before any further ray is cast) goes untested.
+	set_target_position(Vector3.FORWARD * _swept_segment_length(get_physics_process_delta_time()))
+
+# Twice this tick's travel distance plus a flat overlap, so each ray
+# reaches past where the NEXT move will land - overlapping the previous
+# ray's reach and leaving no untested gap between ticks.
+func _swept_segment_length(delta: float) -> float:
+	return 2.0 * _speed * delta + 2.0
 
 func _physics_process(delta):
 	# move and stretch bullet path
-	set_target_position((2 * (Vector3.FORWARD * _speed * delta)) #Bullet forward
-			 + Vector3.FORWARD * 2 ) #overlap
+	set_target_position(Vector3.FORWARD * _swept_segment_length(delta))
 	global_transform.origin += ((normal_direction_ray) * _speed * delta )
 	# test if hitting anything
 	if is_colliding():
